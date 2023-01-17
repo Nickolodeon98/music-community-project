@@ -2,8 +2,6 @@ stages:
   - dockerbuild-push
 
 package:
-  only:
-    - master
   image: docker:latest
   stage: dockerbuild-push
   services:
