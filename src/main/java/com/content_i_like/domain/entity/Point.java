@@ -25,4 +25,8 @@ public class Point extends BaseEntity{
 
     private Long targetRecommendNo;
     private Long targetCommentNo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_no")
+    private Member member;
 }
