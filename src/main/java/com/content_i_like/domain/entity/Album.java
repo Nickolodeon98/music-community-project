@@ -1,7 +1,13 @@
 package com.content_i_like.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
 @Entity
 public class Album {
 
