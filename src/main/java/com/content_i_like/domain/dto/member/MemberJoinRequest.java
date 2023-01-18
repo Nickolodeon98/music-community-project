@@ -6,17 +6,19 @@ import com.content_i_like.domain.enums.MemberStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class MemberJoinRequest {
     private String email;
     private String nickName;
     private String password;
     private String name;
     private GenderEnum gender;
-    private String birth;
+    private Integer birth;
 
     public Member toEntity(String password){
         return Member.builder()
