@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -21,16 +22,17 @@ public class Member extends BaseEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberNo;
 
-    @Column(unique=true)
+    @Column(unique=true, nullable = false)
     private String email;
 
     private String password;
 
     private String profileImgUrl;
 
-    @Column(unique=true)
+    @Column(unique=true, nullable = false)
     private String nickName;
 
+    @Column(nullable = false)
     private String name;
 
     private String snsCheck;
@@ -40,6 +42,7 @@ public class Member extends BaseEntity implements UserDetails {
     private String status;
 
     @Enumerated(EnumType.STRING)
+    @ColumnDefault("UNKNWON")
     private GenderEnum gender;
 
     private String birth;         //보류
