@@ -24,16 +24,7 @@ public class MemberService {
     public MemberJoinResponse join(MemberJoinRequest memberJoinRequest){
 
         //가입한 이력이 있는지 확인 -> 가입 아이디 email
-        memberRepository.findByEmail(memberJoinRequest.getEmail())
-                .ifPresent(member -> {
-                    throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "이미 가입된 email입니다.");
-                });
-
-        //이미 사용 중인 닉네임인지 확인
-        memberRepository.findByNickName(memberJoinRequest.getNickName())
-                .ifPresent(member -> {
-                    throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "이미 사용 중인 닉네임입니다.");
-                });
+        validateDuplicatedMember(memberJoinRequest);
 
         //비밀번호 조건에 맞는지 확인
         if(memberJoinRequest.getPassword().length()<8 || memberJoinRequest.getPassword().length()>16){
@@ -45,11 +36,22 @@ public class MemberService {
         return new MemberJoinResponse(savedMember.getMemberNo(), savedMember.getNickName());
     }
 
+    private void validateDuplicatedMember(MemberJoinRequest memberJoinRequest) {
+        memberRepository.findByEmail(memberJoinRequest.getEmail())
+                .ifPresent(member -> {
+                    throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "이미 가입된 email입니다.");
+                });
+
+        memberRepository.findByNickName(memberJoinRequest.getNickName())
+                .ifPresent(member -> {
+                    throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "이미 사용 중인 닉네임입니다.");
+                });
+    }
+
     public MemberLoginResponse login(MemberLoginRequest memberLoginRequest){
 
         //email 확인
-        Member member = memberRepository.findByEmail(memberLoginRequest.getEmail())
-                .orElseThrow(()-> new ContentILikeAppException(ErrorCode.NOT_FOUND, "존재하지 않는 email입니다."));
+        Member member = validateExistingMember(memberLoginRequest);
 
         //password 일치 여부
         if(!passwordEncoder.matches(memberLoginRequest.getPassword(), member.getPassword())){
@@ -59,5 +61,11 @@ public class MemberService {
         String jwt = jwtService.generateToken(member);
 
         return new MemberLoginResponse(jwt, member.getNickName());
+    }
+
+    private Member validateExistingMember(MemberLoginRequest memberLoginRequest) {
+        Member member = memberRepository.findByEmail(memberLoginRequest.getEmail())
+                .orElseThrow(()-> new ContentILikeAppException(ErrorCode.NOT_FOUND, "존재하지 않는 email입니다."));
+        return member;
     }
 }
