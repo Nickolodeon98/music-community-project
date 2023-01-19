@@ -22,6 +22,8 @@ public class SecurityConfig {
     private final String[] AUTHORIZATION = {"", ""};
     private final String[] TEST_URL = {"/api/v1/hello/**", "/api/v1/member/join", "/api/v1/member/login"};
 
+    private final String[] SWAGGER = {"/v3/api-docs/**", "/swagger-ui/**"};
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -29,6 +31,8 @@ public class SecurityConfig {
                 .disable()
                 .authorizeHttpRequests()
                 .requestMatchers(TEST_URL)
+                .permitAll()
+                .requestMatchers(SWAGGER)
                 .permitAll()
                 .requestMatchers(AUTHORIZATION)
                 .permitAll()
