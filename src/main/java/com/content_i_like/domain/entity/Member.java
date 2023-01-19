@@ -8,10 +8,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -19,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter @Builder
 @Entity
+@DynamicInsert
 public class Member extends BaseEntity implements UserDetails {
 
     @Id
@@ -49,11 +50,10 @@ public class Member extends BaseEntity implements UserDetails {
     @ColumnDefault("'UNKNOWN'")
     private GenderEnum gender;
 
-    private String birth;         //보류
+    private Integer birth;
 
     @OneToMany(mappedBy = "member")
-    @Builder.Default
-    private ArrayList<Point> pointNo = new ArrayList<>();
+    private List<Point> pointNo;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
