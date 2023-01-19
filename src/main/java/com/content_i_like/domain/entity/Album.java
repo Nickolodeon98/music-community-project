@@ -13,11 +13,11 @@ public class Album {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long albumNo;
+    private Long albumNo;
 
-    public String albumImageUrl;
+    private String albumImageUrl;
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "artistNo", name = "artist_no")
-    public Artist artist;
+    private Artist artist;
 }
