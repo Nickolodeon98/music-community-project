@@ -15,6 +15,14 @@ spring:
   jpa:
     show-sql: true
     hibernate.ddl-auto: update
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: username
+    password: password
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
 
 springdoc:
   default-consumes-media-type: application/json
