@@ -28,6 +28,7 @@ public class RecommendService {
     private final SongRepository songRepository;
 
 
+    @Transactional
     public RecommendPostResponse uploadPost(String userEmail, RecommendPostRequest request) {
         // 글을 작성하는 Member 확인
         Member member = validateGetMemberInfoByUserEmail(userEmail);
@@ -63,6 +64,22 @@ public class RecommendService {
         return new RecommendModifyResponse(recommend.getRecommendNo(), recommend.getRecommendTitle());
     }
 
+
+    @Transactional
+    public void deletePost(String userEmail, Long recommendNo) {
+        // 글을 작성하는 Member 확인
+        Member member = validateGetMemberInfoByUserEmail(userEmail);
+
+        // 수정 글 확인
+        Recommend recommend = validateGetRecommendInfoByRecommendNo(recommendNo);
+
+        // Member와 Recommen의 작성자가 동일한지 확인
+        if (!Objects.equals(member.getMemberNo(), recommend.getMember().getMemberNo())) {
+            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+        }
+
+        recommendRepository.delete(recommend);
+    }
 
     private Recommend validateGetRecommendInfoByRecommendNo(Long recommendNo) {
         return recommendRepository.findById(recommendNo)

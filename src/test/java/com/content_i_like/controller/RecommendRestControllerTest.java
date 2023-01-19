@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,9 +26,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willReturn;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -134,6 +136,26 @@ class RecommendRestControllerTest {
                 .andExpect(jsonPath("$.result.recommendNo").value(1))
                 .andExpect(jsonPath("$.result.recommendTitle").exists())
                 .andExpect(jsonPath("$.result.recommendTitle").value("수정"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("추천글 삭제")
+    void success_delete_recommend() throws Exception {
+        doNothing().when(recommendService).deletePost(any(), any());
+
+        String url = String.format("/api/v1/recommends/%d", 1);
+
+        mockMvc.perform(delete(url).with(csrf())
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").exists())
+                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+                .andExpect(jsonPath("$.result.recommendNo").exists())
+                .andExpect(jsonPath("$.result.recommendNo").value(1))
+                .andExpect(jsonPath("$.result.message").exists())
+                .andExpect(jsonPath("$.result.message").value("추천 글이 삭제 되었습니다."))
                 .andDo(print());
     }
 }
