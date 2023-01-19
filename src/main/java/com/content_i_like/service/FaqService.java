@@ -1,5 +1,6 @@
 package com.content_i_like.service;
 
+import com.content_i_like.domain.dto.faq.FaqRequest;
 import com.content_i_like.domain.dto.faq.FaqResponse;
 import com.content_i_like.domain.entity.FAQ;
 import com.content_i_like.repository.FAQRepository;
@@ -18,4 +19,15 @@ public class FaqService {
         return faqRepository.findAll(pageable).map(FaqResponse::of);
     }
 
+    public Page<FaqResponse> getFaqByCategory(Pageable pageable, String faqCategory) {
+        return faqRepository.findAllByFaqCategory(pageable, faqCategory).map(FaqResponse::of);
+    }
+
+    public Page<FaqResponse> getFaqByKeyWord(Pageable pageable, String keyWord) {
+        return faqRepository.findAllByFaqTitleContaining(pageable, keyWord).map(FaqResponse::of);
+    }
+
+    public FaqResponse addFaq(FaqRequest faqRequest) {
+        return FaqResponse.of(faqRepository.save(faqRequest.toEntity()));
+    }
 }
