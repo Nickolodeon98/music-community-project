@@ -1,5 +1,6 @@
 package com.content_i_like.controller;
 
+import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.faq.FaqResponse;
 import com.content_i_like.service.FaqService;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,8 @@ public class FaqRestController {
     private final FaqService faqService;
 
     @GetMapping()
-    public Page<FaqResponse> getAllFaq(@PageableDefault(size = 20) Pageable pageable){
-        return faqService.getAllFaq(pageable);
+    public Response<Page<FaqResponse>> getAllFaq(@PageableDefault(size = 20) Pageable pageable){
+        return Response.success(faqService.getAllFaq(pageable));
     }
 
 }
