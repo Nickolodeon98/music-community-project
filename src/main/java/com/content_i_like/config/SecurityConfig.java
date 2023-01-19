@@ -29,8 +29,6 @@ public class SecurityConfig {
         http
                 .csrf()
                 .disable()
-                .cors()
-                .disable()
                 .authorizeHttpRequests()
                 .requestMatchers(TEST_URL)
                 .permitAll()
