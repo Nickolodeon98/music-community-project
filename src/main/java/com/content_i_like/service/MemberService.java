@@ -1,10 +1,7 @@
 package com.content_i_like.service;
 
 import com.content_i_like.config.JwtService;
-import com.content_i_like.domain.dto.member.MemberJoinRequest;
-import com.content_i_like.domain.dto.member.MemberJoinResponse;
-import com.content_i_like.domain.dto.member.MemberLoginRequest;
-import com.content_i_like.domain.dto.member.MemberLoginResponse;
+import com.content_i_like.domain.dto.member.*;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
@@ -51,7 +48,7 @@ public class MemberService {
     public MemberLoginResponse login(MemberLoginRequest memberLoginRequest){
 
         //email 확인
-        Member member = validateExistingMember(memberLoginRequest);
+        Member member = validateExistingMember(memberLoginRequest.getEmail());
 
         //password 일치 여부
         if(!passwordEncoder.matches(memberLoginRequest.getPassword(), member.getPassword())){
@@ -63,9 +60,20 @@ public class MemberService {
         return new MemberLoginResponse(jwt, member.getNickName());
     }
 
-    private Member validateExistingMember(MemberLoginRequest memberLoginRequest) {
-        Member member = memberRepository.findByEmail(memberLoginRequest.getEmail())
+    private Member validateExistingMember(String email) {
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(()-> new ContentILikeAppException(ErrorCode.NOT_FOUND, "존재하지 않는 email입니다."));
         return member;
+    }
+
+    public MailDto findPwByEmail(MemberFindRequest memberFindRequest) {
+        Member member = validateExistingMember(memberFindRequest.getEmail());
+
+        //name과 일치 여부
+        if(!memberFindRequest.getName().equals(member.getName())){
+            throw new ContentILikeAppException(ErrorCode.NOT_FOUND,"잘못된 정보입니다. 이름과 일치하지 않습니다.");
+        }
+
+        return new MailDto(member.getEmail(),"","");
     }
 }
