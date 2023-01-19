@@ -16,13 +16,13 @@ spring:
     show-sql: true
     hibernate.ddl-auto: update
   mail:
-    host: smtp.naver.com
-    port: 465
-    username: username
+    host: smtp.gmail.com
+    port: 587
+    username: test@gmail.com
     password: password
     properties:
       mail.smtp.auth: true
-      mail.smtp.ssl.enable: true
+      mail.smtp.starttls.enable: true
 
 springdoc:
   default-consumes-media-type: application/json
