@@ -1,14 +1,8 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.config.JwtService;
-import com.content_i_like.domain.dto.recommend.RecommendModifyRequest;
-import com.content_i_like.domain.dto.recommend.RecommendModifyResponse;
-import com.content_i_like.domain.dto.recommend.RecommendPostRequest;
-import com.content_i_like.domain.dto.recommend.RecommendPostResponse;
-import com.content_i_like.domain.entity.Album;
-import com.content_i_like.domain.entity.Artist;
-import com.content_i_like.domain.entity.Recommend;
-import com.content_i_like.domain.entity.Song;
+import com.content_i_like.domain.dto.recommend.*;
+import com.content_i_like.domain.entity.*;
 import com.content_i_like.service.RecommendService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +17,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -136,6 +133,48 @@ class RecommendRestControllerTest {
                 .andExpect(jsonPath("$.result.recommendNo").value(1))
                 .andExpect(jsonPath("$.result.recommendTitle").exists())
                 .andExpect(jsonPath("$.result.recommendTitle").value("수정"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("추천글 읽기")
+    void success_read_recommend() throws Exception {
+        ArrayList<Long> commentPoints = new ArrayList<>();
+        ArrayList<Comment> comments = new ArrayList<>();
+
+        RecommendReadResponse response = RecommendReadResponse
+                .builder()
+                .recommendTitle("제목")
+                .memberNickname("작성자")
+                .albumImageUrl("앨범 이미지")
+                .songTitle("노래 제목")
+                .artistName("아티스트 이름")
+                .recommendContent("추천 내용")
+                .countLikes(100L)
+                .recommendPoint(1000L)
+                .accumulatedPoints(1200L)
+                .recommendYoutubeUrl("유튜브 링크")
+                .comments(comments)
+                .build();
+
+        given(recommendService.readPost(any())).willReturn(response);
+
+        String url = String.format("/api/v1/recommends/%d", 1);
+
+        mockMvc.perform(get(url).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").exists())
+                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+                .andExpect(jsonPath("$.result.recommendTitle").exists())
+                .andExpect(jsonPath("$.result.recommendTitle").value("제목"))
+                .andExpect(jsonPath("$.result.memberNickname").exists())
+                .andExpect(jsonPath("$.result.memberNickname").value("작성자"))
+                .andExpect(jsonPath("$.result.albumImageUrl").exists())
+                .andExpect(jsonPath("$.result.albumImageUrl").value("앨범 이미지"))
+                .andExpect(jsonPath("$.result.songTitle").exists())
+                .andExpect(jsonPath("$.result.songTitle").value("노래 제목"))
+                .andExpect(jsonPath("$.result.comments").exists())
                 .andDo(print());
     }
 

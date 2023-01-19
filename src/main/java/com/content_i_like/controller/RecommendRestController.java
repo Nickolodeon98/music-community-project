@@ -2,10 +2,7 @@ package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.RecommendDeleteResponse;
-import com.content_i_like.domain.dto.recommend.RecommendModifyRequest;
-import com.content_i_like.domain.dto.recommend.RecommendModifyResponse;
-import com.content_i_like.domain.dto.recommend.RecommendPostRequest;
-import com.content_i_like.domain.dto.recommend.RecommendPostResponse;
+import com.content_i_like.domain.dto.recommend.*;
 import com.content_i_like.service.RecommendService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,22 +19,22 @@ public class RecommendRestController {
 
     @PostMapping
     public Response<RecommendPostResponse> uploadRecommendPost(Authentication authentication,
-                                                               @RequestBody RecommendPostRequest recommendPostRequest) {
+                                                               @RequestBody RecommendPostRequest request) {
         String userEmail = authentication.getName();
-        log.info("user email = {}", userEmail);
+        log.info("user_email = {}, recommend_post_request = {}", userEmail, request);
 
-        RecommendPostResponse response = recommendService.uploadPost(userEmail, recommendPostRequest);
+        RecommendPostResponse response = recommendService.uploadPost(userEmail, request);
         return Response.success(response);
     }
 
     @PutMapping("/{recommendNo}")
     public Response<RecommendModifyResponse> modifyRecommendPost(Authentication authentication,
-                                                                 @RequestBody RecommendModifyRequest recommendPostRequest,
+                                                                 @RequestBody RecommendModifyRequest request,
                                                                  @PathVariable Long recommendNo) {
         String userEmail = authentication.getName();
-        log.info("user email = {}", userEmail);
+        log.info("user_email = {}, recommend_modify_request = {}", userEmail, request);
 
-        RecommendModifyResponse response = recommendService.modifyPost(userEmail, recommendNo, recommendPostRequest);
+        RecommendModifyResponse response = recommendService.modifyPost(userEmail, recommendNo, request);
         return Response.success(response);
     }
 
@@ -45,9 +42,17 @@ public class RecommendRestController {
     public Response<RecommendDeleteResponse> deleteRecommendPost(Authentication authentication,
                                                                  @PathVariable Long recommendNo) {
         String userEmail = authentication.getName();
-        log.info("user email = {}", userEmail);
+        log.info("user email = {}, recommend_no = {}", userEmail, recommendNo);
 
         recommendService.deletePost(userEmail, recommendNo);
         return Response.success(new RecommendDeleteResponse(recommendNo, "추천 글이 삭제 되었습니다."));
+    }
+
+    @GetMapping("/{recommendNo}")
+    public Response<RecommendReadResponse> ReadRecommendPost(@PathVariable Long recommendNo) {
+        log.info("recommend_no = {}", recommendNo);
+
+        RecommendReadResponse response = recommendService.readPost(recommendNo);
+        return Response.success(response);
     }
 }
