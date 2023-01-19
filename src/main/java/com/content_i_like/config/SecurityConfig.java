@@ -20,7 +20,7 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
 
     private final String[] AUTHORIZATION = {"", ""};
-    private final String[] TEST_URL = {"/api/v1/hello/**"};
+    private final String[] TEST_URL = {"/api/v1/hello/**", "/api/v1/member/join", "/api/v1/member/login"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
