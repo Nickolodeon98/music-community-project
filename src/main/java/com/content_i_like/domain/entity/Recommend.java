@@ -25,7 +25,7 @@ public class Recommend extends BaseEntity{
 
     private Long recommendPoint;
 
-    private String recommendViews;
+    private Long recommendViews;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "song_no")
