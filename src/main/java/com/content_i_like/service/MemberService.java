@@ -35,6 +35,11 @@ public class MemberService {
                     throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "이미 사용 중인 닉네임입니다.");
                 });
 
+        //비밀번호 조건에 맞는지 확인
+        if(memberJoinRequest.getPassword().length()<8 || memberJoinRequest.getPassword().length()>16){
+            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "비밀번호는 8~16자입니다.");
+        }
+
         Member savedMember = memberRepository.save(memberJoinRequest.toEntity(passwordEncoder.encode(memberJoinRequest.getPassword())));
 
         return new MemberJoinResponse(savedMember.getMemberNo(), savedMember.getNickName());
