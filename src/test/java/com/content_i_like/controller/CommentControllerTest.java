@@ -21,9 +21,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willReturn;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -111,6 +112,28 @@ class CommentControllerTest {
                 .andExpect(jsonPath("$.result.postNo").value(1))
                 .andExpect(jsonPath("$.result.commentContent").exists())
                 .andExpect(jsonPath("$.result.commentContent").value("댓글 수정"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("댓글 삭제")
+    void success_delete_comment() throws Exception {
+        doNothing().when(commentService).deleteComment(any(), any(), any());
+
+        String url = String.format("/api/v1/recommends/1/comments/%d", 1);
+
+        mockMvc.perform(delete(url).with(csrf())
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").exists())
+                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+                .andExpect(jsonPath("$.result.commentNo").exists())
+                .andExpect(jsonPath("$.result.commentNo").value(1))
+                .andExpect(jsonPath("$.result.recommendNo").exists())
+                .andExpect(jsonPath("$.result.recommendNo").value(1))
+                .andExpect(jsonPath("$.result.message").exists())
+                .andExpect(jsonPath("$.result.message").value("댓글이 삭제 되었습니다."))
                 .andDo(print());
     }
 }
