@@ -3,7 +3,8 @@ stages:
 
 package:
   only:
-    - main
+  - master
+  - release
   image: docker:latest
   stage: dockerbuild-push
   services:
