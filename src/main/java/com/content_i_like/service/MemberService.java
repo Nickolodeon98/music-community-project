@@ -20,7 +20,7 @@ public class MemberService {
 
     public MemberJoinResponse join(MemberJoinRequest memberJoinRequest){
 
-        //가입한 이력이 있는지 확인 -> 가입 아이디 email
+        //가입한 이력이 있는지 확인 -> 가입 아이디 email 중복 여부 & 사용 중인 닉네임이 아닌지 확인
         validateDuplicatedMember(memberJoinRequest);
 
         //비밀번호 조건에 맞는지 확인

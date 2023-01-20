@@ -6,6 +6,8 @@ import com.content_i_like.domain.dto.member.MemberJoinResponse;
 import com.content_i_like.domain.dto.member.MemberLoginRequest;
 import com.content_i_like.domain.dto.member.MemberLoginResponse;
 import com.content_i_like.domain.enums.GenderEnum;
+import com.content_i_like.exception.ContentILikeAppException;
+import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.service.MailService;
 import com.content_i_like.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -79,6 +81,28 @@ class MemberRestControllerTest {
                 .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
                 .andExpect(jsonPath("$.result.no").value(1))
                 .andExpect(jsonPath("$.result.nickName").value("nickname"));
+    }
+
+    @Test
+    @DisplayName("회원가입 실패")
+    void join_fail() throws Exception {
+        MemberJoinRequest memberJoinRequest = MemberJoinRequest.builder()
+                .name("rnjsthdus")
+                .nickName("test")
+                .email("test@gmail.com")
+                .password("123456789")
+                .gender(GenderEnum.UNKNOWN)
+                .birth(0)
+                .build();
+
+        Mockito.when(memberService.join(any())).thenThrow(new ContentILikeAppException(ErrorCode.NOT_FOUND,""));
+
+        mockMvc.perform(post("/api/v1/member/join")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(memberJoinRequest)))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 
     @Test
