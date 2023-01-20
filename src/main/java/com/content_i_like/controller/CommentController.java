@@ -1,6 +1,8 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
+import com.content_i_like.domain.dto.RecommendDeleteResponse;
+import com.content_i_like.domain.dto.comment.CommentDeleteResponse;
 import com.content_i_like.domain.dto.comment.CommentModifyRequest;
 import com.content_i_like.domain.dto.comment.CommentRequest;
 import com.content_i_like.domain.dto.comment.CommentResponse;
@@ -39,5 +41,16 @@ public class CommentController {
 
         CommentResponse response = commentService.modifyComment(userEmail, request, recommendNo, commentNo);
         return Response.success(response);
+    }
+
+    @DeleteMapping("/{recommendNo}/comments/{commentNo}")
+    public Response<CommentDeleteResponse> deleteRecommendComment(Authentication authentication,
+                                                           @PathVariable Long recommendNo,
+                                                           @PathVariable Long commentNo) {
+        String userEmail = authentication.getName();
+        log.info("user_email = {}, recommend_no = {}, commentNo = {}", authentication, recommendNo, commentNo);
+
+        commentService.deleteComment(userEmail, recommendNo, commentNo);
+        return Response.success(new CommentDeleteResponse(commentNo, recommendNo, "댓글이 삭제 되었습니다."));
     }
 }
