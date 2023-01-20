@@ -6,6 +6,7 @@ import com.content_i_like.domain.dto.comment.CommentResponse;
 import com.content_i_like.domain.entity.Comment;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Recommend;
+import com.content_i_like.domain.enums.MemberStatusEnum;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.CommentRepository;
@@ -43,7 +44,7 @@ public class CommentService {
     public CommentResponse modifyComment(String userEmail, CommentModifyRequest request, Long recommendNo, Long commentNo) {
         // 댓글 수정하려는 작성자
         Member member = validateGetMemberInfoByUserEmail(userEmail);
-        
+
         // 댓글이 달려 있는 글을 찾습니다.
         Recommend post = validateGetRecommendInfoByRecommendNo(recommendNo);
 
@@ -65,6 +66,32 @@ public class CommentService {
         comment = validateGetCommentInfoByCommentNo(commentNo);
 
         return new CommentResponse(comment.getCommentNo(), post.getRecommendNo(), comment.getCommentContent(), comment.getCommentPoint());
+    }
+
+    public void deleteComment(String userEmail, Long recommendNo, Long commentNo) {
+        // 댓글 삭제하려는 작성자
+        Member member = validateGetMemberInfoByUserEmail(userEmail);
+
+        // 댓글이 달려 있는 글을 찾습니다.
+        Recommend post = validateGetRecommendInfoByRecommendNo(recommendNo);
+
+        // 삭제하려는 댓글을 찾습니다.
+        Comment comment = validateGetCommentInfoByCommentNo(commentNo);
+
+        // 댓글이 달려 있는 글의 위치가 일치하는지 확인합니다.
+        if (!Objects.equals(post.getRecommendNo(), comment.getRecommend().getRecommendNo())) {
+            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+        }
+
+        // 댓글을 삭제하려는 유저가 댓글을 작성한 유저이거나, 게시물 작성 유저이거나, 관리자일 경우 삭제가 가능합니다.
+        if (!Objects.equals(member.getMemberNo(), comment.getMember().getMemberNo())
+                && !Objects.equals(member.getMemberNo(), post.getMember().getMemberNo())
+                && !member.getStatus().equals(MemberStatusEnum.ADMIN)) {
+            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+        }
+
+        // 댓글을 삭제합니다.
+        commentRepository.delete(comment);
     }
 
     private Comment validateGetCommentInfoByCommentNo(Long commentNo) {
