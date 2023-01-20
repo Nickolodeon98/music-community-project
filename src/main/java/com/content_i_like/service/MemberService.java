@@ -76,4 +76,17 @@ public class MemberService {
 
         return new MailDto(member.getEmail(),"","");
     }
+
+    public String changePw(ChangePwRequest changePwRequest, String username) {
+        Member member = validateExistingMember(username);
+
+        //같은 비밀번호 2번 입력하여 확인하기
+        if(changePwRequest.getNewPassword().equals(changePwRequest.getVerification())){
+            memberRepository.updateMemberPassword(member.getMemberNo(), changePwRequest.getNewPassword());
+        } else {
+            throw new ContentILikeAppException(ErrorCode.NOT_FOUND,"비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+        }
+
+        return "비밀번호 변경 완료";
+    }
 }
