@@ -1,5 +1,6 @@
 package com.content_i_like.service;
 
+import com.content_i_like.domain.dto.faq.FaqDetailsResponse;
 import com.content_i_like.domain.dto.faq.FaqRequest;
 import com.content_i_like.domain.dto.faq.FaqResponse;
 import com.content_i_like.domain.entity.FAQ;
@@ -29,5 +30,9 @@ public class FaqService {
 
     public FaqResponse addFaq(FaqRequest faqRequest) {
         return FaqResponse.of(faqRepository.save(faqRequest.toEntity()));
+    }
+
+    public FaqDetailsResponse getFaqDetails(Object any, Object any1) {
+        return null;
     }
 }
