@@ -1,6 +1,7 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
+import com.content_i_like.domain.dto.comment.CommentModifyRequest;
 import com.content_i_like.domain.dto.comment.CommentRequest;
 import com.content_i_like.domain.dto.comment.CommentResponse;
 import com.content_i_like.service.CommentService;
@@ -19,12 +20,24 @@ public class CommentController {
 
     @PostMapping("/{recommendNo}/comments")
     public Response<CommentResponse> writeRecommendComment(Authentication authentication,
-                                                  @RequestBody CommentRequest request,
-                                                  @PathVariable Long recommendNo){
+                                                           @RequestBody CommentRequest request,
+                                                           @PathVariable Long recommendNo) {
         String userEmail = authentication.getName();
         log.info("user_email = {}, request = {}, recommend_no = {}", authentication, request.getCommentContent(), recommendNo);
 
         CommentResponse response = commentService.writeComment(userEmail, request, recommendNo);
+        return Response.success(response);
+    }
+
+    @PutMapping("/{recommendNo}/comments/{commentNo}")
+    public Response<CommentResponse> writeRecommendComment(Authentication authentication,
+                                                           @RequestBody CommentModifyRequest request,
+                                                           @PathVariable Long recommendNo,
+                                                           @PathVariable Long commentNo) {
+        String userEmail = authentication.getName();
+        log.info("user_email = {}, request = {}, recommend_no = {}, commentNo = {}", authentication, request.getCommentContent(), recommendNo, commentNo);
+
+        CommentResponse response = commentService.modifyComment(userEmail, request, recommendNo, commentNo);
         return Response.success(response);
     }
 }
