@@ -1,16 +1,17 @@
 package com.content_i_like.domain.entity;
 
 import com.content_i_like.domain.enums.GenderEnum;
+import com.content_i_like.domain.enums.MemberStatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter @Builder
 @Entity
+@DynamicInsert
 public class Member extends BaseEntity implements UserDetails {
 
     @Id
@@ -41,18 +43,17 @@ public class Member extends BaseEntity implements UserDetails {
 
     private String introduction;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private MemberStatusEnum status;
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'UNKNOWN'")
     private GenderEnum gender;
 
-    private String birth;         //보류
+    private Integer birth;
 
     @OneToMany(mappedBy = "member")
-//    @JoinColumn(name="point_no")
-    @Builder.Default
-    private ArrayList<Point> pointNo = new ArrayList<>();
+    private List<Point> pointNo;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

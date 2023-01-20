@@ -2,9 +2,10 @@ server:
   servlet:
     encoding:
       force-response: true
+
 spring:
   mvc:
-    pathmatch:
+    path match:
       matching-strategy: ant_path_matcher
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -14,3 +15,25 @@ spring:
   jpa:
     show-sql: true
     hibernate.ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: test@gmail.com
+    password: password
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  api-docs:
+    groups:
+      enabled: true
+
+  swagger-ui:
+    path: /swagger-ui # 접속 path 설정
+    disable-swagger-default-url: true
+    doc-expansion: none # tag, operation 펼치는 방식
+  paths-to-match:
+    - /**

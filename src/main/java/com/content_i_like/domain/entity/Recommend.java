@@ -3,6 +3,8 @@ package com.content_i_like.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Builder
@@ -25,7 +27,7 @@ public class Recommend extends BaseEntity{
 
     private Long recommendPoint;
 
-    private String recommendViews;
+    private Long recommendViews;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "song_no")
@@ -34,4 +36,10 @@ public class Recommend extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no")
     private Member member;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recommend")
+    private List<Comment> comments;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recommend")
+    private List<Likes> likes;
 }
