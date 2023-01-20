@@ -1,5 +1,6 @@
 package com.content_i_like.service;
 
+import com.content_i_like.domain.dto.comment.CommentModifyRequest;
 import com.content_i_like.domain.dto.comment.CommentRequest;
 import com.content_i_like.domain.dto.comment.CommentResponse;
 import com.content_i_like.domain.entity.Comment;
@@ -12,6 +13,9 @@ import com.content_i_like.repository.MemberRepository;
 import com.content_i_like.repository.RecommendRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +25,7 @@ public class CommentService {
     private final RecommendRepository recommendRepository;
     private final MemberRepository memberRepository;
 
+    @Transactional
     public CommentResponse writeComment(String userEmail, CommentRequest request, Long recommendNo) {
         // 댓글 작성자를 불러옵니다
         Member member = validateGetMemberInfoByUserEmail(userEmail);
@@ -32,6 +37,41 @@ public class CommentService {
         Comment comment = commentRepository.save(request.toEntity(member, post));
 
         return new CommentResponse(comment.getCommentNo(), post.getRecommendNo(), comment.getCommentContent(), comment.getCommentPoint());
+    }
+
+    @Transactional
+    public CommentResponse modifyComment(String userEmail, CommentModifyRequest request, Long recommendNo, Long commentNo) {
+        // 댓글 수정하려는 작성자
+        Member member = validateGetMemberInfoByUserEmail(userEmail);
+        
+        // 댓글이 달려 있는 글을 찾습니다.
+        Recommend post = validateGetRecommendInfoByRecommendNo(recommendNo);
+
+        // 수정하려는 댓글을 찾습니다.
+        Comment comment = validateGetCommentInfoByCommentNo(commentNo);
+
+        // 댓글이 달려 있는 글의 위치가 일치하는지 확인합니다.
+        if (!Objects.equals(post.getRecommendNo(), comment.getRecommend().getRecommendNo())) {
+            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+        }
+
+        // 댓글을 수정하려는 유저와 댓글을 작성한 유저가 같은 사람인지 확인합니다.
+        if (!Objects.equals(member.getMemberNo(), comment.getMember().getMemberNo())) {
+            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+        }
+
+        // 댓글을 수정합니다.
+        commentRepository.update(request.getCommentContent(), commentNo);
+        comment = validateGetCommentInfoByCommentNo(commentNo);
+
+        return new CommentResponse(comment.getCommentNo(), post.getRecommendNo(), comment.getCommentContent(), comment.getCommentPoint());
+    }
+
+    private Comment validateGetCommentInfoByCommentNo(Long commentNo) {
+        return commentRepository.findById(commentNo)
+                .orElseThrow(() -> {
+                    throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+                });
     }
 
     private Recommend validateGetRecommendInfoByRecommendNo(Long recommendNo) {
