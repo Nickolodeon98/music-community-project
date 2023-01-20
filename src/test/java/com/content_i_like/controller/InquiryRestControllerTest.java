@@ -51,7 +51,7 @@ class InquiryRestControllerTest {
                 .content("testContent")
                 .build();
 
-        when(inquiryService.postInquiry(any()))
+        when(inquiryService.postInquiry(any(), any()))
                 .thenReturn(InquiryResponse.builder()
                         .inquiryNo(1L)
                         .title("testTitle")
@@ -59,7 +59,7 @@ class InquiryRestControllerTest {
                         .processingStatus("처리중")
                         .build());
 
-        mockMvc.perform(post("api/v1/inquiry")
+        mockMvc.perform(post("/api/v1/inquiry")
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(inquiryRequire)))

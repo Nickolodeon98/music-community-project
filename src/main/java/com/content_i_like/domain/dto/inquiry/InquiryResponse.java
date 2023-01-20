@@ -1,5 +1,6 @@
 package com.content_i_like.domain.dto.inquiry;
 
+import com.content_i_like.domain.entity.Inquiry;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +11,8 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Builder
+@Getter
+@Builder
 public class InquiryResponse {
 
     private Long inquiryNo;
@@ -20,4 +22,13 @@ public class InquiryResponse {
     private LocalDateTime createdAt;
 
     private String processingStatus;
+
+    public static InquiryResponse of(Inquiry inquiry, String processingStatus) {
+        return InquiryResponse.builder()
+                .inquiryNo(inquiry.getInquiryNo())
+                .title(inquiry.getInquiryTitle())
+                .createdAt(inquiry.getCreatedAt())
+                .processingStatus(processingStatus)
+                .build();
+    }
 }
