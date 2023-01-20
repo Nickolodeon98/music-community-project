@@ -1,6 +1,7 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
+import com.content_i_like.domain.dto.faq.FaqDetailsResponse;
 import com.content_i_like.domain.dto.faq.FaqRequest;
 import com.content_i_like.domain.dto.faq.FaqResponse;
 import com.content_i_like.service.FaqService;
@@ -32,6 +33,11 @@ public class FaqRestController {
     @GetMapping("/searches/{keyWord}")
     public Response<Page<FaqResponse>> getFaqByKeyWord(Pageable pageable, @PathVariable String keyWord) {
         return Response.success(faqService.getFaqByKeyWord(pageable, keyWord));
+    }
+
+    @GetMapping("/details/{faqNo}")
+    public Response<FaqDetailsResponse> getFaqDetails(@PathVariable Long faqNo) {
+        return Response.success(faqService.getFaqDetails(faqNo));
     }
 
     @PostMapping()

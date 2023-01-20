@@ -1,6 +1,7 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.config.JwtService;
+import com.content_i_like.domain.dto.faq.FaqDetailsResponse;
 import com.content_i_like.service.FaqService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -78,6 +79,21 @@ class FaqRestControllerTest {
                 .thenReturn(Page.empty());
 
         mockMvc.perform(get("/api/v1/faq/searches/keyWord")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+    }
+
+    @Test
+    @DisplayName("faq 상세 조회 성공")
+    void faq_details_success() throws Exception {
+        when(faqService.getFaqDetails(any()))
+                .thenReturn(new FaqDetailsResponse());
+
+        mockMvc.perform(get("/api/v1/faq/details/1")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer ")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
