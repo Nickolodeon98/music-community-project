@@ -5,7 +5,6 @@ package:
   only:
   - master
   - develop
-  - release
   image: docker:latest
   stage: dockerbuild-push
   services:
