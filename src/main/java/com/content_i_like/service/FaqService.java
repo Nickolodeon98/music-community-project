@@ -4,11 +4,15 @@ import com.content_i_like.domain.dto.faq.FaqDetailsResponse;
 import com.content_i_like.domain.dto.faq.FaqRequest;
 import com.content_i_like.domain.dto.faq.FaqResponse;
 import com.content_i_like.domain.entity.FAQ;
+import com.content_i_like.exception.ContentILikeAppException;
+import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.FAQRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,11 +32,16 @@ public class FaqService {
         return faqRepository.findAllByFaqTitleContaining(pageable, keyWord).map(FaqResponse::of);
     }
 
-    public FaqResponse addFaq(FaqRequest faqRequest) {
-        return FaqResponse.of(faqRepository.save(faqRequest.toEntity()));
+    public FaqDetailsResponse getFaqDetails(Long faqNo) {
+
+        //faq가 존재하는지 검증
+        Optional<FAQ> optionalFAQ = faqRepository.findById(faqNo);
+        optionalFAQ.orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND, String.format("faqNo:%d not exist")));
+
+        return FaqDetailsResponse.of(optionalFAQ.get());
     }
 
-    public FaqDetailsResponse getFaqDetails(Object any, Object any1) {
-        return null;
+    public FaqResponse addFaq(FaqRequest faqRequest) {
+        return FaqResponse.of(faqRepository.save(faqRequest.toEntity()));
     }
 }

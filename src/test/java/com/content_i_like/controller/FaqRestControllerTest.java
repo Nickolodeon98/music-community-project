@@ -90,7 +90,7 @@ class FaqRestControllerTest {
     @Test
     @DisplayName("faq 상세 조회 성공")
     void faq_details_success() throws Exception {
-        when(faqService.getFaqDetails(any(), any()))
+        when(faqService.getFaqDetails(any()))
                 .thenReturn(new FaqDetailsResponse());
 
         mockMvc.perform(get("/api/v1/faq/details/1")
