@@ -1,7 +1,6 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
-import com.content_i_like.domain.dto.RecommendDeleteResponse;
 import com.content_i_like.domain.dto.comment.CommentDeleteResponse;
 import com.content_i_like.domain.dto.comment.CommentModifyRequest;
 import com.content_i_like.domain.dto.comment.CommentRequest;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/recommends")
 @RequiredArgsConstructor
 @Slf4j
-public class CommentController {
+public class CommentRestController {
 
     private final CommentService commentService;
 
