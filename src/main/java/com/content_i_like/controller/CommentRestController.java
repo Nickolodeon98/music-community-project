@@ -1,10 +1,7 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
-import com.content_i_like.domain.dto.comment.CommentDeleteResponse;
-import com.content_i_like.domain.dto.comment.CommentModifyRequest;
-import com.content_i_like.domain.dto.comment.CommentRequest;
-import com.content_i_like.domain.dto.comment.CommentResponse;
+import com.content_i_like.domain.dto.comment.*;
 import com.content_i_like.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,12 +41,20 @@ public class CommentRestController {
 
     @DeleteMapping("/{recommendNo}/comments/{commentNo}")
     public Response<CommentDeleteResponse> deleteRecommendComment(Authentication authentication,
-                                                           @PathVariable Long recommendNo,
-                                                           @PathVariable Long commentNo) {
+                                                                  @PathVariable Long recommendNo,
+                                                                  @PathVariable Long commentNo) {
         String userEmail = authentication.getName();
         log.info("user_email = {}, recommend_no = {}, commentNo = {}", authentication, recommendNo, commentNo);
 
         commentService.deleteComment(userEmail, recommendNo, commentNo);
         return Response.success(new CommentDeleteResponse(commentNo, recommendNo, "댓글이 삭제 되었습니다."));
+    }
+
+    @GetMapping("/{recommendNo}/comments/{commentNo}")
+    public Response<CommentReadResponse> getRecommendComent(@PathVariable Long recommendNo,
+                                                            @PathVariable Long commentNo) {
+        log.info("recommend_no = {}, commentNo = {}", recommendNo, commentNo);
+        CommentReadResponse response = commentService.getReadComment(recommendNo,commentNo);
+        return Response.success(response);
     }
 }

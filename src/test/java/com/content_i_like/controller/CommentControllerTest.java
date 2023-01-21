@@ -2,6 +2,7 @@ package com.content_i_like.controller;
 
 import com.content_i_like.config.JwtService;
 import com.content_i_like.domain.dto.comment.CommentModifyRequest;
+import com.content_i_like.domain.dto.comment.CommentReadResponse;
 import com.content_i_like.domain.dto.comment.CommentRequest;
 import com.content_i_like.domain.dto.comment.CommentResponse;
 import com.content_i_like.domain.entity.*;
@@ -18,6 +19,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -133,6 +136,33 @@ class CommentControllerTest {
                 .andExpect(jsonPath("$.result.recommendNo").value(1))
                 .andExpect(jsonPath("$.result.message").exists())
                 .andExpect(jsonPath("$.result.message").value("댓글이 삭제 되었습니다."))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("댓글 조회")
+    void success_get_comment() throws Exception {
+        CommentReadResponse response = new CommentReadResponse("chordpli", "image", "body", 100L, LocalDateTime.now());
+
+        given(commentService.getReadComment(any(), any())).willReturn(response);
+
+        String url = String.format("/api/v1/recommends/1/comments/%d", 1);
+
+        mockMvc.perform(get(url).with(csrf())
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").exists())
+                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+                .andExpect(jsonPath("$.result.memberNickname").exists())
+                .andExpect(jsonPath("$.result.memberNickname").value("chordpli"))
+                .andExpect(jsonPath("$.result.profileImgUrl").exists())
+                .andExpect(jsonPath("$.result.profileImgUrl").value("image"))
+                .andExpect(jsonPath("$.result.commentContent").exists())
+                .andExpect(jsonPath("$.result.commentContent").value("body"))
+                .andExpect(jsonPath("$.result.commentPoint").exists())
+                .andExpect(jsonPath("$.result.commentPoint").value(100L))
+                .andExpect(jsonPath("$.result.createdAt").exists())
                 .andDo(print());
     }
 }
