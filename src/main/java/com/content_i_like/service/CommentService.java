@@ -31,7 +31,7 @@ public class CommentService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public CommentResponse writeComment(String userEmail, CommentRequest request, Long recommendNo) {
+    public CommentResponse writeComment(final String userEmail, final CommentRequest request, final Long recommendNo) {
         // 댓글 작성자를 불러옵니다
         Member member = validateGetMemberInfoByUserEmail(userEmail);
 
@@ -45,7 +45,7 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponse modifyComment(String userEmail, CommentModifyRequest request, Long recommendNo, Long commentNo) {
+    public CommentResponse modifyComment(final String userEmail, final CommentModifyRequest request, final Long recommendNo, final Long commentNo) {
         // 댓글 수정하려는 작성자
         Member member = validateGetMemberInfoByUserEmail(userEmail);
 
@@ -72,7 +72,7 @@ public class CommentService {
         return new CommentResponse(comment.getCommentNo(), post.getRecommendNo(), comment.getCommentContent(), comment.getCommentPoint());
     }
 
-    public void deleteComment(String userEmail, Long recommendNo, Long commentNo) {
+    public void deleteComment(final String userEmail, final Long recommendNo, final Long commentNo) {
         // 댓글 삭제하려는 작성자
         Member member = validateGetMemberInfoByUserEmail(userEmail);
 
@@ -98,21 +98,21 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-    private Comment validateGetCommentInfoByCommentNo(Long commentNo) {
+    private Comment validateGetCommentInfoByCommentNo(final Long commentNo) {
         return commentRepository.findById(commentNo)
                 .orElseThrow(() -> {
                     throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
                 });
     }
 
-    private Recommend validateGetRecommendInfoByRecommendNo(Long recommendNo) {
+    private Recommend validateGetRecommendInfoByRecommendNo(final Long recommendNo) {
         return recommendRepository.findById(recommendNo)
                 .orElseThrow(() -> {
                     throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
                 });
     }
 
-    private Member validateGetMemberInfoByUserEmail(String userEmail) {
+    private Member validateGetMemberInfoByUserEmail(final String userEmail) {
         return memberRepository.findByEmail(userEmail)
                 .orElseThrow(() -> {
                     throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
@@ -120,10 +120,10 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentReadResponse getReadComment(Long recommendNo, Long commentNo) {
+    public CommentReadResponse getReadComment(final Long recommendNo, final Long commentNo) {
         // 해댕 추천글의 NO와 댓글 NO가 일치하는 댓글을 찾아옵니다.
         Comment comment = commentRepository.findCommentByRecommend_RecommendNoAndCommentNo(recommendNo, commentNo)
-                .orElseThrow(()->{
+                .orElseThrow(() -> {
                     throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
                 });
 
@@ -131,8 +131,9 @@ public class CommentService {
     }
 
     @Transactional
-    public Page<CommentReadResponse> getReadAllComment(Pageable pageable, Long recommendNo) {
+    public Page<CommentReadResponse> getReadAllComment(final Pageable pageable, final Long recommendNo) {
         return commentRepository.findAllByRecommendRecommendNo(recommendNo, pageable)
                 .map(CommentReadResponse::of);
     }
 }
+

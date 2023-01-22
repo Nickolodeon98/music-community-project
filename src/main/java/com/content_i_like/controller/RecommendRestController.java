@@ -4,6 +4,7 @@ import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.RecommendDeleteResponse;
 import com.content_i_like.domain.dto.recommend.*;
 import com.content_i_like.service.RecommendService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -18,8 +19,8 @@ public class RecommendRestController {
     private final RecommendService recommendService;
 
     @PostMapping
-    public Response<RecommendPostResponse> uploadRecommendPost(Authentication authentication,
-                                                               @RequestBody RecommendPostRequest request) {
+    public Response<RecommendPostResponse> uploadRecommendPost(final Authentication authentication,
+                                                               @RequestBody @Valid final RecommendPostRequest request) {
         String userEmail = authentication.getName();
         log.info("user_email = {}, recommend_post_request = {}", userEmail, request);
 
@@ -28,9 +29,9 @@ public class RecommendRestController {
     }
 
     @PutMapping("/{recommendNo}")
-    public Response<RecommendModifyResponse> modifyRecommendPost(Authentication authentication,
-                                                                 @RequestBody RecommendModifyRequest request,
-                                                                 @PathVariable Long recommendNo) {
+    public Response<RecommendModifyResponse> modifyRecommendPost(final Authentication authentication,
+                                                                 @RequestBody @Valid final RecommendModifyRequest request,
+                                                                 @PathVariable final Long recommendNo) {
         String userEmail = authentication.getName();
         log.info("user_email = {}, recommend_modify_request = {}", userEmail, request);
 
@@ -39,8 +40,8 @@ public class RecommendRestController {
     }
 
     @DeleteMapping("/{recommendNo}")
-    public Response<RecommendDeleteResponse> deleteRecommendPost(Authentication authentication,
-                                                                 @PathVariable Long recommendNo) {
+    public Response<RecommendDeleteResponse> deleteRecommendPost(final Authentication authentication,
+                                                                 @PathVariable final Long recommendNo) {
         String userEmail = authentication.getName();
         log.info("user email = {}, recommend_no = {}", userEmail, recommendNo);
 
@@ -49,7 +50,7 @@ public class RecommendRestController {
     }
 
     @GetMapping("/{recommendNo}")
-    public Response<RecommendReadResponse> ReadRecommendPost(@PathVariable Long recommendNo) {
+    public Response<RecommendReadResponse> ReadRecommendPost(@PathVariable final Long recommendNo) {
         log.info("recommend_no = {}", recommendNo);
 
         RecommendReadResponse response = recommendService.readPost(recommendNo);

@@ -45,6 +45,5 @@ public class Recommend extends BaseEntity{
     private List<Comment> comments;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recommend")
-    @JsonIgnore
     private List<Likes> likes;
 }

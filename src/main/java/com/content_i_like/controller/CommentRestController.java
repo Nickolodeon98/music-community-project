@@ -2,8 +2,8 @@ package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.comment.*;
-import com.content_i_like.domain.entity.Comment;
 import com.content_i_like.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,9 +22,9 @@ public class CommentRestController {
     private final CommentService commentService;
 
     @PostMapping("/{recommendNo}/comments")
-    public Response<CommentResponse> writeRecommendComment(Authentication authentication,
-                                                           @RequestBody CommentRequest request,
-                                                           @PathVariable Long recommendNo) {
+    public Response<CommentResponse> writeRecommendComment(final Authentication authentication,
+                                                           @RequestBody @Valid final CommentRequest request,
+                                                           @PathVariable final Long recommendNo) {
         String userEmail = authentication.getName();
         log.info("user_email = {}, request = {}, recommend_no = {}", authentication, request.getCommentContent(), recommendNo);
 
@@ -33,10 +33,10 @@ public class CommentRestController {
     }
 
     @PutMapping("/{recommendNo}/comments/{commentNo}")
-    public Response<CommentResponse> writeRecommendComment(Authentication authentication,
-                                                           @RequestBody CommentModifyRequest request,
-                                                           @PathVariable Long recommendNo,
-                                                           @PathVariable Long commentNo) {
+    public Response<CommentResponse> writeRecommendComment(final Authentication authentication,
+                                                           @RequestBody @Valid CommentModifyRequest request,
+                                                           @PathVariable final Long recommendNo,
+                                                           @PathVariable final Long commentNo) {
         String userEmail = authentication.getName();
         log.info("user_email = {}, request = {}, recommend_no = {}, commentNo = {}", authentication, request.getCommentContent(), recommendNo, commentNo);
 
@@ -45,9 +45,9 @@ public class CommentRestController {
     }
 
     @DeleteMapping("/{recommendNo}/comments/{commentNo}")
-    public Response<CommentDeleteResponse> deleteRecommendComment(Authentication authentication,
-                                                                  @PathVariable Long recommendNo,
-                                                                  @PathVariable Long commentNo) {
+    public Response<CommentDeleteResponse> deleteRecommendComment(final Authentication authentication,
+                                                                  @PathVariable final Long recommendNo,
+                                                                  @PathVariable final Long commentNo) {
         String userEmail = authentication.getName();
         log.info("user_email = {}, recommend_no = {}, commentNo = {}", authentication, recommendNo, commentNo);
 
@@ -56,8 +56,8 @@ public class CommentRestController {
     }
 
     @GetMapping("/{recommendNo}/comments/{commentNo}")
-    public Response<CommentReadResponse> getRecommendComent(@PathVariable Long recommendNo,
-                                                            @PathVariable Long commentNo) {
+    public Response<CommentReadResponse> getRecommendComent(@PathVariable final Long recommendNo,
+                                                            @PathVariable final Long commentNo) {
         log.info("recommend_no = {}, commentNo = {}", recommendNo, commentNo);
         CommentReadResponse response = commentService.getReadComment(recommendNo,commentNo);
         return Response.success(response);

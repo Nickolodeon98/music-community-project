@@ -26,7 +26,7 @@ public class RecommendService {
 
 
     @Transactional
-    public RecommendPostResponse uploadPost(String userEmail, RecommendPostRequest request) {
+    public RecommendPostResponse uploadPost(final String userEmail, final RecommendPostRequest request) {
         // 글을 작성하는 Member 확인
         Member member = validateGetMemberInfoByUserEmail(userEmail);
 
@@ -42,7 +42,7 @@ public class RecommendService {
     }
 
     @Transactional
-    public RecommendModifyResponse modifyPost(String userEmail, Long recommendNo, RecommendModifyRequest request) {
+    public RecommendModifyResponse modifyPost(final String userEmail, final Long recommendNo, final RecommendModifyRequest request) {
         // 글을 작성하는 Member 확인
         Member member = validateGetMemberInfoByUserEmail(userEmail);
 
@@ -63,7 +63,7 @@ public class RecommendService {
 
 
     @Transactional
-    public void deletePost(String userEmail, Long recommendNo) {
+    public void deletePost(final String userEmail, final Long recommendNo) {
         // 글을 작성하는 Member 확인
         Member member = validateGetMemberInfoByUserEmail(userEmail);
 
@@ -78,7 +78,7 @@ public class RecommendService {
         recommendRepository.delete(recommend);
     }
 
-    public RecommendReadResponse readPost(Long recommendNo) {
+    public RecommendReadResponse readPost(final Long recommendNo) {
         // 해당 글을 불러 옵니다.
         Recommend post = validateGetRecommendInfoByRecommendNo(recommendNo);
 
@@ -130,14 +130,14 @@ public class RecommendService {
                 .build();
     }
 
-    private Recommend validateGetRecommendInfoByRecommendNo(Long recommendNo) {
+    private Recommend validateGetRecommendInfoByRecommendNo(final Long recommendNo) {
         return recommendRepository.findById(recommendNo)
                 .orElseThrow(() -> {
                     throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
                 });
     }
 
-    private Member validateGetMemberInfoByUserEmail(String userEmail) {
+    private Member validateGetMemberInfoByUserEmail(final String userEmail) {
         return memberRepository.findByEmail(userEmail)
                 .orElseThrow(() -> {
                     throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
