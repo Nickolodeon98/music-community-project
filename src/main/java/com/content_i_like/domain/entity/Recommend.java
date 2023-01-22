@@ -1,5 +1,6 @@
 package com.content_i_like.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,15 +32,19 @@ public class Recommend extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "song_no")
+    @JsonIgnore
     private Song song;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no")
+    @JsonIgnore
     private Member member;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recommend")
+    @JsonIgnore
     private List<Comment> comments;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recommend")
+    @JsonIgnore
     private List<Likes> likes;
 }
