@@ -1,5 +1,6 @@
 package com.content_i_like.service;
 
+import ch.qos.logback.core.CoreConstants;
 import com.content_i_like.domain.dto.comment.CommentModifyRequest;
 import com.content_i_like.domain.dto.comment.CommentReadResponse;
 import com.content_i_like.domain.dto.comment.CommentRequest;
@@ -14,6 +15,8 @@ import com.content_i_like.repository.CommentRepository;
 import com.content_i_like.repository.MemberRepository;
 import com.content_i_like.repository.RecommendRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -116,6 +119,7 @@ public class CommentService {
                 });
     }
 
+    @Transactional
     public CommentReadResponse getReadComment(Long recommendNo, Long commentNo) {
         // 해댕 추천글의 NO와 댓글 NO가 일치하는 댓글을 찾아옵니다.
         Comment comment = commentRepository.findCommentByRecommend_RecommendNoAndCommentNo(recommendNo, commentNo)
@@ -124,5 +128,11 @@ public class CommentService {
                 });
 
         return CommentReadResponse.of(comment);
+    }
+
+    @Transactional
+    public Page<CommentReadResponse> getReadAllComment(Pageable pageable, Long recommendNo) {
+        return commentRepository.findAllByRecommendRecommendNo(recommendNo, pageable)
+                .map(CommentReadResponse::of);
     }
 }
