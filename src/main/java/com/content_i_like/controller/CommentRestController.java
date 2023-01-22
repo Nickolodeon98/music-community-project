@@ -2,9 +2,14 @@ package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.comment.*;
+import com.content_i_like.domain.entity.Comment;
 import com.content_i_like.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,5 +61,12 @@ public class CommentRestController {
         log.info("recommend_no = {}, commentNo = {}", recommendNo, commentNo);
         CommentReadResponse response = commentService.getReadComment(recommendNo,commentNo);
         return Response.success(response);
+    }
+
+    @GetMapping("/{recommendNo}/comments")
+    public Response<Page<CommentReadResponse>> getRecommendAllComment(@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) final Pageable pageable,
+                                                          @PathVariable final Long recommendNo) {
+        log.info("pageable = {}, recommendsNo = {}", pageable, recommendNo);
+        return Response.success(commentService.getReadAllComment(pageable, recommendNo));
     }
 }

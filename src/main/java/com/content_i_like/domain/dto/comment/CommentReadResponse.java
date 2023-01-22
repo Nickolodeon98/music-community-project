@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Getter @Builder
 public class CommentReadResponse {
 
+    private Long commentNo;
     private String memberNickname;
     private String profileImgUrl;
     private String commentContent;
@@ -24,6 +25,7 @@ public class CommentReadResponse {
 
     public static CommentReadResponse of(Comment comment) {
         return CommentReadResponse.builder()
+                .commentNo(comment.getCommentNo())
                 .memberNickname(comment.getMember().getNickName())
                 .profileImgUrl(comment.getMember().getProfileImgUrl())
                 .commentContent(comment.getCommentContent())

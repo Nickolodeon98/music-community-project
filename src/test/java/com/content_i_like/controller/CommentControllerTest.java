@@ -15,12 +15,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -142,7 +145,7 @@ class CommentControllerTest {
     @Test
     @DisplayName("댓글 조회")
     void success_get_comment() throws Exception {
-        CommentReadResponse response = new CommentReadResponse("chordpli", "image", "body", 100L, LocalDateTime.now());
+        CommentReadResponse response = new CommentReadResponse(1L, "chordpli", "image", "body", 100L, LocalDateTime.now());
 
         given(commentService.getReadComment(any(), any())).willReturn(response);
 
@@ -163,6 +166,37 @@ class CommentControllerTest {
                 .andExpect(jsonPath("$.result.commentPoint").exists())
                 .andExpect(jsonPath("$.result.commentPoint").value(100L))
                 .andExpect(jsonPath("$.result.createdAt").exists())
+                .andDo(print());
+    }
+
+
+    @Test
+    @DisplayName("게시글 모든 댓글 조회")
+    void success_get_all_comment() throws Exception {
+        CommentReadResponse comment_01 = new CommentReadResponse(1L,"chordpli", "image", "body", 100L, LocalDateTime.now());
+        CommentReadResponse comment_02 = new CommentReadResponse(2l, "chordpli2", "image2", "body2", 200L, LocalDateTime.now());
+        CommentReadResponse comment_03 = new CommentReadResponse(3l, "chordpli3", "image3", "body3", 300L, LocalDateTime.now());
+        Page<CommentReadResponse> response = new PageImpl<>(List.of(comment_01, comment_02, comment_03));
+
+        given(commentService.getReadAllComment(any(), any())).willReturn(response);
+
+        String url = "/api/v1/recommends/1/comments";
+
+        mockMvc.perform(get(url).with(csrf())
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").exists())
+                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+                .andExpect(jsonPath("$['result']['content'][0]['memberNickname']").exists())
+                .andExpect(jsonPath("$['result']['content'][0]['memberNickname']").value("chordpli"))
+                .andExpect(jsonPath("$['result']['content'][0]['profileImgUrl']").exists())
+                .andExpect(jsonPath("$['result']['content'][0]['profileImgUrl']").value("image"))
+                .andExpect(jsonPath("$['result']['content'][0]['commentContent']").exists())
+                .andExpect(jsonPath("$['result']['content'][0]['commentContent']").value("body"))
+                .andExpect(jsonPath("$['result']['content'][0]['commentPoint']").exists())
+                .andExpect(jsonPath("$['result']['content'][0]['commentPoint']").value(100L))
+                .andExpect(jsonPath("$['result']['content'][0]['createdAt']").exists())
                 .andDo(print());
     }
 }
