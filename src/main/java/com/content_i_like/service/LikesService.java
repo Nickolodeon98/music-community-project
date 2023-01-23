@@ -11,7 +11,6 @@ import com.content_i_like.repository.RecommendRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -75,5 +74,10 @@ public class LikesService {
                 .orElseThrow(() -> {
                     throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
                 });
+    }
+
+    public Integer countNumberLikes(Long recommendNo) {
+        // 해당 추천글이 존재하는지 확인해야한다.
+        return likesRepository.countLikesByRecommend(validateGetRecommendInfoByRecommendNo(recommendNo));
     }
 }

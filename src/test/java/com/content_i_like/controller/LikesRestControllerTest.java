@@ -1,14 +1,8 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.config.JwtService;
-import com.content_i_like.domain.dto.comment.CommentRequest;
-import com.content_i_like.domain.dto.comment.CommentResponse;
 import com.content_i_like.domain.entity.*;
 import com.content_i_like.fixture.Fixture;
-import com.content_i_like.repository.LikesRepository;
-import com.content_i_like.repository.MemberRepository;
-import com.content_i_like.repository.RecommendRepository;
-import com.content_i_like.service.CommentService;
 import com.content_i_like.service.LikesService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,11 +16,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -101,6 +94,25 @@ class LikesRestControllerTest {
                 .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
                 .andExpect(jsonPath("$.result").exists())
                 .andExpect(jsonPath("$.result").value("좋아요를 취소했습니다."))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("좋아요 개수 반환")
+    void success_return_number_likes() throws Exception {
+
+        given(likesService.countNumberLikes(any())).willReturn(123);
+
+        String url = "/api/v1/recommends/1/likes";
+
+        mockMvc.perform(get(url).with(csrf())
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").exists())
+                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+                .andExpect(jsonPath("$.result").exists())
+                .andExpect(jsonPath("$.result").value(123))
                 .andDo(print());
     }
 }
