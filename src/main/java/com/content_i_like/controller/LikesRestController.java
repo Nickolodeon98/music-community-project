@@ -5,10 +5,7 @@ import com.content_i_like.service.LikesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,10 +17,15 @@ public class LikesRestController {
 
     @PostMapping("/{recommendNo}/likes")
     public Response<String> changeLikesStatus(final Authentication authentication,
-                                              @PathVariable final Long recommendNo){
+                                              @PathVariable final Long recommendNo) {
         log.info("authentication = {}, recommendNo = {}", authentication, recommendNo);
 
         String userName = authentication.getName();
         return Response.success(likesService.changeLikesStatus(userName, recommendNo));
+    }
+
+    @GetMapping("/{recommendNo}/likes")
+    public Response<Integer> returnNumberLikes(@PathVariable final Long recommendNo) {
+        return Response.success(likesService.countNumberLikes(recommendNo));
     }
 }
