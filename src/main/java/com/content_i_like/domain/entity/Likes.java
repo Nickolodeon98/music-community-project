@@ -23,4 +23,11 @@ public class Likes extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recommend_no")
     private Recommend recommend;
+
+    public static Likes toEntity(Recommend post, Member member) {
+        return Likes.builder()
+                .recommend(post)
+                .member(member)
+                .build();
+    }
 }
