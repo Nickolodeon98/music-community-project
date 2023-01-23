@@ -21,6 +21,13 @@ public class LikesService {
     private final MemberRepository memberRepository;
     private final LikesRepository likesRepository;
 
+    /**
+     * 좋아요 상태를 변환합니다.
+     *
+     * @param userEmail api를 전송한 user의 email
+     * @param recommendNo 추천글 고유 번호
+     * @return 결과 문자열
+     */
     public String changeLikesStatus(final String userEmail, final Long recommendNo) {
         // 좋아요를 누르는 유저 확인
         Member member = validateGetMemberInfoByUserEmail(userEmail);
@@ -62,6 +69,17 @@ public class LikesService {
         }
     }
 
+    /**
+     * 좋아요 개수를 반환합니다.
+     * 
+     * @param recommendNo 추천글 고유 번호
+     * @return 좋아요 개수
+     */
+    public Integer countNumberLikes(Long recommendNo) {
+        // 해당 추천글이 존재하는지 확인해야한다.
+        return likesRepository.countLikesByRecommend(validateGetRecommendInfoByRecommendNo(recommendNo));
+    }
+
     private Recommend validateGetRecommendInfoByRecommendNo(final Long recommendNo) {
         return recommendRepository.findById(recommendNo)
                 .orElseThrow(() -> {
@@ -74,10 +92,5 @@ public class LikesService {
                 .orElseThrow(() -> {
                     throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
                 });
-    }
-
-    public Integer countNumberLikes(Long recommendNo) {
-        // 해당 추천글이 존재하는지 확인해야한다.
-        return likesRepository.countLikesByRecommend(validateGetRecommendInfoByRecommendNo(recommendNo));
     }
 }
