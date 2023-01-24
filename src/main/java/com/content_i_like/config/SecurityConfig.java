@@ -43,7 +43,12 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login()                  // OAuth2 로그인 설정
+                .loginPage("/swagger-ui/index.html")
+                .failureUrl("/api/v1/hello")
+                .userInfoEndpoint()             // OAuth2 로그인 성공 이후 사용자 정보를 가져올 때 설정
+                .userService(oAuthService);     // OAuth2 로그인 성공 시, 후작업을 진행할 UserService 인터페이스 구현체 등록;
         return http.build();
     }
 }
