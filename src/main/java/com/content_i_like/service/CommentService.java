@@ -1,6 +1,5 @@
 package com.content_i_like.service;
 
-import ch.qos.logback.core.CoreConstants;
 import com.content_i_like.domain.dto.comment.CommentModifyRequest;
 import com.content_i_like.domain.dto.comment.CommentReadResponse;
 import com.content_i_like.domain.dto.comment.CommentRequest;
@@ -30,6 +29,14 @@ public class CommentService {
     private final RecommendRepository recommendRepository;
     private final MemberRepository memberRepository;
 
+    /**
+     * 추천글에 댓글을 작성합니다.
+     * 
+     * @param userEmail 댓글을 작성하는 사용자 email
+     * @param request 작성하는 댓글 정보
+     * @param recommendNo 댓글을 작성할 추천글의 고유 번호
+     * @return 작성된 댓글 내용
+     */
     @Transactional
     public CommentResponse writeComment(final String userEmail, final CommentRequest request, final Long recommendNo) {
         // 댓글 작성자를 불러옵니다
@@ -44,6 +51,14 @@ public class CommentService {
         return new CommentResponse(comment.getCommentNo(), post.getRecommendNo(), comment.getCommentContent(), comment.getCommentPoint());
     }
 
+    /**
+     * 등록된 댓글을 수정합니다.
+     * @param userEmail 댓글 수정을 요청하는 사용자 email
+     * @param request 수정할 댓글 정보 
+     * @param recommendNo 수정할 대슥ㄹ이 존재하는 추천글 고유번호
+     * @param commentNo 수정할 댓글 고유번호
+     * @return 수정된 댓글 내용
+     */
     @Transactional
     public CommentResponse modifyComment(final String userEmail, final CommentModifyRequest request, final Long recommendNo, final Long commentNo) {
         // 댓글 수정하려는 작성자
@@ -72,6 +87,12 @@ public class CommentService {
         return new CommentResponse(comment.getCommentNo(), post.getRecommendNo(), comment.getCommentContent(), comment.getCommentPoint());
     }
 
+    /**
+     * 작성된 댓글을 삭제합니다.
+     * @param userEmail 삭제 요청을 보낸 사용자 email
+     * @param recommendNo 삭제할 댓글이 존재하는 추천글 고유번호
+     * @param commentNo 삭제할 댓글의 고유번호
+     */
     public void deleteComment(final String userEmail, final Long recommendNo, final Long commentNo) {
         // 댓글 삭제하려는 작성자
         Member member = validateGetMemberInfoByUserEmail(userEmail);
@@ -98,6 +119,36 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
+    /**
+     * 추천글에 작성된 특정 댓글 정보를 불러옵니다.
+     * @param recommendNo 가져올 댓글이 존재하는 추천글 고유번호
+     * @param commentNo 정보를 반환할 댓글 고유번호
+     * @return 댓글 정보
+     */
+    @Transactional
+    public CommentReadResponse getReadComment(final Long recommendNo, final Long commentNo) {
+        // 해댕 추천글의 NO와 댓글 NO가 일치하는 댓글을 찾아옵니다.
+        Comment comment = commentRepository.findCommentByRecommend_RecommendNoAndCommentNo(recommendNo, commentNo)
+                .orElseThrow(() -> {
+                    throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+                });
+
+        return CommentReadResponse.of(comment);
+    }
+
+    /**
+     * 추천글에 작성된 모든 댓글 정보를 불러옵ㄴ디ㅏ.
+     * 
+     * @param pageable 페이징 정보
+     * @param recommendNo 댓글을 가져올 추천글 고유번호
+     * @return 해당 추천글의 모든 댓글 정보
+     */
+    @Transactional
+    public Page<CommentReadResponse> getReadAllComment(final Pageable pageable, final Long recommendNo) {
+        return commentRepository.findAllByRecommendRecommendNo(recommendNo, pageable)
+                .map(CommentReadResponse::of);
+    }
+
     private Comment validateGetCommentInfoByCommentNo(final Long commentNo) {
         return commentRepository.findById(commentNo)
                 .orElseThrow(() -> {
@@ -117,23 +168,6 @@ public class CommentService {
                 .orElseThrow(() -> {
                     throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
                 });
-    }
-
-    @Transactional
-    public CommentReadResponse getReadComment(final Long recommendNo, final Long commentNo) {
-        // 해댕 추천글의 NO와 댓글 NO가 일치하는 댓글을 찾아옵니다.
-        Comment comment = commentRepository.findCommentByRecommend_RecommendNoAndCommentNo(recommendNo, commentNo)
-                .orElseThrow(() -> {
-                    throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
-                });
-
-        return CommentReadResponse.of(comment);
-    }
-
-    @Transactional
-    public Page<CommentReadResponse> getReadAllComment(final Pageable pageable, final Long recommendNo) {
-        return commentRepository.findAllByRecommendRecommendNo(recommendNo, pageable)
-                .map(CommentReadResponse::of);
     }
 }
 
