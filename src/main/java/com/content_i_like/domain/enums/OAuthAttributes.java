@@ -16,6 +16,14 @@ public enum OAuthAttributes {
                 (String) attributes.get("email")
         );
 
+    }),
+    NAVER("naver", (attributes) -> {
+        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+        return new UserProfile(
+                (String) response.get("id"),
+                (String) response.get("name"),
+                (String) response.get("email")
+        );
     });
 
     private final String registrationId;
