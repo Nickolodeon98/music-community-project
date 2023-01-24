@@ -23,6 +23,8 @@ spring:
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
+  profiles:
+    include: oauth
 
 springdoc:
   default-consumes-media-type: application/json
