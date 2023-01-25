@@ -39,3 +39,10 @@ springdoc:
     doc-expansion: none # tag, operation 펼치는 방식
   paths-to-match:
     - /**
+
+spotify:
+  client:
+    id:
+      1234
+    secret:
+      1234
