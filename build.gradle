@@ -43,6 +43,13 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'se.michaelthelin.spotify:spotify-web-api-java:7.3.0'
+}
+
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 tasks.named('test') {
