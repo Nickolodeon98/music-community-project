@@ -5,6 +5,7 @@ import com.content_i_like.domain.dto.member.*;
 import com.content_i_like.service.MailService;
 import com.content_i_like.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,12 @@ public class MemberRestController {
         System.out.println("메일을 발송하겠습니다.");
         mailService.mailSend(mailDto);
         return Response.success("임시 비밀번호를 메일로 발송했습니다.");
+    }
+
+    @PostMapping("/passwd/change")
+    public Response<String> changePw(@RequestBody ChangePwRequest request, Authentication authentication){
+        String username = authentication.getName();
+        return Response.success(memberService.changePw(request, username));
     }
 
 }
