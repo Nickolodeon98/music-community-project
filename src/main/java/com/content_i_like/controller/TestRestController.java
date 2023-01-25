@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,25 +26,28 @@ public class TestRestController {
 
     private final TrackService trackService;
 
+    @Value("${spotify.client.id}")
+    private String CLIENT_ID;
+
 //    @GetMapping
 //    public String redirectPoint() {
 //        return "Hello World!";
 //    }
 
-    @GetMapping("/tracks")
-    public Response<TrackResponse> getTracks() throws JsonProcessingException {
-        log.info("hello");
-        String uri = "https://api.spotify.com/v1/tracks/{trackId}";
-        TrackResponse trackResponse = trackService.fetchTracks(uri);
-        return Response.success(trackResponse);
-    }
+//    @GetMapping("/tracks")
+//    public Response<TrackResponse> getTracks() throws JsonProcessingException {
+//        log.info("hello");
+//        String uri = "https://api.spotify.com/v1/tracks/{trackId}";
+//        TrackResponse trackResponse = trackService.fetchTracks(uri);
+//        return Response.success(trackResponse);
+//    }
 
     @GetMapping("/token")
     public ResponseEntity<?> requirePermission() {
         HttpHeaders headers = new HttpHeaders();
 
         String uri = "https://accounts.spotify.com/authorize?"
-                + String.format("client_id=%s&response_type=%s&redirect_uri=%s", TrackEnum.CLIENT_ID.getValue(),
+                + String.format("client_id=%s&response_type=%s&redirect_uri=%s", CLIENT_ID,
                 "code", TrackEnum.REDIRECT_URI.getValue());
 
         headers.setLocation(URI.create(uri));
