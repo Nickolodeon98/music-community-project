@@ -1,15 +1,13 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.config.JwtService;
-import com.content_i_like.domain.dto.member.MemberJoinRequest;
-import com.content_i_like.domain.dto.member.MemberJoinResponse;
-import com.content_i_like.domain.dto.member.MemberLoginRequest;
-import com.content_i_like.domain.dto.member.MemberLoginResponse;
+import com.content_i_like.domain.dto.member.*;
 import com.content_i_like.domain.enums.GenderEnum;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.service.MailService;
 import com.content_i_like.service.MemberService;
+import com.content_i_like.service.OAuthService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +20,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -32,13 +33,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberRestController.class)
 @WebAppConfiguration
-@WithMockUser
 class MemberRestControllerTest {
 
     @Autowired
@@ -55,6 +56,12 @@ class MemberRestControllerTest {
 
     @MockBean
     MailService mailService;
+
+    @MockBean
+    OAuthService oAuthService;
+
+    @MockBean
+    UserDetailsService userDetailsService;
 
     @Test
     @DisplayName("회원가입 성공")
@@ -85,6 +92,7 @@ class MemberRestControllerTest {
 
     @Test
     @DisplayName("회원가입 실패")
+    @WithMockUser
     void join_fail() throws Exception {
         MemberJoinRequest memberJoinRequest = MemberJoinRequest.builder()
                 .name("rnjsthdus")
@@ -124,5 +132,25 @@ class MemberRestControllerTest {
                 .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
                 .andExpect(jsonPath("$.result.jwt").value("token"))
                 .andExpect(jsonPath("$.result.nickName").value("nick"));
+    }
+
+    @Test
+    @DisplayName("내 정보 보기 성공")
+    @WithMockUser
+    void getMyInfo_success() throws Exception {
+        MemberResponse response = MemberResponse.builder()
+                .email("test@gmail.com")
+                .nickName("nickname")
+                .build();
+
+        Mockito.when(memberService.getMyInfo(any())).thenReturn(response);
+
+        mockMvc.perform(get("/api/v1/member/my")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+                .andExpect(jsonPath("$.result.email").value(response.getEmail()));
     }
 }
