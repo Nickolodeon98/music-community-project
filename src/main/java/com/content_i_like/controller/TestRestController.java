@@ -34,13 +34,13 @@ public class TestRestController {
 //        return "Hello World!";
 //    }
 
-//    @GetMapping("/tracks")
-//    public Response<TrackResponse> getTracks() throws JsonProcessingException {
-//        log.info("hello");
-//        String uri = "https://api.spotify.com/v1/tracks/{trackId}";
-//        TrackResponse trackResponse = trackService.fetchTracks(uri);
-//        return Response.success(trackResponse);
-//    }
+    @GetMapping("/tracks")
+    public Response<TrackResponse> getTracks(@RequestParam String token) throws JsonProcessingException {
+        log.info("hello");
+        log.info("tracksAPI token:{}", token);
+        TrackResponse trackResponse = trackService.fetchTracks(token, TrackEnum.TRACK_ID.getValue());
+        return Response.success(trackResponse);
+    }
 
     @GetMapping("/token")
     public ResponseEntity<?> requirePermission() {
@@ -56,13 +56,18 @@ public class TestRestController {
     }
 
     @GetMapping("")
-    public String getAccessToken(@RequestParam String code) throws JsonProcessingException {
+    public ResponseEntity<?> getAccessToken(@RequestParam String code) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
 
         log.info("code:{}", code);
         String accessToken = trackService.spotifyAccessTokenGenerator(code);
 
+        String uri = "http://localhost:8080/api/v1/test/tracks?token=" + accessToken;
+
+        headers.setLocation(URI.create(uri));
+
         log.info("accessToken:{}", accessToken);
 
-        return accessToken;
+        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
 }
