@@ -25,8 +25,15 @@ public class RecommendService {
     private final SongRepository songRepository;
 
 
+    /**
+     * 추천 글을 작성합니다.
+     *
+     * @param userEmail 작성자의 email
+     * @param request 등록할 추천글 정보
+     * @return 등록된 추천글 정보
+     */
     @Transactional
-    public RecommendPostResponse uploadPost(String userEmail, RecommendPostRequest request) {
+    public RecommendPostResponse uploadPost(final String userEmail, final RecommendPostRequest request) {
         // 글을 작성하는 Member 확인
         Member member = validateGetMemberInfoByUserEmail(userEmail);
 
@@ -41,8 +48,16 @@ public class RecommendService {
         return new RecommendPostResponse(recommend.getRecommendNo(), recommend.getRecommendTitle(), recommend.getRecommendPoint());
     }
 
+    /**
+     * 등록된 추천글을 수정합니다.
+     * 
+     * @param userEmail 수정을 요청한 사용자 email
+     * @param recommendNo 수정할 추천글 고유 번호
+     * @param request 수정할 추천글 정보
+     * @return 수정된 추천글 내용
+     */
     @Transactional
-    public RecommendModifyResponse modifyPost(String userEmail, Long recommendNo, RecommendModifyRequest request) {
+    public RecommendModifyResponse modifyPost(final String userEmail, final Long recommendNo, final RecommendModifyRequest request) {
         // 글을 작성하는 Member 확인
         Member member = validateGetMemberInfoByUserEmail(userEmail);
 
@@ -62,8 +77,13 @@ public class RecommendService {
     }
 
 
+    /**
+     * 등록된 추천 글을 삭제합니다.
+     * @param userEmail 삭제를 요청한 사용자 email
+     * @param recommendNo 삭제할 추천 글 고유번호
+     */
     @Transactional
-    public void deletePost(String userEmail, Long recommendNo) {
+    public void deletePost(final String userEmail, final Long recommendNo) {
         // 글을 작성하는 Member 확인
         Member member = validateGetMemberInfoByUserEmail(userEmail);
 
@@ -78,7 +98,12 @@ public class RecommendService {
         recommendRepository.delete(recommend);
     }
 
-    public RecommendReadResponse readPost(Long recommendNo) {
+    /**
+     *추천글의 정보를 받아옵니다.
+     * @param recommendNo 정보를 받아올 추천글 고유번호
+     * @return 추천 글의 정보를 반환합니다.
+     */
+    public RecommendReadResponse readPost(final Long recommendNo) {
         // 해당 글을 불러 옵니다.
         Recommend post = validateGetRecommendInfoByRecommendNo(recommendNo);
 
@@ -130,14 +155,14 @@ public class RecommendService {
                 .build();
     }
 
-    private Recommend validateGetRecommendInfoByRecommendNo(Long recommendNo) {
+    private Recommend validateGetRecommendInfoByRecommendNo(final Long recommendNo) {
         return recommendRepository.findById(recommendNo)
                 .orElseThrow(() -> {
                     throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
                 });
     }
 
-    private Member validateGetMemberInfoByUserEmail(String userEmail) {
+    private Member validateGetMemberInfoByUserEmail(final String userEmail) {
         return memberRepository.findByEmail(userEmail)
                 .orElseThrow(() -> {
                     throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
