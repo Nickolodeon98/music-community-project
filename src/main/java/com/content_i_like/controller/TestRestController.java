@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/test")
@@ -36,11 +37,14 @@ public class TestRestController {
 //    }
 
     @GetMapping("/tracks")
-    public Response<TrackResponse> getTracks(@RequestParam String token) throws IOException {
+    public Response<List<String>> getTracks(@RequestParam String token) throws IOException {
         log.info("hello");
         log.info("tracksAPI token:{}", token);
-        TrackResponse trackResponse = trackService.fetchTracks(token);
-        return Response.success(trackResponse);
+        List<String> songTitles = trackService.fetchTracks(token);
+
+        trackService.createMusicDatabase(songTitles);
+
+        return Response.success(songTitles);
     }
 
     @GetMapping("/token")
@@ -71,4 +75,6 @@ public class TestRestController {
 
         return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
+
+
 }
