@@ -103,6 +103,22 @@ public class TrackService {
         return accessToken.substring(1, accessToken.length()-1);
     }
 
+    public List<String> collectAllGenres(String filename) throws IOException {
+        BufferedReader reader = Files.newBufferedReader(Paths.get(filename));
+        String line = "";
+
+        List<String> genres = new ArrayList<>();
+
+        while ((line = reader.readLine()) != null)
+            try {
+                genres.add(line);
+            } catch (Exception e) {
+                log.warn("장르를 가져오는 도중 문제가 발생했습니다.");
+            }
+
+        return genres;
+    }
+
     public List<String> findTrackIds(String accessToken) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
