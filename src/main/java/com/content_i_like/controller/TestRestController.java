@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.net.URI;
 
 @RestController
@@ -35,10 +36,10 @@ public class TestRestController {
 //    }
 
     @GetMapping("/tracks")
-    public Response<TrackResponse> getTracks(@RequestParam String token) throws JsonProcessingException {
+    public Response<TrackResponse> getTracks(@RequestParam String token) throws IOException {
         log.info("hello");
         log.info("tracksAPI token:{}", token);
-        TrackResponse trackResponse = trackService.fetchTracks(token, TrackEnum.TRACK_ID.getValue());
+        TrackResponse trackResponse = trackService.fetchTracks(token);
         return Response.success(trackResponse);
     }
 
