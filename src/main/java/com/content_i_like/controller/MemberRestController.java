@@ -6,10 +6,7 @@ import com.content_i_like.service.MailService;
 import com.content_i_like.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/member")
@@ -42,6 +39,13 @@ public class MemberRestController {
     public Response<String> changePw(@RequestBody ChangePwRequest request, Authentication authentication){
         String username = authentication.getName();
         return Response.success(memberService.changePw(request, username));
+    }
+
+    @GetMapping("/my")
+    public Response<MemberResponse> getMyInfo(Authentication authentication){
+        String username = authentication.getName();
+        MemberResponse memberResponse = memberService.getMyInfo(username);
+        return Response.success(memberResponse);
     }
 
 }
