@@ -10,10 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.methods.HttpHead;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -32,6 +29,9 @@ public class TrackService {
 
     @Value("${spotify.client.secret}")
     private String CLIENT_SECRET;
+
+    private final ObjectMapper objectMapper;
+
 
 //    private final RestTemplate restTemplate;
 
@@ -56,8 +56,6 @@ public class TrackService {
     public String spotifyAccessTokenGenerator(String code) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
 
-
-
 //        String code = grantAuthorizationFromSpotify();
 //        log.info("code:{}",code);
 
@@ -81,7 +79,6 @@ public class TrackService {
 
         ResponseEntity<String> response = restTemplate.postForEntity(TrackEnum.TOKEN_URL.getValue(), httpEntity, String.class);
 
-        ObjectMapper objectMapper = new ObjectMapper();
 
         JsonNode tokenSource = objectMapper.readTree(response.getBody());
 
@@ -93,23 +90,28 @@ public class TrackService {
         return accessToken.substring(1, accessToken.length()-1);
     }
 
-//    public TrackResponse fetchTracks(String accessToken) throws JsonProcessingException {
-//        RestTemplate restTemplate = new RestTemplate();
-//        String trackUri = TrackEnum.BASE_URL.getValue() + "tracks";
-//
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//
-//        httpHeaders.setBearerAuth(accessToken);
-//        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-//
-//        TrackEnum.BASE_URL.getValue()
-//
-//        log.info("hello");
-//        String trackId = "";
-//        String tracksInfo = restTemplate.getForObject(uri, String.class, trackId);
-//
-//        log.info("tracksInfo:{}",tracksInfo);
-//
-//        return TrackResponse.builder().build();
-//    }
+
+
+    public TrackResponse fetchTracks(String accessToken, String trackId) throws JsonProcessingException {
+        RestTemplate restTemplate = new RestTemplate();
+        String trackUri = TrackEnum.BASE_URL.getValue() + "/tracks?ids="
+                + trackId;
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+
+        httpHeaders.setBearerAuth(accessToken);
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<String> response = restTemplate.exchange(trackUri, HttpMethod.GET, httpEntity, String.class);
+
+        log.info("tracksInfo:{}",response.getBody());
+
+        JsonNode trackInfoRoot = objectMapper.readTree(response.getBody());
+
+        String trackTitle = String.valueOf(trackInfoRoot.findValue("name"));
+
+        return TrackResponse.builder().title(trackTitle).build();
+    }
 }
