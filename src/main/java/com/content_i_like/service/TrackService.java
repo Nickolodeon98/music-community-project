@@ -105,26 +105,27 @@ public class TrackService {
 
 
 
-    public TrackResponse fetchTracks(String accessToken, String trackId) throws JsonProcessingException {
+    public TrackResponse fetchTracks(String accessToken) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
-        String trackUri = TrackEnum.BASE_URL.getValue() + "/tracks?ids="
-                + trackId;
 
-        HttpHeaders httpHeaders = new HttpHeaders();
+        String trackUri = TrackEnum.BASE_URL.getValue() + "/tracks/";
 
-        httpHeaders.setBearerAuth(accessToken);
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(headerOf(accessToken));
 
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(httpHeaders);
+        String trackTitle = "";
 
-        ResponseEntity<String> response = restTemplate.exchange(trackUri, HttpMethod.GET, httpEntity, String.class);
+        List<String> trackIds = findTrackIds(accessToken);
+        List<String> trackTitles = new ArrayList<>();
 
-        log.info("tracksInfo:{}",response.getBody());
+        for (String trackId : trackIds) {
+            ResponseEntity<String> response = restTemplate
+                    .exchange(trackUri + trackId, HttpMethod.GET, httpEntity, String.class);
+            log.info("tracksInfo:{}",response.getBody());
+            JsonNode trackInfoRoot = objectMapper.readTree(response.getBody());
+            trackTitle = String.valueOf(trackInfoRoot.findValue("name"));
+            trackTitles.add(trackTitle);
+        }
 
-        JsonNode trackInfoRoot = objectMapper.readTree(response.getBody());
-
-        String trackTitle = String.valueOf(trackInfoRoot.findValue("name"));
-
-        return TrackResponse.builder().title(trackTitle).build();
+        return TrackResponse.builder().titles(trackTitles).build();
     }
 }
