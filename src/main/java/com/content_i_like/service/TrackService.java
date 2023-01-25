@@ -17,7 +17,13 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +38,14 @@ public class TrackService {
 
     private final ObjectMapper objectMapper;
 
+    public HttpHeaders headerOf(String accessToken) {
+        HttpHeaders httpHeaders = new HttpHeaders();
 
+        httpHeaders.setBearerAuth(accessToken);
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        return httpHeaders;
+    }
 //    private final RestTemplate restTemplate;
 
 //    public String grantAuthorizationFromSpotify() {
