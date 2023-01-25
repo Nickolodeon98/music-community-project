@@ -103,7 +103,49 @@ public class TrackService {
         return accessToken.substring(1, accessToken.length()-1);
     }
 
+    public List<String> findTrackIds(String accessToken) throws IOException {
+        RestTemplate restTemplate = new RestTemplate();
 
+        String searchUri = TrackEnum.BASE_URL.getValue() + "/search";
+
+        List<String> queries =
+                collectAllGenres("C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\genres.csv");
+
+        List<String> hrefs = new ArrayList<>();
+
+        for (Object query : queries) {
+            log.info("genre:{}",query);
+            for (int offset = 0; offset <= 50; offset += 50) {
+
+                String completeUri = searchUri + "?q='genre:" + query + "'" + "&type=track&limit=50&offset=" + offset;
+
+                // 6,010개 장르의 음악들을 각각 최대 100개씩 가져온다
+                ResponseEntity<String> response
+                        = restTemplate.exchange(completeUri, HttpMethod.GET, new HttpEntity<>(headerOf(accessToken)), String.class);
+
+                JsonNode tracksSource = objectMapper.readTree(response.getBody());
+
+                for (int i = 0; i < 50; i++) {
+                    String hrefContainingId = tracksSource.at("/tracks/items/" + i + "/href").asText();
+                    /* https://api.spotify.com/v1/tracks/ 의 길이는 0 ~ 33 까지
+                     * 그러므로 substring(34, lastIndex) 를 해야 트랙 아이디 값만 저장할 수 있다.
+                     * 3H0XfUU13vsWC6smb9guvG */
+                    hrefs.add(hrefContainingId.substring(34));
+                }
+
+//                List<String> trackTitles = tracksSource.findValuesAsText("name");
+
+//                log.info("response:{}", response.getBody());
+                log.info("hrefs:{}", hrefs);
+
+//                log.info("names:{} , offset:{}", trackTitles, offset);
+//                log.info("size:{}, offset:{}", trackTitles.size(), offset);
+
+            }
+        }
+
+        return hrefs;
+    }
 
     public TrackResponse fetchTracks(String accessToken) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
