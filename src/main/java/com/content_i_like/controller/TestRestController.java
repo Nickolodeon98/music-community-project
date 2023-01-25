@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/test")
@@ -25,17 +28,23 @@ public class TestRestController {
 
     private final TrackService trackService;
 
+    @Value("${spotify.client.id}")
+    private String CLIENT_ID;
+
 //    @GetMapping
 //    public String redirectPoint() {
 //        return "Hello World!";
 //    }
 
     @GetMapping("/tracks")
-    public Response<TrackResponse> getTracks() throws JsonProcessingException {
+    public Response<List<String>> getTracks(@RequestParam String token) throws IOException {
         log.info("hello");
-        String uri = "https://api.spotify.com/v1/tracks/{trackId}";
-        TrackResponse trackResponse = trackService.fetchTracks(uri);
-        return Response.success(trackResponse);
+        log.info("tracksAPI token:{}", token);
+        List<String> songTitles = trackService.fetchTracks(token);
+
+        trackService.createMusicDatabase(songTitles);
+
+        return Response.success(songTitles);
     }
 
     @GetMapping("/token")
@@ -43,7 +52,7 @@ public class TestRestController {
         HttpHeaders headers = new HttpHeaders();
 
         String uri = "https://accounts.spotify.com/authorize?"
-                + String.format("client_id=%s&response_type=%s&redirect_uri=%s", TrackEnum.CLIENT_ID.getValue(),
+                + String.format("client_id=%s&response_type=%s&redirect_uri=%s", CLIENT_ID,
                 "code", TrackEnum.REDIRECT_URI.getValue());
 
         headers.setLocation(URI.create(uri));
@@ -52,13 +61,20 @@ public class TestRestController {
     }
 
     @GetMapping("")
-    public String getAccessToken(@RequestParam String code) throws JsonProcessingException {
+    public ResponseEntity<?> getAccessToken(@RequestParam String code) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
 
         log.info("code:{}", code);
         String accessToken = trackService.spotifyAccessTokenGenerator(code);
 
+        String uri = "http://localhost:8080/api/v1/test/tracks?token=" + accessToken;
+
+        headers.setLocation(URI.create(uri));
+
         log.info("accessToken:{}", accessToken);
 
-        return accessToken;
+        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
+
+
 }

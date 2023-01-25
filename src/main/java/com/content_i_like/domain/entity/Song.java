@@ -21,4 +21,7 @@ public class Song {
     @ManyToOne
     @JoinColumn(referencedColumnName = "albumNo", name = "album_no")
     public Album album;
+
+    @ManyToOne
+    public Artist artist;
 }
