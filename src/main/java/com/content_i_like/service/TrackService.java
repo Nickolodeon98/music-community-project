@@ -1,7 +1,9 @@
 package com.content_i_like.service;
 
 import com.content_i_like.domain.dto.tracks.TrackResponse;
+import com.content_i_like.domain.entity.Song;
 import com.content_i_like.domain.enums.TrackEnum;
+import com.content_i_like.repository.SongRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +39,7 @@ public class TrackService {
     private String CLIENT_SECRET;
 
     private final ObjectMapper objectMapper;
+    private final SongRepository songRepository;
 
     public HttpHeaders headerOf(String accessToken) {
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -163,7 +166,7 @@ public class TrackService {
         return hrefs;
     }
 
-    public TrackResponse fetchTracks(String accessToken) throws IOException {
+    public List<String> fetchTracks(String accessToken) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
         String trackUri = TrackEnum.BASE_URL.getValue() + "/tracks/";
@@ -184,6 +187,13 @@ public class TrackService {
             trackTitles.add(trackTitle);
         }
 
-        return TrackResponse.builder().titles(trackTitles).build();
+        return trackTitles;
+    }
+
+    public void createMusicDatabase(List<String> songTitles) {
+        for (String songTitle : songTitles) {
+            Song singleSongRecord = Song.builder().songTitle(songTitle).build();
+            songRepository.save(singleSongRecord);
+        }
     }
 }
