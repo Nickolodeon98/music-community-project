@@ -23,12 +23,12 @@ public class InquiryResponse {
 
     private String processingStatus;
 
-    public static InquiryResponse of(Inquiry inquiry, String processingStatus) {
+    public static InquiryResponse of(Inquiry inquiry) {
         return InquiryResponse.builder()
                 .inquiryNo(inquiry.getInquiryNo())
                 .title(inquiry.getInquiryTitle())
                 .createdAt(inquiry.getCreatedAt())
-                .processingStatus(processingStatus)
+                .processingStatus("처리중")
                 .build();
     }
 }
