@@ -3,27 +3,24 @@ package com.content_i_like.controller;
 import com.content_i_like.config.JwtService;
 import com.content_i_like.domain.dto.recommend.*;
 import com.content_i_like.domain.entity.*;
+import com.content_i_like.fixture.Fixture;
 import com.content_i_like.service.RecommendService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -32,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RecommendRestController.class)
-@WebAppConfiguration
 @WithMockUser
 class RecommendRestControllerTest {
     @Autowired
@@ -52,36 +48,19 @@ class RecommendRestControllerTest {
     Song song;
     Album album;
     Recommend recommend;
+    Member member;
 
     @BeforeEach
     public void set() {
-        artist = Artist.builder()
-                .artistNo(1L)
-                .artistName("이름")
-                .build();
+        artist = Fixture.getArtistFixture();
 
-        album = Album.builder()
-                .albumNo(1L)
-                .albumImageUrl("이미지")
-                .artist(artist)
-                .build();
+        album = Fixture.getAlbumFixture(artist);
 
-        song = Song.builder()
-                .songNo(1L)
-                .songTitle("음원 제목")
-                .album(album)
-                .build();
+        song = Fixture.getSongFixture(album);
 
-        recommend = Recommend.builder()
-                .recommendNo(1L)
-                .recommendTitle("제목")
-                .recommendContent("내용")
-                .recommendImageUrl("이미지")
-                .recommendYoutubeUrl("유튜브")
-                .recommendPoint(1000L)
-                .recommendViews(100L)
-                .song(song)
-                .build();
+        member = Fixture.getMemberFixture();
+
+        recommend = Fixture.getRecommendFixture(member, song);
     }
 
     @Test
