@@ -159,7 +159,7 @@ class MemberRestControllerTest {
     void modifyMyInfo_success() throws Exception {
         MemberModifyRequest request = MemberModifyRequest.builder()
                 .introduction("")
-                .gender("MALE")
+                .gender(GenderEnum.FEMALE)
                 .build();
         MemberResponse response = MemberResponse.builder()
                 .email("test@gmail.com")
