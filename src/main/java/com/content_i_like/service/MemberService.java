@@ -88,7 +88,8 @@ public class MemberService {
 
         //같은 비밀번호 2번 입력하여 확인하기
         if(changePwRequest.getNewPassword().equals(changePwRequest.getVerification())){
-            memberRepository.updateMemberPassword(member.getMemberNo(), changePwRequest.getNewPassword());
+            String password = passwordEncoder.encode(changePwRequest.getNewPassword());
+            memberRepository.updateMemberPassword(member.getMemberNo(), password);
         } else {
             throw new ContentILikeAppException(ErrorCode.NOT_FOUND,"비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
         }
@@ -112,11 +113,12 @@ public class MemberService {
         member.updateImg(url);
 
         if(memberModifyRequest.getNewPassword().equals(memberModifyRequest.getVerification())){
+            String password = passwordEncoder.encode(memberModifyRequest.getNewPassword());
+            memberRepository.updateMemberPassword(member.getMemberNo(), password);
             member.update(memberModifyRequest);
         } else {
             throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
         }
-
 
         MemberResponse memberResponse = new MemberResponse();
         return memberResponse.toResponse(memberRepository.saveAndFlush(member));

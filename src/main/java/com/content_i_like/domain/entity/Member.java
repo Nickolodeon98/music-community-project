@@ -60,7 +60,6 @@ public class Member extends BaseEntity implements UserDetails {
         this.introduction = request.getIntroduction();
         this.gender = request.getGender();
         this.birth = request.getBirth();
-        this.password = request.getNewPassword();
     }
 
     public void updateImg(String url){
