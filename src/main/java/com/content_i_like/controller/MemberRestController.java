@@ -53,14 +53,14 @@ public class MemberRestController {
     }
 
     @PutMapping("/my")
-    public Response<MemberResponse> modifyMyInfo(@RequestBody @Valid final MemberModifyRequest request, final Authentication authentication){
+    public Response<MemberResponse> modifyMyInfo(@RequestPart(value = "dto") @Valid final MemberModifyRequest request, @RequestPart(value = "file", required = false) MultipartFile file, final Authentication authentication) throws IOException {
         String username = authentication.getName();
-        MemberResponse memberResponse = memberService.modifyMyInfo(request, username);
+        MemberResponse memberResponse = memberService.modifyMyInfo(request, file, username);
         return Response.success(memberResponse);
     }
 
     @PutMapping("/my/profileImg")
-    public Response<String> updateProfileImg(@RequestPart("file") MultipartFile file, Authentication authentication) throws IOException {
+    public Response<String> updateProfileImg(@RequestPart(value = "file") MultipartFile file, Authentication authentication) throws IOException {
         String username = authentication.getName();
         String url = memberService.uploadProfileImg(username, file);
         return Response.success(url);
