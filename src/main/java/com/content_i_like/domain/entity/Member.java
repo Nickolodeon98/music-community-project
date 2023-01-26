@@ -59,7 +59,7 @@ public class Member extends BaseEntity implements UserDetails {
     public void update(MemberModifyRequest request){
         this.profileImgUrl = request.getProfileImgUrl();
         this.introduction = request.getIntroduction();
-        this.gender = GenderEnum.valueOf(request.getGender());
+        this.gender = request.getGender();
         this.birth = request.getBirth();
         this.password = request.getNewPassword();
     }
