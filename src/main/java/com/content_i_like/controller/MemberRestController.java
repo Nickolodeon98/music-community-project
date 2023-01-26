@@ -48,4 +48,11 @@ public class MemberRestController {
         return Response.success(memberResponse);
     }
 
+    @PutMapping("/my")
+    public Response<MemberResponse> modifyMyInfo(@RequestBody MemberModifyRequest request, Authentication authentication){
+        String username = authentication.getName();
+        MemberResponse memberResponse = memberService.modifyMyInfo(request, username);
+        return Response.success(memberResponse);
+    }
+
 }
