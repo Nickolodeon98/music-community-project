@@ -85,16 +85,19 @@ public class MemberService {
 
     public String changePw(ChangePwRequest changePwRequest, String username) {
         Member member = validateExistingMember(username);
-
-        //같은 비밀번호 2번 입력하여 확인하기
-        if(changePwRequest.getNewPassword().equals(changePwRequest.getVerification())){
-            String password = passwordEncoder.encode(changePwRequest.getNewPassword());
-            memberRepository.updateMemberPassword(member.getMemberNo(), password);
-        } else {
-            throw new ContentILikeAppException(ErrorCode.NOT_FOUND,"비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
-        }
+        verifyPasswordAndUpdate(member, changePwRequest.getNewPassword(), changePwRequest.getVerification());
 
         return "비밀번호 변경 완료";
+    }
+
+    //같은 비밀번호 2번 입력하여 확인하고 변경하기
+    private void verifyPasswordAndUpdate(Member member, String newPassword, String verification) {
+        if (newPassword.equals(verification)) {
+            String password = passwordEncoder.encode(newPassword);
+            memberRepository.updateMemberPassword(member.getMemberNo(), password);
+        } else {
+            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+        }
     }
 
     public MemberResponse getMyInfo(String username){
@@ -108,28 +111,26 @@ public class MemberService {
     public MemberResponse modifyMyInfo(MemberModifyRequest memberModifyRequest, MultipartFile file, String username) throws IOException {
         Member member = validateExistingMember(username);
 
+        uploadProfileImg(file, member);
 
-        String url = s3FileUploadService.uploadFile(file);
-        member.updateImg(url);
-
-        if(memberModifyRequest.getNewPassword().equals(memberModifyRequest.getVerification())){
-            String password = passwordEncoder.encode(memberModifyRequest.getNewPassword());
-            memberRepository.updateMemberPassword(member.getMemberNo(), password);
-            member.update(memberModifyRequest);
-        } else {
-            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
-        }
+        verifyPasswordAndUpdate(member, memberModifyRequest.getNewPassword(), memberModifyRequest.getVerification());
+        member.update(memberModifyRequest);
 
         MemberResponse memberResponse = new MemberResponse();
         return memberResponse.toResponse(memberRepository.saveAndFlush(member));
+    }
+
+    private String uploadProfileImg(MultipartFile file, Member member) throws IOException {
+        String url = s3FileUploadService.uploadFile(file);
+        member.updateImg(url);
+        return url;
     }
 
     @Transactional
     public String uploadProfileImg(String username, MultipartFile file) throws IOException {
         Member member = validateExistingMember(username);
 
-        String url = s3FileUploadService.uploadFile(file);
-        member.updateImg(url);
+        String url = uploadProfileImg(file, member);
 
         memberRepository.saveAndFlush(member);
 
