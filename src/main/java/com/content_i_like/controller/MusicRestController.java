@@ -4,6 +4,7 @@ import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.service.MusicService;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,10 +20,10 @@ public class MusicRestController {
 
     private final MusicService musicService;
     @GetMapping("/all")
-    public Response<Page<TrackGetResponse>> showAllTracks(
+    public Response<Page<TrackGetResponse>> showAllTracks(final Authentication authentication,
             @PageableDefault(sort="songNo", direction = Sort.Direction.DESC) final Pageable pageable) {
 
-        Page<TrackGetResponse> tracks = musicService.getEveryTrack(pageable);
+        Page<TrackGetResponse> tracks = musicService.getEveryTrack(pageable, authentication.name());
 
         return Response.success(tracks);
     }
