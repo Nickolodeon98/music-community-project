@@ -166,7 +166,7 @@ class MemberRestControllerTest {
                 .nickName("nickname")
                 .build();
 
-        Mockito.when(memberService.modifyMyInfo(any(),any())).thenReturn(response);
+        Mockito.when(memberService.modifyMyInfo(any(),any(), any())).thenReturn(response);
 
         mockMvc.perform(put("/api/v1/member/my")
                 .with(csrf())
