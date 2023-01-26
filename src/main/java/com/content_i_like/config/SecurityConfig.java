@@ -23,7 +23,7 @@ public class SecurityConfig {
 
     private final String[] AUTHORIZATION = {"/api/v1/**", ""};
     private final String[] TEST_URL = {"/api/v1/hello/**", "/api/v1/member/join", "/api/v1/member/login", "/api/v1/member/passwd/find_pw"
-    ,"/api/v1/test/**"};
+    ,"/api/v1/test/**", "/upload"};
 
     private final String[] SWAGGER = {"/v3/api-docs/**", "/swagger-ui/**"};
 
