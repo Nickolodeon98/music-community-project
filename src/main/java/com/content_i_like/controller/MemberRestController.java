@@ -8,6 +8,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/member")
@@ -54,6 +57,13 @@ public class MemberRestController {
         String username = authentication.getName();
         MemberResponse memberResponse = memberService.modifyMyInfo(request, username);
         return Response.success(memberResponse);
+    }
+
+    @PutMapping("/my/profileImg")
+    public Response<String> updateProfileImg(@RequestPart("file") MultipartFile file, Authentication authentication) throws IOException {
+        String username = authentication.getName();
+        String url = memberService.uploadProfileImg(username, file);
+        return Response.success(url);
     }
 
 }
