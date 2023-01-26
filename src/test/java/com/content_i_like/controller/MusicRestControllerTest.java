@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -52,8 +53,6 @@ class MusicRestControllerTest {
     @DisplayName("모든 음원 조회")
     class AllSongsInquiry {
 
-
-
         @Test
         @DisplayName("성공")
         void success_get_every_song() throws Exception {
@@ -69,7 +68,7 @@ class MusicRestControllerTest {
 
             Page<TrackGetResponse> pagedTracks = new PageImpl<>(tracks);
 
-            given(musicService.getEveryTrack(pageable)).willReturn(pagedTracks);
+            given(musicService.getEveryTrack(pageable, any())).willReturn(pagedTracks);
 
             String url = "/api/v1/music/all";
 
@@ -79,7 +78,7 @@ class MusicRestControllerTest {
                     .andExpect(jsonPath("$.result.content").exists())
                     .andDo(print());
 
-            verify(musicService).getEveryTrack(argumentCaptor.capture());
+            verify(musicService).getEveryTrack(argumentCaptor.capture(), any());
 
             Pageable actualPageable = argumentCaptor.getValue();
             assertEquals(pageable, actualPageable);
