@@ -96,4 +96,17 @@ public class MemberService {
         MemberResponse memberResponse = new MemberResponse();
         return memberResponse.toResponse(member);
     }
+
+    public MemberResponse modifyMyInfo(MemberModifyRequest memberModifyRequest, String username){
+        Member member = validateExistingMember(username);
+
+        if(memberModifyRequest.getNewPassword().equals(memberModifyRequest.getVerification())){
+            member.update(memberModifyRequest);
+        } else {
+            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+        }
+
+        MemberResponse memberResponse = new MemberResponse();
+        return memberResponse.toResponse(memberRepository.saveAndFlush(member));
+    }
 }
