@@ -104,14 +104,19 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponse modifyMyInfo(MemberModifyRequest memberModifyRequest, String username){
+    public MemberResponse modifyMyInfo(MemberModifyRequest memberModifyRequest, MultipartFile file, String username) throws IOException {
         Member member = validateExistingMember(username);
+
+
+        String url = s3FileUploadService.uploadFile(file);
+        member.updateImg(url);
 
         if(memberModifyRequest.getNewPassword().equals(memberModifyRequest.getVerification())){
             member.update(memberModifyRequest);
         } else {
             throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
         }
+
 
         MemberResponse memberResponse = new MemberResponse();
         return memberResponse.toResponse(memberRepository.saveAndFlush(member));
@@ -122,8 +127,8 @@ public class MemberService {
         Member member = validateExistingMember(username);
 
         String url = s3FileUploadService.uploadFile(file);
-
         member.updateImg(url);
+
         memberRepository.saveAndFlush(member);
 
         return url;

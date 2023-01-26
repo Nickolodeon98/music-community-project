@@ -57,7 +57,6 @@ public class Member extends BaseEntity implements UserDetails {
     private List<Point> pointNo;
 
     public void update(MemberModifyRequest request){
-        this.profileImgUrl = request.getProfileImgUrl();
         this.introduction = request.getIntroduction();
         this.gender = request.getGender();
         this.birth = request.getBirth();
