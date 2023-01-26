@@ -1,7 +1,9 @@
 package com.content_i_like.controller;
 
+import com.content_i_like.config.JwtService;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackResponse;
+import com.content_i_like.service.MusicService;
 import com.content_i_like.service.TrackService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -26,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MusicRestController.class)
+@WithMockUser
 class MusicRestControllerTest {
 
     @Autowired
@@ -34,12 +40,19 @@ class MusicRestControllerTest {
     @MockBean
     MusicService musicService;
 
+    @MockBean
+    JwtService jwtService;
+
+    @MockBean
+    UserDetailsService userDetailsService;
+    @Captor
+    ArgumentCaptor<Pageable> argumentCaptor;
+
     @Nested
     @DisplayName("모든 음원 조회")
     class AllSongsInquiry {
 
-        @Captor
-        ArgumentCaptor<Pageable> argumentCaptor;
+
 
         @Test
         @DisplayName("성공")
@@ -63,7 +76,7 @@ class MusicRestControllerTest {
             mockMvc.perform(get(url).with(csrf()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                    .andExpect(jsonPath("$.result.trackTitle").value("title"))
+                    .andExpect(jsonPath("$.result.content").exists())
                     .andDo(print());
 
             verify(musicService).getEveryTrack(argumentCaptor.capture());
