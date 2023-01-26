@@ -64,6 +64,10 @@ public class Member extends BaseEntity implements UserDetails {
         this.password = request.getNewPassword();
     }
 
+    public void updateImg(String url){
+        this.profileImgUrl = url;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +21,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final S3FileUploadService s3FileUploadService;
 
     @Transactional
     public MemberJoinResponse join(MemberJoinRequest memberJoinRequest){
@@ -111,5 +115,17 @@ public class MemberService {
 
         MemberResponse memberResponse = new MemberResponse();
         return memberResponse.toResponse(memberRepository.saveAndFlush(member));
+    }
+
+    @Transactional
+    public String uploadProfileImg(String username, MultipartFile file) throws IOException {
+        Member member = validateExistingMember(username);
+
+        String url = s3FileUploadService.uploadFile(file);
+
+        member.updateImg(url);
+        memberRepository.saveAndFlush(member);
+
+        return url;
     }
 }
