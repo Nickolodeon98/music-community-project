@@ -9,6 +9,7 @@ import com.content_i_like.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
+    @Transactional
     public MemberJoinResponse join(MemberJoinRequest memberJoinRequest){
 
         //가입한 이력이 있는지 확인 -> 가입 아이디 email 중복 여부 & 사용 중인 닉네임이 아닌지 확인
@@ -97,6 +99,7 @@ public class MemberService {
         return memberResponse.toResponse(member);
     }
 
+    @Transactional
     public MemberResponse modifyMyInfo(MemberModifyRequest memberModifyRequest, String username){
         Member member = validateExistingMember(username);
 
