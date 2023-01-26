@@ -32,8 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -153,4 +152,30 @@ class MemberRestControllerTest {
                 .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
                 .andExpect(jsonPath("$.result.email").value(response.getEmail()));
     }
+
+    @Test
+    @DisplayName("내 정보 수정 성공")
+    @WithMockUser
+    void modifyMyInfo_success() throws Exception {
+        MemberModifyRequest request = MemberModifyRequest.builder()
+                .introduction("")
+                .gender("MALE")
+                .build();
+        MemberResponse response = MemberResponse.builder()
+                .email("test@gmail.com")
+                .nickName("nickname")
+                .build();
+
+        Mockito.when(memberService.modifyMyInfo(any(),any())).thenReturn(response);
+
+        mockMvc.perform(put("/api/v1/member/my")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(request)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+                .andExpect(jsonPath("$.result.email").value(response.getEmail()));
+    }
+    
 }

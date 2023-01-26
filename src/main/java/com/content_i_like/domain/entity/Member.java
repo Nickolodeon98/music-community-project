@@ -1,5 +1,6 @@
 package com.content_i_like.domain.entity;
 
+import com.content_i_like.domain.dto.member.MemberModifyRequest;
 import com.content_i_like.domain.enums.GenderEnum;
 import com.content_i_like.domain.enums.MemberStatusEnum;
 import jakarta.persistence.*;
@@ -54,6 +55,14 @@ public class Member extends BaseEntity implements UserDetails {
 
     @OneToMany(mappedBy = "member")
     private List<Point> pointNo;
+
+    public void update(MemberModifyRequest request){
+        this.profileImgUrl = request.getProfileImgUrl();
+        this.introduction = request.getIntroduction();
+        this.gender = request.getGender();
+        this.birth = request.getBirth();
+        this.password = request.getNewPassword();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

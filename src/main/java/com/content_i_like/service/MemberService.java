@@ -9,6 +9,7 @@ import com.content_i_like.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
+    @Transactional
     public MemberJoinResponse join(MemberJoinRequest memberJoinRequest){
 
         //가입한 이력이 있는지 확인 -> 가입 아이디 email 중복 여부 & 사용 중인 닉네임이 아닌지 확인
@@ -95,5 +97,19 @@ public class MemberService {
 
         MemberResponse memberResponse = new MemberResponse();
         return memberResponse.toResponse(member);
+    }
+
+    @Transactional
+    public MemberResponse modifyMyInfo(MemberModifyRequest memberModifyRequest, String username){
+        Member member = validateExistingMember(username);
+
+        if(memberModifyRequest.getNewPassword().equals(memberModifyRequest.getVerification())){
+            member.update(memberModifyRequest);
+        } else {
+            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+        }
+
+        MemberResponse memberResponse = new MemberResponse();
+        return memberResponse.toResponse(memberRepository.saveAndFlush(member));
     }
 }
