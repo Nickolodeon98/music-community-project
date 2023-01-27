@@ -184,9 +184,13 @@ public class TrackService {
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(headerOf(accessToken));
 
         String trackTitle = "";
+        String artistName = "";
+        String albumName = "";
 
         List<List<String>> trackIds = findTrackIds(accessToken);
         List<String> trackTitles = new ArrayList<>();
+        List<String> artistTitles = new ArrayList<>();
+        List<String> albumTitles = new ArrayList<>();
 
         for (List<String> trackId : trackIds) {
             StringBuilder ids = new StringBuilder();
@@ -195,20 +199,31 @@ public class TrackService {
                 if (i != 49) ids.append(",");
             }
             log.info("ids:{}", ids);
+
             ResponseEntity<String> response = restTemplate
                     .exchange(trackUri + ids, HttpMethod.GET, httpEntity, String.class);
+
             log.info("tracksInfo:{}",response.getBody());
+
             JsonNode trackInfoRoot = objectMapper.readTree(response.getBody());
+
             for (int j = 0; j < 50; j++) {
                 trackTitle = trackInfoRoot.at("/tracks/" + j + "/name").asText();
+                artistName = trackInfoRoot.at("/tracks/artists/0/name").asText();
+                albumName = trackInfoRoot.at("/tracks/album/0/name").asText();
                 trackTitles.add(trackTitle);
+                artistTitles.add(artistName);
+                albumTitles.add(albumName)
             }
+
         }
+
+
 
         return trackTitles;
     }
 
-    public void createMusicDatabase(List<String> songTitles) {
+    public void createMusicDatabase(List<String> songTitles, List<String> artistTitles, List<String> albumTitles) {
         for (String songTitle : songTitles) {
             Song singleSongRecord = Song.builder().songTitle(songTitle).build();
             songRepository.save(singleSongRecord);
