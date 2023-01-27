@@ -16,11 +16,11 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class FileUploadRestController {
 
-    private final S3FileUploadService s3FileUploadService;
+  private final S3FileUploadService s3FileUploadService;
 
-    @PostMapping
-    public Response<String> uploadFile(@RequestPart("file") MultipartFile file) throws IOException {
-        String url = s3FileUploadService.uploadFile(file);
-        return Response.success(url);
-    }
+  @PostMapping
+  public Response<String> uploadFile(@RequestPart("file") MultipartFile file) throws IOException {
+    String url = s3FileUploadService.uploadFile(file);
+    return Response.success(url);
+  }
 }

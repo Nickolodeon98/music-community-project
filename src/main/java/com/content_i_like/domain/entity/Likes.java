@@ -13,24 +13,24 @@ import org.hibernate.annotations.Where;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @SQLDelete(sql = "UPDATE likes SET deleted_at = current_timestamp WHERE id = ?")
-public class Likes extends BaseEntity{
+public class Likes extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long likesNo;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long likesNo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
-    private Member member;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_no")
+  private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recommend_no")
-    private Recommend recommend;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "recommend_no")
+  private Recommend recommend;
 
-    public static Likes toEntity(Recommend post, Member member) {
-        return Likes.builder()
-                .recommend(post)
-                .member(member)
-                .build();
-    }
+  public static Likes toEntity(Recommend post, Member member) {
+    return Likes.builder()
+        .recommend(post)
+        .member(member)
+        .build();
+  }
 }

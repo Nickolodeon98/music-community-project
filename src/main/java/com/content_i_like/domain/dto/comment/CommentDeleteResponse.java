@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class CommentDeleteResponse {
-    private Long commentNo;
-    private Long recommendNo;
-    private String message;
+
+  private Long commentNo;
+  private Long recommendNo;
+  private String message;
 }

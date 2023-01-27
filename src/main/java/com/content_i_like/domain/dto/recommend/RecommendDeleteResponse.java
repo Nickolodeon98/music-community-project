@@ -1,4 +1,4 @@
-package com.content_i_like.domain.dto;
+package com.content_i_like.domain.dto.recommend;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class RecommendDeleteResponse {
 
-    private Long recommendNo;
-    private String message;
+  private Long recommendNo;
+  private String message;
 }

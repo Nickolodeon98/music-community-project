@@ -38,169 +38,175 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(CommentRestController.class)
 @WithMockUser
 class CommentControllerTest {
-    @Autowired
-    MockMvc mockMvc;
 
-    @Autowired
-    ObjectMapper objectMapper;
+  @Autowired
+  MockMvc mockMvc;
 
-    @MockBean
-    CommentService commentService;
+  @Autowired
+  ObjectMapper objectMapper;
 
-    @MockBean
-    UserDetailsService userDetailsService;
+  @MockBean
+  CommentService commentService;
 
-    @MockBean
-    JwtService jwtService;
+  @MockBean
+  UserDetailsService userDetailsService;
 
-
-    Artist artist;
-    Song song;
-    Album album;
-    Recommend recommend;
-    Member member;
-    Comment comment;
-
-    @BeforeEach
-    public void set() {
-        artist = Fixture.getArtistFixture();
-        album = Fixture.getAlbumFixture(artist);
-        song = Fixture.getSongFixture(album);
-
-        member = Fixture.getMemberFixture();
-        recommend = Fixture.getRecommendFixture(member, song);
-        comment = Fixture.getCommentFixture(member, recommend);
-    }
-
-    @Test
-    @DisplayName("댓글 작성")
-    void success_write_comment() throws Exception {
-        CommentRequest request = new CommentRequest("댓글", 100L);
-        CommentResponse response = new CommentResponse(1L, 1L, "댓글", 100L);
-
-        given(commentService.writeComment(any(), any(), any())).willReturn(response);
-
-        String url = "/api/v1/recommends/1/comments";
-
-        mockMvc.perform(post(url).with(csrf())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultCode").exists())
-                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                .andExpect(jsonPath("$.result.commentNo").exists())
-                .andExpect(jsonPath("$.result.commentNo").value(1))
-                .andExpect(jsonPath("$.result.postNo").exists())
-                .andExpect(jsonPath("$.result.postNo").value(1))
-                .andExpect(jsonPath("$.result.commentContent").exists())
-                .andExpect(jsonPath("$.result.commentContent").value("댓글"))
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("댓글 수정")
-    void success_modify_comment() throws Exception {
-        CommentModifyRequest request = new CommentModifyRequest("댓글 수정");
-        CommentResponse response = new CommentResponse(1L, 1L, "댓글 수정", 100L);
-
-        given(commentService.modifyComment(any(), any(), any(), any())).willReturn(response);
-
-        String url = String.format("/api/v1/recommends/1/comments/%d", 1);
-
-        mockMvc.perform(put(url).with(csrf())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultCode").exists())
-                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                .andExpect(jsonPath("$.result.commentNo").exists())
-                .andExpect(jsonPath("$.result.commentNo").value(1))
-                .andExpect(jsonPath("$.result.postNo").exists())
-                .andExpect(jsonPath("$.result.postNo").value(1))
-                .andExpect(jsonPath("$.result.commentContent").exists())
-                .andExpect(jsonPath("$.result.commentContent").value("댓글 수정"))
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("댓글 삭제")
-    void success_delete_comment() throws Exception {
-        doNothing().when(commentService).deleteComment(any(), any(), any());
-
-        String url = String.format("/api/v1/recommends/1/comments/%d", 1);
-
-        mockMvc.perform(delete(url).with(csrf())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultCode").exists())
-                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                .andExpect(jsonPath("$.result.commentNo").exists())
-                .andExpect(jsonPath("$.result.commentNo").value(1))
-                .andExpect(jsonPath("$.result.recommendNo").exists())
-                .andExpect(jsonPath("$.result.recommendNo").value(1))
-                .andExpect(jsonPath("$.result.message").exists())
-                .andExpect(jsonPath("$.result.message").value("댓글이 삭제 되었습니다."))
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("댓글 조회")
-    void success_get_comment() throws Exception {
-        CommentReadResponse response = new CommentReadResponse(1L, "chordpli", "image", "body", 100L, LocalDateTime.now());
-
-        given(commentService.getReadComment(any(), any())).willReturn(response);
-
-        String url = String.format("/api/v1/recommends/1/comments/%d", 1);
-
-        mockMvc.perform(get(url).with(csrf())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultCode").exists())
-                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                .andExpect(jsonPath("$.result.memberNickname").exists())
-                .andExpect(jsonPath("$.result.memberNickname").value("chordpli"))
-                .andExpect(jsonPath("$.result.profileImgUrl").exists())
-                .andExpect(jsonPath("$.result.profileImgUrl").value("image"))
-                .andExpect(jsonPath("$.result.commentContent").exists())
-                .andExpect(jsonPath("$.result.commentContent").value("body"))
-                .andExpect(jsonPath("$.result.commentPoint").exists())
-                .andExpect(jsonPath("$.result.commentPoint").value(100L))
-                .andExpect(jsonPath("$.result.createdAt").exists())
-                .andDo(print());
-    }
+  @MockBean
+  JwtService jwtService;
 
 
-    @Test
-    @DisplayName("게시글 모든 댓글 조회")
-    void success_get_all_comment() throws Exception {
-        CommentReadResponse comment_01 = new CommentReadResponse(1L,"chordpli", "image", "body", 100L, LocalDateTime.now());
-        CommentReadResponse comment_02 = new CommentReadResponse(2l, "chordpli2", "image2", "body2", 200L, LocalDateTime.now());
-        CommentReadResponse comment_03 = new CommentReadResponse(3l, "chordpli3", "image3", "body3", 300L, LocalDateTime.now());
-        Page<CommentReadResponse> response = new PageImpl<>(List.of(comment_01, comment_02, comment_03));
+  Artist artist;
+  Song song;
+  Album album;
+  Recommend recommend;
+  Member member;
+  Comment comment;
 
-        given(commentService.getReadAllComment(any(), any())).willReturn(response);
+  @BeforeEach
+  public void set() {
+    artist = Fixture.getArtistFixture();
+    album = Fixture.getAlbumFixture(artist);
+    song = Fixture.getSongFixture(album);
 
-        String url = "/api/v1/recommends/1/comments";
+    member = Fixture.getMemberFixture();
+    recommend = Fixture.getRecommendFixture(member, song);
+    comment = Fixture.getCommentFixture(member, recommend);
+  }
 
-        mockMvc.perform(get(url).with(csrf())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultCode").exists())
-                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                .andExpect(jsonPath("$['result']['content'][0]['memberNickname']").exists())
-                .andExpect(jsonPath("$['result']['content'][0]['memberNickname']").value("chordpli"))
-                .andExpect(jsonPath("$['result']['content'][0]['profileImgUrl']").exists())
-                .andExpect(jsonPath("$['result']['content'][0]['profileImgUrl']").value("image"))
-                .andExpect(jsonPath("$['result']['content'][0]['commentContent']").exists())
-                .andExpect(jsonPath("$['result']['content'][0]['commentContent']").value("body"))
-                .andExpect(jsonPath("$['result']['content'][0]['commentPoint']").exists())
-                .andExpect(jsonPath("$['result']['content'][0]['commentPoint']").value(100L))
-                .andExpect(jsonPath("$['result']['content'][0]['createdAt']").exists())
-                .andDo(print());
-    }
+  @Test
+  @DisplayName("댓글 작성")
+  void success_write_comment() throws Exception {
+    CommentRequest request = new CommentRequest("댓글", 100L);
+    CommentResponse response = new CommentResponse(1L, 1L, "댓글", 100L);
+
+    given(commentService.writeComment(any(), any(), any())).willReturn(response);
+
+    String url = "/api/v1/recommends/1/comments";
+
+    mockMvc.perform(post(url).with(csrf())
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(request)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.resultCode").exists())
+        .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+        .andExpect(jsonPath("$.result.commentNo").exists())
+        .andExpect(jsonPath("$.result.commentNo").value(1))
+        .andExpect(jsonPath("$.result.postNo").exists())
+        .andExpect(jsonPath("$.result.postNo").value(1))
+        .andExpect(jsonPath("$.result.commentContent").exists())
+        .andExpect(jsonPath("$.result.commentContent").value("댓글"))
+        .andDo(print());
+  }
+
+  @Test
+  @DisplayName("댓글 수정")
+  void success_modify_comment() throws Exception {
+    CommentModifyRequest request = new CommentModifyRequest("댓글 수정");
+    CommentResponse response = new CommentResponse(1L, 1L, "댓글 수정", 100L);
+
+    given(commentService.modifyComment(any(), any(), any(), any())).willReturn(response);
+
+    String url = String.format("/api/v1/recommends/1/comments/%d", 1);
+
+    mockMvc.perform(put(url).with(csrf())
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(request)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.resultCode").exists())
+        .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+        .andExpect(jsonPath("$.result.commentNo").exists())
+        .andExpect(jsonPath("$.result.commentNo").value(1))
+        .andExpect(jsonPath("$.result.postNo").exists())
+        .andExpect(jsonPath("$.result.postNo").value(1))
+        .andExpect(jsonPath("$.result.commentContent").exists())
+        .andExpect(jsonPath("$.result.commentContent").value("댓글 수정"))
+        .andDo(print());
+  }
+
+  @Test
+  @DisplayName("댓글 삭제")
+  void success_delete_comment() throws Exception {
+    doNothing().when(commentService).deleteComment(any(), any(), any());
+
+    String url = String.format("/api/v1/recommends/1/comments/%d", 1);
+
+    mockMvc.perform(delete(url).with(csrf())
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.resultCode").exists())
+        .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+        .andExpect(jsonPath("$.result.commentNo").exists())
+        .andExpect(jsonPath("$.result.commentNo").value(1))
+        .andExpect(jsonPath("$.result.recommendNo").exists())
+        .andExpect(jsonPath("$.result.recommendNo").value(1))
+        .andExpect(jsonPath("$.result.message").exists())
+        .andExpect(jsonPath("$.result.message").value("댓글이 삭제 되었습니다."))
+        .andDo(print());
+  }
+
+  @Test
+  @DisplayName("댓글 조회")
+  void success_get_comment() throws Exception {
+    CommentReadResponse response = new CommentReadResponse(1L, "chordpli", "image", "body", 100L,
+        LocalDateTime.now());
+
+    given(commentService.getReadComment(any(), any())).willReturn(response);
+
+    String url = String.format("/api/v1/recommends/1/comments/%d", 1);
+
+    mockMvc.perform(get(url).with(csrf())
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.resultCode").exists())
+        .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+        .andExpect(jsonPath("$.result.memberNickname").exists())
+        .andExpect(jsonPath("$.result.memberNickname").value("chordpli"))
+        .andExpect(jsonPath("$.result.profileImgUrl").exists())
+        .andExpect(jsonPath("$.result.profileImgUrl").value("image"))
+        .andExpect(jsonPath("$.result.commentContent").exists())
+        .andExpect(jsonPath("$.result.commentContent").value("body"))
+        .andExpect(jsonPath("$.result.commentPoint").exists())
+        .andExpect(jsonPath("$.result.commentPoint").value(100L))
+        .andExpect(jsonPath("$.result.createdAt").exists())
+        .andDo(print());
+  }
+
+
+  @Test
+  @DisplayName("게시글 모든 댓글 조회")
+  void success_get_all_comment() throws Exception {
+    CommentReadResponse comment_01 = new CommentReadResponse(1L, "chordpli", "image", "body", 100L,
+        LocalDateTime.now());
+    CommentReadResponse comment_02 = new CommentReadResponse(2l, "chordpli2", "image2", "body2",
+        200L, LocalDateTime.now());
+    CommentReadResponse comment_03 = new CommentReadResponse(3l, "chordpli3", "image3", "body3",
+        300L, LocalDateTime.now());
+    Page<CommentReadResponse> response = new PageImpl<>(
+        List.of(comment_01, comment_02, comment_03));
+
+    given(commentService.getReadAllComment(any(), any())).willReturn(response);
+
+    String url = "/api/v1/recommends/1/comments";
+
+    mockMvc.perform(get(url).with(csrf())
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.resultCode").exists())
+        .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+        .andExpect(jsonPath("$['result']['content'][0]['memberNickname']").exists())
+        .andExpect(jsonPath("$['result']['content'][0]['memberNickname']").value("chordpli"))
+        .andExpect(jsonPath("$['result']['content'][0]['profileImgUrl']").exists())
+        .andExpect(jsonPath("$['result']['content'][0]['profileImgUrl']").value("image"))
+        .andExpect(jsonPath("$['result']['content'][0]['commentContent']").exists())
+        .andExpect(jsonPath("$['result']['content'][0]['commentContent']").value("body"))
+        .andExpect(jsonPath("$['result']['content'][0]['commentPoint']").exists())
+        .andExpect(jsonPath("$['result']['content'][0]['commentPoint']").value(100L))
+        .andExpect(jsonPath("$['result']['content'][0]['createdAt']").exists())
+        .andDo(print());
+  }
 }

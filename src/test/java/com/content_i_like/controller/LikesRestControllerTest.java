@@ -29,93 +29,93 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser
 class LikesRestControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+  @Autowired
+  MockMvc mockMvc;
 
-    @Autowired
-    ObjectMapper objectMapper;
+  @Autowired
+  ObjectMapper objectMapper;
 
-    @MockBean
-    LikesService likesService;
+  @MockBean
+  LikesService likesService;
 
-    @MockBean
-    UserDetailsService userDetailsService;
-    @MockBean
-    JwtService jwtService;
+  @MockBean
+  UserDetailsService userDetailsService;
+  @MockBean
+  JwtService jwtService;
 
 
-    Artist artist;
-    Song song;
-    Album album;
-    Recommend recommend;
-    Member member;
-    Comment comment;
+  Artist artist;
+  Song song;
+  Album album;
+  Recommend recommend;
+  Member member;
+  Comment comment;
 
-    @BeforeEach
-    public void set() {
-        artist = Fixture.getArtistFixture();
-        album = Fixture.getAlbumFixture(artist);
-        song = Fixture.getSongFixture(album);
+  @BeforeEach
+  public void set() {
+    artist = Fixture.getArtistFixture();
+    album = Fixture.getAlbumFixture(artist);
+    song = Fixture.getSongFixture(album);
 
-        member = Fixture.getMemberFixture();
-        recommend = Fixture.getRecommendFixture(member, song);
-        comment = Fixture.getCommentFixture(member, recommend);
-    }
+    member = Fixture.getMemberFixture();
+    recommend = Fixture.getRecommendFixture(member, song);
+    comment = Fixture.getCommentFixture(member, recommend);
+  }
 
-    @Test
-    @DisplayName("좋아요 활성화")
-    void success_active_comment() throws Exception {
+  @Test
+  @DisplayName("좋아요 활성화")
+  void success_active_comment() throws Exception {
 
-        given(likesService.changeLikesStatus(any(), any())).willReturn("좋아요를 눌렀습니다");
+    given(likesService.changeLikesStatus(any(), any())).willReturn("좋아요를 눌렀습니다");
 
-        String url = "/api/v1/recommends/1/likes";
+    String url = "/api/v1/recommends/1/likes";
 
-        mockMvc.perform(post(url).with(csrf())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultCode").exists())
-                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                .andExpect(jsonPath("$.result").exists())
-                .andExpect(jsonPath("$.result").value("좋아요를 눌렀습니다"))
-                .andDo(print());
-    }
+    mockMvc.perform(post(url).with(csrf())
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.resultCode").exists())
+        .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+        .andExpect(jsonPath("$.result").exists())
+        .andExpect(jsonPath("$.result").value("좋아요를 눌렀습니다"))
+        .andDo(print());
+  }
 
-    @Test
-    @DisplayName("좋아요 비활성화")
-    void success_inactive_comment() throws Exception {
+  @Test
+  @DisplayName("좋아요 비활성화")
+  void success_inactive_comment() throws Exception {
 
-        given(likesService.changeLikesStatus(any(), any())).willReturn("좋아요를 취소했습니다.");
+    given(likesService.changeLikesStatus(any(), any())).willReturn("좋아요를 취소했습니다.");
 
-        String url = "/api/v1/recommends/1/likes";
+    String url = "/api/v1/recommends/1/likes";
 
-        mockMvc.perform(post(url).with(csrf())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultCode").exists())
-                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                .andExpect(jsonPath("$.result").exists())
-                .andExpect(jsonPath("$.result").value("좋아요를 취소했습니다."))
-                .andDo(print());
-    }
+    mockMvc.perform(post(url).with(csrf())
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.resultCode").exists())
+        .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+        .andExpect(jsonPath("$.result").exists())
+        .andExpect(jsonPath("$.result").value("좋아요를 취소했습니다."))
+        .andDo(print());
+  }
 
-    @Test
-    @DisplayName("좋아요 개수 반환")
-    void success_return_number_likes() throws Exception {
+  @Test
+  @DisplayName("좋아요 개수 반환")
+  void success_return_number_likes() throws Exception {
 
-        given(likesService.countNumberLikes(any())).willReturn(123);
+    given(likesService.countNumberLikes(any())).willReturn(123);
 
-        String url = "/api/v1/recommends/1/likes";
+    String url = "/api/v1/recommends/1/likes";
 
-        mockMvc.perform(get(url).with(csrf())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultCode").exists())
-                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                .andExpect(jsonPath("$.result").exists())
-                .andExpect(jsonPath("$.result").value(123))
-                .andDo(print());
-    }
+    mockMvc.perform(get(url).with(csrf())
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.resultCode").exists())
+        .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+        .andExpect(jsonPath("$.result").exists())
+        .andExpect(jsonPath("$.result").value(123))
+        .andDo(print());
+  }
 }
