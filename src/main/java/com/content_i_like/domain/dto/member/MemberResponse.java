@@ -33,7 +33,7 @@ public class MemberResponse {
         .status(String.valueOf(member.getStatus()))
         .gender(String.valueOf(member.getGender()))
         .birth(member.getBirth())
-        .point(member.getPointNo())
+        //.point(member.getPointNo())
         .build();
   }
 }
