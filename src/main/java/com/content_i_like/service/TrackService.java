@@ -122,7 +122,7 @@ public class TrackService {
         return genres;
     }
 
-    public List<String> findTrackIds(String accessToken) throws IOException {
+    public List<List<String>> findTrackIds(String accessToken) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
         String searchUri = TrackEnum.BASE_URL.getValue() + "/search";
@@ -130,7 +130,8 @@ public class TrackService {
         List<String> queries =
                 collectAllGenres("C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\genres.csv");
 
-        List<String> hrefs = new ArrayList<>();
+        List<List<String>> collectedIds = new ArrayList<>();
+        List<String> ids = new ArrayList<>();
 
         for (Object query : queries) {
             log.info("genre:{}",query);
@@ -145,17 +146,25 @@ public class TrackService {
                 JsonNode tracksSource = objectMapper.readTree(response.getBody());
 
                 for (int i = 0; i < 50; i++) {
-                    String hrefContainingId = tracksSource.at("/tracks/items/" + i + "/href").asText();
+                    String hrefContainingId = tracksSource.at("/tracks/items/" + i + "/id").asText();
                     /* https://api.spotify.com/v1/tracks/ 의 길이는 0 ~ 33 까지
                      * 그러므로 substring(34, lastIndex) 를 해야 트랙 아이디 값만 저장할 수 있다.
                      * 3H0XfUU13vsWC6smb9guvG */
-                    hrefs.add(hrefContainingId.substring(34));
+                    ids.add(hrefContainingId.substring(34));
                 }
 
 //                List<String> trackTitles = tracksSource.findValuesAsText("name");
 
 //                log.info("response:{}", response.getBody());
-                log.info("hrefs:{}", hrefs);
+                log.info("ids:{}", ids);
+                log.info("size:{}", ids.size());
+
+                List<String> tmpIds = new ArrayList<>(ids);
+                ids.clear();
+
+                // 현 예시에서 id 50개씩 총 4묶음이 들어간다
+                collectedIds.add(tmpIds);
+
 
 //                log.info("names:{} , offset:{}", trackTitles, offset);
 //                log.info("size:{}, offset:{}", trackTitles.size(), offset);
@@ -163,29 +172,22 @@ public class TrackService {
             }
         }
 
-        return hrefs;
+        return collectedIds;
     }
 
     public List<String> fetchTracks(String accessToken) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
-        String trackUri = TrackEnum.BASE_URL.getValue() + "/tracks/";
+        String trackUri = TrackEnum.BASE_URL.getValue() + "/tracks?ids=";
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(headerOf(accessToken));
 
         String trackTitle = "";
 
-        List<String> trackIds = findTrackIds(accessToken);
+        List<List<String>> trackIds = findTrackIds(accessToken);
         List<String> trackTitles = new ArrayList<>();
 
-        for (String trackId : trackIds) {
-            ResponseEntity<String> response = restTemplate
-                    .exchange(trackUri + trackId, HttpMethod.GET, httpEntity, String.class);
-            log.info("tracksInfo:{}",response.getBody());
-            JsonNode trackInfoRoot = objectMapper.readTree(response.getBody());
-            trackTitle = String.valueOf(trackInfoRoot.findValue("name"));
-            trackTitles.add(trackTitle);
-        }
+
 
         return trackTitles;
     }
