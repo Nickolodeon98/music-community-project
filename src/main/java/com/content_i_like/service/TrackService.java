@@ -195,7 +195,9 @@ public class TrackService {
                 if (i != 49) ids.append(",");
             }
             log.info("ids:{}", ids);
-
+            ResponseEntity<String> response = restTemplate
+                    .exchange(trackUri + ids, HttpMethod.GET, httpEntity, String.class);
+            log.info("tracksInfo:{}",response.getBody());
         }
 
         return trackTitles;
