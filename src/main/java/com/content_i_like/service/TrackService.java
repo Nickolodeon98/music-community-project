@@ -188,7 +188,15 @@ public class TrackService {
         List<List<String>> trackIds = findTrackIds(accessToken);
         List<String> trackTitles = new ArrayList<>();
 
+        for (List<String> trackId : trackIds) {
+            StringBuilder ids = new StringBuilder();
+            for(int i = 0; i < trackId.size(); i++) {
+                ids.append(trackId.get(i));
+                if (i != 49) ids.append(",");
+            }
+            log.info("ids:{}", ids);
 
+        }
 
         return trackTitles;
     }
