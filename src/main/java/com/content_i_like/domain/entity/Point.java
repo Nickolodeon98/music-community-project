@@ -26,7 +26,10 @@ public class Point extends BaseEntity {
   private Long pointExpense;
   private Long pointIncome;
 
+  @Column(nullable = false)
   private Long targetRecommendNo;
+
+  @Column(nullable = false)
   private Long targetCommentNo;
 
   @ManyToOne(fetch = FetchType.LAZY)
