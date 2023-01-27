@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -45,6 +46,9 @@ class CommentControllerTest {
 
     @MockBean
     CommentService commentService;
+
+    @MockBean
+    UserDetailsService userDetailsService;
 
     @MockBean
     JwtService jwtService;
