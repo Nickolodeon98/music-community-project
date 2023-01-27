@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class RecommendDeleteResponse {
 
     private Long recommendNo;
-    private String Message;
+    private String message;
 }
