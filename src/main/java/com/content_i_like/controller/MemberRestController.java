@@ -55,8 +55,10 @@ public class MemberRestController {
   @GetMapping("/my")
   public Response<MemberResponse> getMyInfo(final Authentication authentication) {
     String username = authentication.getName();
-    MemberResponse memberResponse = memberService.getMyInfo(username);
-    return Response.success(memberResponse);
+    Member member = memberService.getMyInfo(username);
+    Long point = pointService.calculatePoint(member);
+    MemberResponse memberResponse = new MemberResponse();
+    return Response.success(memberResponse.responseWithPoint(member, point));
   }
 
   @PutMapping("/my")
