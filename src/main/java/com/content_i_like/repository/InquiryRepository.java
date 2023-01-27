@@ -11,5 +11,6 @@ import java.util.List;
 
 public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
 
-    Page<Inquiry> findAllByMemberAndCreatedAtAfter(Pageable pageable, Member member, LocalDateTime before_6_months);
+  Page<Inquiry> findAllByMemberAndCreatedAtAfter(Pageable pageable, Member member,
+      LocalDateTime before_6_months);
 }

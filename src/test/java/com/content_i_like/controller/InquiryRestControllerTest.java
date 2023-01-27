@@ -34,62 +34,62 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser
 class InquiryRestControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+  @Autowired
+  MockMvc mockMvc;
 
-    @MockBean
-    InquiryService inquiryService;
+  @MockBean
+  InquiryService inquiryService;
 
-    @MockBean
-    JwtService jwtService;
+  @MockBean
+  JwtService jwtService;
 
-    @MockBean
-    UserDetailsService userDetailsService;
+  @MockBean
+  UserDetailsService userDetailsService;
 
-    @Autowired
-    ObjectMapper objectMapper;
+  @Autowired
+  ObjectMapper objectMapper;
 
-    @Test
-    @DisplayName("1:1 문의 등록 잘되는지")
-    void post_inquiry_success() throws Exception {
-        InquiryRequire inquiryRequire = InquiryRequire.builder()
-                .title("testTitle")
-                .content("testContent")
-                .build();
+  @Test
+  @DisplayName("1:1 문의 등록 잘되는지")
+  void post_inquiry_success() throws Exception {
+    InquiryRequire inquiryRequire = InquiryRequire.builder()
+        .title("testTitle")
+        .content("testContent")
+        .build();
 
-        when(inquiryService.postInquiry(any(), any()))
-                .thenReturn(InquiryResponse.builder()
-                        .inquiryNo(1L)
-                        .title("testTitle")
-                        .createdAt(now())
-                        .processingStatus("처리중")
-                        .build());
+    when(inquiryService.postInquiry(any(), any()))
+        .thenReturn(InquiryResponse.builder()
+            .inquiryNo(1L)
+            .title("testTitle")
+            .createdAt(now())
+            .processingStatus("처리중")
+            .build());
 
-        mockMvc.perform(post("/api/v1/inquiry")
-                    .with(csrf())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsBytes(inquiryRequire)))
-                    .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.result.inquiryNo").exists())
-                .andExpect(jsonPath("$.result.title").exists())
-                .andExpect(jsonPath("$.result.createdAt").exists())
-                .andExpect(jsonPath("$.result.processingStatus").exists())
-                ;
-    }
+    mockMvc.perform(post("/api/v1/inquiry")
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(inquiryRequire)))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.result.inquiryNo").exists())
+        .andExpect(jsonPath("$.result.title").exists())
+        .andExpect(jsonPath("$.result.createdAt").exists())
+        .andExpect(jsonPath("$.result.processingStatus").exists())
+    ;
+  }
 
-    @Test
-    @DisplayName("1:1 문의내역 조회 잘 되는지")
-    void name() throws Exception {
-        when(inquiryService.getInquiryList(any(), any()))
-                .thenReturn(Page.empty());
+  @Test
+  @DisplayName("1:1 문의내역 조회 잘 되는지")
+  void name() throws Exception {
+    when(inquiryService.getInquiryList(any(), any()))
+        .thenReturn(Page.empty());
 
-        mockMvc.perform(get("/api/v1/inquiry")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-        ;
+    mockMvc.perform(get("/api/v1/inquiry")
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isOk())
+    ;
 
-    }
+  }
 }

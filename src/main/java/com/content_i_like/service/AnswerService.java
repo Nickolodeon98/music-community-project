@@ -15,26 +15,28 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AnswerService {
 
-    private final AnswerRepository answerRepository;
+  private final AnswerRepository answerRepository;
 
-    private final InquiryRepository inquiryRepository;
+  private final InquiryRepository inquiryRepository;
 
-    public AnswerResponse getAnswer(Long inquiryNo) {
-        Inquiry inquiry = inquiryRepository.findById(inquiryNo)
-                .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND, String.format("inquiryNo: %d not found", inquiryNo)));
+  public AnswerResponse getAnswer(Long inquiryNo) {
+    Inquiry inquiry = inquiryRepository.findById(inquiryNo)
+        .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
+            String.format("inquiryNo: %d not found", inquiryNo)));
 
-        return AnswerResponse.of(answerRepository.findByInquiry(inquiry), inquiry.getCreatedAt());
-    }
+    return AnswerResponse.of(answerRepository.findByInquiry(inquiry), inquiry.getCreatedAt());
+  }
 
-    public AnswerResponse postAnswer(Long inquiryNo, AnswerRequire answerRequire) {
-        Inquiry inquiry = inquiryRepository.findById(inquiryNo)
-                .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND, String.format("inquiryNo: %d not found", inquiryNo)));
+  public AnswerResponse postAnswer(Long inquiryNo, AnswerRequire answerRequire) {
+    Inquiry inquiry = inquiryRepository.findById(inquiryNo)
+        .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
+            String.format("inquiryNo: %d not found", inquiryNo)));
 
-        Answer answer = Answer.builder()
-                .answerContent(answerRequire.getContent())
-                .inquiry(inquiry)
-                .build();
+    Answer answer = Answer.builder()
+        .answerContent(answerRequire.getContent())
+        .inquiry(inquiry)
+        .build();
 
-        return AnswerResponse.of(answerRepository.save(answer), inquiry.getCreatedAt());
-    }
+    return AnswerResponse.of(answerRepository.save(answer), inquiry.getCreatedAt());
+  }
 }

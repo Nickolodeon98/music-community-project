@@ -15,20 +15,20 @@ import java.time.LocalDateTime;
 @Builder
 public class InquiryResponse {
 
-    private Long inquiryNo;
-    private String title;
+  private Long inquiryNo;
+  private String title;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime createdAt;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+  private LocalDateTime createdAt;
 
-    private String processingStatus;
+  private String processingStatus;
 
-    public static InquiryResponse of(Inquiry inquiry) {
-        return InquiryResponse.builder()
-                .inquiryNo(inquiry.getInquiryNo())
-                .title(inquiry.getInquiryTitle())
-                .createdAt(inquiry.getCreatedAt())
-                .processingStatus("처리중")
-                .build();
-    }
+  public static InquiryResponse of(Inquiry inquiry) {
+    return InquiryResponse.builder()
+        .inquiryNo(inquiry.getInquiryNo())
+        .title(inquiry.getInquiryTitle())
+        .createdAt(inquiry.getCreatedAt())
+        .processingStatus("처리중")
+        .build();
+  }
 }

@@ -14,18 +14,19 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class AnswerResponse {
-    private Long answerNo;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime createdAt;
+  private Long answerNo;
 
-    private String content;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+  private LocalDateTime createdAt;
 
-    public static AnswerResponse of(Answer answer, LocalDateTime createdAt) {
-        return AnswerResponse.builder()
-                .answerNo(answer.getAnswerNo())
-                .createdAt(createdAt)
-                .content(answer.getAnswerContent())
-                .build();
-    }
+  private String content;
+
+  public static AnswerResponse of(Answer answer, LocalDateTime createdAt) {
+    return AnswerResponse.builder()
+        .answerNo(answer.getAnswerNo())
+        .createdAt(createdAt)
+        .content(answer.getAnswerContent())
+        .build();
+  }
 }

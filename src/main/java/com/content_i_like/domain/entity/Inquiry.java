@@ -11,15 +11,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @Entity
-public class Inquiry extends BaseEntity{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long inquiryNo;
+public class Inquiry extends BaseEntity {
 
-    private String inquiryTitle;
-    private String inquiryContent;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long inquiryNo;
 
-    @ManyToOne
-    @JoinColumn(name = "member_no")
-    private Member member;
+  private String inquiryTitle;
+  private String inquiryContent;
+
+  @ManyToOne
+  @JoinColumn(name = "member_no")
+  private Member member;
 }

@@ -36,65 +36,65 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser
 class AnswerRestControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+  @Autowired
+  MockMvc mockMvc;
 
-    @MockBean
-    AnswerService answerService;
+  @MockBean
+  AnswerService answerService;
 
-    @MockBean
-    JwtService jwtService;
+  @MockBean
+  JwtService jwtService;
 
-    @MockBean
-    UserDetailsService userDetailsService;
+  @MockBean
+  UserDetailsService userDetailsService;
 
-    @Autowired
-    ObjectMapper objectMapper;
+  @Autowired
+  ObjectMapper objectMapper;
 
-    @Test
-    @DisplayName("문의내역 답변 불러오기 잘 되는지")
-    void answer_get_success() throws Exception {
-        when(answerService.getAnswer(any()))
-                .thenReturn(AnswerResponse.builder()
-                        .answerNo(1L)
-                        .createdAt(now())
-                        .content("testAnswer")
-                        .build());
+  @Test
+  @DisplayName("문의내역 답변 불러오기 잘 되는지")
+  void answer_get_success() throws Exception {
+    when(answerService.getAnswer(any()))
+        .thenReturn(AnswerResponse.builder()
+            .answerNo(1L)
+            .createdAt(now())
+            .content("testAnswer")
+            .build());
 
-        mockMvc.perform(get("/api/v1/answer/1")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.result.answerNo").exists())
-                .andExpect(jsonPath("$.result.createdAt").exists())
-                .andExpect(jsonPath("$.result.content").exists())
-        ;
-    }
+    mockMvc.perform(get("/api/v1/answer/1")
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.result.answerNo").exists())
+        .andExpect(jsonPath("$.result.createdAt").exists())
+        .andExpect(jsonPath("$.result.content").exists())
+    ;
+  }
 
-    @Test
-    @DisplayName("문의내역 답변 등록하기 잘 되는지")
-    void answer_post_success() throws Exception {
-        AnswerRequire answerRequire = AnswerRequire.builder()
-                .content("testAnswer")
-                .build();
+  @Test
+  @DisplayName("문의내역 답변 등록하기 잘 되는지")
+  void answer_post_success() throws Exception {
+    AnswerRequire answerRequire = AnswerRequire.builder()
+        .content("testAnswer")
+        .build();
 
-        when(answerService.postAnswer(any(), any()))
-                .thenReturn(AnswerResponse.builder()
-                        .answerNo(1L)
-                        .createdAt(now())
-                        .content("testAnswer")
-                        .build());
+    when(answerService.postAnswer(any(), any()))
+        .thenReturn(AnswerResponse.builder()
+            .answerNo(1L)
+            .createdAt(now())
+            .content("testAnswer")
+            .build());
 
-        mockMvc.perform(post("/api/v1/answer/1")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(answerRequire)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.result.answerNo").exists())
-                .andExpect(jsonPath("$.result.createdAt").exists())
-                .andExpect(jsonPath("$.result.content").exists())
-        ;
-    }
+    mockMvc.perform(post("/api/v1/answer/1")
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(answerRequire)))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.result.answerNo").exists())
+        .andExpect(jsonPath("$.result.createdAt").exists())
+        .andExpect(jsonPath("$.result.content").exists())
+    ;
+  }
 }

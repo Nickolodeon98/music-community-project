@@ -24,36 +24,38 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class InquiryService {
 
-    private final InquiryRepository inquiryRepository;
+  private final InquiryRepository inquiryRepository;
 
-    private final MemberRepository memberRepository;
+  private final MemberRepository memberRepository;
 
-    private final AnswerRepository answerRepository;
+  private final AnswerRepository answerRepository;
 
-    //1:1 문의 등록하기
-    public InquiryResponse postInquiry(String userEmail, InquiryRequire inquiryRequire) {
+  //1:1 문의 등록하기
+  public InquiryResponse postInquiry(String userEmail, InquiryRequire inquiryRequire) {
 
-        Member member = memberRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND, String.format("Email: %s not found", userEmail)));
+    Member member = memberRepository.findByEmail(userEmail)
+        .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
+            String.format("Email: %s not found", userEmail)));
 
-        Inquiry inquiry = Inquiry.builder()
-                .inquiryTitle(inquiryRequire.getTitle())
-                .inquiryContent(inquiryRequire.getContent())
-                .member(member)
-                .build();
+    Inquiry inquiry = Inquiry.builder()
+        .inquiryTitle(inquiryRequire.getTitle())
+        .inquiryContent(inquiryRequire.getContent())
+        .member(member)
+        .build();
 
-        Inquiry savedInquiry = inquiryRepository.save(inquiry);
+    Inquiry savedInquiry = inquiryRepository.save(inquiry);
 
-        return InquiryResponse.of(savedInquiry);
-    }
+    return InquiryResponse.of(savedInquiry);
+  }
 
-    public Page<InquiryResponse> getInquiryList(Pageable pageable, String userEmail) {
+  public Page<InquiryResponse> getInquiryList(Pageable pageable, String userEmail) {
 
-        Member member = memberRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND, String.format("Email: %s not found", userEmail)));
+    Member member = memberRepository.findByEmail(userEmail)
+        .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
+            String.format("Email: %s not found", userEmail)));
 
-
-        Page<Inquiry> inquiries = inquiryRepository.findAllByMemberAndCreatedAtAfter(pageable, member, LocalDateTime.now().minusMonths(6));
-        return inquiries.map(InquiryResponse::of);
-    }
+    Page<Inquiry> inquiries = inquiryRepository.findAllByMemberAndCreatedAtAfter(pageable, member,
+        LocalDateTime.now().minusMonths(6));
+    return inquiries.map(InquiryResponse::of);
+  }
 }

@@ -8,17 +8,19 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Builder
+@Getter
+@Builder
 public class FaqDetailsResponse {
-    private String faqCategory;
-    private String faqTitle;
-    private String faqContent;
 
-    public static FaqDetailsResponse of(FAQ faq) {
-        return FaqDetailsResponse.builder()
-                .faqCategory(faq.getFaqCategory())
-                .faqContent(faq.getFaqContent())
-                .faqTitle(faq.getFaqTitle())
-                .build();
-    }
+  private String faqCategory;
+  private String faqTitle;
+  private String faqContent;
+
+  public static FaqDetailsResponse of(FAQ faq) {
+    return FaqDetailsResponse.builder()
+        .faqCategory(faq.getFaqCategory())
+        .faqContent(faq.getFaqContent())
+        .faqTitle(faq.getFaqTitle())
+        .build();
+  }
 }

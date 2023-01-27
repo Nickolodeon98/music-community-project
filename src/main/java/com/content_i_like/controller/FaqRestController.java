@@ -18,30 +18,32 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/faq")
 public class FaqRestController {
 
-    private final FaqService faqService;
+  private final FaqService faqService;
 
-    @GetMapping()
-    public Response<Page<FaqResponse>> getAllFaq(Pageable pageable){
-        return Response.success(faqService.getAllFaq(pageable));
-    }
+  @GetMapping()
+  public Response<Page<FaqResponse>> getAllFaq(Pageable pageable) {
+    return Response.success(faqService.getAllFaq(pageable));
+  }
 
-    @GetMapping("/{category}")
-    public Response<Page<FaqResponse>> getFaqByCategory(Pageable pageable, @PathVariable String category) {
-        return Response.success(faqService.getFaqByCategory(pageable, category));
-    }
+  @GetMapping("/{category}")
+  public Response<Page<FaqResponse>> getFaqByCategory(Pageable pageable,
+      @PathVariable String category) {
+    return Response.success(faqService.getFaqByCategory(pageable, category));
+  }
 
-    @GetMapping("/searches/{keyWord}")
-    public Response<Page<FaqResponse>> getFaqByKeyWord(Pageable pageable, @PathVariable String keyWord) {
-        return Response.success(faqService.getFaqByKeyWord(pageable, keyWord));
-    }
+  @GetMapping("/searches/{keyWord}")
+  public Response<Page<FaqResponse>> getFaqByKeyWord(Pageable pageable,
+      @PathVariable String keyWord) {
+    return Response.success(faqService.getFaqByKeyWord(pageable, keyWord));
+  }
 
-    @GetMapping("/details/{faqNo}")
-    public Response<FaqDetailsResponse> getFaqDetails(@PathVariable Long faqNo) {
-        return Response.success(faqService.getFaqDetails(faqNo));
-    }
+  @GetMapping("/details/{faqNo}")
+  public Response<FaqDetailsResponse> getFaqDetails(@PathVariable Long faqNo) {
+    return Response.success(faqService.getFaqDetails(faqNo));
+  }
 
-    @PostMapping()
-    public Response<FaqResponse> addFaq(@RequestBody FaqRequest faqRequest) {
-        return Response.success(faqService.addFaq(faqRequest));
-    }
+  @PostMapping()
+  public Response<FaqResponse> addFaq(@RequestBody FaqRequest faqRequest) {
+    return Response.success(faqService.addFaq(faqRequest));
+  }
 }

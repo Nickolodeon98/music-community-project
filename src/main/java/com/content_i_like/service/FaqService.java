@@ -18,30 +18,31 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FaqService {
 
-    private final FAQRepository faqRepository;
+  private final FAQRepository faqRepository;
 
-    public Page<FaqResponse> getAllFaq(Pageable pageable){
-        return faqRepository.findAll(pageable).map(FaqResponse::of);
-    }
+  public Page<FaqResponse> getAllFaq(Pageable pageable) {
+    return faqRepository.findAll(pageable).map(FaqResponse::of);
+  }
 
-    public Page<FaqResponse> getFaqByCategory(Pageable pageable, String faqCategory) {
-        return faqRepository.findAllByFaqCategory(pageable, faqCategory).map(FaqResponse::of);
-    }
+  public Page<FaqResponse> getFaqByCategory(Pageable pageable, String faqCategory) {
+    return faqRepository.findAllByFaqCategory(pageable, faqCategory).map(FaqResponse::of);
+  }
 
-    public Page<FaqResponse> getFaqByKeyWord(Pageable pageable, String keyWord) {
-        return faqRepository.findAllByFaqTitleContaining(pageable, keyWord).map(FaqResponse::of);
-    }
+  public Page<FaqResponse> getFaqByKeyWord(Pageable pageable, String keyWord) {
+    return faqRepository.findAllByFaqTitleContaining(pageable, keyWord).map(FaqResponse::of);
+  }
 
-    public FaqDetailsResponse getFaqDetails(Long faqNo) {
+  public FaqDetailsResponse getFaqDetails(Long faqNo) {
 
-        //faq가 존재하는지 검증
-        Optional<FAQ> optionalFAQ = faqRepository.findById(faqNo);
-        optionalFAQ.orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND, String.format("faqNo:%d not exist")));
+    //faq가 존재하는지 검증
+    Optional<FAQ> optionalFAQ = faqRepository.findById(faqNo);
+    optionalFAQ.orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
+        String.format("faqNo:%d not exist")));
 
-        return FaqDetailsResponse.of(optionalFAQ.get());
-    }
+    return FaqDetailsResponse.of(optionalFAQ.get());
+  }
 
-    public FaqResponse addFaq(FaqRequest faqRequest) {
-        return FaqResponse.of(faqRepository.save(faqRequest.toEntity()));
-    }
+  public FaqResponse addFaq(FaqRequest faqRequest) {
+    return FaqResponse.of(faqRepository.save(faqRequest.toEntity()));
+  }
 }

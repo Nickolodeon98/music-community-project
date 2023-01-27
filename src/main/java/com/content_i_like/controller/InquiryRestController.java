@@ -15,16 +15,17 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class InquiryRestController {
 
-    private final InquiryService inquiryService;
+  private final InquiryService inquiryService;
 
-    @PostMapping()
-    public Response<InquiryResponse> postInquiry(@RequestBody InquiryRequire inquiryRequire, Authentication authentication) {
-        return Response.success(inquiryService.postInquiry(authentication.getName(), inquiryRequire));
-    }
+  @PostMapping()
+  public Response<InquiryResponse> postInquiry(@RequestBody InquiryRequire inquiryRequire,
+      Authentication authentication) {
+    return Response.success(inquiryService.postInquiry(authentication.getName(), inquiryRequire));
+  }
 
-    @GetMapping()
-    public Response<Page<InquiryResponse>> getInquiryList(Pageable pageable,
-                                                          Authentication authentication) {
-        return Response.success(inquiryService.getInquiryList(pageable, authentication.getName()));
-    }
+  @GetMapping()
+  public Response<Page<InquiryResponse>> getInquiryList(Pageable pageable,
+      Authentication authentication) {
+    return Response.success(inquiryService.getInquiryList(pageable, authentication.getName()));
+  }
 }

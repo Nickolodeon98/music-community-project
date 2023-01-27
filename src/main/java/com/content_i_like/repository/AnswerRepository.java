@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
-    public Answer findByInquiry(Inquiry inquiry);
+  public Answer findByInquiry(Inquiry inquiry);
 }
