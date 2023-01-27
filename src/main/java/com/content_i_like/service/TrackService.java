@@ -198,6 +198,11 @@ public class TrackService {
             ResponseEntity<String> response = restTemplate
                     .exchange(trackUri + ids, HttpMethod.GET, httpEntity, String.class);
             log.info("tracksInfo:{}",response.getBody());
+            JsonNode trackInfoRoot = objectMapper.readTree(response.getBody());
+            for (int j = 0; j < 50; j++) {
+                trackTitle = trackInfoRoot.at("/tracks/" + j + "/name").asText();
+                trackTitles.add(trackTitle);
+            }
         }
 
         return trackTitles;
