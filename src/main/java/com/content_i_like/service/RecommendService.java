@@ -5,6 +5,7 @@ import com.content_i_like.domain.entity.*;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.*;
+import java.io.File;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ public class RecommendService {
   private final AlbumRepository albumRepository;
   private final ArtistRepository artistRepository;
   private final SongRepository songRepository;
+  private final S3FileUploadService s3FileUploadService;
 
 
   /**
@@ -37,7 +39,8 @@ public class RecommendService {
    */
   @Transactional
   public RecommendPostResponse uploadPost(final String userEmail,
-      final RecommendPostRequest request) {
+      final RecommendPostRequest request,
+      MultipartFile image) throws IOException {
     // 글을 작성하는 Member 확인
     Member member = validateGetMemberInfoByUserEmail(userEmail);
 
@@ -47,8 +50,11 @@ public class RecommendService {
           throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
         });
 
+    String url = s3FileUploadService.uploadFile(image);
+
     Recommend recommend = recommendRepository.save(
-        RecommendPostRequest.toEntity(request, member, song));
+        RecommendPostRequest.toEntity(request, member, song, url));
+
     return new RecommendPostResponse(recommend.getRecommendNo(), recommend.getRecommendTitle(),
         recommend.getRecommendPoint());
   }

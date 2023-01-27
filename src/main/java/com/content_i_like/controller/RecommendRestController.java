@@ -10,6 +10,7 @@ import com.content_i_like.domain.dto.recommend.RecommendPostResponse;
 import com.content_i_like.domain.dto.recommend.RecommendReadResponse;
 import com.content_i_like.service.RecommendService;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/recommends")
@@ -44,11 +47,12 @@ public class RecommendRestController {
    */
   @PostMapping
   public Response<RecommendPostResponse> uploadRecommendPost(final Authentication authentication,
-      @RequestBody @Valid final RecommendPostRequest request) {
+      @RequestPart(required = false, name = "image") MultipartFile image,
+      @RequestPart(name = "request") @Valid final RecommendPostRequest request) throws IOException {
     String userEmail = authentication.getName();
-    log.info("user_email = {}, recommend_post_request = {}", userEmail, request);
+    log.info("user_email = {}, recommend_post_request = {}, image = {}", userEmail, request, image);
 
-    RecommendPostResponse response = recommendService.uploadPost(userEmail, request);
+    RecommendPostResponse response = recommendService.uploadPost(userEmail, request, image);
     return Response.success(response);
   }
 
