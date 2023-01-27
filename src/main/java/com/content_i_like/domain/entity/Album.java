@@ -19,7 +19,6 @@ public class Album {
     private String albumImageUrl;
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "artistNo", name = "artist_no")
+    @JoinColumn(referencedColumnName = "artistName", name = "artist_name")
     private Artist artist;
-
 }
