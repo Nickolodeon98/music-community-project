@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class MemberModifyRequest {
-    private String profileImgUrl;
     private String introduction;
     private GenderEnum gender;
     private Integer birth;

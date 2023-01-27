@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +21,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final S3FileUploadService s3FileUploadService;
 
     @Transactional
     public MemberJoinResponse join(MemberJoinRequest memberJoinRequest){
@@ -81,15 +85,19 @@ public class MemberService {
 
     public String changePw(ChangePwRequest changePwRequest, String username) {
         Member member = validateExistingMember(username);
-
-        //같은 비밀번호 2번 입력하여 확인하기
-        if(changePwRequest.getNewPassword().equals(changePwRequest.getVerification())){
-            memberRepository.updateMemberPassword(member.getMemberNo(), changePwRequest.getNewPassword());
-        } else {
-            throw new ContentILikeAppException(ErrorCode.NOT_FOUND,"비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
-        }
+        verifyPasswordAndUpdate(member, changePwRequest.getNewPassword(), changePwRequest.getVerification());
 
         return "비밀번호 변경 완료";
+    }
+
+    //같은 비밀번호 2번 입력하여 확인하고 변경하기
+    private void verifyPasswordAndUpdate(Member member, String newPassword, String verification) {
+        if (newPassword.equals(verification)) {
+            String password = passwordEncoder.encode(newPassword);
+            memberRepository.updateMemberPassword(member.getMemberNo(), password);
+        } else {
+            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+        }
     }
 
     public MemberResponse getMyInfo(String username){
@@ -100,16 +108,32 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponse modifyMyInfo(MemberModifyRequest memberModifyRequest, String username){
+    public MemberResponse modifyMyInfo(MemberModifyRequest memberModifyRequest, MultipartFile file, String username) throws IOException {
         Member member = validateExistingMember(username);
 
-        if(memberModifyRequest.getNewPassword().equals(memberModifyRequest.getVerification())){
-            member.update(memberModifyRequest);
-        } else {
-            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
-        }
+        uploadProfileImg(file, member);
+
+        verifyPasswordAndUpdate(member, memberModifyRequest.getNewPassword(), memberModifyRequest.getVerification());
+        member.update(memberModifyRequest);
 
         MemberResponse memberResponse = new MemberResponse();
         return memberResponse.toResponse(memberRepository.saveAndFlush(member));
+    }
+
+    private String uploadProfileImg(MultipartFile file, Member member) throws IOException {
+        String url = s3FileUploadService.uploadFile(file);
+        member.updateImg(url);
+        return url;
+    }
+
+    @Transactional
+    public String uploadProfileImg(String username, MultipartFile file) throws IOException {
+        Member member = validateExistingMember(username);
+
+        String url = uploadProfileImg(file, member);
+
+        memberRepository.saveAndFlush(member);
+
+        return url;
     }
 }
