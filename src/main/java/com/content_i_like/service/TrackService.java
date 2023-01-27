@@ -150,7 +150,8 @@ public class TrackService {
                     /* https://api.spotify.com/v1/tracks/ 의 길이는 0 ~ 33 까지
                      * 그러므로 substring(34, lastIndex) 를 해야 트랙 아이디 값만 저장할 수 있다.
                      * 3H0XfUU13vsWC6smb9guvG */
-                    ids.add(hrefContainingId.substring(34));
+//                    ids.add(hrefContainingId.substring(34));
+                    ids.add(hrefContainingId);
                 }
 
 //                List<String> trackTitles = tracksSource.findValuesAsText("name");
