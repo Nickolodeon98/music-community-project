@@ -18,122 +18,127 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-    private final S3FileUploadService s3FileUploadService;
+  private final MemberRepository memberRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final JwtService jwtService;
+  private final S3FileUploadService s3FileUploadService;
 
-    @Transactional
-    public MemberJoinResponse join(MemberJoinRequest memberJoinRequest){
+  @Transactional
+  public MemberJoinResponse join(MemberJoinRequest memberJoinRequest) {
 
-        //가입한 이력이 있는지 확인 -> 가입 아이디 email 중복 여부 & 사용 중인 닉네임이 아닌지 확인
-        validateDuplicatedMember(memberJoinRequest);
+    //가입한 이력이 있는지 확인 -> 가입 아이디 email 중복 여부 & 사용 중인 닉네임이 아닌지 확인
+    validateDuplicatedMember(memberJoinRequest);
 
-        //비밀번호 조건에 맞는지 확인
-        if(memberJoinRequest.getPassword().length()<8 || memberJoinRequest.getPassword().length()>16){
-            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "비밀번호는 8~16자입니다.");
-        }
-
-        Member savedMember = memberRepository.save(memberJoinRequest.toEntity(passwordEncoder.encode(memberJoinRequest.getPassword())));
-
-        return new MemberJoinResponse(savedMember.getMemberNo(), savedMember.getNickName());
+    //비밀번호 조건에 맞는지 확인
+    if (memberJoinRequest.getPassword().length() < 8
+        || memberJoinRequest.getPassword().length() > 16) {
+      throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "비밀번호는 8~16자입니다.");
     }
 
-    private void validateDuplicatedMember(MemberJoinRequest memberJoinRequest) {
-        memberRepository.findByEmail(memberJoinRequest.getEmail())
-                .ifPresent(member -> {
-                    throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "이미 가입된 email입니다.");
-                });
+    Member savedMember = memberRepository
+        .save(memberJoinRequest.toEntity(passwordEncoder.encode(memberJoinRequest.getPassword())));
 
-        memberRepository.findByNickName(memberJoinRequest.getNickName())
-                .ifPresent(member -> {
-                    throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "이미 사용 중인 닉네임입니다.");
-                });
+    return new MemberJoinResponse(savedMember.getMemberNo(), savedMember.getNickName());
+  }
+
+  private void validateDuplicatedMember(MemberJoinRequest memberJoinRequest) {
+    memberRepository.findByEmail(memberJoinRequest.getEmail())
+        .ifPresent(member -> {
+          throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "이미 가입된 email입니다.");
+        });
+
+    memberRepository.findByNickName(memberJoinRequest.getNickName())
+        .ifPresent(member -> {
+          throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "이미 사용 중인 닉네임입니다.");
+        });
+  }
+
+  public MemberLoginResponse login(MemberLoginRequest memberLoginRequest) {
+
+    //email 확인
+    Member member = validateExistingMember(memberLoginRequest.getEmail());
+
+    //password 일치 여부
+    if (!passwordEncoder.matches(memberLoginRequest.getPassword(), member.getPassword())) {
+      throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "password가 일치하지 않습니다.");
     }
 
-    public MemberLoginResponse login(MemberLoginRequest memberLoginRequest){
+    String jwt = jwtService.generateToken(member);
 
-        //email 확인
-        Member member = validateExistingMember(memberLoginRequest.getEmail());
+    return new MemberLoginResponse(jwt, member.getNickName());
+  }
 
-        //password 일치 여부
-        if(!passwordEncoder.matches(memberLoginRequest.getPassword(), member.getPassword())){
-            throw new ContentILikeAppException(ErrorCode.NOT_FOUND,"password가 일치하지 않습니다.");
-        }
+  private Member validateExistingMember(String email) {
+    Member member = memberRepository.findByEmail(email)
+        .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND, "존재하지 않는 email입니다."));
+    return member;
+  }
 
-        String jwt = jwtService.generateToken(member);
+  public MailDto findPwByEmail(MemberFindRequest memberFindRequest) {
+    Member member = validateExistingMember(memberFindRequest.getEmail());
 
-        return new MemberLoginResponse(jwt, member.getNickName());
+    //name과 일치 여부
+    if (!memberFindRequest.getName().equals(member.getName())) {
+      throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "잘못된 정보입니다. 이름과 일치하지 않습니다.");
     }
 
-    private Member validateExistingMember(String email) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(()-> new ContentILikeAppException(ErrorCode.NOT_FOUND, "존재하지 않는 email입니다."));
-        return member;
+    return new MailDto(member.getEmail(), "", "");
+  }
+
+  public String changePw(ChangePwRequest changePwRequest, String username) {
+    Member member = validateExistingMember(username);
+    verifyPasswordAndUpdate(member, changePwRequest.getNewPassword(),
+        changePwRequest.getVerification());
+
+    return "비밀번호 변경 완료";
+  }
+
+  //같은 비밀번호 2번 입력하여 확인하고 변경하기
+  private void verifyPasswordAndUpdate(Member member, String newPassword, String verification) {
+    if (newPassword.equals(verification)) {
+      String password = passwordEncoder.encode(newPassword);
+      memberRepository.updateMemberPassword(member.getMemberNo(), password);
+    } else {
+      throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
     }
+  }
 
-    public MailDto findPwByEmail(MemberFindRequest memberFindRequest) {
-        Member member = validateExistingMember(memberFindRequest.getEmail());
+  public MemberResponse getMyInfo(String username) {
+    Member member = validateExistingMember(username);
 
-        //name과 일치 여부
-        if(!memberFindRequest.getName().equals(member.getName())){
-            throw new ContentILikeAppException(ErrorCode.NOT_FOUND,"잘못된 정보입니다. 이름과 일치하지 않습니다.");
-        }
+    MemberResponse memberResponse = new MemberResponse();
+    return memberResponse.toResponse(member);
+  }
 
-        return new MailDto(member.getEmail(),"","");
-    }
+  @Transactional
+  public MemberResponse modifyMyInfo(MemberModifyRequest memberModifyRequest, MultipartFile file,
+      String username) throws IOException {
+    Member member = validateExistingMember(username);
 
-    public String changePw(ChangePwRequest changePwRequest, String username) {
-        Member member = validateExistingMember(username);
-        verifyPasswordAndUpdate(member, changePwRequest.getNewPassword(), changePwRequest.getVerification());
+    uploadProfileImg(file, member);
 
-        return "비밀번호 변경 완료";
-    }
+    verifyPasswordAndUpdate(member, memberModifyRequest.getNewPassword(),
+        memberModifyRequest.getVerification());
+    member.update(memberModifyRequest);
 
-    //같은 비밀번호 2번 입력하여 확인하고 변경하기
-    private void verifyPasswordAndUpdate(Member member, String newPassword, String verification) {
-        if (newPassword.equals(verification)) {
-            String password = passwordEncoder.encode(newPassword);
-            memberRepository.updateMemberPassword(member.getMemberNo(), password);
-        } else {
-            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
-        }
-    }
+    MemberResponse memberResponse = new MemberResponse();
+    return memberResponse.toResponse(memberRepository.saveAndFlush(member));
+  }
 
-    public MemberResponse getMyInfo(String username){
-        Member member = validateExistingMember(username);
+  private String uploadProfileImg(MultipartFile file, Member member) throws IOException {
+    String url = s3FileUploadService.uploadFile(file);
+    member.updateImg(url);
+    return url;
+  }
 
-        MemberResponse memberResponse = new MemberResponse();
-        return memberResponse.toResponse(member);
-    }
+  @Transactional
+  public String uploadProfileImg(String username, MultipartFile file) throws IOException {
+    Member member = validateExistingMember(username);
 
-    @Transactional
-    public MemberResponse modifyMyInfo(MemberModifyRequest memberModifyRequest, MultipartFile file, String username) throws IOException {
-        Member member = validateExistingMember(username);
+    String url = uploadProfileImg(file, member);
 
-        uploadProfileImg(file, member);
+    memberRepository.saveAndFlush(member);
 
-        verifyPasswordAndUpdate(member, memberModifyRequest.getNewPassword(), memberModifyRequest.getVerification());
-        member.update(memberModifyRequest);
-
-        MemberResponse memberResponse = new MemberResponse();
-        return memberResponse.toResponse(memberRepository.saveAndFlush(member));
-    }
-
-    private String uploadProfileImg(MultipartFile file, Member member) throws IOException {
-        String url = s3FileUploadService.uploadFile(file);
-        member.updateImg(url);
-        return url;
-    }
-
-    @Transactional
-    public String uploadProfileImg(String username, MultipartFile file) throws IOException {
-        Member member = validateExistingMember(username);
-
-        String url = uploadProfileImg(file, member);
-
-        memberRepository.saveAndFlush(member);
-
-        return url;
-    }
+    return url;
+  }
 }

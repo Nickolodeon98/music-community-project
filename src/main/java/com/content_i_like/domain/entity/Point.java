@@ -12,21 +12,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Point extends BaseEntity{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pointNo;
+public class Point extends BaseEntity {
 
-    @Enumerated(EnumType.STRING)
-    private PointTypeEnum pointType;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long pointNo;
 
-    private Long pointExpense;
-    private Long pointIncome;
+  @Enumerated(EnumType.STRING)
+  private PointTypeEnum pointType;
 
-    private Long targetRecommendNo;
-    private Long targetCommentNo;
+  private Long pointExpense;
+  private Long pointIncome;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
-    private Member member;
+  private Long targetRecommendNo;
+  private Long targetCommentNo;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_no")
+  private Member member;
 }

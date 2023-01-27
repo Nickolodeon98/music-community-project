@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class MemberModifyRequest {
-    private String introduction;
-    private GenderEnum gender;
-    private Integer birth;
-    private String newPassword;
-    private String verification;
+
+  private String introduction;
+  private GenderEnum gender;
+  private Integer birth;
+  private String newPassword;
+  private String verification;
 }

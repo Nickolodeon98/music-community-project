@@ -10,12 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    Optional<Member> findByEmail(String email);
-    Optional<Member> findByNickName(String nickName);
-    Optional<Member> findBySnsCheck(String snsCheck);
 
-    @Transactional
-    @Modifying
-    @Query(value = "UPDATE member set password = :pw where member_no= :memberNo",nativeQuery = true)
-    void updateMemberPassword(@Param("memberNo") Long memberNo,@Param("pw") String pw);
+  Optional<Member> findByEmail(String email);
+
+  Optional<Member> findByNickName(String nickName);
+
+  Optional<Member> findBySnsCheck(String snsCheck);
+
+  @Transactional
+  @Modifying
+  @Query(value = "UPDATE member set password = :pw where member_no= :memberNo", nativeQuery = true)
+  void updateMemberPassword(@Param("memberNo") Long memberNo, @Param("pw") String pw);
 }
