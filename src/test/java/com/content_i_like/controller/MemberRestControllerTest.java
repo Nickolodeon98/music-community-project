@@ -152,8 +152,14 @@ class MemberRestControllerTest {
         .email("test@gmail.com")
         .nickName("nickname")
         .build();
+    Member member = Member.builder()
+        .memberNo(1l)
+        .email("test@gmail.com")
+        .nickName("nickname")
+        .build();
 
-    Mockito.when(memberService.getMyInfo(any())).thenReturn(response);
+    Mockito.when(memberService.getMyInfo(any())).thenReturn(member);
+    Mockito.when(pointService.calculatePoint(any())).thenReturn(1000l);
 
     mockMvc.perform(get("/api/v1/member/my")
         .with(csrf())
@@ -161,7 +167,8 @@ class MemberRestControllerTest {
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-        .andExpect(jsonPath("$.result.email").value(response.getEmail()));
+        .andExpect(jsonPath("$.result.email").value(response.getEmail()))
+        .andExpect(jsonPath("$.result.point").value(1000l));
   }
 
   @Test
