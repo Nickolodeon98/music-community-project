@@ -2,12 +2,14 @@ package com.content_i_like.controller;
 
 import com.content_i_like.config.JwtService;
 import com.content_i_like.domain.dto.member.*;
+import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.enums.GenderEnum;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.service.MailService;
 import com.content_i_like.service.MemberService;
 import com.content_i_like.service.OAuthService;
+import com.content_i_like.service.PointService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -57,6 +59,9 @@ class MemberRestControllerTest {
   MemberService memberService;
 
   @MockBean
+  PointService pointService;
+
+  @MockBean
   MailService mailService;
 
   @MockBean
@@ -77,9 +82,12 @@ class MemberRestControllerTest {
         .gender(GenderEnum.UNKNOWN)
         .birth(0)
         .build();
-    MemberJoinResponse memberJoinResponse = new MemberJoinResponse(1L, "nickname");
+    Member member = Member.builder()
+        .memberNo(1l)
+        .nickName("nickname")
+        .build();
 
-    Mockito.when(memberService.join(any())).thenReturn(memberJoinResponse);
+    Mockito.when(memberService.join(any())).thenReturn(member);
 
     mockMvc.perform(post("/api/v1/member/join")
         .with(csrf())
