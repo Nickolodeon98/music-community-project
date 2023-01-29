@@ -24,7 +24,7 @@ public class MemberService {
   private final S3FileUploadService s3FileUploadService;
 
   @Transactional
-  public MemberJoinResponse join(MemberJoinRequest memberJoinRequest) {
+  public Member join(MemberJoinRequest memberJoinRequest) {
 
     //가입한 이력이 있는지 확인 -> 가입 아이디 email 중복 여부 & 사용 중인 닉네임이 아닌지 확인
     validateDuplicatedMember(memberJoinRequest);
@@ -35,10 +35,12 @@ public class MemberService {
       throw new ContentILikeAppException(ErrorCode.NOT_FOUND, "비밀번호는 8~16자입니다.");
     }
 
-    Member savedMember = memberRepository
-        .save(memberJoinRequest.toEntity(passwordEncoder.encode(memberJoinRequest.getPassword())));
+    Member member = memberJoinRequest
+        .toEntity(passwordEncoder.encode(memberJoinRequest.getPassword()));
 
-    return new MemberJoinResponse(savedMember.getMemberNo(), savedMember.getNickName());
+    Member savedMember = memberRepository.save(member);
+
+    return savedMember;
   }
 
   private void validateDuplicatedMember(MemberJoinRequest memberJoinRequest) {
@@ -103,11 +105,9 @@ public class MemberService {
     }
   }
 
-  public MemberResponse getMyInfo(String username) {
+  public Member getMyInfo(String username) {
     Member member = validateExistingMember(username);
-
-    MemberResponse memberResponse = new MemberResponse();
-    return memberResponse.toResponse(member);
+    return member;
   }
 
   @Transactional

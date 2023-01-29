@@ -14,7 +14,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -53,9 +52,6 @@ public class Member extends BaseEntity implements UserDetails {
   private GenderEnum gender;
 
   private Integer birth;
-
-  @OneToMany(mappedBy = "member")
-  private List<Point> pointNo;
 
   public void update(MemberModifyRequest request) {
     this.introduction = request.getIntroduction();

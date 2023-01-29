@@ -2,8 +2,11 @@ package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.member.*;
+import com.content_i_like.domain.entity.Member;
+import com.content_i_like.domain.entity.Point;
 import com.content_i_like.service.MailService;
 import com.content_i_like.service.MemberService;
+import com.content_i_like.service.PointService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -19,11 +22,13 @@ public class MemberRestController {
 
   private final MemberService memberService;
   private final MailService mailService;
+  private final PointService pointService;
 
   @PostMapping("/join")
   public Response<MemberJoinResponse> join(@RequestBody @Valid final MemberJoinRequest request) {
-    MemberJoinResponse userJoinResponse = memberService.join(request);
-    return Response.success(userJoinResponse);
+    Member member = memberService.join(request);
+    pointService.giveWelcomePoint(member);
+    return Response.success(new MemberJoinResponse(member.getMemberNo(), member.getNickName()));
   }
 
   @PostMapping("/login")
@@ -50,8 +55,10 @@ public class MemberRestController {
   @GetMapping("/my")
   public Response<MemberResponse> getMyInfo(final Authentication authentication) {
     String username = authentication.getName();
-    MemberResponse memberResponse = memberService.getMyInfo(username);
-    return Response.success(memberResponse);
+    Member member = memberService.getMyInfo(username);
+    Long point = pointService.calculatePoint(member);
+    MemberResponse memberResponse = new MemberResponse();
+    return Response.success(memberResponse.responseWithPoint(member, point));
   }
 
   @PutMapping("/my")
