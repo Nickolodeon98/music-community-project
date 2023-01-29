@@ -22,7 +22,7 @@ public class MemberResponse {
   private String status;
   private String gender;
   private Integer birth;
-  private List<Point> point;
+  private Long point;
 
   public MemberResponse toResponse(Member member) {
     return MemberResponse.builder()
@@ -33,7 +33,20 @@ public class MemberResponse {
         .status(String.valueOf(member.getStatus()))
         .gender(String.valueOf(member.getGender()))
         .birth(member.getBirth())
-        .point(member.getPointNo())
+        .point(this.point)
+        .build();
+  }
+
+  public MemberResponse responseWithPoint(Member member, Long point) {
+    return MemberResponse.builder()
+        .email(member.getEmail())
+        .profileImgUrl(member.getProfileImgUrl())
+        .nickName(member.getNickName())
+        .introduction(member.getIntroduction())
+        .status(String.valueOf(member.getStatus()))
+        .gender(String.valueOf(member.getGender()))
+        .birth(member.getBirth())
+        .point(point)
         .build();
   }
 }
