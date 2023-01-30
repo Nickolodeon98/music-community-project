@@ -6,27 +6,33 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Entity
-public class Point extends BaseEntity{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pointNo;
+@DynamicInsert
+public class Point extends BaseEntity {
 
-    @Enumerated(EnumType.STRING)
-    private PointTypeEnum pointType;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long pointNo;
 
-    private Long pointExpense;
-    private Long pointIncome;
+  @Enumerated(EnumType.STRING)
+  private PointTypeEnum pointType;
 
-    private Long targetRecommendNo;
-    private Long targetCommentNo;
+  private Long pointExpense;
+  private Long pointIncome;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
-    private Member member;
+  @Column(nullable = false)
+  private Long targetRecommendNo;
+
+  @Column(nullable = false)
+  private Long targetCommentNo;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_no")
+  private Member member;
 }

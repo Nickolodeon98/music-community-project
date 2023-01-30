@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class MemberJoinResponse {
-    private Long no;
-    private String nickName;
+
+  private Long no;
+  private String nickName;
 }

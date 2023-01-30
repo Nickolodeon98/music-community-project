@@ -10,17 +10,19 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter @Builder
+@Getter
+@Builder
 public class RecommendReadResponse {
-    private String recommendTitle;
-    private String memberNickname;
-    private String albumImageUrl;
-    private String songTitle;
-    private String artistName;
-    private List<Comment> comments;
-    private String recommendContent;
-    private Long countLikes;
-    private Long recommendPoint;
-    private Long accumulatedPoints;
-    private String recommendYoutubeUrl;
+
+  private String recommendTitle;
+  private String memberNickname;
+  private String albumImageUrl;
+  private String songTitle;
+  private String artistName;
+  private List<Comment> comments;
+  private String recommendContent;
+  private Long countLikes;
+  private Long recommendPoint;
+  private Long accumulatedPoints;
+  private String recommendYoutubeUrl;
 }

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FAQRepository extends JpaRepository<FAQ, Long> {
 
-    Page<FAQ> findAllByFaqCategory(Pageable pageable, String faqCategory);
+  Page<FAQ> findAllByFaqCategory(Pageable pageable, String faqCategory);
 
-    Page<FAQ> findAllByFaqTitleContaining(Pageable pageable, String title);
+  Page<FAQ> findAllByFaqTitleContaining(Pageable pageable, String title);
 }
