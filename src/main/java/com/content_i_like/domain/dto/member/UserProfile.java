@@ -8,17 +8,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public class UserProfile {
-    private final String oauthId;
-    private final String name;
-    private final String email;
 
-    public Member toMember(){
-        return Member.builder()
-                .email(this.email)
-                .name(this.name)
-                .snsCheck(this.oauthId)
-                .nickName(this.email)
-                .status(MemberStatusEnum.USER)
-                .build();
-    }
+  private final String oauthId;
+  private final String name;
+  private final String email;
+
+  public Member toMember() {
+    return Member.builder()
+        .email(this.email)
+        .name(this.name)
+        .snsCheck(this.oauthId)
+        .nickName(this.email)
+        .status(MemberStatusEnum.USER)
+        .build();
+  }
 }
