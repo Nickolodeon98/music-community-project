@@ -1,6 +1,7 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
+import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackResponse;
 import com.content_i_like.domain.enums.TrackEnum;
 import com.content_i_like.service.AlbumFetch;
@@ -40,16 +41,12 @@ public class TestRestController {
 //    }
 
   @GetMapping("/tracks")
-  public Response<List<String>> getTracks(@RequestParam String token) throws IOException {
-    log.info("hello");
+  public Response<TrackGetResponse> getTracks(@RequestParam String token) throws IOException {
     log.info("tracksAPI token:{}", token);
-    List<String> songTitles = trackService.fetchTracks(token, new TrackFetch());
-    List<String> artistTitles = trackService.fetchTracks(token, new ArtistFetch());
-    List<String> albumTitles = trackService.fetchTracks(token, new AlbumFetch());
 
-    trackService.createMusicDatabase(songTitles, artistTitles, albumTitles);
+    TrackGetResponse trackGetResponse = trackService.createAllThreeTypesDB(token);
 
-    return Response.success(songTitles);
+    return Response.success(trackGetResponse);
   }
 
   @GetMapping("/token")
