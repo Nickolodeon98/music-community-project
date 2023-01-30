@@ -229,24 +229,9 @@ public class TrackService {
     return titles;
   }
 
-  public void createMusicDatabase(List<String> songTitles, List<String> artistTitles,
-      List<String> albumTitles) {
-
-    /* TODO: 반복을 줄이기 위해 템플릿 콜백 패턴 적용 */
-
-    for (String songTitle : songTitles) {
-      Song singleSongRecord = Song.builder().songTitle(songTitle).build();
-      songRepository.save(singleSongRecord);
-    }
-
-    for (String artistTitle : artistTitles) {
-      Artist singleArtistRecord = Artist.builder().artistName(artistTitle).build();
-      artistRepository.save(singleArtistRecord);
-    }
-
-    for (String albumTitle : albumTitles) {
-      Album singleAlbumRecord = Album.builder().albumTitle(albumTitle).build();
-      albumRepository.save(singleAlbumRecord);
+  public void createMusicDatabase(List<String> titles, DBSaveOption saveOption) {
+    for (String title : titles) {
+      saveOption.saveNewRow(saveOption.buildEntity(title));
     }
   }
 }
