@@ -35,53 +35,53 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser
 class MusicRestControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+  @Autowired
+  MockMvc mockMvc;
 
-    @MockBean
-    MusicService musicService;
+  @MockBean
+  MusicService musicService;
 
-    @MockBean
-    JwtService jwtService;
+  @MockBean
+  JwtService jwtService;
 
-    @MockBean
-    UserDetailsService userDetailsService;
-    @Captor
-    ArgumentCaptor<Pageable> argumentCaptor;
+  @MockBean
+  UserDetailsService userDetailsService;
+  @Captor
+  ArgumentCaptor<Pageable> argumentCaptor;
 
-    @Nested
-    @DisplayName("모든 음원 조회")
-    class AllSongsInquiry {
+  @Nested
+  @DisplayName("모든 음원 조회")
+  class AllSongsInquiry {
 
-        @Test
-        @DisplayName("성공")
-        void success_get_every_song() throws Exception {
-            Pageable pageable = PageRequest.of(0, 10, Sort.by("songNo").descending());
+    @Test
+    @DisplayName("성공")
+    void success_get_every_song() throws Exception {
+      Pageable pageable = PageRequest.of(0, 10, Sort.by("songNo").descending());
 
-            TrackGetResponse track = TrackGetResponse.builder()
-                    .trackTitle("title")
-                    .trackAlbum("album")
-                    .trackArtist("artist")
-                    .build();
+      TrackGetResponse track = TrackGetResponse.builder()
+          .trackTitle("title")
+          .trackAlbum("album")
+          .trackArtist("artist")
+          .build();
 
-            List<TrackGetResponse> tracks = List.of(track);
+      List<TrackGetResponse> tracks = List.of(track);
 
-            Page<TrackGetResponse> pagedTracks = new PageImpl<>(tracks);
+      Page<TrackGetResponse> pagedTracks = new PageImpl<>(tracks);
 
-            given(musicService.getEveryTrack(pageable, any())).willReturn(pagedTracks);
+      given(musicService.getEveryTrack(pageable, any())).willReturn(pagedTracks);
 
-            String url = "/api/v1/music/all";
+      String url = "/api/v1/music/all";
 
-            mockMvc.perform(get(url).with(csrf()))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                    .andExpect(jsonPath("$.result.content").exists())
-                    .andDo(print());
+      mockMvc.perform(get(url).with(csrf()))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+          .andExpect(jsonPath("$.result.content").exists())
+          .andDo(print());
 
-            verify(musicService).getEveryTrack(argumentCaptor.capture(), any());
+      verify(musicService).getEveryTrack(argumentCaptor.capture(), any());
 
-            Pageable actualPageable = argumentCaptor.getValue();
-            assertEquals(pageable, actualPageable);
-        }
+      Pageable actualPageable = argumentCaptor.getValue();
+      assertEquals(pageable, actualPageable);
     }
+  }
 }

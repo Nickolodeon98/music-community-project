@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class AnswerRequire {
-    private String content;
+
+  private String content;
 
 }

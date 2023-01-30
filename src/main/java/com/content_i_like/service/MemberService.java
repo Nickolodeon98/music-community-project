@@ -32,7 +32,8 @@ public class MemberService {
     //비밀번호 조건에 맞는지 확인
     if (memberJoinRequest.getPassword().length() < 8
         || memberJoinRequest.getPassword().length() > 16) {
-      throw new ContentILikeAppException(ErrorCode.REJECT_PASSWORD, ErrorCode.REJECT_PASSWORD.getMessage());
+      throw new ContentILikeAppException(ErrorCode.REJECT_PASSWORD,
+          ErrorCode.REJECT_PASSWORD.getMessage());
     }
 
     Member member = memberJoinRequest
@@ -46,7 +47,8 @@ public class MemberService {
   private void validateDuplicatedMember(MemberJoinRequest memberJoinRequest) {
     memberRepository.findByEmail(memberJoinRequest.getEmail())
         .ifPresent(member -> {
-          throw new ContentILikeAppException(ErrorCode.DUPLICATED_MEMBER_NAME, ErrorCode.DUPLICATED_MEMBER_NAME.getMessage());
+          throw new ContentILikeAppException(ErrorCode.DUPLICATED_MEMBER_NAME,
+              ErrorCode.DUPLICATED_MEMBER_NAME.getMessage());
         });
 
     memberRepository.findByNickName(memberJoinRequest.getNickName())
@@ -62,7 +64,8 @@ public class MemberService {
 
     //password 일치 여부
     if (!passwordEncoder.matches(memberLoginRequest.getPassword(), member.getPassword())) {
-      throw new ContentILikeAppException(ErrorCode.INVALID_PASSWORD, ErrorCode.INVALID_PASSWORD.getMessage());
+      throw new ContentILikeAppException(ErrorCode.INVALID_PASSWORD,
+          ErrorCode.INVALID_PASSWORD.getMessage());
     }
 
     String jwt = jwtService.generateToken(member);
@@ -72,7 +75,8 @@ public class MemberService {
 
   private Member validateExistingMember(String email) {
     Member member = memberRepository.findByEmail(email)
-        .orElseThrow(() -> new ContentILikeAppException(ErrorCode.MEMBER_NOT_FOUND, ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        .orElseThrow(() -> new ContentILikeAppException(ErrorCode.MEMBER_NOT_FOUND,
+            ErrorCode.MEMBER_NOT_FOUND.getMessage()));
     return member;
   }
 
@@ -81,7 +85,8 @@ public class MemberService {
 
     //name과 일치 여부
     if (!memberFindRequest.getName().equals(member.getName())) {
-      throw new ContentILikeAppException(ErrorCode.INCONSISTENT_INFORMATION, "잘못된 정보입니다. 이름과 일치하지 않습니다.");
+      throw new ContentILikeAppException(ErrorCode.INCONSISTENT_INFORMATION,
+          "잘못된 정보입니다. 이름과 일치하지 않습니다.");
     }
 
     return new MailDto(member.getEmail(), "", "");
@@ -101,7 +106,8 @@ public class MemberService {
       String password = passwordEncoder.encode(newPassword);
       memberRepository.updateMemberPassword(member.getMemberNo(), password);
     } else {
-      throw new ContentILikeAppException(ErrorCode.INCONSISTENT_INFORMATION, "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+      throw new ContentILikeAppException(ErrorCode.INCONSISTENT_INFORMATION,
+          "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
     }
   }
 

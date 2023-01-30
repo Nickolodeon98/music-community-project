@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Builder
+@Getter
+@Builder
 public class InquiryRequire {
-    private String title;
-    private String content;
+
+  private String title;
+  private String content;
 }

@@ -4,6 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public interface Fetch<T> {
 
-    String extractTitle(JsonNode root, int count);
+  String extractTitle(JsonNode root, int count);
 
 }

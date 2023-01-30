@@ -10,17 +10,17 @@ import lombok.*;
 @Setter
 public class TrackGetResponse {
 
-    private String trackTitle;
-    private String trackAlbum;
-    private String trackArtist;
+  private String trackTitle;
+  private String trackAlbum;
+  private String trackArtist;
 
-    public static TrackGetResponse of(Song song) {
+  public static TrackGetResponse of(Song song) {
 
-        return TrackGetResponse.builder()
-                .trackTitle(song.getSongTitle())
-                .trackAlbum(song.getAlbum().getAlbumTitle())
-                .trackArtist(song.getArtist().getArtistName())
-                .build();
+    return TrackGetResponse.builder()
+        .trackTitle(song.getSongTitle())
+        .trackAlbum(song.getAlbum().getAlbumTitle())
+        .trackArtist(song.getArtist().getArtistName())
+        .build();
 
-    }
+  }
 }

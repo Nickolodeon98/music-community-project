@@ -18,14 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MusicRestController {
 
-    private final MusicService musicService;
-    @GetMapping("/all")
-    public Response<Page<TrackGetResponse>> showAllTracks(final Authentication authentication,
-            @PageableDefault(sort="songNo", direction = Sort.Direction.DESC) Pageable pageable) {
+  private final MusicService musicService;
 
-        Page<TrackGetResponse> tracks = musicService.getEveryTrack(pageable, authentication.getName());
+  @GetMapping("/all")
+  public Response<Page<TrackGetResponse>> showAllTracks(final Authentication authentication,
+      @PageableDefault(sort = "songNo", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        return Response.success(tracks);
-    }
+    Page<TrackGetResponse> tracks = musicService.getEveryTrack(pageable, authentication.getName());
+
+    return Response.success(tracks);
+  }
 
 }
