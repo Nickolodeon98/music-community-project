@@ -15,7 +15,6 @@ public class Album {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long albumNo;
   private String albumTitle;
-
   private String albumImageUrl;
 
   @ManyToOne
