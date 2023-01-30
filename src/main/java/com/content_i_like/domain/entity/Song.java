@@ -19,6 +19,10 @@ public class Song {
     public String songTitle;
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "albumNo", name = "album_no")
+    @JoinColumn(referencedColumnName = "albumName", name = "album_name")
     public Album album;
+
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "artistName", name="artist_name")
+    public Artist artist;
 }
