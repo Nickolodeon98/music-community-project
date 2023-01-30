@@ -1,29 +1,23 @@
 package com.content_i_like.service;
 
-import com.content_i_like.domain.dto.tracks.TrackGetResponse;
-import com.content_i_like.domain.dto.tracks.TrackResponse;
 import com.content_i_like.domain.entity.Album;
 import com.content_i_like.domain.entity.Artist;
 import com.content_i_like.domain.entity.Song;
 import com.content_i_like.domain.enums.TrackEnum;
 import com.content_i_like.repository.AlbumRepository;
 import com.content_i_like.repository.ArtistRepository;
-import com.content_i_like.repository.RecommendRepository;
 import com.content_i_like.repository.SongRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.hc.client5.http.classic.methods.HttpHead;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -51,17 +45,15 @@ public class TrackService {
 
   public HttpHeaders headerOf(String accessToken) {
     HttpHeaders httpHeaders = new HttpHeaders();
-
     httpHeaders.setBearerAuth(accessToken);
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-
     return httpHeaders;
   }
 
   public String spotifyAccessTokenGenerator(String code) throws JsonProcessingException {
     RestTemplate restTemplate = new RestTemplate();
 
-//        String uri = "https://accounts.spotify.com/api/token";
+    /* String uri = "https://accounts.spotify.com/api/token"; */
     MultiValueMap<String, String> requiredRequestBody = new LinkedMultiValueMap<>();
     requiredRequestBody.add("grant_type", TrackEnum.GRANT_TYPE.getValue());
     requiredRequestBody.add("code", code);
@@ -93,37 +85,32 @@ public class TrackService {
 
   public List<String> collectAllGenres(String filename) throws IOException {
     BufferedReader reader = Files.newBufferedReader(Paths.get(filename));
+    List<String> genres = new ArrayList<>();
     String line = "";
 
-    List<String> genres = new ArrayList<>();
-
-      while ((line = reader.readLine()) != null) {
-          try {
-              genres.add(line);
-          } catch (Exception e) {
-              log.warn("장르를 가져오는 도중 문제가 발생했습니다.");
-          }
-      }
-
+    while ((line = reader.readLine()) != null) {
+        try {
+            genres.add(line);
+        } catch (Exception e) {
+            log.warn("장르를 가져오는 도중 문제가 발생했습니다.");
+        }
+    }
     return genres;
   }
 
   public List<List<String>> findSpotifyIds(String accessToken) throws IOException {
     RestTemplate restTemplate = new RestTemplate();
-
     String searchUri = TrackEnum.BASE_URL.getValue() + "/search";
+    int limit = 50;
 
-    List<String> queries = List.of("Classic%20K-pop");
-
+    List<String> queries =
+            collectAllGenres("C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\genres.csv");
     List<List<String>> collectedIds = new ArrayList<>();
     List<String> ids = new ArrayList<>();
-
-    int limit = 50;
 
     for (Object query : queries) {
       log.info("genre:{}", query);
       for (int offset = 0; offset <= 50; offset += 50) {
-
         String completeUri =
             searchUri + "?q='genre:" + query + "'" + "&type=track&limit=" + limit + "&offset=" + offset;
         // 6,010개 장르의 음악들을 각각 최대 100개씩 가져온다
@@ -144,22 +131,17 @@ public class TrackService {
         List<String> tmpIds = new ArrayList<>(ids);
         ids.clear();
 
-        // 현 예시에서 id 50개씩 총 4묶음이 들어간다
+        // 현 예시에서 id 50개씩 묶음들이 들어간다
         collectedIds.add(tmpIds);
       }
     }
-
     return collectedIds;
   }
 
   public List<JsonNode> callTracksApi(String accessToken) throws IOException {
     List<JsonNode> collectedJsonNodes = new ArrayList<>();
-
     RestTemplate restTemplate = new RestTemplate();
-
     String trackUri = TrackEnum.BASE_URL.getValue() + "/tracks?ids=";
-
-    HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(headerOf(accessToken));
 
     List<List<String>> spotifyIds = findSpotifyIds(accessToken);
 
@@ -172,6 +154,7 @@ public class TrackService {
         }
       }
 //      log.info("ids:{}", ids);
+      HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(headerOf(accessToken));
 
       ResponseEntity<String> response = restTemplate
               .exchange(trackUri + ids, HttpMethod.GET, httpEntity, String.class);
@@ -183,20 +166,17 @@ public class TrackService {
       JsonNode infoRoot = objectMapper.readTree(response.getBody());
 
       collectedJsonNodes.add(infoRoot);
-
     }
     return collectedJsonNodes;
   }
 
   public <T> List<T> fetchTracks(List<JsonNode> infoRoots, Fetch<T> fetchedType) {
     List<String> titles = new ArrayList<>();
-
     for (JsonNode infoRoot : infoRoots) {
       for (int j = 0; j < 50; j++) {
         titles.add(fetchedType.extractTitle(infoRoot, j));
       }
     }
-
     return fetchedType.parseIntoEntities(titles);
   }
 
@@ -220,7 +200,6 @@ public class TrackService {
     List<Song> songEntities = fetchTracks(jsonData, new TrackFetch());
     List<Song> songsAlbumsAndArtists = parseForSong(artistEntities, albumEntities, songEntities);
     createMusicDatabase(songsAlbumsAndArtists, new TrackSave(songRepository));
-
   }
 
   private List<Album> parseForAlbum(List<Artist> artists, List<Album> albums) {
@@ -235,7 +214,6 @@ public class TrackService {
       songs.get(i).setArtist(artists.get(i));
       songs.get(i).setAlbum(albums.get(i));
     }
-
     return songs;
   }
 }
