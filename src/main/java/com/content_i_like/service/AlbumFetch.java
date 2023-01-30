@@ -11,7 +11,6 @@ public class AlbumFetch implements Fetch<Album> {
   public String extractTitle(JsonNode root, int count) {
 //    String albumName = root.at("/tracks/" + count + "/album/name").asText();
     String albumName = root.get("tracks").get(count).get("album").get("name").asText();
-    log.info("albumName:{}", albumName);
 
     return albumName;
   }

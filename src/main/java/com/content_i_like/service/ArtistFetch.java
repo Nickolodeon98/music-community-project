@@ -25,7 +25,6 @@ public class ArtistFetch implements Fetch<Artist> {
       artistNames.append(artistName);
       if (i != valuesCount-1) artistNames.append(", ");
     }
-    log.info("artistNames:{}", artistNames);
 
     return artistNames.toString();
   }

@@ -42,7 +42,6 @@ public class TestRestController {
 
   @GetMapping("/tracks")
   public String getTracks(@RequestParam String token) throws IOException {
-    log.info("tracksAPI token:{}", token);
 //    TrackGetResponse trackGetResponse =
             trackService.createAllThreeTypesDB(token);
 
@@ -67,14 +66,12 @@ public class TestRestController {
       throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
 
-    log.info("code:{}", code);
     String accessToken = trackService.spotifyAccessTokenGenerator(code);
 
     String uri = "http://localhost:8080/api/v1/test/tracks?token=" + accessToken;
 
     headers.setLocation(URI.create(uri));
 
-    log.info("accessToken:{}", accessToken);
 
     return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
   }
