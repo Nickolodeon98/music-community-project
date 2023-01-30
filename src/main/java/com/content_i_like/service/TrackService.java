@@ -211,23 +211,23 @@ public class TrackService {
     List<JsonNode> jsonData = callTracksApi(token);
 
     List<Artist> artistEntities = fetchTracks(jsonData, new ArtistFetch());
-    List<Album> albumEntities = fetchTracks(jsonData, new AlbumFetch());
-    List<Song> songEntities = fetchTracks(jsonData, new TrackFetch());
-
     createMusicDatabase(artistEntities, new ArtistSave(artistRepository));
-    createMusicDatabase(albumEntities, new AlbumSave(albumRepository));
 
+    List<Album> albumEntities = fetchTracks(jsonData, new AlbumFetch());
+    List<Album> albumsAndArtists = parseForAlbum(artistEntities, albumEntities);
+    createMusicDatabase(albumsAndArtists, new AlbumSave(albumRepository));
+
+    List<Song> songEntities = fetchTracks(jsonData, new TrackFetch());
     List<Song> songsAlbumsAndArtists = parseForSong(artistEntities, albumEntities, songEntities);
-
     createMusicDatabase(songsAlbumsAndArtists, new TrackSave(songRepository));
 
+  }
 
-//    for (int i = 0; i < songs.size(); i++) {
-//      songRepository.findById()
-//    setAlbum(albums.get(i));
-//      songs.get(i).setArtist(artists.get(i));
-//    }
-
+  private List<Album> parseForAlbum(List<Artist> artists, List<Album> albums) {
+    for (int i = 0; i < albums.size(); i++) {
+      albums.get(i).setArtist(artists.get(i));
+    }
+    return albums;
   }
 
   private List<Song> parseForSong(List<Artist> artists, List<Album> albums, List<Song> songs) {
