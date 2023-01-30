@@ -201,13 +201,15 @@ public class TrackService {
   }
 
   public List<?> createMusicDatabase(List<String> titles, DBSaveOption saveOption) {
-    List<Object> savedEntities = new ArrayList<>();
+//    List<Object> savedEntities = new ArrayList<>();
 
     for (String title : titles) {
-      savedEntities.add(saveOption.saveNewRow(saveOption.buildEntity(title)));
+      saveOption.saveNewRow(saveOption.buildEntity(title));
     }
 
-    return savedEntities;
+    List<Song> songs = songRepository.findAll();
+
+    return songs;
   }
 
   public void createAllThreeTypesDB(String token) throws IOException {
@@ -222,5 +224,11 @@ public class TrackService {
 
     List<String> albumTitles = fetchTracks(jsonData, new AlbumFetch());
     List<Album> albums = (List<Album>) createMusicDatabase(albumTitles, new AlbumSave(albumRepository));
+
+    for (int i = 0; i < songs.size(); i++) {
+      songs.get(i).setAlbum(albums.get(i));
+      songs.get(i).setArtist(artists.get(i));
+    }
+
   }
 }
