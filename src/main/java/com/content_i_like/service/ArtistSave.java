@@ -14,7 +14,7 @@ public class ArtistSave implements DBSaveOption<Artist> {
     }
 
     @Override
-    public void saveNewRow(Artist artist) {
-        artistRepository.save(artist);
+    public Artist saveNewRow(Artist artist) {
+        return artistRepository.save(artist);
     }
 }

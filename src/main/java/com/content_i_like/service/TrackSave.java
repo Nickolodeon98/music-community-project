@@ -13,7 +13,7 @@ public class TrackSave implements DBSaveOption<Song> {
     }
 
     @Override
-    public void saveNewRow(Song song) {
-        songRepository.save(song);
+    public Song saveNewRow(Song song) {
+        return songRepository.save(song);
     }
 }

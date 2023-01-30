@@ -16,7 +16,7 @@ public class AlbumSave implements DBSaveOption<Album> {
     }
 
     @Override
-    public void saveNewRow(Album album) {
-        albumRepository.save(album);
+    public Album saveNewRow(Album album) {
+        return albumRepository.save(album);
     }
 }
