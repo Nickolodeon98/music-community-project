@@ -46,8 +46,8 @@ public class TrackService {
 
   private final ObjectMapper objectMapper;
   private final SongRepository songRepository;
-  private ArtistRepository artistRepository;
-  private AlbumRepository albumRepository;
+  private final ArtistRepository artistRepository;
+  private final AlbumRepository albumRepository;
 
   public HttpHeaders headerOf(String accessToken) {
     HttpHeaders httpHeaders = new HttpHeaders();
@@ -137,20 +137,23 @@ public class TrackService {
 
     String searchUri = TrackEnum.BASE_URL.getValue() + "/search";
 
-    List<String> queries =
-        collectAllGenres(
-            "C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\genres.csv");
+//    List<String> queries =
+//        collectAllGenres(
+//            "C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\genres.csv");
+
+    List<String> queries = List.of("Classic%20K-pop");
 
     List<List<String>> collectedIds = new ArrayList<>();
     List<String> ids = new ArrayList<>();
+
+    int limit = 50;
 
     for (Object query : queries) {
       log.info("genre:{}", query);
       for (int offset = 0; offset <= 50; offset += 50) {
 
         String completeUri =
-            searchUri + "?q='genre:" + query + "'" + "&type=track&limit=50&offset=" + offset;
-
+            searchUri + "?q='genre:" + query + "'" + "&type=track&limit=" + limit + "&offset=" + offset;
         // 6,010개 장르의 음악들을 각각 최대 100개씩 가져온다
         ResponseEntity<String> response
             = restTemplate.exchange(completeUri, HttpMethod.GET,
@@ -236,6 +239,9 @@ public class TrackService {
     for (String title : titles) {
       savedEntities.add(saveOption.saveNewRow(saveOption.buildEntity(title)));
     }
+
+    log.info("here:{}", savedEntities);
+
     return savedEntities;
   }
 
