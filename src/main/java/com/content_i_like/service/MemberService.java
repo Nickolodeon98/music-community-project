@@ -134,8 +134,9 @@ public class MemberService {
         memberModifyRequest.getVerification());
     member.update(memberModifyRequest);
 
-    MemberResponse memberResponse = new MemberResponse();
-    return memberResponse.toResponse(memberRepository.saveAndFlush(member));
+    MemberResponse memberResponse = MemberResponse
+        .responseWithPoint(member, pointService.calculatePoint(member));
+    return memberResponse;
   }
 
   private String uploadProfileImg(MultipartFile file, Member member) throws IOException {
