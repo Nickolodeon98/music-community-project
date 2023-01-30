@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class RecommendModifyResponse {
-    private Long recommendNo;
-    private String recommendTitle;
+
+  private Long recommendNo;
+  private String recommendTitle;
 }

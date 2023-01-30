@@ -10,9 +10,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface LikesRepository extends JpaRepository<Likes, Long> {
-    Optional<Likes> findLikesByMemberAndRecommend(Member member, Recommend post);
 
-    @Query("select count(l) from Likes l where l.deletedAt is null and l.recommend = :recommend")
-    Integer countLikesByRecommend(@Param("recommend") Recommend recommend);
+  Optional<Likes> findLikesByMemberAndRecommend(Member member, Recommend post);
+
+  @Query("select count(l) from Likes l where l.deletedAt is null and l.recommend = :recommend")
+  Integer countLikesByRecommend(@Param("recommend") Recommend recommend);
 
 }
