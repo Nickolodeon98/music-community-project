@@ -5,6 +5,8 @@ import com.content_i_like.repository.AlbumRepository;
 import com.content_i_like.repository.RecommendRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 public class AlbumSave implements DBSaveOption<Album> {
 
@@ -18,5 +20,10 @@ public class AlbumSave implements DBSaveOption<Album> {
     @Override
     public Album saveNewRow(Album album) {
         return albumRepository.save(album);
+    }
+
+    @Override
+    public List<Album> fetchEverything() {
+        return albumRepository.findAll();
     }
 }

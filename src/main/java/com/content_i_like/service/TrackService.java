@@ -207,9 +207,7 @@ public class TrackService {
       saveOption.saveNewRow(saveOption.buildEntity(title));
     }
 
-    List<Song> songs = songRepository.findAll();
-
-    return songs;
+    return saveOption.fetchEverything();
   }
 
   public void createAllThreeTypesDB(String token) throws IOException {
