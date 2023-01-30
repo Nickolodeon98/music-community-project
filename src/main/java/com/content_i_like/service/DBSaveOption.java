@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface DBSaveOption<T> {
 
-    T buildEntity(String title);
+    T buildEntity(Object title);
     T saveNewRow(T entity);
 
     List<T> fetchEverything();

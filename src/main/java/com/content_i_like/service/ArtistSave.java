@@ -11,8 +11,8 @@ public class ArtistSave implements DBSaveOption<Artist> {
     private final ArtistRepository artistRepository;
 
     @Override
-    public Artist buildEntity(String title) {
-        return Artist.builder().artistName(title).build();
+    public Artist buildEntity(Object title) {
+        return Artist.builder().artistName(String.valueOf(title)).build();
     }
 
     @Override
