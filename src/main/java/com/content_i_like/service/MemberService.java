@@ -30,13 +30,7 @@ public class MemberService {
 
     //가입한 이력이 있는지 확인 -> 가입 아이디 email 중복 여부 & 사용 중인 닉네임이 아닌지 확인
     validateDuplicatedMember(memberJoinRequest);
-
-    //비밀번호 조건에 맞는지 확인
-    if (memberJoinRequest.getPassword().length() < 8
-        || memberJoinRequest.getPassword().length() > 16) {
-      throw new ContentILikeAppException(ErrorCode.REJECT_PASSWORD,
-          ErrorCode.REJECT_PASSWORD.getMessage());
-    }
+    checkPasswordLength(memberJoinRequest.getPassword());
 
     Member member = memberJoinRequest
         .toEntity(passwordEncoder.encode(memberJoinRequest.getPassword()));
@@ -44,6 +38,15 @@ public class MemberService {
     Member savedMember = memberRepository.save(member);
     pointService.giveWelcomePoint(savedMember);
     return new MemberJoinResponse(savedMember.getMemberNo(), savedMember.getNickName());
+  }
+
+  //비밀번호 조건에 맞는지 확인
+  private void checkPasswordLength(String password) {
+    if (password.length() < 8
+        || password.length() > 16) {
+      throw new ContentILikeAppException(ErrorCode.REJECT_PASSWORD,
+          ErrorCode.REJECT_PASSWORD.getMessage());
+    }
   }
 
   private void validateDuplicatedMember(MemberJoinRequest memberJoinRequest) {
@@ -99,14 +102,18 @@ public class MemberService {
 
   public String changePw(ChangePwRequest changePwRequest, String memberEmail) {
     Member member = validateExistingMember(memberEmail);
-    verifyPasswordAndUpdate(member, changePwRequest.getNewPassword(),
+
+    checkPasswordLength(changePwRequest.getNewPassword());
+
+    doubleCheckPasswordAndUpdate(member, changePwRequest.getNewPassword(),
         changePwRequest.getVerification());
 
     return "비밀번호 변경 완료";
   }
 
   //같은 비밀번호 2번 입력하여 확인하고 변경하기
-  private void verifyPasswordAndUpdate(Member member, String newPassword, String verification) {
+  private void doubleCheckPasswordAndUpdate(Member member, String newPassword,
+      String verification) {
     if (newPassword.equals(verification)) {
       String password = passwordEncoder.encode(newPassword);
       memberRepository.updateMemberPassword(member.getMemberNo(), password);
@@ -130,7 +137,7 @@ public class MemberService {
 
     uploadProfileImg(file, member);
 
-    verifyPasswordAndUpdate(member, memberModifyRequest.getNewPassword(),
+    doubleCheckPasswordAndUpdate(member, memberModifyRequest.getNewPassword(),
         memberModifyRequest.getVerification());
     member.update(memberModifyRequest);
 
