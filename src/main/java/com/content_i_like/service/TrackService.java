@@ -234,4 +234,18 @@ public class TrackService {
       saveOption.saveNewRow(saveOption.buildEntity(title));
     }
   }
+
+  public void createAllThreeTypesDB(String token) throws IOException {
+    /* TODO: 세 자원을 모두 저장을 할 때 여기도 템플릿 콜백 패턴 적용 가능 */
+
+    List<String> songTitles = fetchTracks(token, new TrackFetch());
+    List<String> artistTitles = fetchTracks(token, new ArtistFetch());
+    List<String> albumTitles = fetchTracks(token, new AlbumFetch());
+
+    createMusicDatabase(songTitles, new TrackSave(songRepository));
+    createMusicDatabase(songTitles, new AlbumSave(albumRepository));
+    createMusicDatabase(songTitles, new ArtistSave(artistRepository));
+  }
+
+
 }
