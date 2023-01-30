@@ -188,7 +188,7 @@ public class TrackService {
     return collectedJsonNodes;
   }
 
-  public List<String> fetchTracks(List<JsonNode> infoRoots, Fetch<?> fetchedType) throws IOException {
+  public <T> List<T> fetchTracks(List<JsonNode> infoRoots, Fetch<T> fetchedType) {
     List<String> titles = new ArrayList<>();
 
     for (JsonNode infoRoot : infoRoots) {
@@ -197,36 +197,45 @@ public class TrackService {
       }
     }
 
-    return titles;
+    return fetchedType.parseIntoEntities(titles);
   }
 
-  public List<?> createMusicDatabase(List<String> titles, DBSaveOption saveOption) {
-//    List<Object> savedEntities = new ArrayList<>();
-
-    for (String title : titles) {
-      saveOption.saveNewRow(saveOption.buildEntity(title));
+  public <T> void createMusicDatabase(List<T> entities, DBSaveOption<T> saveOption) {
+    for (T entity : entities) {
+      saveOption.saveNewRow(entity);
     }
-
-    return saveOption.fetchEverything();
   }
 
   public void createAllThreeTypesDB(String token) throws IOException {
     /* TODO: 세 자원을 모두 저장을 할 때 여기도 템플릿 콜백 패턴 적용 가능 */
     List<JsonNode> jsonData = callTracksApi(token);
 
-    List<String> songTitles = fetchTracks(jsonData, new TrackFetch());
-    List<Song> songs = (List<Song>) createMusicDatabase(songTitles, new TrackSave(songRepository));
+    List<Artist> artistEntities = fetchTracks(jsonData, new ArtistFetch());
+    List<Album> albumEntities = fetchTracks(jsonData, new AlbumFetch());
+    List<Song> songEntities = fetchTracks(jsonData, new TrackFetch());
 
-    List<String> artistTitles = fetchTracks(jsonData, new ArtistFetch());
-    List<Artist> artists = (List<Artist>) createMusicDatabase(artistTitles, new ArtistSave(artistRepository));
+    createMusicDatabase(artistEntities, new ArtistSave(artistRepository));
+    createMusicDatabase(albumEntities, new AlbumSave(albumRepository));
 
-    List<String> albumTitles = fetchTracks(jsonData, new AlbumFetch());
-    List<Album> albums = (List<Album>) createMusicDatabase(albumTitles, new AlbumSave(albumRepository));
+    List<Song> songsAlbumsAndArtists = parseForSong(artistEntities, albumEntities, songEntities);
 
+    createMusicDatabase(songsAlbumsAndArtists, new TrackSave(songRepository));
+
+
+//    for (int i = 0; i < songs.size(); i++) {
+//      songRepository.findById()
+//    setAlbum(albums.get(i));
+//      songs.get(i).setArtist(artists.get(i));
+//    }
+
+  }
+
+  private List<Song> parseForSong(List<Artist> artists, List<Album> albums, List<Song> songs) {
     for (int i = 0; i < songs.size(); i++) {
-      songs.get(i).setAlbum(albums.get(i));
       songs.get(i).setArtist(artists.get(i));
+      songs.get(i).setAlbum(albums.get(i));
     }
 
+    return songs;
   }
 }
