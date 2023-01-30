@@ -3,6 +3,9 @@ package com.content_i_like.controller;
 import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.tracks.TrackResponse;
 import com.content_i_like.domain.enums.TrackEnum;
+import com.content_i_like.service.AlbumFetch;
+import com.content_i_like.service.ArtistFetch;
+import com.content_i_like.service.TrackFetch;
 import com.content_i_like.service.TrackService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,9 +43,11 @@ public class TestRestController {
     public Response<List<String>> getTracks(@RequestParam String token) throws IOException {
         log.info("hello");
         log.info("tracksAPI token:{}", token);
-        List<String> songTitles = trackService.fetchTracks(token);
+        List<String> songTitles = trackService.fetchTracks(token, new TrackFetch());
+        List<String> artistTitles = trackService.fetchTracks(token, new ArtistFetch());
+        List<String> albumTitles = trackService.fetchTracks(token, new AlbumFetch());
 
-        trackService.createMusicDatabase(songTitles);
+        trackService.createMusicDatabase(songTitles, artistTitles, albumTitles);
 
         return Response.success(songTitles);
     }
