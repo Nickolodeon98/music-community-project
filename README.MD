@@ -9,3 +9,7 @@
 - DB : MySql, Reids
 - CLOUD : AWS EC2, AWS RDS
 - CI/CD : Docker, GitLab
+
+## Swagger-ui
+
+- http://ec2-13-209-70-72.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui
