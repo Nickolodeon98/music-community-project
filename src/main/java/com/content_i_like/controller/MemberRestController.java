@@ -21,7 +21,6 @@ import java.io.IOException;
 public class MemberRestController {
 
   private final MemberService memberService;
-  private final MailService mailService;
 
   @PostMapping("/join")
   public Response<MemberJoinResponse> join(@RequestBody @Valid final MemberJoinRequest request) {
@@ -37,10 +36,8 @@ public class MemberRestController {
 
   @PostMapping("/passwd/find_pw")
   public Response<String> findPw(@RequestBody @Valid final MemberFindRequest request) {
-    MailDto mailDto = memberService.findPwByEmail(request);
-    System.out.println("메일을 발송하겠습니다.");
-    mailService.mailSend(mailDto);
-    return Response.success("임시 비밀번호를 메일로 발송했습니다.");
+    String message = memberService.findPwByEmail(request);
+    return Response.success(message);
   }
 
   @PostMapping("/passwd/change")

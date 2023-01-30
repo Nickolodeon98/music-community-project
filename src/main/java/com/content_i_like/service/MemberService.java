@@ -23,6 +23,7 @@ public class MemberService {
   private final JwtService jwtService;
   private final S3FileUploadService s3FileUploadService;
   private final PointService pointService;
+  private final MailService mailService;
 
   @Transactional
   public MemberJoinResponse join(MemberJoinRequest memberJoinRequest) {
@@ -81,7 +82,7 @@ public class MemberService {
     return member;
   }
 
-  public MailDto findPwByEmail(MemberFindRequest memberFindRequest) {
+  public String findPwByEmail(MemberFindRequest memberFindRequest) {
     Member member = validateExistingMember(memberFindRequest.getEmail());
 
     //name과 일치 여부
@@ -90,7 +91,10 @@ public class MemberService {
           "잘못된 정보입니다. 이름과 일치하지 않습니다.");
     }
 
-    return new MailDto(member.getEmail(), "", "");
+    MailDto mailDto = new MailDto(member.getEmail(), "", "");
+    mailService.mailSend(mailDto);
+
+    return "메일로 임시 비밀번호가 전송되었습니다.";
   }
 
   public String changePw(ChangePwRequest changePwRequest, String memberEmail) {
