@@ -41,12 +41,12 @@ public class TestRestController {
 //    }
 
   @GetMapping("/tracks")
-  public Response<TrackGetResponse> getTracks(@RequestParam String token) throws IOException {
+  public String getTracks(@RequestParam String token) throws IOException {
     log.info("tracksAPI token:{}", token);
+//    TrackGetResponse trackGetResponse =
+            trackService.createAllThreeTypesDB(token);
 
-    TrackGetResponse trackGetResponse = trackService.createAllThreeTypesDB(token);
-
-    return Response.success(trackGetResponse);
+    return "DB 저장이 완료되었습니다.";
   }
 
   @GetMapping("/token")
