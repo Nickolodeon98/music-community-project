@@ -7,6 +7,6 @@ public class TrackFetch implements Fetch<Song> {
 
   @Override
   public String extractTitle(JsonNode root, int count) {
-    return root.at("/tracks/" + count + "/name").asText();
+    return root.get("tracks").get(count).get("name").asText();
   }
 }

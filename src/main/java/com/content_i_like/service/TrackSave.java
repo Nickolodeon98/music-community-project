@@ -9,7 +9,7 @@ public class TrackSave implements DBSaveOption<Song> {
     private final SongRepository songRepository;
     @Override
     public Song buildEntity(String title) {
-        return Song.builder().build();
+        return Song.builder().songTitle(title).build();
     }
 
     @Override
