@@ -1,5 +1,7 @@
 package com.content_i_like.service;
 
+import com.content_i_like.repository.AlbumRepository;
+import com.content_i_like.repository.ArtistRepository;
 import com.content_i_like.repository.SongRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +22,9 @@ class TrackServiceTest {
   RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 
   SongRepository songRepository = Mockito.mock(SongRepository.class);
-  TrackService trackService = new TrackService(new ObjectMapper(), songRepository);
+  ArtistRepository artistRepository = Mockito.mock(ArtistRepository.class);
+  AlbumRepository albumRepository = Mockito.mock(AlbumRepository.class);
+  TrackService trackService = new TrackService(new ObjectMapper(), songRepository, artistRepository, albumRepository);
 
   final String CODE =
       "AQBO1RY1Fd0nhdxGNZmg6PmmFuZ0tJauQq7AliyEOKC8jR04QRStsscveeovc_FyydCYxx0w5avPCQqCUEmBLl25-3lI"
