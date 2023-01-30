@@ -92,8 +92,8 @@ public class MemberService {
     return new MailDto(member.getEmail(), "", "");
   }
 
-  public String changePw(ChangePwRequest changePwRequest, String username) {
-    Member member = validateExistingMember(username);
+  public String changePw(ChangePwRequest changePwRequest, String memberEmail) {
+    Member member = validateExistingMember(memberEmail);
     verifyPasswordAndUpdate(member, changePwRequest.getNewPassword(),
         changePwRequest.getVerification());
 
@@ -111,15 +111,15 @@ public class MemberService {
     }
   }
 
-  public Member getMyInfo(String username) {
-    Member member = validateExistingMember(username);
+  public Member getMyInfo(String memberEmail) {
+    Member member = validateExistingMember(memberEmail);
     return member;
   }
 
   @Transactional
   public MemberResponse modifyMyInfo(MemberModifyRequest memberModifyRequest, MultipartFile file,
-      String username) throws IOException {
-    Member member = validateExistingMember(username);
+      String memberEmail) throws IOException {
+    Member member = validateExistingMember(memberEmail);
 
     uploadProfileImg(file, member);
 
@@ -138,8 +138,8 @@ public class MemberService {
   }
 
   @Transactional
-  public String uploadProfileImg(String username, MultipartFile file) throws IOException {
-    Member member = validateExistingMember(username);
+  public String uploadProfileImg(String memberEmail, MultipartFile file) throws IOException {
+    Member member = validateExistingMember(memberEmail);
 
     String url = uploadProfileImg(file, member);
 
