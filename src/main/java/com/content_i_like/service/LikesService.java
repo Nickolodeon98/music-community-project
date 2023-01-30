@@ -2,11 +2,14 @@ package com.content_i_like.service;
 
 import com.content_i_like.domain.entity.Likes;
 import com.content_i_like.domain.entity.Member;
+import com.content_i_like.domain.entity.Notification;
 import com.content_i_like.domain.entity.Recommend;
+import com.content_i_like.domain.enums.NotificationType;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.LikesRepository;
 import com.content_i_like.repository.MemberRepository;
+import com.content_i_like.repository.NotificationRepository;
 import com.content_i_like.repository.RecommendRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ public class LikesService {
     private final RecommendRepository recommendRepository;
     private final MemberRepository memberRepository;
     private final LikesRepository likesRepository;
+    private final NotificationRepository notificationRepository;
 
     /**
      * 좋아요 상태를 변환합니다.
@@ -48,6 +52,9 @@ public class LikesService {
             like = likesRepository.save(Likes.toEntity(post, member));
             Optional<Likes> checkStatus = likesRepository.findById(like.getLikesNo());
 
+            // 해당 글의 작성자에게 보낼 알림을 저장합니다.
+            notificationRepository.save(Notification.of(NotificationType.LIKES, post.getMember(), like.getMember().getMemberNo(), post.getRecommendNo(), like.getLikesNo()));
+
             return "좋아요를 눌렀습니다";
         }
         // 받아온 like 기록중 getDeletedAt의 정보를 확인합니다.
@@ -64,6 +71,8 @@ public class LikesService {
             like.cancelDeletion();
 
             // todo: 다시 알람을 보냅니다.
+//            notificationRepository.save(Notification.of(NotificationType.LIKES, post.getMember(), like.getMember().getMemberNo(), post.getRecommendNo(), like.getLikesNo()));
+
 
             return "좋아요를 눌렀습니다";
         }
