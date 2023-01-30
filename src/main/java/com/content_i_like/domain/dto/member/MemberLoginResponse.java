@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class MemberLoginResponse {
-    private String jwt;
-    private String nickName;
+
+  private String jwt;
+  private String nickName;
 }

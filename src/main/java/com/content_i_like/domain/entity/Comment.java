@@ -1,7 +1,10 @@
 package com.content_i_like.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -10,20 +13,24 @@ import lombok.*;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@SQLDelete(sql = "UPDATE comment SET deleted_at = current_timestamp WHERE id = ?")
+@Where(clause = "deleted_at is null")
 public class Comment extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentNo;
 
-    private String commentContent;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long commentNo;
 
-    private Long commentPoint;
+  private String commentContent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
-    private Member member;
+  private Long commentPoint;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recommend_no")
-    private Recommend recommend;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_no")
+  @JsonIgnore
+  private Member member;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "recommend_no")
+  private Recommend recommend;
 }

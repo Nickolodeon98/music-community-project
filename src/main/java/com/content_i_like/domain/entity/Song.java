@@ -12,13 +12,18 @@ import javax.annotation.processing.Generated;
 @Builder
 @Entity
 public class Song {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long songNo;
 
-    public String songTitle;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  public Long songNo;
 
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "albumNo", name = "album_no")
-    public Album album;
+  public String songTitle;
+
+  @ManyToOne
+  @JoinColumn(referencedColumnName = "albumNo", name = "album_no")
+  public Album album;
+
+  @ManyToOne
+  @JoinColumn(referencedColumnName = "artistNo", name = "artist_no")
+  public Artist artist;
 }

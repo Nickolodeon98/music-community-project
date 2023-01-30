@@ -11,15 +11,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FaqRequest {
-    private String title;
-    private String content;
-    private String category;
 
-    public FAQ toEntity(){
-        return FAQ.builder()
-                .faqTitle(this.title)
-                .faqContent(this.content)
-                .faqCategory(this.category)
-                .build();
-    }
+  private String title;
+  private String content;
+  private String category;
+
+  public FAQ toEntity() {
+    return FAQ.builder()
+        .faqTitle(this.title)
+        .faqContent(this.content)
+        .faqCategory(this.category)
+        .build();
+  }
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class MemberFindRequest {
-    private String name;
-    private String email;
+
+  private String name;
+  private String email;
 }

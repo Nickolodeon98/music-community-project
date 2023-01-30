@@ -11,23 +11,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class RecommendPostRequest {
-    private String recommendTitle;
-    private String recommendContent;
-    private String recommendImageUrl;
-    private String recommendYoutubeUrl;
-    private Long recommendPoint;
-    private Long songNo;
 
-    public static Recommend toEntity(RecommendPostRequest request, Member member, Song song) {
-        return Recommend.builder()
-                .recommendTitle(request.getRecommendTitle())
-                .recommendContent(request.getRecommendContent())
-                .recommendImageUrl(request.getRecommendImageUrl())
-                .recommendYoutubeUrl(request.getRecommendYoutubeUrl())
-                .recommendPoint(request.getRecommendPoint())
-                .recommendViews(0L)
-                .member(member)
-                .song(song)
-                .build();
-    }
+  private String recommendTitle;
+  private String recommendContent;
+  private String recommendYoutubeUrl;
+  private Long recommendPoint;
+  private Long songNo;
+
+  public static Recommend toEntity(RecommendPostRequest request, Member member, Song song,
+      String url) {
+    return Recommend.builder()
+        .recommendTitle(request.getRecommendTitle())
+        .recommendContent(request.getRecommendContent())
+        .recommendImageUrl(url)
+        .recommendYoutubeUrl(request.getRecommendYoutubeUrl())
+        .recommendPoint(request.getRecommendPoint())
+        .recommendViews(0L)
+        .member(member)
+        .song(song)
+        .build();
+  }
 }

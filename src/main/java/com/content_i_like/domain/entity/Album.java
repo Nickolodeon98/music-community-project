@@ -11,13 +11,14 @@ import lombok.*;
 @Entity
 public class Album {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long albumNo;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long albumNo;
+  private String albumTitle;
 
-    private String albumImageUrl;
+  private String albumImageUrl;
 
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "artistNo", name = "artist_no")
-    private Artist artist;
+  @ManyToOne
+  @JoinColumn(referencedColumnName = "artistNo", name = "artist_no")
+  private Artist artist;
 }

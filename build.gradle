@@ -26,6 +26,8 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'javax.servlet:javax.servlet-api:4.0.1'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: '3.0.2'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -42,6 +44,13 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'se.michaelthelin.spotify:spotify-web-api-java:7.3.0'
+}
+
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 tasks.named('test') {
