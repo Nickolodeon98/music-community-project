@@ -1,8 +1,13 @@
 package com.content_i_like.service;
 
 import com.content_i_like.domain.dto.tracks.TrackResponse;
+import com.content_i_like.domain.entity.Album;
+import com.content_i_like.domain.entity.Artist;
 import com.content_i_like.domain.entity.Song;
 import com.content_i_like.domain.enums.TrackEnum;
+import com.content_i_like.repository.AlbumRepository;
+import com.content_i_like.repository.ArtistRepository;
+import com.content_i_like.repository.RecommendRepository;
 import com.content_i_like.repository.SongRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -40,6 +45,8 @@ public class TrackService {
 
     private final ObjectMapper objectMapper;
     private final SongRepository songRepository;
+    private ArtistRepository artistRepository;
+    private AlbumRepository albumRepository;
 
     public HttpHeaders headerOf(String accessToken) {
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -122,7 +129,7 @@ public class TrackService {
         return genres;
     }
 
-    public List<String> findTrackIds(String accessToken) throws IOException {
+    public List<List<String>> findSpotifyIds(String accessToken) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
         String searchUri = TrackEnum.BASE_URL.getValue() + "/search";
@@ -130,7 +137,8 @@ public class TrackService {
         List<String> queries =
                 collectAllGenres("C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\genres.csv");
 
-        List<String> hrefs = new ArrayList<>();
+        List<List<String>> collectedIds = new ArrayList<>();
+        List<String> ids = new ArrayList<>();
 
         for (Object query : queries) {
             log.info("genre:{}",query);
@@ -145,17 +153,26 @@ public class TrackService {
                 JsonNode tracksSource = objectMapper.readTree(response.getBody());
 
                 for (int i = 0; i < 50; i++) {
-                    String hrefContainingId = tracksSource.at("/tracks/items/" + i + "/href").asText();
+                    String hrefContainingId = tracksSource.at("/tracks/items/" + i + "/id").asText();
                     /* https://api.spotify.com/v1/tracks/ 의 길이는 0 ~ 33 까지
                      * 그러므로 substring(34, lastIndex) 를 해야 트랙 아이디 값만 저장할 수 있다.
                      * 3H0XfUU13vsWC6smb9guvG */
-                    hrefs.add(hrefContainingId.substring(34));
+//                    ids.add(hrefContainingId.substring(34));
+                    ids.add(hrefContainingId);
                 }
 
 //                List<String> trackTitles = tracksSource.findValuesAsText("name");
 
 //                log.info("response:{}", response.getBody());
-                log.info("hrefs:{}", hrefs);
+                log.info("ids:{}", ids);
+                log.info("size:{}", ids.size());
+
+                List<String> tmpIds = new ArrayList<>(ids);
+                ids.clear();
+
+                // 현 예시에서 id 50개씩 총 4묶음이 들어간다
+                collectedIds.add(tmpIds);
+
 
 //                log.info("names:{} , offset:{}", trackTitles, offset);
 //                log.info("size:{}, offset:{}", trackTitles.size(), offset);
@@ -163,37 +180,69 @@ public class TrackService {
             }
         }
 
-        return hrefs;
+        return collectedIds;
     }
 
-    public List<String> fetchTracks(String accessToken) throws IOException {
+
+
+
+    public List<String> fetchTracks(String accessToken, Fetch<?> fetchedType) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
-        String trackUri = TrackEnum.BASE_URL.getValue() + "/tracks/";
+        String trackUri = TrackEnum.BASE_URL.getValue() + "/tracks?ids=";
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(headerOf(accessToken));
 
-        String trackTitle = "";
+        String title = "";
 
-        List<String> trackIds = findTrackIds(accessToken);
-        List<String> trackTitles = new ArrayList<>();
+        List<List<String>> spotifyIds = findSpotifyIds(accessToken);
+        List<String> titles = new ArrayList<>();
 
-        for (String trackId : trackIds) {
+        for (List<String> spotifyId : spotifyIds) {
+            StringBuilder ids = new StringBuilder();
+            for(int i = 0; i < spotifyId.size(); i++) {
+                ids.append(spotifyId.get(i));
+                if (i != 49) ids.append(",");
+            }
+            log.info("ids:{}", ids);
+
             ResponseEntity<String> response = restTemplate
-                    .exchange(trackUri + trackId, HttpMethod.GET, httpEntity, String.class);
-            log.info("tracksInfo:{}",response.getBody());
-            JsonNode trackInfoRoot = objectMapper.readTree(response.getBody());
-            trackTitle = String.valueOf(trackInfoRoot.findValue("name"));
-            trackTitles.add(trackTitle);
+                    .exchange(trackUri + ids, HttpMethod.GET, httpEntity, String.class);
+
+            log.info("info:{}",response.getBody());
+
+            /* track uri 이용해서 50개씩 모아져 있는 아이디들로 찾아지는 음원들에 대한 JSON 형태 응답을 모두 읽어들이고,
+             * 읽어들인 응답에서 필요한 부분만 추출한다. 추출은 매개 변수로 받은 인터페이스의 구현체에 따라 달라진다. */
+            JsonNode infoRoot = objectMapper.readTree(response.getBody());
+
+            for (int j = 0; j < 50; j++) {
+                title = fetchedType.extractTitle(infoRoot, j);
+                titles.add(title);
+            }
+
         }
 
-        return trackTitles;
+        return titles;
     }
 
-    public void createMusicDatabase(List<String> songTitles) {
+    public void createMusicDatabase(List<String> songTitles, List<String> artistTitles, List<String> albumTitles) {
+
+        /* TODO: 반복을 줄이기 위해 템플릿 콜백 패턴 적용 */
+
+
         for (String songTitle : songTitles) {
             Song singleSongRecord = Song.builder().songTitle(songTitle).build();
             songRepository.save(singleSongRecord);
+        }
+
+        for (String artistTitle: artistTitles) {
+            Artist singleArtistRecord = Artist.builder().artistName(artistTitle).build();
+            artistRepository.save(singleArtistRecord);
+        }
+
+        for (String albumTitle : albumTitles) {
+            Album singleAlbumRecord = Album.builder().albumTitle(albumTitle).build();
+            albumRepository.save(singleAlbumRecord);
         }
     }
 }
