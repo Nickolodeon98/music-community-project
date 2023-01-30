@@ -191,31 +191,29 @@ public class TrackService {
     return collectedIds;
   }
 
+  public List<JsonNode> callTracksApi(String accessToken) throws IOException {
+    List<JsonNode> collectedJsonNodes = new ArrayList<>();
 
-  public List<String> fetchTracks(String accessToken, Fetch<?> fetchedType) throws IOException {
     RestTemplate restTemplate = new RestTemplate();
 
     String trackUri = TrackEnum.BASE_URL.getValue() + "/tracks?ids=";
 
     HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(headerOf(accessToken));
 
-    String title = "";
-
     List<List<String>> spotifyIds = findSpotifyIds(accessToken);
-    List<String> titles = new ArrayList<>();
 
     for (List<String> spotifyId : spotifyIds) {
       StringBuilder ids = new StringBuilder();
       for (int i = 0; i < spotifyId.size(); i++) {
         ids.append(spotifyId.get(i));
-          if (i != 49) {
-              ids.append(",");
-          }
+        if (i != 49) {
+          ids.append(",");
+        }
       }
       log.info("ids:{}", ids);
 
       ResponseEntity<String> response = restTemplate
-          .exchange(trackUri + ids, HttpMethod.GET, httpEntity, String.class);
+              .exchange(trackUri + ids, HttpMethod.GET, httpEntity, String.class);
 
       log.info("info:{}", response.getBody());
 
@@ -223,11 +221,19 @@ public class TrackService {
        * 읽어들인 응답에서 필요한 부분만 추출한다. 추출은 매개 변수로 받은 인터페이스의 구현체에 따라 달라진다. */
       JsonNode infoRoot = objectMapper.readTree(response.getBody());
 
-      for (int j = 0; j < 50; j++) {
-        title = fetchedType.extractTitle(infoRoot, j);
-        titles.add(title);
-      }
+      collectedJsonNodes.add(infoRoot);
 
+    }
+    return collectedJsonNodes;
+  }
+
+  public List<String> fetchTracks(List<JsonNode> infoRoots, Fetch<?> fetchedType) throws IOException {
+    List<String> titles = new ArrayList<>();
+
+    for (JsonNode infoRoot : infoRoots) {
+      for (int j = 0; j < 50; j++) {
+        titles.add(fetchedType.extractTitle(infoRoot, j));
+      }
     }
 
     return titles;
@@ -247,14 +253,16 @@ public class TrackService {
 
   public TrackGetResponse createAllThreeTypesDB(String token) throws IOException {
     /* TODO: 세 자원을 모두 저장을 할 때 여기도 템플릿 콜백 패턴 적용 가능 */
+    List<JsonNode> jsonData = callTracksApi(token);
 
-    List<String> songTitles = fetchTracks(token, new TrackFetch());
-    List<String> artistTitles = fetchTracks(token, new ArtistFetch());
-    List<String> albumTitles = fetchTracks(token, new AlbumFetch());
-
+    List<String> songTitles = fetchTracks(jsonData, new TrackFetch());
     List<Song> songs = (List<Song>) createMusicDatabase(songTitles, new TrackSave(songRepository));
-    List<Album> albums = (List<Album>) createMusicDatabase(artistTitles, new AlbumSave(albumRepository));
-    List<Artist> artists = (List<Artist>) createMusicDatabase(albumTitles, new ArtistSave(artistRepository));
+
+    List<String> artistTitles = fetchTracks(jsonData, new ArtistFetch());
+    List<Artist> artists = (List<Artist>) createMusicDatabase(artistTitles, new ArtistSave(artistRepository));
+
+    List<String> albumTitles = fetchTracks(jsonData, new AlbumFetch());
+    List<Album> albums = (List<Album>) createMusicDatabase(albumTitles, new AlbumSave(albumRepository));
 
     TrackGetResponse track = TrackGetResponse.builder().trackTitle(songs.get(0).getSongTitle()).build();
     track.setTrackAlbum(albums.get(0).getAlbumTitle());
