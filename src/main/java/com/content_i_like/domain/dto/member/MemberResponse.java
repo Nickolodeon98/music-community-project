@@ -37,7 +37,7 @@ public class MemberResponse {
         .build();
   }
 
-  public MemberResponse responseWithPoint(Member member, Long point) {
+  public static MemberResponse responseWithPoint(Member member, Long point) {
     return MemberResponse.builder()
         .email(member.getEmail())
         .profileImgUrl(member.getProfileImgUrl())

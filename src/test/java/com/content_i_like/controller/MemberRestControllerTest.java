@@ -73,17 +73,14 @@ class MemberRestControllerTest {
         .gender(GenderEnum.UNKNOWN)
         .birth(0)
         .build();
-    Member member = Member.builder()
-        .memberNo(1l)
-        .nickName("nickname")
-        .build();
+    MemberJoinResponse memberJoinResponse = new MemberJoinResponse(1l, "nickname");
 
-    Mockito.when(memberService.join(any())).thenReturn(member);
+    Mockito.when(memberService.join(any())).thenReturn(memberJoinResponse);
 
     mockMvc.perform(post("/api/v1/member/join")
-            .with(csrf())
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(memberJoinRequest)))
+        .with(csrf())
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(memberJoinRequest)))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
@@ -108,9 +105,9 @@ class MemberRestControllerTest {
         .thenThrow(new ContentILikeAppException(ErrorCode.NOT_FOUND, ""));
 
     mockMvc.perform(post("/api/v1/member/join")
-            .with(csrf())
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(memberJoinRequest)))
+        .with(csrf())
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(memberJoinRequest)))
         .andDo(print())
         .andExpect(status().isNotFound());
   }
@@ -125,9 +122,9 @@ class MemberRestControllerTest {
     Mockito.when(memberService.login(any())).thenReturn(response);
 
     mockMvc.perform(post("/api/v1/member/login")
-            .with(csrf())
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(request)))
+        .with(csrf())
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(request)))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
@@ -142,19 +139,15 @@ class MemberRestControllerTest {
     MemberResponse response = MemberResponse.builder()
         .email("test@gmail.com")
         .nickName("nickname")
-        .build();
-    Member member = Member.builder()
-        .memberNo(1l)
-        .email("test@gmail.com")
-        .nickName("nickname")
+        .point(1000l)
         .build();
 
-    Mockito.when(memberService.getMyInfo(any())).thenReturn(member);
+    Mockito.when(memberService.getMyInfo(any())).thenReturn(response);
     Mockito.when(pointService.calculatePoint(any())).thenReturn(1000l);
 
     mockMvc.perform(get("/api/v1/member/my")
-            .with(csrf())
-            .contentType(MediaType.APPLICATION_JSON))
+        .with(csrf())
+        .contentType(MediaType.APPLICATION_JSON))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.resultCode").value("SUCCESS"))

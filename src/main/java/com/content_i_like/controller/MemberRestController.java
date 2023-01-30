@@ -22,13 +22,11 @@ public class MemberRestController {
 
   private final MemberService memberService;
   private final MailService mailService;
-  private final PointService pointService;
 
   @PostMapping("/join")
   public Response<MemberJoinResponse> join(@RequestBody @Valid final MemberJoinRequest request) {
-    Member member = memberService.join(request);
-    pointService.giveWelcomePoint(member);
-    return Response.success(new MemberJoinResponse(member.getMemberNo(), member.getNickName()));
+    MemberJoinResponse response = memberService.join(request);
+    return Response.success(response);
   }
 
   @PostMapping("/login")
@@ -53,10 +51,8 @@ public class MemberRestController {
 
   @GetMapping("/my")
   public Response<MemberResponse> getMyInfo(final Authentication authentication) {
-    Member member = memberService.getMyInfo(authentication.getName());
-    Long point = pointService.calculatePoint(member);
-    MemberResponse memberResponse = new MemberResponse();
-    return Response.success(memberResponse.responseWithPoint(member, point));
+    MemberResponse memberResponse = memberService.getMyInfo(authentication.getName());
+    return Response.success(memberResponse);
   }
 
   @PutMapping("/my")
@@ -64,7 +60,8 @@ public class MemberRestController {
       @RequestPart(value = "dto") @Valid final MemberModifyRequest request,
       @RequestPart(value = "file", required = false) MultipartFile file,
       final Authentication authentication) throws IOException {
-    MemberResponse memberResponse = memberService.modifyMyInfo(request, file, authentication.getName());
+    MemberResponse memberResponse = memberService
+        .modifyMyInfo(request, file, authentication.getName());
     return Response.success(memberResponse);
   }
 

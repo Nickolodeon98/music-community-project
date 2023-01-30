@@ -22,9 +22,10 @@ public class MemberService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final S3FileUploadService s3FileUploadService;
+  private final PointService pointService;
 
   @Transactional
-  public Member join(MemberJoinRequest memberJoinRequest) {
+  public MemberJoinResponse join(MemberJoinRequest memberJoinRequest) {
 
     //가입한 이력이 있는지 확인 -> 가입 아이디 email 중복 여부 & 사용 중인 닉네임이 아닌지 확인
     validateDuplicatedMember(memberJoinRequest);
@@ -40,8 +41,8 @@ public class MemberService {
         .toEntity(passwordEncoder.encode(memberJoinRequest.getPassword()));
 
     Member savedMember = memberRepository.save(member);
-
-    return savedMember;
+    pointService.giveWelcomePoint(savedMember);
+    return new MemberJoinResponse(savedMember.getMemberNo(), savedMember.getNickName());
   }
 
   private void validateDuplicatedMember(MemberJoinRequest memberJoinRequest) {
@@ -111,9 +112,11 @@ public class MemberService {
     }
   }
 
-  public Member getMyInfo(String memberEmail) {
+  public MemberResponse getMyInfo(String memberEmail) {
     Member member = validateExistingMember(memberEmail);
-    return member;
+    Long point = pointService.calculatePoint(member);
+    MemberResponse memberResponse = MemberResponse.responseWithPoint(member, point);
+    return memberResponse;
   }
 
   @Transactional
