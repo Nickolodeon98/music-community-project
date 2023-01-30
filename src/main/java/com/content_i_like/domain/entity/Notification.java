@@ -28,4 +28,16 @@ public class Notification extends BaseEntity {
 
     private Long recommendNo;
     private Long commentNo;
+
+    private boolean isDeleted = Boolean.FALSE;
+
+    public static Notification of(NotificationType notificationType, Member member, Long fromMemberNo, Long recommendNo, Long commentNo) {
+        return Notification.builder()
+                .notificationType(notificationType)
+                .member(member)
+                .fromMemberNo(fromMemberNo)
+                .recommendNo(recommendNo)
+                .commentNo(commentNo)
+                .build();
+    }
 }
