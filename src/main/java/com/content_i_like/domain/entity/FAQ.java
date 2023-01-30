@@ -18,11 +18,11 @@ import org.hibernate.annotations.DynamicInsert;
 @DynamicInsert
 public class FAQ {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long faqNo;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long faqNo;
 
-    private String faqTitle;
-    private String faqContent;
-    private String faqCategory;
+  private String faqTitle;
+  private String faqContent;
+  private String faqCategory;
 }

@@ -6,19 +6,21 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 @Builder
-public class FaqResponse {
+public class FaqDetailsResponse {
 
   private String faqCategory;
-  private String title;
+  private String faqTitle;
+  private String faqContent;
 
-  public static FaqResponse of(FAQ faq) {
-    return FaqResponse.builder()
+  public static FaqDetailsResponse of(FAQ faq) {
+    return FaqDetailsResponse.builder()
         .faqCategory(faq.getFaqCategory())
-        .title(faq.getFaqTitle())
+        .faqContent(faq.getFaqContent())
+        .faqTitle(faq.getFaqTitle())
         .build();
   }
 }

@@ -1,6 +1,7 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.config.JwtService;
+import com.content_i_like.domain.dto.faq.FaqDetailsResponse;
 import com.content_i_like.service.FaqService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,61 +30,79 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser
 class FaqRestControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+  @Autowired
+  MockMvc mockMvc;
 
-    @MockBean
-    FaqService faqService;
+  @MockBean
+  FaqService faqService;
 
-    @MockBean
-    JwtService jwtService;
+  @MockBean
+  UserDetailsService userDetailsService;
 
-    @Autowired
-    ObjectMapper objectMapper;
+  @MockBean
+  JwtService jwtService;
 
-    @Test
-    @DisplayName("faq 전체조회 잘 작동하는지")
-    void faq_success() throws Exception {
+  @Autowired
+  ObjectMapper objectMapper;
 
-        when(faqService.getAllFaq(any()))
-                .thenReturn(Page.empty());
+  @Test
+  @DisplayName("faq 전체조회 잘 작동하는지")
+  void faq_success() throws Exception {
 
-        mockMvc.perform(get("/api/v1/faq")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf()))
-                .andDo(print())
-                .andExpect(status().isOk())
-        ;
-    }
+    when(faqService.getAllFaq(any()))
+        .thenReturn(Page.empty());
 
-    @Test
-    @DisplayName("faq 카테고리로 조회 성공")
-    void faq_category_success() throws Exception {
-        when(faqService.getFaqByCategory(any(), any()))
-                .thenReturn(Page.empty());
+    mockMvc.perform(get("/api/v1/faq")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(csrf()))
+        .andDo(print())
+        .andExpect(status().isOk())
+    ;
+  }
 
-        mockMvc.perform(get("/api/v1/faq/category")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf()))
-                .andDo(print())
-                .andExpect(status().isOk())
-        ;
-    }
+  @Test
+  @DisplayName("faq 카테고리로 조회 성공")
+  void faq_category_success() throws Exception {
+    when(faqService.getFaqByCategory(any(), any()))
+        .thenReturn(Page.empty());
 
-    @Test
-    @DisplayName("faq keyword로 조회 성공")
-    void faq_keyword_success() throws Exception {
-        when(faqService.getFaqByKeyWord(any(), any()))
-                .thenReturn(Page.empty());
+    mockMvc.perform(get("/api/v1/faq/category")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(csrf()))
+        .andDo(print())
+        .andExpect(status().isOk())
+    ;
+  }
 
-        mockMvc.perform(get("/api/v1/faq/searches/keyWord")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf()))
-                .andDo(print())
-                .andExpect(status().isOk())
-        ;
-    }
+  @Test
+  @DisplayName("faq keyword로 조회 성공")
+  void faq_keyword_success() throws Exception {
+    when(faqService.getFaqByKeyWord(any(), any()))
+        .thenReturn(Page.empty());
+
+    mockMvc.perform(get("/api/v1/faq/searches/keyWord")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(csrf()))
+        .andDo(print())
+        .andExpect(status().isOk())
+    ;
+  }
+
+  @Test
+  @DisplayName("faq 상세 조회 성공")
+  void faq_details_success() throws Exception {
+    when(faqService.getFaqDetails(any()))
+        .thenReturn(new FaqDetailsResponse());
+
+    mockMvc.perform(get("/api/v1/faq/details/1")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(csrf()))
+        .andDo(print())
+        .andExpect(status().isOk())
+    ;
+  }
 }
