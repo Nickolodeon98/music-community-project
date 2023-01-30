@@ -11,10 +11,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TrackSave implements DBSaveOption<Song> {
     private final SongRepository songRepository;
-    @Override
-    public Song buildEntity(Object title) {
-        return (Song) title;
-    }
 
     @Override
     public Song saveNewRow(Song song) {

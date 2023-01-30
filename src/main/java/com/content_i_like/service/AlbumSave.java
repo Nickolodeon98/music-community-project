@@ -13,11 +13,6 @@ public class AlbumSave implements DBSaveOption<Album> {
     private final AlbumRepository albumRepository;
 
     @Override
-    public Album buildEntity(Object title) {
-        return Album.builder().albumTitle(String.valueOf(title)).build();
-    }
-
-    @Override
     public Album saveNewRow(Album album) {
         return albumRepository.save(album);
     }
