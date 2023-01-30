@@ -20,6 +20,7 @@ public class SecurityConfig {
   private final JwtAuthenticationFilter jwtFilter;
   private final AuthenticationProvider authenticationProvider;
   private final OAuthService oAuthService;
+  private final JwtExceptionFilter jwtExceptionFilter;
 
   private final String[] AUTHORIZATION = {"/api/v1/**", ""};
   private final String[] TEST_URL = {"/api/v1/hello/**", "/api/v1/member/join",
@@ -48,6 +49,7 @@ public class SecurityConfig {
         .and()
         .authenticationProvider(authenticationProvider)
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class)
         .oauth2Login()                  // OAuth2 로그인 설정
         .loginPage("/swagger-ui/index.html")
         .failureUrl("/api/v1/hello")
