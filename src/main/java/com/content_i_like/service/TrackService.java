@@ -57,31 +57,9 @@ public class TrackService {
 
     return httpHeaders;
   }
-//    private final RestTemplate restTemplate;
-
-//    public String grantAuthorizationFromSpotify() {
-//        RestTemplate template = new RestTemplate();
-//        String uri = "https://accounts.spotify.com/authorize?"
-//                + String.format("client_id=%s&response_type=%s&redirect_uri=%s", TrackEnum.CLIENT_ID.getValue(),
-//                "code", TrackEnum.REDIRECT_URI.getValue());
-//        log.info("uri:{}",uri);
-//
-//        ResponseEntity<String> response = template.getForEntity(uri, String.class);
-//
-//        String responseDetails = response.getBody();
-//        log.info("response:{}", responseDetails);
-//
-////        for (Object o : ) {
-////            responseDetails
-////        }
-//        return responseDetails;
-//    }
 
   public String spotifyAccessTokenGenerator(String code) throws JsonProcessingException {
     RestTemplate restTemplate = new RestTemplate();
-
-//        String code = grantAuthorizationFromSpotify();
-//        log.info("code:{}",code);
 
 //        String uri = "https://accounts.spotify.com/api/token";
     MultiValueMap<String, String> requiredRequestBody = new LinkedMultiValueMap<>();
@@ -106,8 +84,6 @@ public class TrackService {
         httpEntity, String.class);
 
     JsonNode tokenSource = objectMapper.readTree(response.getBody());
-
-//        log.info("response:{}", response.getBody());
 
     String accessToken = String.valueOf(tokenSource.findValue("access_token"));
     String refreshToken = String.valueOf(tokenSource.findValue("refresh_token"));
@@ -137,10 +113,6 @@ public class TrackService {
 
     String searchUri = TrackEnum.BASE_URL.getValue() + "/search";
 
-//    List<String> queries =
-//        collectAllGenres(
-//            "C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\genres.csv");
-
     List<String> queries = List.of("Classic%20K-pop");
 
     List<List<String>> collectedIds = new ArrayList<>();
@@ -163,16 +135,9 @@ public class TrackService {
 
         for (int i = 0; i < 50; i++) {
           String hrefContainingId = tracksSource.at("/tracks/items/" + i + "/id").asText();
-          /* https://api.spotify.com/v1/tracks/ 의 길이는 0 ~ 33 까지
-           * 그러므로 substring(34, lastIndex) 를 해야 트랙 아이디 값만 저장할 수 있다.
-           * 3H0XfUU13vsWC6smb9guvG */
-//                    ids.add(hrefContainingId.substring(34));
+
           ids.add(hrefContainingId);
         }
-
-//                List<String> trackTitles = tracksSource.findValuesAsText("name");
-
-//                log.info("response:{}", response.getBody());
         log.info("ids:{}", ids);
         log.info("size:{}", ids.size());
 
@@ -181,10 +146,6 @@ public class TrackService {
 
         // 현 예시에서 id 50개씩 총 4묶음이 들어간다
         collectedIds.add(tmpIds);
-
-//                log.info("names:{} , offset:{}", trackTitles, offset);
-//                log.info("size:{}, offset:{}", trackTitles.size(), offset);
-
       }
     }
 
@@ -210,12 +171,12 @@ public class TrackService {
           ids.append(",");
         }
       }
-      log.info("ids:{}", ids);
+//      log.info("ids:{}", ids);
 
       ResponseEntity<String> response = restTemplate
               .exchange(trackUri + ids, HttpMethod.GET, httpEntity, String.class);
 
-      log.info("info:{}", response.getBody());
+//      log.info("info:{}", response.getBody());
 
       /* track uri 이용해서 50개씩 모아져 있는 아이디들로 찾아지는 음원들에 대한 JSON 형태 응답을 모두 읽어들이고,
        * 읽어들인 응답에서 필요한 부분만 추출한다. 추출은 매개 변수로 받은 인터페이스의 구현체에 따라 달라진다. */
@@ -246,12 +207,10 @@ public class TrackService {
       savedEntities.add(saveOption.saveNewRow(saveOption.buildEntity(title)));
     }
 
-    log.info("here:{}", savedEntities);
-
     return savedEntities;
   }
 
-  public TrackGetResponse createAllThreeTypesDB(String token) throws IOException {
+  public void createAllThreeTypesDB(String token) throws IOException {
     /* TODO: 세 자원을 모두 저장을 할 때 여기도 템플릿 콜백 패턴 적용 가능 */
     List<JsonNode> jsonData = callTracksApi(token);
 
@@ -263,11 +222,5 @@ public class TrackService {
 
     List<String> albumTitles = fetchTracks(jsonData, new AlbumFetch());
     List<Album> albums = (List<Album>) createMusicDatabase(albumTitles, new AlbumSave(albumRepository));
-
-    TrackGetResponse track = TrackGetResponse.builder().trackTitle(songs.get(0).getSongTitle()).build();
-    track.setTrackAlbum(albums.get(0).getAlbumTitle());
-    track.setTrackArtist(artists.get(0).getArtistName());
-
-    return track;
   }
 }
