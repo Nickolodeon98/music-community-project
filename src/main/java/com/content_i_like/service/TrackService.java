@@ -1,5 +1,6 @@
 package com.content_i_like.service;
 
+import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackResponse;
 import com.content_i_like.domain.entity.Album;
 import com.content_i_like.domain.entity.Artist;
@@ -229,23 +230,30 @@ public class TrackService {
     return titles;
   }
 
-  public void createMusicDatabase(List<String> titles, DBSaveOption saveOption) {
+  public List<?> createMusicDatabase(List<String> titles, DBSaveOption saveOption) {
+    List<Object> savedEntities = new ArrayList<>();
+
     for (String title : titles) {
-      saveOption.saveNewRow(saveOption.buildEntity(title));
+      savedEntities.add(saveOption.saveNewRow(saveOption.buildEntity(title)));
     }
+    return savedEntities;
   }
 
-  public void createAllThreeTypesDB(String token) throws IOException {
+  public TrackGetResponse createAllThreeTypesDB(String token) throws IOException {
     /* TODO: 세 자원을 모두 저장을 할 때 여기도 템플릿 콜백 패턴 적용 가능 */
 
     List<String> songTitles = fetchTracks(token, new TrackFetch());
     List<String> artistTitles = fetchTracks(token, new ArtistFetch());
     List<String> albumTitles = fetchTracks(token, new AlbumFetch());
 
-    createMusicDatabase(songTitles, new TrackSave(songRepository));
-    createMusicDatabase(songTitles, new AlbumSave(albumRepository));
-    createMusicDatabase(songTitles, new ArtistSave(artistRepository));
+    List<Song> songs = (List<Song>) createMusicDatabase(songTitles, new TrackSave(songRepository));
+    List<Album> albums = (List<Album>) createMusicDatabase(artistTitles, new AlbumSave(albumRepository));
+    List<Artist> artists = (List<Artist>) createMusicDatabase(albumTitles, new ArtistSave(artistRepository));
+
+    TrackGetResponse track = TrackGetResponse.builder().trackTitle(songs.get(0).getSongTitle()).build();
+    track.setTrackAlbum(albums.get(0).getAlbumTitle());
+    track.setTrackArtist(artists.get(0).getArtistName());
+
+    return track;
   }
-
-
 }
