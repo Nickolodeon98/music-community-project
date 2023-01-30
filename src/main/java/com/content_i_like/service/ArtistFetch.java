@@ -9,8 +9,24 @@ public class ArtistFetch implements Fetch<Artist> {
 
   @Override
   public String extractTitle(JsonNode root, int count) {
-    String artistName = root.get("tracks").get(count).get("artists").get(0).get("name").asText();
-    log.info("artistName:{}", artistName);
-    return artistName;
+    StringBuilder artistNames = new StringBuilder();
+    String artistName = "";
+
+    JsonNode artistNode = root.get("tracks").get(count).get("artists");
+
+    int valuesCount = 0;
+    if (artistNode.isArray())
+      for (JsonNode element : artistNode) {
+        valuesCount++;
+      }
+
+    for (int i = 0; i < valuesCount; i++) {
+      artistName = artistNode.get(i).get("name").asText();
+      artistNames.append(artistName);
+      if (i != valuesCount-1) artistNames.append(", ");
+    }
+    log.info("artistNames:{}", artistNames);
+
+    return artistNames.toString();
   }
 }
