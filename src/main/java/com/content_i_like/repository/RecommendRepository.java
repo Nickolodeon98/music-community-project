@@ -1,12 +1,14 @@
 package com.content_i_like.repository;
 
 import com.content_i_like.domain.entity.Recommend;
+import com.content_i_like.repository.custom.CustomRecommendRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface RecommendRepository extends JpaRepository<Recommend, Long> {
+public interface RecommendRepository extends JpaRepository<Recommend, Long>,
+    CustomRecommendRepository {
 
   @Override
   @Modifying
