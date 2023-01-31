@@ -6,11 +6,13 @@ import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.enums.GenderEnum;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
+import com.content_i_like.fixture.Fixture;
 import com.content_i_like.service.MailService;
 import com.content_i_like.service.MemberService;
 import com.content_i_like.service.OAuthService;
 import com.content_i_like.service.PointService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -61,11 +63,13 @@ class MemberRestControllerTest {
   @MockBean
   UserDetailsService userDetailsService;
 
-  @Test
-  @DisplayName("회원가입 성공")
-  @WithMockUser
-  void join_success() throws Exception {
-    MemberJoinRequest memberJoinRequest = MemberJoinRequest.builder()
+  MemberJoinRequest memberJoinRequest;
+  MemberJoinResponse memberJoinResponse;
+  Member member;
+
+  @BeforeEach
+  public void set() {
+    memberJoinRequest = MemberJoinRequest.builder()
         .name("rnjsthdus")
         .nickName("test")
         .email("test@gmail.com")
@@ -73,8 +77,13 @@ class MemberRestControllerTest {
         .gender(GenderEnum.UNKNOWN)
         .birth(0)
         .build();
-    MemberJoinResponse memberJoinResponse = new MemberJoinResponse(1l, "nickname");
+    memberJoinResponse = new MemberJoinResponse(1l, "nickname");
+  }
 
+  @Test
+  @DisplayName("회원가입 성공")
+  @WithMockUser
+  void join_success() throws Exception {
     Mockito.when(memberService.join(any())).thenReturn(memberJoinResponse);
 
     mockMvc.perform(post("/api/v1/member/join")
@@ -89,27 +98,19 @@ class MemberRestControllerTest {
   }
 
   @Test
-  @DisplayName("회원가입 실패")
+  @DisplayName("회원가입 실패 - 중복된 이메일 혹은 닉네임")
   @WithMockUser
   void join_fail() throws Exception {
-    MemberJoinRequest memberJoinRequest = MemberJoinRequest.builder()
-        .name("rnjsthdus")
-        .nickName("test")
-        .email("test@gmail.com")
-        .password("rnBsthdus57@")
-        .gender(GenderEnum.UNKNOWN)
-        .birth(0)
-        .build();
 
     Mockito.when(memberService.join(any()))
-        .thenThrow(new ContentILikeAppException(ErrorCode.NOT_FOUND, ""));
+        .thenThrow(new ContentILikeAppException(ErrorCode.DUPLICATED_MEMBER_NAME, ""));
 
     mockMvc.perform(post("/api/v1/member/join")
         .with(csrf())
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsBytes(memberJoinRequest)))
         .andDo(print())
-        .andExpect(status().isNotFound());
+        .andExpect(status().isConflict());
   }
 
   @Test
@@ -130,6 +131,60 @@ class MemberRestControllerTest {
         .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
         .andExpect(jsonPath("$.result.jwt").value("token"))
         .andExpect(jsonPath("$.result.nickName").value("nick"));
+  }
+
+  @Test
+  @DisplayName("로그인 실패1 - email 없음")
+  @WithMockUser
+  void login_fail1() throws Exception {
+    MemberLoginRequest request = new MemberLoginRequest("test@gmail.com", "123456789");
+
+    Mockito.when(memberService.login(any()))
+        .thenThrow(new ContentILikeAppException(ErrorCode.MEMBER_NOT_FOUND, ""));
+
+    mockMvc.perform(post("/api/v1/member/login")
+        .with(csrf())
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(request)))
+        .andDo(print())
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.resultCode").value("ERROR"));
+  }
+
+  @Test
+  @DisplayName("로그인 실패2 - password 틀림")
+  @WithMockUser
+  void login_fail2() throws Exception {
+    MemberLoginRequest request = new MemberLoginRequest("test@gmail.com", "123456789");
+
+    Mockito.when(memberService.login(any()))
+        .thenThrow(new ContentILikeAppException(ErrorCode.INVALID_PASSWORD, ""));
+
+    mockMvc.perform(post("/api/v1/member/login")
+        .with(csrf())
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(request)))
+        .andDo(print())
+        .andExpect(status().isUnauthorized())
+        .andExpect(jsonPath("$.resultCode").value("ERROR"));
+  }
+
+  @Test
+  @DisplayName("비밀번호 변경 성공")
+  @WithMockUser
+  void changePw_success() throws Exception {
+    ChangePwRequest request = new ChangePwRequest("newpassword12?", "newpassword12?");
+
+    Mockito.when(memberService.changePw(any(), any()))
+        .thenReturn(request.getNewPassword());
+
+    mockMvc.perform(post("/api/v1/member/passwd/change")
+        .with(csrf())
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(request)))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.result").value(request.getNewPassword()));
   }
 
   @Test
