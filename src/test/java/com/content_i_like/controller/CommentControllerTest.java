@@ -9,6 +9,11 @@ import com.content_i_like.domain.entity.*;
 import com.content_i_like.fixture.Fixture;
 import com.content_i_like.service.CommentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,6 +78,17 @@ class CommentControllerTest {
     comment = Fixture.getCommentFixture(member, recommend);
   }
 
+  String jwtToken;
+  @BeforeEach
+  void getToken() {
+    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    jwtToken = Jwts.builder()
+        .setSubject("user")
+        .setIssuer("issuer")
+        .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+        .signWith(key, SignatureAlgorithm.HS256)
+        .compact();
+  }
   @Test
   @DisplayName("댓글 작성")
   void success_write_comment() throws Exception {
@@ -84,7 +100,7 @@ class CommentControllerTest {
     String url = "/api/v1/recommends/1/comments";
 
     mockMvc.perform(post(url).with(csrf())
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .header(HttpHeaders.AUTHORIZATION, jwtToken)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsBytes(request)))
         .andExpect(status().isOk())
@@ -110,7 +126,7 @@ class CommentControllerTest {
     String url = String.format("/api/v1/recommends/1/comments/%d", 1);
 
     mockMvc.perform(put(url).with(csrf())
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .header(HttpHeaders.AUTHORIZATION, jwtToken)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsBytes(request)))
         .andExpect(status().isOk())
@@ -133,7 +149,7 @@ class CommentControllerTest {
     String url = String.format("/api/v1/recommends/1/comments/%d", 1);
 
     mockMvc.perform(delete(url).with(csrf())
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .header(HttpHeaders.AUTHORIZATION, jwtToken)
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.resultCode").exists())
@@ -158,7 +174,6 @@ class CommentControllerTest {
     String url = String.format("/api/v1/recommends/1/comments/%d", 1);
 
     mockMvc.perform(get(url).with(csrf())
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.resultCode").exists())
@@ -193,7 +208,6 @@ class CommentControllerTest {
     String url = "/api/v1/recommends/1/comments";
 
     mockMvc.perform(get(url).with(csrf())
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.resultCode").exists())
