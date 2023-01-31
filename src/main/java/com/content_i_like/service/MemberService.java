@@ -28,6 +28,8 @@ public class MemberService {
   private final PointService pointService;
   private final MailService mailService;
 
+  private final String DEFAULT_PROFILE = "https://s3.amazonaws.com/80c4f0a7-c4e0-44a5-85d6-315dc793fe28-profile.jpg";
+
   @Transactional
   public MemberJoinResponse join(MemberJoinRequest memberJoinRequest) {
 
@@ -36,7 +38,7 @@ public class MemberService {
     checkPasswordLength(memberJoinRequest.getPassword());
 
     Member member = memberJoinRequest
-        .toEntity(passwordEncoder.encode(memberJoinRequest.getPassword()));
+        .toEntity(passwordEncoder.encode(memberJoinRequest.getPassword()),DEFAULT_PROFILE);
 
     Member savedMember = memberRepository.save(member);
     pointService.giveWelcomePoint(savedMember);

@@ -35,12 +35,13 @@ public class MemberJoinRequest {
   private GenderEnum gender;
   private Integer birth;
 
-  public Member toEntity(String password) {
+  public Member toEntity(String password, String profileImgUrl) {
     return Member.builder()
         .email(this.email)
         .password(password)
         .gender(this.gender)
         .name(this.name)
+        .profileImgUrl(profileImgUrl)
         .nickName(this.nickName)
         .birth(this.birth)
         .status(MemberStatusEnum.USER)

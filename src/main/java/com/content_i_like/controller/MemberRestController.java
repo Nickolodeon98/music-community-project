@@ -23,9 +23,7 @@ public class MemberRestController {
   private final MemberService memberService;
 
   @PostMapping("/join")
-  public Response<MemberJoinResponse> join(
-      @RequestPart(value = "dto") @Valid final MemberJoinRequest request,
-      @RequestPart(value = "file", required = false) MultipartFile file) {
+  public Response<MemberJoinResponse> join(@RequestBody @Valid final MemberJoinRequest request) {
     MemberJoinResponse response = memberService.join(request);
     return Response.success(response);
   }
