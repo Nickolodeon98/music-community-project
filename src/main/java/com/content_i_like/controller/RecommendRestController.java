@@ -107,7 +107,7 @@ public class RecommendRestController {
   }
 
 
-  @GetMapping// local/api/v1/recommend?sort=recommendNo; "게시글순" name = sort, value = "recommendNo"
+  @GetMapping
   public Response<Page<RecommendListResponse>> ReadRecommendPost(
       @RequestParam(required = false, defaultValue = "recommendTitle") String sort) {
     Pageable pageable = PageRequest.of(0, 20, Sort.by(sort).ascending());
