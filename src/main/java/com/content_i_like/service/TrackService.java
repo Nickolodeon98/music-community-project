@@ -10,6 +10,7 @@ import com.content_i_like.repository.SongRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -98,16 +99,20 @@ public class TrackService {
     return genres;
   }
 
+  @Transactional
   public List<List<String>> findSpotifyIds(String accessToken) throws IOException {
     RestTemplate restTemplate = new RestTemplate();
     String searchUri = TrackEnum.BASE_URL.getValue() + "/search";
     int limit = 50;
 
     List<String> queries =
-            collectAllGenres("C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\k-genres.csv");
+            collectAllGenres("C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\extra.csv");
 
 //    List<String> queries = List.of("K-rock", "Classic K-pop", "Korean Soundtrack", "Korean Pop",
 //            "Korean Mask Singer", "Korean Traditional", "Korean Phantom Singer", "Korean Instrumental");
+
+//    List<String> queries = List.of("Pop");
+
 
     List<List<String>> collectedIds = new ArrayList<>();
     List<String> ids = new ArrayList<>();
@@ -194,13 +199,14 @@ public class TrackService {
     return fetchedType.parseIntoEntities(titles);
   }
 
+  @Transactional
   public <T> void createMusicDatabase(List<T> entities, DBSaveOption<T> saveOption) {
 //    for (T entity : entities) {
 //      saveOption.saveNewRow(entity);
 //    }
     saveOption.saveNewRows(entities);
   }
-
+  @Transactional
   public void createAllThreeTypesDB(String token) throws IOException {
     /* TODO: 세 자원을 모두 저장을 할 때 여기도 템플릿 콜백 패턴 적용 가능 */
     List<JsonNode> jsonData = callTracksApi(token);
