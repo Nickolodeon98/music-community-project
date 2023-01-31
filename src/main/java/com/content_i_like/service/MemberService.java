@@ -3,10 +3,13 @@ package com.content_i_like.service;
 import com.content_i_like.config.JwtService;
 import com.content_i_like.domain.dto.member.*;
 import com.content_i_like.domain.entity.Member;
+import com.content_i_like.domain.entity.Point;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.MemberRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -128,6 +131,12 @@ public class MemberService {
     Long point = pointService.calculatePoint(member);
     MemberResponse memberResponse = MemberResponse.responseWithPoint(member, point);
     return memberResponse;
+  }
+
+  public MemberPointResponse getMyPoint(String memeberEmail) {
+    Member member = validateExistingMember(memeberEmail);
+    List<PointResponse> points = pointService.pointList(member);
+    return new MemberPointResponse(pointService.calculatePoint(member), points);
   }
 
   @Transactional
