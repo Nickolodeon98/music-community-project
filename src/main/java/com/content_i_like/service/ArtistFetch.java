@@ -19,10 +19,13 @@ public class ArtistFetch implements Fetch<Artist> {
     JsonNode artistNode = root.get("tracks").get(count).get("artists");
 
     int valuesCount = 0;
-    if (artistNode.isArray())
-      for (JsonNode element : artistNode) {
-        valuesCount++;
-      }
+    try {
+      if (artistNode.isArray())
+        valuesCount = artistNode.size();
+    } catch (NullPointerException e) {
+      log.warn("JsonNode 가 null 값입니다.");
+      return "";
+    }
 
     for (int i = 0; i < valuesCount; i++) {
       artistName = artistNode.get(i).get("name").asText();
