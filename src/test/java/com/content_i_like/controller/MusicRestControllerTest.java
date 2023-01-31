@@ -84,4 +84,32 @@ class MusicRestControllerTest {
             assertEquals(pageable, actualPageable);
         }
     }
+
+    @Nested
+    @DisplayName("검색어에 해당되는 음원 조회")
+    class SearchTrackByTitle {
+        @Test
+        @DisplayName("성공")
+        void success_search_by_keyword() throws Exception {
+            String searchKey = "Horizon";
+
+            TrackGetResponse foundTrack = TrackGetResponse.builder()
+                    .trackTitle("Event Horizon")
+                    .trackArtist("Younha")
+                    .trackAlbum("YOUNHA 6th Album Repackage 'END THEORY : Final Edition'")
+                    .build();
+
+            given(musicService.findSongsWithKeyword(searchKey)).willReturn(foundTrack);
+
+            String url = "api/v1/music/search/" + searchKey;
+
+            mockMvc.perform(get(url).with(csrf()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+                    .andExpect(jsonPath("$.result.content.trackTitle").value("Event Horizon"))
+                    .andExpect(jsonPath("$.resultCode.content.trackArtist").value("Younha"))
+                    .andExpect(jsonPath("$.resultCode.content.trackAlbum)").value("YOUNHA 6th Album Repackage 'END THEORY : Final Edition'"))
+                    .andDo(print());
+        }
+    }
 }
