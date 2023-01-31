@@ -69,7 +69,7 @@ class MemberRestControllerTest {
         .name("rnjsthdus")
         .nickName("test")
         .email("test@gmail.com")
-        .password("123456789")
+        .password("rnBsthdus57@")
         .gender(GenderEnum.UNKNOWN)
         .birth(0)
         .build();
@@ -96,7 +96,7 @@ class MemberRestControllerTest {
         .name("rnjsthdus")
         .nickName("test")
         .email("test@gmail.com")
-        .password("123456789")
+        .password("rnBsthdus57@")
         .gender(GenderEnum.UNKNOWN)
         .birth(0)
         .build();
