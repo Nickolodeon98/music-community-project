@@ -51,7 +51,7 @@ public class CommentRestController {
    * @return 수정된 댓글 내용
    */
   @PutMapping("/{recommendNo}/comments/{commentNo}")
-  public Response<CommentResponse> writeRecommendComment(final Authentication authentication,
+  public Response<CommentResponse> modifyRecommendComment(final Authentication authentication,
       @RequestBody @Valid CommentModifyRequest request,
       @PathVariable final Long recommendNo,
       @PathVariable final Long commentNo) {
