@@ -19,6 +19,13 @@ public class TrackSave implements DBSaveOption<Song> {
 
     @Override
     public List<Song> saveNewRows(List<Song> entities) {
+//        for (Song entity : entities) {
+//            songRepository.findBySongTitle(entity.getSongTitle())
+//                    .ifPresent(args->entities.remove(entity));
+            /* 문제는 음원 이름만 같고 앨범명이나 아티스트명이 다른 음원들이다.
+             * 음원의 개수는 줄어들었는데 앨범명과 아티스트명의 개수가 그대로이면
+             * 연관관계를 설정할 때 참조할 수 있는 개수가 맞지 않는다. */
+//        }
         return songRepository.saveAll(entities);
     }
 
