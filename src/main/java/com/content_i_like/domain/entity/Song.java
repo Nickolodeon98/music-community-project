@@ -17,6 +17,7 @@ public class Song {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   public Long songNo;
 
+  @Column(unique = true)
   public String songTitle;
 
   @ManyToOne

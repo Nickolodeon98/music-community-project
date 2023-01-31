@@ -14,6 +14,7 @@ public class Album {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long albumNo;
+  @Column(unique = true)
   private String albumTitle;
   private String albumImageUrl;
 
