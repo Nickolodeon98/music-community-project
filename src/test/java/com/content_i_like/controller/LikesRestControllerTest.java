@@ -5,6 +5,11 @@ import com.content_i_like.domain.entity.*;
 import com.content_i_like.fixture.Fixture;
 import com.content_i_like.service.LikesService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,6 +67,19 @@ class LikesRestControllerTest {
     comment = Fixture.getCommentFixture(member, recommend);
   }
 
+  String jwtToken;
+
+  @BeforeEach
+  void getToken() {
+    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    jwtToken = Jwts.builder()
+        .setSubject("user")
+        .setIssuer("issuer")
+        .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+        .signWith(key, SignatureAlgorithm.HS256)
+        .compact();
+  }
+
   @Test
   @DisplayName("좋아요 활성화")
   void success_active_comment() throws Exception {
@@ -71,7 +89,7 @@ class LikesRestControllerTest {
     String url = "/api/v1/recommends/1/likes";
 
     mockMvc.perform(post(url).with(csrf())
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .header(HttpHeaders.AUTHORIZATION, jwtToken)
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.resultCode").exists())
@@ -90,7 +108,7 @@ class LikesRestControllerTest {
     String url = "/api/v1/recommends/1/likes";
 
     mockMvc.perform(post(url).with(csrf())
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
+            .header(HttpHeaders.AUTHORIZATION, jwtToken)
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.resultCode").exists())
@@ -109,7 +127,6 @@ class LikesRestControllerTest {
     String url = "/api/v1/recommends/1/likes";
 
     mockMvc.perform(get(url).with(csrf())
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ")
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.resultCode").exists())
