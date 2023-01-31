@@ -3,6 +3,8 @@ package com.content_i_like.exception;
 import com.content_i_like.domain.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -20,6 +22,14 @@ public class ExceptionManager {
     result.put("message", e.getMessage());
     return ResponseEntity.status(e.getErrorCode().getStatus())
         .body(Response.error("ERROR", result));
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException e) {
+    Map<String, Object> result = new HashMap<>();
+    e.getBindingResult().getAllErrors()
+        .forEach(c -> result.put(((FieldError) c).getField(), c.getDefaultMessage()));
+    return ResponseEntity.status(e.getStatusCode()).body(Response.error("ERROR", result));
   }
 
   @ExceptionHandler(SQLException.class)
