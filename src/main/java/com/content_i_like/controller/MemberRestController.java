@@ -52,6 +52,12 @@ public class MemberRestController {
     return Response.success(memberResponse);
   }
 
+  @GetMapping("/my/point")
+  public Response<MemberPointResponse> getMyPoint(final Authentication authentication) {
+    MemberPointResponse memberPointResponse = memberService.getMyPoint(authentication.getName());
+    return Response.success(memberPointResponse);
+  }
+
   @PutMapping("/my")
   public Response<MemberResponse> modifyMyInfo(
       @RequestPart(value = "dto") @Valid final MemberModifyRequest request,
