@@ -35,7 +35,6 @@ public class MemberService {
 
     //가입한 이력이 있는지 확인 -> 가입 아이디 email 중복 여부 & 사용 중인 닉네임이 아닌지 확인
     validateDuplicatedMember(memberJoinRequest);
-    checkPasswordLength(memberJoinRequest.getPassword());
 
     Member member = memberJoinRequest
         .toEntity(passwordEncoder.encode(memberJoinRequest.getPassword()),DEFAULT_PROFILE);
@@ -43,15 +42,6 @@ public class MemberService {
     Member savedMember = memberRepository.save(member);
     pointService.giveWelcomePoint(savedMember);
     return new MemberJoinResponse(savedMember.getMemberNo(), savedMember.getNickName());
-  }
-
-  //비밀번호 조건에 맞는지 확인
-  private void checkPasswordLength(String password) {
-    if (password.length() < 8
-        || password.length() > 16) {
-      throw new ContentILikeAppException(ErrorCode.REJECT_PASSWORD,
-          ErrorCode.REJECT_PASSWORD.getMessage());
-    }
   }
 
   private void validateDuplicatedMember(MemberJoinRequest memberJoinRequest) {
@@ -107,8 +97,6 @@ public class MemberService {
 
   public String changePw(ChangePwRequest changePwRequest, String memberEmail) {
     Member member = validateExistingMember(memberEmail);
-
-    checkPasswordLength(changePwRequest.getNewPassword());
 
     doubleCheckPasswordAndUpdate(member, changePwRequest.getNewPassword(),
         changePwRequest.getVerification());
