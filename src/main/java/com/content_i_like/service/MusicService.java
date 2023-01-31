@@ -32,4 +32,11 @@ public class MusicService {
 
     return tracks.map(TrackGetResponse::of);
   }
+
+  public Page<TrackGetResponse> findSongsWithKeyword(Pageable pageable, String searchKey) {
+    Page<Song> songs = songRepository.findAllBySongTitleContaining(searchKey, pageable)
+            .orElseThrow(()->new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage()));
+
+    return songs.map(TrackGetResponse::of);
+  }
 }
