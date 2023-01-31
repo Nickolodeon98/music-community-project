@@ -104,7 +104,10 @@ public class TrackService {
     int limit = 50;
 
     List<String> queries =
-            collectAllGenres("C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\genres.csv");
+            collectAllGenres("C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\k-genres.csv");
+
+//    List<String> queries = List.of("21st%20Century%20Classical", "432hz", "48g", "5th%20Wave%20Emo", "8-bit");
+
     List<List<String>> collectedIds = new ArrayList<>();
     List<String> ids = new ArrayList<>();
 
@@ -120,6 +123,10 @@ public class TrackService {
 
         JsonNode tracksSource = objectMapper.readTree(response.getBody());
 
+        if (tracksSource.at("/tracks/items").isEmpty()) {
+          log.info("해당 장르에 속한 음원이 없습니다!");
+          continue;
+        }
         for (int i = 0; i < 50; i++) {
           String hrefContainingId = tracksSource.at("/tracks/items/" + i + "/id").asText();
 
