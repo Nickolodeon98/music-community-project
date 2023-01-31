@@ -11,16 +11,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class CommentRequest {
-    private String commentContent;
-    private Long commentPoint;
 
-    public Comment toEntity(Member member, Recommend post) {
-        return Comment.builder()
-                .commentContent(this.commentContent)
-                .commentPoint(this.commentPoint)
-                .member(member)
-                .recommend(post)
-                .build();
-    }
+  private String commentContent;
+  private Long commentPoint;
+
+  public Comment toEntity(Member member, Recommend post) {
+    return Comment.builder()
+        .commentContent(this.commentContent)
+        .commentPoint(this.commentPoint)
+        .member(member)
+        .recommend(post)
+        .build();
+  }
 
 }

@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class CommentModifyRequest {
-    private String commentContent;
+
+  private String commentContent;
 }

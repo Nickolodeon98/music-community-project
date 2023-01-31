@@ -13,22 +13,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MemberJoinRequest {
-    private String email;
-    private String nickName;
-    private String password;
-    private String name;
-    private GenderEnum gender;
-    private Integer birth;
 
-    public Member toEntity(String password){
-        return Member.builder()
-                .email(this.email)
-                .password(password)
-                .gender(this.gender)
-                .name(this.name)
-                .nickName(this.nickName)
-                .birth(this.birth)
-                .status(MemberStatusEnum.USER)
-                .build();
-    }
+  private String email;
+  private String nickName;
+  private String password;
+  private String name;
+  private GenderEnum gender;
+  private Integer birth;
+
+  public Member toEntity(String password) {
+    return Member.builder()
+        .email(this.email)
+        .password(password)
+        .gender(this.gender)
+        .name(this.name)
+        .nickName(this.nickName)
+        .birth(this.birth)
+        .status(MemberStatusEnum.USER)
+        .build();
+  }
 }

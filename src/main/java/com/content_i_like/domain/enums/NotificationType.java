@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public enum NotificationType {
-    POINT_ADJUSTMENT("포인트가 정산되었습니다"),
-    LIKES("좋아요가 눌렸습니다."),
-    COMMENTS("댓글이 달렸습니다.");
+  POINT_ADJUSTMENT("포인트가 정산되었습니다"),
+  LIKES("좋아요가 눌렸습니다."),
+  COMMENTS("댓글이 달렸습니다.");
 
-    private String text;
+  private String text;
 }

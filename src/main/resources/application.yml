@@ -46,3 +46,21 @@ spotify:
       1234
     secret:
       1234
+
+# multipart 설정
+spring.servlet.multipart.max-file-size: 10MB
+spring.servlet.multipart.max-request-size: 10MB
+
+# aws 설정
+# 사용할 S3 bucket region 입력
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    s3:
+      bucket: abcdefg
+
+iamAccessKey: 1234
+iamSecretKey: 1234

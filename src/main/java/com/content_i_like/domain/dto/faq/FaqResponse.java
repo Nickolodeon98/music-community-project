@@ -12,13 +12,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class FaqResponse {
 
-    private String faqCategory;
-    private String title;
+  private String faqCategory;
+  private String title;
 
-    public static FaqResponse of(FAQ faq) {
-        return FaqResponse.builder()
-                .faqCategory(faq.getFaqCategory())
-                .title(faq.getFaqTitle())
-                .build();
-    }
+  public static FaqResponse of(FAQ faq) {
+    return FaqResponse.builder()
+        .faqCategory(faq.getFaqCategory())
+        .title(faq.getFaqTitle())
+        .build();
+  }
 }
