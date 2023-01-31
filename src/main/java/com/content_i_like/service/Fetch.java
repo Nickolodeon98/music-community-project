@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface Fetch<T> {
 
-  String extractTitle(JsonNode root, int count);
+  String extractData(JsonNode root, int count);
 
   List<T> parseIntoEntities(List<String> titles);
 }

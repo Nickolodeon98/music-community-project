@@ -106,7 +106,7 @@ public class TrackService {
     List<String> queries =
             collectAllGenres("C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\k-genres.csv");
 
-//    List<String> queries = List.of("21st%20Century%20Classical", "432hz", "48g", "5th%20Wave%20Emo", "8-bit");
+//    List<String> queries = List.of("K-pop");
 
     List<List<String>> collectedIds = new ArrayList<>();
     List<String> ids = new ArrayList<>();
@@ -166,11 +166,12 @@ public class TrackService {
       ResponseEntity<String> response = restTemplate
               .exchange(trackUri + ids, HttpMethod.GET, httpEntity, String.class);
 
-//      log.info("info:{}", response.getBody());
 
       /* track uri 이용해서 50개씩 모아져 있는 아이디들로 찾아지는 음원들에 대한 JSON 형태 응답을 모두 읽어들이고,
        * 읽어들인 응답에서 필요한 부분만 추출한다. 추출은 매개 변수로 받은 인터페이스의 구현체에 따라 달라진다. */
       JsonNode infoRoot = objectMapper.readTree(response.getBody());
+
+//      log.info("info:{}", infoRoot.get("tracks").get(0).get("album").get("images").get(1).get("url").asText());
 
       collectedJsonNodes.add(infoRoot);
     }
@@ -181,7 +182,7 @@ public class TrackService {
     List<String> titles = new ArrayList<>();
     for (JsonNode infoRoot : infoRoots) {
       for (int j = 0; j < 50; j++) {
-        titles.add(fetchedType.extractTitle(infoRoot, j));
+        titles.add(fetchedType.extractData(infoRoot, j));
       }
     }
     return fetchedType.parseIntoEntities(titles);

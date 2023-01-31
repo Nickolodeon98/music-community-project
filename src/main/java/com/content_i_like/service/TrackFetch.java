@@ -9,7 +9,7 @@ import java.util.List;
 public class TrackFetch implements Fetch<Song> {
 
   @Override
-  public String extractTitle(JsonNode root, int count) {
+  public String extractData(JsonNode root, int count) {
     return root.get("tracks").get(count).get("name").asText();
   }
 

@@ -12,7 +12,7 @@ import java.util.List;
 public class ArtistFetch implements Fetch<Artist> {
 
   @Override
-  public String extractTitle(JsonNode root, int count) {
+  public String extractData(JsonNode root, int count) {
     StringBuilder artistNames = new StringBuilder();
     String artistName = "";
 

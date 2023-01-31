@@ -12,7 +12,7 @@ import java.util.List;
 public class AlbumFetch implements Fetch<Album> {
 
   @Override
-  public String extractTitle(JsonNode root, int count) {
+  public String extractData(JsonNode root, int count) {
 //    String albumName = root.at("/tracks/" + count + "/album/name").asText();
     return root.get("tracks").get(count).get("album").get("name").asText();
   }
