@@ -18,6 +18,11 @@ public class TrackSave implements DBSaveOption<Song> {
     }
 
     @Override
+    public List<Song> saveNewRows(List<Song> entities) {
+        return songRepository.saveAll(entities);
+    }
+
+    @Override
     public List<Song> fetchEverything() {
         return songRepository.findAll();
     }

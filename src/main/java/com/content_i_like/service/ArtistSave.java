@@ -16,6 +16,11 @@ public class ArtistSave implements DBSaveOption<Artist> {
     }
 
     @Override
+    public List<Artist> saveNewRows(List<Artist> entities) {
+        return artistRepository.saveAll(entities);
+    }
+
+    @Override
     public List<Artist> fetchEverything() {
         return artistRepository.findAll();
     }

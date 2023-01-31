@@ -18,6 +18,11 @@ public class AlbumSave implements DBSaveOption<Album> {
     }
 
     @Override
+    public List<Album> saveNewRows(List<Album> entities) {
+        return albumRepository.saveAll(entities);
+    }
+
+    @Override
     public List<Album> fetchEverything() {
         return albumRepository.findAll();
     }
