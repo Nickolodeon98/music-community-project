@@ -11,28 +11,29 @@ import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter @Builder
+@Getter
+@Builder
 public class CommentReadResponse {
 
-    private Long commentNo;
-    private String memberNickname;
-    private String profileImgUrl;
-    private String commentContent;
-    private Long commentPoint;
+  private Long commentNo;
+  private String memberNickname;
+  private String profileImgUrl;
+  private String commentContent;
+  private Long commentPoint;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime createdAt;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
+  private LocalDateTime createdAt;
 
-    public static CommentReadResponse of(Comment comment) {
-        return CommentReadResponse.builder()
-                .commentNo(comment.getCommentNo())
-                .memberNickname(comment.getMember().getNickName())
-                .profileImgUrl(comment.getMember().getProfileImgUrl())
-                .commentContent(comment.getCommentContent())
-                .commentPoint(comment.getCommentPoint())
-                .createdAt(comment.getCreatedAt())
-                .build();
-    }
+  public static CommentReadResponse of(Comment comment) {
+    return CommentReadResponse.builder()
+        .commentNo(comment.getCommentNo())
+        .memberNickname(comment.getMember().getNickName())
+        .profileImgUrl(comment.getMember().getProfileImgUrl())
+        .commentContent(comment.getCommentContent())
+        .commentPoint(comment.getCommentPoint())
+        .createdAt(comment.getCreatedAt())
+        .build();
+  }
 
 
 }

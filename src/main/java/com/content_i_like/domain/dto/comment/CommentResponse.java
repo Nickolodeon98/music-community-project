@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class CommentResponse {
-    private Long commentNo;
-    private Long postNo;
-    private String commentContent;
-    private Long commentPoint;
+
+  private Long commentNo;
+  private Long postNo;
+  private String commentContent;
+  private Long commentPoint;
 }

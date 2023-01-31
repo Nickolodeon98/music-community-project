@@ -1,8 +1,17 @@
 package com.content_i_like.domain.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import com.content_i_like.domain.entity.Inquiry;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -10,11 +19,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Builder
 @Entity
 public class Answer {
-    @Id
-    private Long answerNo;
-    private String answerContent;
 
-    @OneToOne
-    @JoinColumn(name = "inquiry_no")
-    private Inquiry inquiry;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long answerNo;
+  private String answerContent;
+
+  @OneToOne
+  @JoinColumn(name = "inquiry_no")
+  private Inquiry inquiry;
 }

@@ -1,6 +1,7 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.config.JwtService;
+import com.content_i_like.custom.WithMockCustomOAuth2Account;
 import com.content_i_like.domain.dto.recommend.*;
 import com.content_i_like.domain.entity.*;
 import com.content_i_like.fixture.Fixture;
@@ -14,7 +15,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -29,8 +32,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RecommendRestController.class)
-@WithMockUser
+@WithMockCustomOAuth2Account(registrationId = "google")
+@WithUserDetails
 class RecommendRestControllerTest {
+
     @Autowired
     MockMvc mockMvc;
 
@@ -39,6 +44,9 @@ class RecommendRestControllerTest {
 
     @MockBean
     RecommendService recommendService;
+
+    @MockBean
+    UserDetailsService userDetailsService;
 
     @MockBean
     JwtService jwtService;
@@ -61,23 +69,48 @@ class RecommendRestControllerTest {
         member = Fixture.getMemberFixture();
 
         recommend = Fixture.getRecommendFixture(member, song);
+
     }
+
+    private String access_token;
+
+//  @BeforeEach
+//  public void getAccessToken() throws Exception {
+//    String clientId = "";
+//    String clientSecret = "";
+//    String username = "";
+//    String password = "";
+//
+//    ResultActions perform = this.mockMvc.perform(post("/oauth2/authorization/google")
+//            .with(httpBasic(clientId, clientSecret))
+//            .param("username", username)
+//            .param("password", password)
+//            .param("grant_type", "password"));
+//
+//    this.access_token = (String) new Jackson2JsonParser().parseMap(perform.andReturn().getResponse().getContentAsString()).get("access_token");
+//  }
+
 
     @Test
     @DisplayName("추천글 작성")
     void success_post_recommend() throws Exception {
 
-        RecommendPostRequest request = new RecommendPostRequest("제목", "내용", "이미지", "유튜브", 100L, 1L);
+        RecommendPostRequest request = new RecommendPostRequest("제목", "내용", "유튜브", 100L, 1L);
         RecommendPostResponse response = new RecommendPostResponse(1L, "제목", 100L);
 
-        given(recommendService.uploadPost(any(), any())).willReturn(response);
+        given(recommendService.uploadPost(any(), any(), any())).willReturn(response);
+
+        MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", "test data".getBytes());
 
         String url = "/api/v1/recommends";
 
-        mockMvc.perform(post(url).with(csrf())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer ")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(request)))
+        MockMultipartFile jsonPart = new MockMultipartFile("request", "request.json", "application/json", objectMapper.writeValueAsBytes(request));
+
+        mockMvc.perform(multipart(url)
+                        .file(file)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .param("request", new ObjectMapper().writeValueAsString(request))
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultCode").exists())
                 .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
@@ -88,6 +121,20 @@ class RecommendRestControllerTest {
                 .andExpect(jsonPath("$.result.recommendPoint").exists())
                 .andExpect(jsonPath("$.result.recommendPoint").value(100L))
                 .andDo(print());
+        /*mockMvc.perform(multipart(url)
+                        .file(file)
+                        .file(jsonPart)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").exists())
+                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+                .andExpect(jsonPath("$.result.recommendNo").exists())
+                .andExpect(jsonPath("$.result.recommendNo").value(1))
+                .andExpect(jsonPath("$.result.recommendTitle").exists())
+                .andExpect(jsonPath("$.result.recommendTitle").value("제목"))
+                .andExpect(jsonPath("$.result.recommendPoint").exists())
+                .andExpect(jsonPath("$.result.recommendPoint").value(100L))
+                .andDo(print());*/
     }
 
     @Test

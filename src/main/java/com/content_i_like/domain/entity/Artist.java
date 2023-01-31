@@ -14,9 +14,9 @@ import lombok.*;
 @Entity
 public class Artist {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long artistNo;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  public Long artistNo;
 
-    public String artistName;
+  public String artistName;
 }

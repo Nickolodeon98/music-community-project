@@ -16,19 +16,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MusicService {
 
-    private final SongRepository songRepository;
-    private final MemberRepository memberRepository;
+  private final SongRepository songRepository;
+  private final MemberRepository memberRepository;
 
-    public Member validateMember(String userEmail) {
-        return memberRepository.findByEmail(userEmail)
-                .orElseThrow(()->new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage()));
-    }
+  public Member validateMember(String userEmail) {
+    return memberRepository.findByEmail(userEmail)
+        .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
+            ErrorCode.NOT_FOUND.getMessage()));
+  }
 
-    public Page<TrackGetResponse> getEveryTrack(Pageable pageable, String userEmail) {
-        Member member = validateMember(userEmail);
+  public Page<TrackGetResponse> getEveryTrack(Pageable pageable, String userEmail) {
+    Member member = validateMember(userEmail);
 
-        Page<Song> tracks = songRepository.findAll(pageable);
+    Page<Song> tracks = songRepository.findAll(pageable);
 
-        return tracks.map(TrackGetResponse::of);
-    }
+    return tracks.map(TrackGetResponse::of);
+  }
 }

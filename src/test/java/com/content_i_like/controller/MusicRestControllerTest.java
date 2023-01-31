@@ -3,13 +3,8 @@ package com.content_i_like.controller;
 import com.content_i_like.config.JwtService;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackResponse;
-import com.content_i_like.domain.entity.Album;
-import com.content_i_like.domain.entity.Artist;
-import com.content_i_like.domain.entity.Song;
-import com.content_i_like.fixture.Fixture;
 import com.content_i_like.service.MusicService;
 import com.content_i_like.service.TrackService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -53,16 +48,6 @@ class MusicRestControllerTest {
     UserDetailsService userDetailsService;
     @Captor
     ArgumentCaptor<Pageable> argumentCaptor;
-    Artist artist;
-    Album album;
-    Song track;
-    TrackGetResponse trackInfo;
-    @BeforeEach
-    void setUp() {
-        artist = Fixture.getArtistFixture();
-        album = Fixture.getAlbumFixture(artist);
-        track = Fixture.getSongFixture(album);
-    }
 
     @Nested
     @DisplayName("모든 음원 조회")
@@ -73,9 +58,13 @@ class MusicRestControllerTest {
         void success_get_every_song() throws Exception {
             Pageable pageable = PageRequest.of(0, 10, Sort.by("songNo").descending());
 
-            trackInfo = TrackGetResponse.of(track);
+            TrackGetResponse track = TrackGetResponse.builder()
+                    .trackTitle("title")
+                    .trackAlbum("album")
+                    .trackArtist("artist")
+                    .build();
 
-            List<TrackGetResponse> tracks = List.of(trackInfo);
+            List<TrackGetResponse> tracks = List.of(track);
 
             Page<TrackGetResponse> pagedTracks = new PageImpl<>(tracks);
 
@@ -93,27 +82,6 @@ class MusicRestControllerTest {
 
             Pageable actualPageable = argumentCaptor.getValue();
             assertEquals(pageable, actualPageable);
-        }
-    }
-
-    @Nested
-    @DisplayName("입력과 공통된 단어가 있는 음원 모두 검색")
-    class KeywordTrackSearch {
-
-        @Test
-        @DisplayName("성공")
-        void success_search_with_keyword() {
-            /* resultCode: SUCCESS
-             * result: {
-             *  content : [
-             *     trackTitle: title,
-             *     trackTitle: title2,
-             *     trackTitle: title3,
-             *     trackTitle: title4,
-             *     track
-             * ]} */
-
-            given(musicService.searchByTitle(any())).willReturn()
         }
     }
 }

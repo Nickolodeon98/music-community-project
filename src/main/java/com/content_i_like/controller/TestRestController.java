@@ -3,6 +3,9 @@ package com.content_i_like.controller;
 import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.tracks.TrackResponse;
 import com.content_i_like.domain.enums.TrackEnum;
+import com.content_i_like.service.AlbumFetch;
+import com.content_i_like.service.ArtistFetch;
+import com.content_i_like.service.TrackFetch;
 import com.content_i_like.service.TrackService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,55 +29,58 @@ import java.util.List;
 @Slf4j
 public class TestRestController {
 
-    private final TrackService trackService;
+  private final TrackService trackService;
 
-    @Value("${spotify.client.id}")
-    private String CLIENT_ID;
+  @Value("${spotify.client.id}")
+  private String CLIENT_ID;
 
 //    @GetMapping
 //    public String redirectPoint() {
 //        return "Hello World!";
 //    }
 
-    @GetMapping("/tracks")
-    public Response<List<String>> getTracks(@RequestParam String token) throws IOException {
-        log.info("hello");
-        log.info("tracksAPI token:{}", token);
-        List<String> songTitles = trackService.fetchTracks(token);
+  @GetMapping("/tracks")
+  public Response<List<String>> getTracks(@RequestParam String token) throws IOException {
+    log.info("hello");
+    log.info("tracksAPI token:{}", token);
+    List<String> songTitles = trackService.fetchTracks(token, new TrackFetch());
+    List<String> artistTitles = trackService.fetchTracks(token, new ArtistFetch());
+    List<String> albumTitles = trackService.fetchTracks(token, new AlbumFetch());
 
-        trackService.createMusicDatabase(songTitles);
+    trackService.createMusicDatabase(songTitles, artistTitles, albumTitles);
 
-        return Response.success(songTitles);
-    }
+    return Response.success(songTitles);
+  }
 
-    @GetMapping("/token")
-    public ResponseEntity<?> requirePermission() {
-        HttpHeaders headers = new HttpHeaders();
+  @GetMapping("/token")
+  public ResponseEntity<?> requirePermission() {
+    HttpHeaders headers = new HttpHeaders();
 
-        String uri = "https://accounts.spotify.com/authorize?"
-                + String.format("client_id=%s&response_type=%s&redirect_uri=%s", CLIENT_ID,
-                "code", TrackEnum.REDIRECT_URI.getValue());
+    String uri = "https://accounts.spotify.com/authorize?"
+        + String.format("client_id=%s&response_type=%s&redirect_uri=%s", CLIENT_ID,
+        "code", TrackEnum.REDIRECT_URI.getValue());
 
-        headers.setLocation(URI.create(uri));
+    headers.setLocation(URI.create(uri));
 
-        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
-    }
+    return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+  }
 
-    @GetMapping("")
-    public ResponseEntity<?> getAccessToken(@RequestParam String code) throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
+  @GetMapping("")
+  public ResponseEntity<?> getAccessToken(@RequestParam String code)
+      throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
 
-        log.info("code:{}", code);
-        String accessToken = trackService.spotifyAccessTokenGenerator(code);
+    log.info("code:{}", code);
+    String accessToken = trackService.spotifyAccessTokenGenerator(code);
 
-        String uri = "http://localhost:8080/api/v1/test/tracks?token=" + accessToken;
+    String uri = "http://localhost:8080/api/v1/test/tracks?token=" + accessToken;
 
-        headers.setLocation(URI.create(uri));
+    headers.setLocation(URI.create(uri));
 
-        log.info("accessToken:{}", accessToken);
+    log.info("accessToken:{}", accessToken);
 
-        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
-    }
+    return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+  }
 
 
 }

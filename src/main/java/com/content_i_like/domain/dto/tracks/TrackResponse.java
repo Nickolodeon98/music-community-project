@@ -11,5 +11,5 @@ import java.util.List;
 @Getter
 public class TrackResponse {
 
-    private List<String> titles;
+  private List<String> titles;
 }

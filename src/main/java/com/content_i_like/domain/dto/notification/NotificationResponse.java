@@ -13,18 +13,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class NotificationResponse {
-    private Long notificationNo;
-    private NotificationType notificationType;
-    private Long fromMemberNo;
-    private Long recommendNo;
-    private Long commentNo;
 
-    public static NotificationResponse of(Notification notification) {
-        return NotificationResponse.builder()
-                .notificationNo(notification.getNotificationNo())
-                .notificationType(notification.getNotificationType())
-                .fromMemberNo(notification.getFromMemberNo())
-                .commentNo(notification.getCommentNo())
-                .build();
-    }
+  private Long notificationNo;
+  private NotificationType notificationType;
+  private Long fromMemberNo;
+  private Long recommendNo;
+  private Long commentNo;
+
+  public static NotificationResponse of(Notification notification) {
+    return NotificationResponse.builder()
+        .notificationNo(notification.getNotificationNo())
+        .notificationType(notification.getNotificationType())
+        .fromMemberNo(notification.getFromMemberNo())
+        .commentNo(notification.getCommentNo())
+        .build();
+  }
 }
