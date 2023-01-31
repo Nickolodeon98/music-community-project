@@ -42,8 +42,7 @@ public class TestRestController {
 
   @GetMapping("/tracks")
   public String getTracks(@RequestParam String token) throws IOException {
-//    TrackGetResponse trackGetResponse =
-            trackService.createAllThreeTypesDB(token);
+    trackService.createAllThreeTypesDB(token);
 
     return "DB 저장이 완료되었습니다.";
   }
@@ -71,7 +70,6 @@ public class TestRestController {
     String uri = "http://localhost:8080/api/v1/test/tracks?token=" + accessToken;
 
     headers.setLocation(URI.create(uri));
-
 
     return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
   }
