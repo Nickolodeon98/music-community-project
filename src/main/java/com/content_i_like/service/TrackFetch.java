@@ -12,7 +12,11 @@ public class TrackFetch implements Fetch<Song> {
   @Override
   public String extractData(JsonNode root, int count) {
     String data = "";
+    String albumName = "";
+    String albumImageUrl = "";
     try {
+      albumName = root.get("tracks").get(count).get("album").get("name").asText();
+      albumImageUrl = root.get("tracks").get(count).get("album").get("images").get(1).get("url").asText();
       data = root.get("tracks").get(count).get("name").asText();
     } catch (NullPointerException e) {
       log.warn("JsonNode 가 null 값입니다.");

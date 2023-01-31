@@ -15,11 +15,16 @@ public class ArtistFetch implements Fetch<Artist> {
   public String extractData(JsonNode root, int count) {
     StringBuilder artistNames = new StringBuilder();
     String artistName = "";
-
-    JsonNode artistNode = root.get("tracks").get(count).get("artists");
+    JsonNode artistNode = null;
+    String albumName = "";
+    String albumImageUrl = "";
 
     int valuesCount = 0;
     try {
+      albumName = root.get("tracks").get(count).get("album").get("name").asText();
+      albumImageUrl = root.get("tracks").get(count).get("album").get("images").get(1).get("url").asText();
+
+      artistNode = root.get("tracks").get(count).get("artists");
       if (artistNode.isArray())
         valuesCount = artistNode.size();
     } catch (NullPointerException e) {
