@@ -5,6 +5,7 @@ import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackResponse;
 import com.content_i_like.service.MusicService;
 import com.content_i_like.service.TrackService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,19 @@ class MusicRestControllerTest {
     UserDetailsService userDetailsService;
     @Captor
     ArgumentCaptor<Pageable> argumentCaptor;
+    Pageable pageable;
+    TrackGetResponse foundTrack;
+    Page<TrackGetResponse> pagedTracks;
+    @BeforeEach
+    void setUp() {
+        pageable = PageRequest.of(0, 10, Sort.by("songNo").descending());
+        foundTrack = TrackGetResponse.builder()
+                .trackTitle("Event Horizon")
+                .trackArtist("Younha")
+                .trackAlbum("YOUNHA 6th Album Repackage 'END THEORY : Final Edition'")
+                .build();
+        pagedTracks = new PageImpl<>(List.of(foundTrack));
+    }
 
     @Nested
     @DisplayName("모든 음원 조회")
@@ -56,18 +70,6 @@ class MusicRestControllerTest {
         @Test
         @DisplayName("성공")
         void success_get_every_song() throws Exception {
-            Pageable pageable = PageRequest.of(0, 10, Sort.by("songNo").descending());
-
-            TrackGetResponse track = TrackGetResponse.builder()
-                    .trackTitle("title")
-                    .trackAlbum("album")
-                    .trackArtist("artist")
-                    .build();
-
-            List<TrackGetResponse> tracks = List.of(track);
-
-            Page<TrackGetResponse> pagedTracks = new PageImpl<>(tracks);
-
             given(musicService.getEveryTrack(pageable, any())).willReturn(pagedTracks);
 
             String url = "/api/v1/music/all";
@@ -93,13 +95,7 @@ class MusicRestControllerTest {
         void success_search_by_keyword() throws Exception {
             String searchKey = "Horizon";
 
-            TrackGetResponse foundTrack = TrackGetResponse.builder()
-                    .trackTitle("Event Horizon")
-                    .trackArtist("Younha")
-                    .trackAlbum("YOUNHA 6th Album Repackage 'END THEORY : Final Edition'")
-                    .build();
-
-            given(musicService.findSongsWithKeyword(searchKey)).willReturn(foundTrack);
+            given(musicService.findSongsWithKeyword(pageable, searchKey)).willReturn(pagedTracks);
 
             String url = "api/v1/music/search/" + searchKey;
 
@@ -108,7 +104,8 @@ class MusicRestControllerTest {
                     .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
                     .andExpect(jsonPath("$.result.content.trackTitle").value("Event Horizon"))
                     .andExpect(jsonPath("$.resultCode.content.trackArtist").value("Younha"))
-                    .andExpect(jsonPath("$.resultCode.content.trackAlbum)").value("YOUNHA 6th Album Repackage 'END THEORY : Final Edition'"))
+                    .andExpect(jsonPath("$.resultCode.content.trackAlbum")
+                            .value("YOUNHA 6th Album Repackage 'END THEORY : Final Edition'"))
                     .andDo(print());
         }
     }
