@@ -2,7 +2,7 @@ package com.content_i_like.service;
 
 import com.content_i_like.domain.entity.Album;
 import com.content_i_like.domain.entity.Artist;
-import com.content_i_like.domain.entity.Song;
+import com.content_i_like.domain.entity.Track;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 

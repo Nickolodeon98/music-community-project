@@ -45,7 +45,7 @@ class LikesRestControllerTest {
 
 
   Artist artist;
-  Song song;
+  Track track;
   Album album;
   Recommend recommend;
   Member member;
@@ -55,10 +55,10 @@ class LikesRestControllerTest {
   public void set() {
     artist = Fixture.getArtistFixture();
     album = Fixture.getAlbumFixture(artist);
-    song = Fixture.getSongFixture(album);
+    track = Fixture.getTrackFixture(album);
 
     member = Fixture.getMemberFixture();
-    recommend = Fixture.getRecommendFixture(member, song);
+    recommend = Fixture.getRecommendFixture(member, track);
     comment = Fixture.getCommentFixture(member, recommend);
   }
 

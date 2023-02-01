@@ -2,11 +2,11 @@ package com.content_i_like.service;
 
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.entity.Member;
-import com.content_i_like.domain.entity.Song;
+import com.content_i_like.domain.entity.Track;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.MemberRepository;
-import com.content_i_like.repository.SongRepository;
+import com.content_i_like.repository.TrackRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MusicService {
 
-  private final SongRepository songRepository;
+  private final TrackRepository trackRepository;
   private final MemberRepository memberRepository;
 
   public Member validateMember(String userEmail) {
@@ -28,7 +28,7 @@ public class MusicService {
   public Page<TrackGetResponse> getEveryTrack(Pageable pageable, String userEmail) {
     Member member = validateMember(userEmail);
 
-    Page<Song> tracks = songRepository.findAll(pageable);
+    Page<Track> tracks = trackRepository.findAll(pageable);
 
     return tracks.map(TrackGetResponse::of);
   }

@@ -26,7 +26,7 @@ public class RecommendService {
 
   private final AlbumRepository albumRepository;
   private final ArtistRepository artistRepository;
-  private final SongRepository songRepository;
+  private final TrackRepository trackRepository;
   private final S3FileUploadService s3FileUploadService;
 
 
@@ -45,7 +45,7 @@ public class RecommendService {
     Member member = validateGetMemberInfoByUserEmail(userEmail);
 
     // 글과 연결되어 있는 음악 검색
-    Song song = songRepository.findById(request.getSongNo())
+    Track track = trackRepository.findById(request.getTrackNo())
         .orElseThrow(() -> {
           throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
         });
@@ -53,7 +53,7 @@ public class RecommendService {
     String url = s3FileUploadService.uploadFile(image);
 
     Recommend recommend = recommendRepository.save(
-        RecommendPostRequest.toEntity(request, member, song, url));
+        RecommendPostRequest.toEntity(request, member, track, url));
 
     return new RecommendPostResponse(recommend.getRecommendNo(), recommend.getRecommendTitle(),
         recommend.getRecommendPoint());
@@ -126,13 +126,13 @@ public class RecommendService {
     Member member = validateGetMemberInfoByUserEmail(post.getMember().getEmail());
 
     // 해당 글의 음악 정보를 받아옵니다.
-    Song song = songRepository.findById(post.getSong().getSongNo())
+    Track track = trackRepository.findById(post.getTrack().getTrackNo())
         .orElseThrow(() -> {
           throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
         });
 
     // 앨범 정보를 받아옵니다.
-    Album album = albumRepository.findById(song.getAlbum().getAlbumNo())
+    Album album = albumRepository.findById(track.getAlbum().getAlbumNo())
         .orElseThrow(() -> {
           throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
         });
@@ -158,7 +158,7 @@ public class RecommendService {
         .recommendTitle(post.getRecommendTitle())
         .memberNickname(member.getNickName())
         .albumImageUrl(album.getAlbumImageUrl())
-        .songTitle(song.getSongTitle())
+        .trackTitle(track.getTrackTitle())
         .artistName(artist.getArtistName())
         .comments(comments)
         .recommendContent(post.getRecommendContent())

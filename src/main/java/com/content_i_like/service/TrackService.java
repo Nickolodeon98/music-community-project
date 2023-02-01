@@ -2,11 +2,11 @@ package com.content_i_like.service;
 
 import com.content_i_like.domain.entity.Album;
 import com.content_i_like.domain.entity.Artist;
-import com.content_i_like.domain.entity.Song;
+import com.content_i_like.domain.entity.Track;
 import com.content_i_like.domain.enums.TrackEnum;
 import com.content_i_like.repository.AlbumRepository;
 import com.content_i_like.repository.ArtistRepository;
-import com.content_i_like.repository.SongRepository;
+import com.content_i_like.repository.TrackRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,7 +40,7 @@ public class TrackService {
   private String CLIENT_SECRET;
 
   private final ObjectMapper objectMapper;
-  private final SongRepository songRepository;
+  private final TrackRepository trackRepository;
   private final ArtistRepository artistRepository;
   private final AlbumRepository albumRepository;
 
@@ -218,9 +218,9 @@ public class TrackService {
     List<Album> albumsAndArtists = parseForAlbum(artistEntities, albumEntities);
     createMusicDatabase(albumsAndArtists, new AlbumSave(albumRepository));
 
-    List<Song> songEntities = fetchTracks(jsonData, new TrackFetch());
-    List<Song> songsAlbumsAndArtists = parseForSong(artistEntities, albumEntities, songEntities);
-    createMusicDatabase(songsAlbumsAndArtists, new TrackSave(songRepository));
+    List<Track> trackEntities = fetchTracks(jsonData, new TrackFetch());
+    List<Track> tracksAlbumsAndArtists = parseForTrack(artistEntities, albumEntities, trackEntities);
+    createMusicDatabase(tracksAlbumsAndArtists, new TrackSave(trackRepository));
   }
 
   private List<Album> parseForAlbum(List<Artist> artists, List<Album> albums) {
@@ -230,11 +230,11 @@ public class TrackService {
     return albums;
   }
 
-  private List<Song> parseForSong(List<Artist> artists, List<Album> albums, List<Song> songs) {
-    for (int i = 0; i < songs.size(); i++) {
-      songs.get(i).setArtist(artists.get(i));
-      songs.get(i).setAlbum(albums.get(i));
+  private List<Track> parseForTrack(List<Artist> artists, List<Album> albums, List<Track> tracks) {
+    for (int i = 0; i < tracks.size(); i++) {
+      tracks.get(i).setArtist(artists.get(i));
+      tracks.get(i).setAlbum(albums.get(i));
     }
-    return songs;
+    return tracks;
   }
 }

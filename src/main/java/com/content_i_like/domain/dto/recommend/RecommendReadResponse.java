@@ -17,7 +17,7 @@ public class RecommendReadResponse {
   private String recommendTitle;
   private String memberNickname;
   private String albumImageUrl;
-  private String songTitle;
+  private String trackTitle;
   private String artistName;
   private List<Comment> comments;
   private String recommendContent;

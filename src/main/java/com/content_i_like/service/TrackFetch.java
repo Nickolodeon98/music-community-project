@@ -1,13 +1,13 @@
 package com.content_i_like.service;
 
-import com.content_i_like.domain.entity.Song;
+import com.content_i_like.domain.entity.Track;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 @Slf4j
-public class TrackFetch implements Fetch<Song> {
+public class TrackFetch implements Fetch<Track> {
 
   @Override
   public String extractData(JsonNode root, int count) {
@@ -25,14 +25,14 @@ public class TrackFetch implements Fetch<Song> {
   }
 
   @Override
-  public List<Song> parseIntoEntities(List<String> titles) {
-    List<Song> songs = new ArrayList<>();
+  public List<Track> parseIntoEntities(List<String> titles) {
+    List<Track> tracks = new ArrayList<>();
     for (String title : titles) {
-      Song song = Song.builder()
-              .songTitle(title)
+      Track track = Track.builder()
+              .trackTitle(title)
               .build();
-      songs.add(song);
+      tracks.add(track);
     }
-    return songs;
+    return tracks;
   }
 }
