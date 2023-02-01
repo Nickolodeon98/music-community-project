@@ -20,7 +20,7 @@ public class SecurityConfig {
   private final JwtAuthenticationFilter jwtFilter;
   private final AuthenticationProvider authenticationProvider;
   private final OAuthService oAuthService;
-  private final JwtExceptionFilter jwtExceptionFilter;
+  private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
   private final String[] AUTHORIZATION = {"/api/v1/**", ""};
   private final String[] TEST_URL = {"/api/v1/hello/**", "/api/v1/member/join",
@@ -45,7 +45,7 @@ public class SecurityConfig {
         .authenticated()
         .and()
         .exceptionHandling()
-        .authenticationEntryPoint(new JwtExceptionFilter())
+        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
         .and()
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
