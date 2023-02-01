@@ -1,5 +1,7 @@
 package com.content_i_like.service;
 
+import com.content_i_like.domain.dto.search.SearchMembersResponse;
+import com.content_i_like.domain.dto.search.SearchPageGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackPageGetResponse;
 import com.content_i_like.domain.entity.Member;
@@ -61,4 +63,14 @@ public class SearchService {
             ? TrackPageGetResponse.of(pagedTracks, "찾는 음원이 존재하지 않습니다.")
             : TrackPageGetResponse.of(pagedTracks, String.format("'%s'로 총 %s개의 음원을 찾았습니다.", searchKey, pagedTracks.getTotalElements()));
   }
+
+  public SearchPageGetResponse<SearchMembersResponse> getEveryMember(Pageable pageable, String memberEmail) {
+    Page<Member> members = memberRepository.findAll(pageable);
+
+    Page<SearchMembersResponse> membersPageResponse = members.map(SearchMembersResponse::of);
+
+    return SearchPageGetResponse.of(String.format("총 %s명의 사용자를 찾았습니다.",
+            membersPageResponse.getTotalElements()), membersPageResponse);
+  }
+
 }
