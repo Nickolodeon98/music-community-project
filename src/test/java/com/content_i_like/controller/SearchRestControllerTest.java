@@ -138,14 +138,14 @@ class SearchRestControllerTest {
                     new SearchPageGetResponse<>("message", new PageImpl<>(List.of(member)));
 
             /* Authentication 객체, pageable 객체(slice 는 보류사항)  */
-            given(searchService.getEveryMember(any(), eq(setPageable("createdAt")))).willReturn(membersPage);
+            given(searchService.getEveryMember(eq(setPageable("createdAt")), any())).willReturn(membersPage);
 
             mockMvc.perform(get(BASE_URL + "members").with(csrf()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
                     .andDo(print());
 
-            verify(searchService).getEveryTrack(any(), eq(setPageable("createdAt")));
+            verify(searchService).getEveryMember(eq(setPageable("createdAt")), any());
         }
     }
 }
