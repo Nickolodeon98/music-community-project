@@ -41,12 +41,12 @@ public class MusicService {
     return validCheck.examine(toCheck);
   }
 
-  public Page<TrackGetResponse> getEveryTrack(Pageable pageable, String memberEmail) {
+  public TrackPageGetResponse getEveryTrack(Pageable pageable, String memberEmail) {
     Member member = validate(memberEmail, new MemberValidation());
 
     Page<Track> tracks = trackRepository.findAll(pageable);
 
-    return tracks.map(TrackGetResponse::of);
+    return TrackPageGetResponse.of(tracks.map(TrackGetResponse::of), "총 " + tracks.getTotalElements() + "개의 음원을 찾았습니다.");
   }
 
   public TrackPageGetResponse findTracksWithKeyword(Pageable pageable, String searchKey, String memberEmail) {

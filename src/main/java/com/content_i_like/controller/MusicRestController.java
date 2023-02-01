@@ -23,12 +23,12 @@ public class MusicRestController {
     private final MusicService musicService;
 
     @GetMapping("/search")
-    public Response<Page<TrackGetResponse>> showAllTracks(final Authentication authentication,
+    public Response<TrackPageGetResponse> showAllTracks(final Authentication authentication,
                                                           @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<TrackGetResponse> tracks = musicService.getEveryTrack(pageable, authentication.getName());
+        TrackPageGetResponse searchResults = musicService.getEveryTrack(pageable, authentication.getName());
 
-        return Response.success(tracks);
+        return Response.success(searchResults);
     }
 
     @GetMapping("/search/{trackTitle}")
@@ -38,6 +38,7 @@ public class MusicRestController {
 
         TrackPageGetResponse searchResults =
                 musicService.findTracksWithKeyword(pageable, trackTitle, authentication.getName());
+
         return Response.success(searchResults);
     }
 
