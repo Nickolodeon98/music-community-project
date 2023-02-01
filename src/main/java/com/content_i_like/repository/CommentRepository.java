@@ -1,6 +1,7 @@
 package com.content_i_like.repository;
 
 import com.content_i_like.domain.entity.Comment;
+import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Recommend;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,4 +22,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
       Long commentNo);
 
   Page<Comment> findAllByRecommendRecommendNo(Long recommendNo, Pageable pageable);
+
+  Page<Comment> findAllByMember(Member member, Pageable pageable);
 }
