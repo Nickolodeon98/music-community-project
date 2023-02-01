@@ -35,11 +35,6 @@ public class TestRestController {
   @Value("${spotify.client.id}")
   private String CLIENT_ID;
 
-//    @GetMapping
-//    public String redirectPoint() {
-//        return "Hello World!";
-//    }
-
   @GetMapping("/tracks")
   public String getTracks(@RequestParam String token) throws IOException {
     trackService.createAllThreeTypesDB(token);
