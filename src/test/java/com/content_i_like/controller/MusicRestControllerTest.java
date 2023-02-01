@@ -24,6 +24,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -95,18 +96,20 @@ class MusicRestControllerTest {
         void success_search_by_keyword() throws Exception {
             String searchKey = "Horizon";
 
-            given(musicService.findSongsWithKeyword(pageable, searchKey)).willReturn(pagedTracks);
+            given(musicService.findSongsWithKeyword(eq(pageable), eq(searchKey))).willReturn(pagedTracks);
 
-            String url = "api/v1/music/search/" + searchKey;
+            String url = "/api/v1/music/search/" + searchKey;
 
             mockMvc.perform(get(url).with(csrf()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                    .andExpect(jsonPath("$.result.content.trackTitle").value("Event Horizon"))
-                    .andExpect(jsonPath("$.resultCode.content.trackArtist").value("Younha"))
-                    .andExpect(jsonPath("$.resultCode.content.trackAlbum")
+                    .andExpect(jsonPath("$.result.content[0].trackTitle").value("Event Horizon"))
+                    .andExpect(jsonPath("$.result.content[0].trackArtist").value("Younha"))
+                    .andExpect(jsonPath("$.result.content[0].trackAlbum")
                             .value("YOUNHA 6th Album Repackage 'END THEORY : Final Edition'"))
                     .andDo(print());
+
+            verify(musicService).findSongsWithKeyword(eq(pageable), eq(searchKey));
         }
     }
 }
