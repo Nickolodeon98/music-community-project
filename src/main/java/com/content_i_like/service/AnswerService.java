@@ -19,7 +19,7 @@ public class AnswerService {
 
   private final InquiryRepository inquiryRepository;
 
-  public AnswerResponse getAnswer(Long inquiryNo) {
+  public AnswerResponse getAnswer(final Long inquiryNo) {
     Inquiry inquiry = inquiryRepository.findById(inquiryNo)
         .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
             String.format("inquiryNo: %d not found", inquiryNo)));
@@ -27,7 +27,7 @@ public class AnswerService {
     return AnswerResponse.of(answerRepository.findByInquiry(inquiry), inquiry.getCreatedAt());
   }
 
-  public AnswerResponse postAnswer(Long inquiryNo, AnswerRequire answerRequire) {
+  public AnswerResponse postAnswer(final Long inquiryNo, AnswerRequire answerRequire) {
     Inquiry inquiry = inquiryRepository.findById(inquiryNo)
         .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
             String.format("inquiryNo: %d not found", inquiryNo)));

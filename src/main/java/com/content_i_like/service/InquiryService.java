@@ -31,7 +31,7 @@ public class InquiryService {
   private final AnswerRepository answerRepository;
 
   //1:1 문의 등록하기
-  public InquiryResponse postInquiry(String userEmail, InquiryRequire inquiryRequire) {
+  public InquiryResponse postInquiry(final String userEmail, InquiryRequire inquiryRequire) {
 
     Member member = memberRepository.findByEmail(userEmail)
         .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
@@ -48,7 +48,7 @@ public class InquiryService {
     return InquiryResponse.of(savedInquiry);
   }
 
-  public Page<InquiryResponse> getInquiryList(Pageable pageable, String userEmail) {
+  public Page<InquiryResponse> getInquiryList(Pageable pageable, final String userEmail) {
 
     Member member = memberRepository.findByEmail(userEmail)
         .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
