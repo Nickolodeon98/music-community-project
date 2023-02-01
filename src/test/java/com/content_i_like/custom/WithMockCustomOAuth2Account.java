@@ -12,7 +12,5 @@ public @interface WithMockCustomOAuth2Account {
     String email() default "email";
     String name() default "name";
     String role() default "USER";
-
-    String registrationId() default "ID";
-
+    String registrationId();
 }

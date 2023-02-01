@@ -19,37 +19,25 @@ public class WithMockCustomOAuth2AccountSecurityContextFactory implements WithSe
     @Override
     public SecurityContext createSecurityContext(WithMockCustomOAuth2Account customOAuth2Account) {
 
-        // 1
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        // 2
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("username", customOAuth2Account.username());
         attributes.put("name", customOAuth2Account.name());
         attributes.put("email", customOAuth2Account.email());
         attributes.put("role", customOAuth2Account.role());
 
-        // 3
         OAuth2User principal = new DefaultOAuth2User(
                 List.of(new OAuth2UserAuthority(customOAuth2Account.role(), attributes)),
                 attributes,
                 customOAuth2Account.name());
 
-        // 4
         OAuth2AuthenticationToken token = new OAuth2AuthenticationToken(
                 principal,
                 principal.getAuthorities(),
                 customOAuth2Account.registrationId());
 
-        // 5
         context.setAuthentication(token);
-
-        final UsernamePasswordAuthenticationToken authenticationToken
-                = new UsernamePasswordAuthenticationToken(customOAuth2Account.username(), null,
-                List.of(new SimpleGrantedAuthority(customOAuth2Account.role())));
-
-
-        context.setAuthentication(authenticationToken);
 
         return context;
     }
