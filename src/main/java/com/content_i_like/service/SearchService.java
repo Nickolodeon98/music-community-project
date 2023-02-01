@@ -73,4 +73,12 @@ public class SearchService {
             membersPageResponse.getTotalElements()), membersPageResponse);
   }
 
+  public SearchPageGetResponse<SearchMembersResponse> findMembersWithKeyword(String searchKey, Pageable pageable, String memberEmail) {
+    Page<Member> members = memberRepository.findByNickNameContaining(searchKey);
+
+    Page<SearchMembersResponse> membersPageResponse = members.map(SearchMembersResponse::of);
+
+    return SearchPageGetResponse.of(String.format("총 %s명의 사용자를 찾았습니다.",
+            membersPageResponse.getTotalElements()), membersPageResponse);
+  }
 }
