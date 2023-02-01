@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,15 +19,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MusicRestController {
 
-  private final MusicService musicService;
+    private final MusicService musicService;
 
-  @GetMapping("/all")
-  public Response<Page<TrackGetResponse>> showAllTracks(final Authentication authentication,
-      @PageableDefault(sort = "songNo", direction = Sort.Direction.DESC) Pageable pageable) {
+    @GetMapping("/all")
+    public Response<Page<TrackGetResponse>> showAllTracks(final Authentication authentication,
+                                                          @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
 
-    Page<TrackGetResponse> tracks = musicService.getEveryTrack(pageable, authentication.getName());
+        Page<TrackGetResponse> tracks = musicService.getEveryTrack(pageable, authentication.getName());
 
-    return Response.success(tracks);
-  }
+        return Response.success(tracks);
+    }
+
+    @GetMapping("/search/{trackTitle}")
+    public Response<Page<TrackGetResponse>> searchByKeyword(@PathVariable String trackTitle,
+                                                            @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Page<TrackGetResponse> searchResults = musicService.findTracksWithKeyword(pageable, trackTitle);
+        return Response.success(searchResults);
+    }
 
 }
