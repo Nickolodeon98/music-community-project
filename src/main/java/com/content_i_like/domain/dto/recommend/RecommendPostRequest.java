@@ -2,7 +2,7 @@ package com.content_i_like.domain.dto.recommend;
 
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Recommend;
-import com.content_i_like.domain.entity.Song;
+import com.content_i_like.domain.entity.Track;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,9 +16,9 @@ public class RecommendPostRequest {
   private String recommendContent;
   private String recommendYoutubeUrl;
   private Long recommendPoint;
-  private Long songNo;
+  private Long trackNo;
 
-  public static Recommend toEntity(RecommendPostRequest request, Member member, Song song,
+  public static Recommend toEntity(RecommendPostRequest request, Member member, Track track,
       String url) {
     return Recommend.builder()
         .recommendTitle(request.getRecommendTitle())
@@ -28,7 +28,7 @@ public class RecommendPostRequest {
         .recommendPoint(request.getRecommendPoint())
         .recommendViews(0L)
         .member(member)
-        .song(song)
+        .track(track)
         .build();
   }
 }
