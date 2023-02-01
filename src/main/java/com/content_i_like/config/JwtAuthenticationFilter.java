@@ -1,5 +1,6 @@
 package com.content_i_like.config;
 
+import com.content_i_like.exception.ErrorCode;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtException;
@@ -65,19 +66,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
     } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-      throw new JwtException("유효하지 않은 토큰");
+      log.debug("유효하지 않은 토큰");
+      request.setAttribute("exception", ErrorCode.INVALID_TOKEN);
     } catch (ExpiredJwtException e) {
-      throw new JwtException("토큰 기한 만료");
+      log.debug("만료된 토큰");
+      request.setAttribute("exception",ErrorCode.EXPIRED_TOKEN);
     } catch (SignatureException e) {
-      throw new JwtException("사용자 인증 실패");
+      log.debug("사용자 인증 실패");
+      request.setAttribute("exception", ErrorCode.INVALID_TOKEN);
     } catch (SecurityException | PrematureJwtException e) {
-      throw new JwtException("권한 없음. 접근 불가");
+      log.debug("권한없음. 접근불가");
+      request.setAttribute("exception", ErrorCode.INVALID_PERMISSION);
     } catch (Exception e) {
       log.error("JwtFilter 오류 발생");
       log.error("token: {}", jwt);
       log.error("Exception Message: {}", e.getMessage());
       e.printStackTrace();
-      throw new JwtException("UNKNOWN");
+      request.setAttribute("exception", ErrorCode.UNKNOWN_ERROR);
     }
 
     filterChain.doFilter(request, response);
