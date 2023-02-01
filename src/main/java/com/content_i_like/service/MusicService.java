@@ -1,6 +1,7 @@
 package com.content_i_like.service;
 
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
+import com.content_i_like.domain.dto.tracks.TrackPageGetResponse;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Track;
 import com.content_i_like.exception.ContentILikeAppException;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,27 +46,19 @@ public class MusicService {
 
     Page<Track> tracks = trackRepository.findAll(pageable);
 
-    return tracks.map
-            (
-            trackPage -> TrackGetResponse
-                    .of(trackPage, "총 " + tracks.getTotalElements() + "개의 음원을 찾았습니다.")
-            );
+    return tracks.map(TrackGetResponse::of);
   }
 
-  public Page<TrackGetResponse> findTracksWithKeyword(Pageable pageable, String searchKey, String memberEmail) {
-    TrackGetResponse defaultResponse = TrackGetResponse.builder()
-            .message("찾는 음원이 존재하지 않습니다.")
-            .build();
-
+  public TrackPageGetResponse findTracksWithKeyword(Pageable pageable, String searchKey, String memberEmail) {
     Optional<Page<Track>> tracks = trackRepository.findAllByTrackTitleContaining(searchKey, pageable);
 
-    return tracks.map(
-            trackPage -> trackPage
-                    .map(entities -> TrackGetResponse
-                            .of(entities, "총 " + trackPage.getTotalElements() + "개의 음원을 찾았습니다."))
-            )
-            .orElseGet(() -> new PageImpl<>(List.of(defaultResponse)));
+    Page<TrackGetResponse> pagedTracks =
+            tracks.map(trackPage -> trackPage.map(TrackGetResponse::of))
+            .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
 
+    return pagedTracks.isEmpty()
+            ? TrackPageGetResponse.of(pagedTracks, "찾는 음원이 존재하지 않습니다.")
+            : TrackPageGetResponse.of(pagedTracks, "총 " + pagedTracks.getTotalElements() + "개의 음원을 찾았습니다.");
   }
 
 

@@ -2,6 +2,7 @@ package com.content_i_like.controller;
 
 import com.content_i_like.config.JwtService;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
+import com.content_i_like.domain.dto.tracks.TrackPageGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackResponse;
 import com.content_i_like.service.MusicService;
 import com.content_i_like.service.TrackService;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,6 +55,8 @@ class MusicRestControllerTest {
     Pageable pageable;
     TrackGetResponse foundTrack;
     Page<TrackGetResponse> pagedTracks;
+    TrackPageGetResponse pagedTracksWithMessage;
+
     @BeforeEach
     void setUp() {
         pageable = PageRequest.of(0, 10, Sort.by("trackNo").descending());
@@ -62,6 +66,10 @@ class MusicRestControllerTest {
                 .trackAlbum("YOUNHA 6th Album Repackage 'END THEORY : Final Edition'")
                 .build();
         pagedTracks = new PageImpl<>(List.of(foundTrack));
+        pagedTracksWithMessage = TrackPageGetResponse.builder()
+                .message("총 " + pagedTracks.getTotalElements() + "개의 음원을 찾았습니다.")
+                .tracks(pagedTracks)
+                .build();
     }
 
     @Nested
@@ -95,17 +103,16 @@ class MusicRestControllerTest {
         @DisplayName("성공")
         void success_search_by_keyword() throws Exception {
             String searchKey = "Horizon";
-
-            given(musicService.findTracksWithKeyword(eq(pageable), eq(searchKey), any())).willReturn(pagedTracks);
+            given(musicService.findTracksWithKeyword(eq(pageable), eq(searchKey), any())).willReturn(pagedTracksWithMessage);
 
             String url = "/api/v1/music/search/" + searchKey;
 
             mockMvc.perform(get(url).with(csrf()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                    .andExpect(jsonPath("$.result.content[0].trackTitle").value("Event Horizon"))
-                    .andExpect(jsonPath("$.result.content[0].trackArtist").value("Younha"))
-                    .andExpect(jsonPath("$.result.content[0].trackAlbum")
+                    .andExpect(jsonPath("$.result.tracks.content[0].trackTitle").value("Event Horizon"))
+                    .andExpect(jsonPath("$.result.tracks.content[0].trackArtist").value("Younha"))
+                    .andExpect(jsonPath("$.result.tracks.content[0].trackAlbum")
                             .value("YOUNHA 6th Album Repackage 'END THEORY : Final Edition'"))
                     .andDo(print());
 

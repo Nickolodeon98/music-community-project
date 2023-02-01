@@ -2,6 +2,7 @@ package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
+import com.content_i_like.domain.dto.tracks.TrackPageGetResponse;
 import com.content_i_like.service.MusicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,11 +32,12 @@ public class MusicRestController {
     }
 
     @GetMapping("/search/{trackTitle}")
-    public Response<Page<TrackGetResponse>> searchByKeyword(final Authentication authentication,
-                                                            @PathVariable String trackTitle,
-                                                            @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
+    public Response<TrackPageGetResponse> searchByKeyword(final Authentication authentication,
+                                                          @PathVariable String trackTitle,
+                                                          @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<TrackGetResponse> searchResults = musicService.findTracksWithKeyword(pageable, trackTitle, authentication.getName());
+        TrackPageGetResponse searchResults =
+                musicService.findTracksWithKeyword(pageable, trackTitle, authentication.getName());
         return Response.success(searchResults);
     }
 
