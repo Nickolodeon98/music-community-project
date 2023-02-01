@@ -52,4 +52,14 @@ public class SearchRestController {
         return Response.success(searchedMembers);
     }
 
+    @GetMapping("/members/{nickName}")
+    public Response<SearchPageGetResponse<SearchMembersResponse>> searchMembersByKeyword(final Authentication authentication,
+                                                                                         @PathVariable final String nickName,
+                                                                                         @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        SearchPageGetResponse<SearchMembersResponse> searchedMembers =
+                searchService.findMembersWithKeyword(nickName, pageable, authentication.getName());
+
+        return Response.success(searchedMembers);
+    }
+
 }
