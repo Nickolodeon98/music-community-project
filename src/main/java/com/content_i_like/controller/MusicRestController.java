@@ -34,7 +34,7 @@ public class MusicRestController {
     public Response<Page<TrackGetResponse>> searchByKeyword(@PathVariable String trackTitle,
                                                             @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<TrackGetResponse> searchResults = musicService.findtracksWithKeyword(pageable, trackTitle);
+        Page<TrackGetResponse> searchResults = musicService.findTracksWithKeyword(pageable, trackTitle);
         return Response.success(searchResults);
     }
 
