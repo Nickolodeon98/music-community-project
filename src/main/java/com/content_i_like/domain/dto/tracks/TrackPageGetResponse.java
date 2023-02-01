@@ -9,13 +9,14 @@ import org.springframework.data.domain.Page;
 @Getter
 @Builder
 public class TrackPageGetResponse {
-    private String message;
-    private Page<TrackGetResponse> tracks;
 
-    public static TrackPageGetResponse of(Page<TrackGetResponse> pagedTracks, String message) {
-        return TrackPageGetResponse.builder()
-                .message(message)
-                .tracks(pagedTracks)
-                .build();
-    }
+  private String message;
+  private Page<TrackGetResponse> tracks;
+
+  public static TrackPageGetResponse of(Page<TrackGetResponse> pagedTracks, String message) {
+    return TrackPageGetResponse.builder()
+        .message(message)
+        .tracks(pagedTracks)
+        .build();
+  }
 }
