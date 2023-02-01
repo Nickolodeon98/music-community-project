@@ -99,7 +99,7 @@ class SearchRestControllerTest {
             mockMvc.perform(get(BASE_URL + "tracks").with(csrf()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                    .andExpect(jsonPath("$.result.tracks.content").exists())
+                    .andExpect(jsonPath("$.result.pages.content").exists())
                     .andDo(print());
 
             verify(searchService).getEveryTrack(argumentCaptor.capture(), any());
@@ -121,9 +121,9 @@ class SearchRestControllerTest {
             mockMvc.perform(get(BASE_URL + "tracks/" + searchKey).with(csrf()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                    .andExpect(jsonPath("$.result.tracks.content[0].trackTitle").value("Event Horizon"))
-                    .andExpect(jsonPath("$.result.tracks.content[0].trackArtist").value("Younha"))
-                    .andExpect(jsonPath("$.result.tracks.content[0].trackAlbum")
+                    .andExpect(jsonPath("$.result.pages.content[0].trackTitle").value("Event Horizon"))
+                    .andExpect(jsonPath("$.result.pages.content[0].trackArtist").value("Younha"))
+                    .andExpect(jsonPath("$.result.pages.content[0].trackAlbum")
                             .value("YOUNHA 6th Album Repackage 'END THEORY : Final Edition'"))
                     .andDo(print());
 
