@@ -86,7 +86,7 @@ class MusicRestControllerTest {
             mockMvc.perform(get(url).with(csrf()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                    .andExpect(jsonPath("$.result.content").exists())
+                    .andExpect(jsonPath("$.result.tracks.content").exists())
                     .andDo(print());
 
             verify(musicService).getEveryTrack(argumentCaptor.capture(), any());
