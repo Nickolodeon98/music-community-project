@@ -36,9 +36,9 @@ public class Recommend extends BaseEntity {
   private Long recommendViews;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "song_no")
+  @JoinColumn(name = "track_no")
   @JsonIgnore
-  private Song song;
+  private Track track;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_no")

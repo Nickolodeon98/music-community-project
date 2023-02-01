@@ -43,13 +43,13 @@ public class TestRestController {
   public Response<List<String>> getTracks(@RequestParam String token) throws IOException {
     log.info("hello");
     log.info("tracksAPI token:{}", token);
-    List<String> songTitles = trackService.fetchTracks(token, new TrackFetch());
+    List<String> trackTitles = trackService.fetchTracks(token, new TrackFetch());
     List<String> artistTitles = trackService.fetchTracks(token, new ArtistFetch());
     List<String> albumTitles = trackService.fetchTracks(token, new AlbumFetch());
 
-    trackService.createMusicDatabase(songTitles, artistTitles, albumTitles);
+    trackService.createMusicDatabase(trackTitles, artistTitles, albumTitles);
 
-    return Response.success(songTitles);
+    return Response.success(trackTitles);
   }
 
   @GetMapping("/token")

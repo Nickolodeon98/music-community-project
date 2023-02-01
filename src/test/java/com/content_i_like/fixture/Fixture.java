@@ -35,15 +35,15 @@ public class Fixture {
         .build();
   }
 
-  public static Song getSongFixture(Album album) {
-    return Song.builder()
-        .songNo(1L)
-        .songTitle("음원 제목")
+  public static Track gettrackFixture(Album album) {
+    return Track.builder()
+        .trackNo(1L)
+        .trackTitle("음원 제목")
         .album(album)
         .build();
   }
 
-  public static Recommend getRecommendFixture(Member member, Song song) {
+  public static Recommend getRecommendFixture(Member member, Track track) {
     return Recommend.builder()
         .recommendNo(1L)
         .recommendTitle("제목")
@@ -53,7 +53,7 @@ public class Fixture {
         .recommendPoint(1000L)
         .recommendViews(100L)
         .member(member)
-        .song(song)
+        .track(track)
         .build();
   }
 

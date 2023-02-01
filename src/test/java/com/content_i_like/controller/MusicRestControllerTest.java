@@ -55,7 +55,7 @@ class MusicRestControllerTest {
     Page<TrackGetResponse> pagedTracks;
     @BeforeEach
     void setUp() {
-        pageable = PageRequest.of(0, 10, Sort.by("songNo").descending());
+        pageable = PageRequest.of(0, 10, Sort.by("trackNo").descending());
         foundTrack = TrackGetResponse.builder()
                 .trackTitle("Event Horizon")
                 .trackArtist("Younha")
@@ -66,11 +66,11 @@ class MusicRestControllerTest {
 
     @Nested
     @DisplayName("모든 음원 조회")
-    class AllSongsInquiry {
+    class AlltracksInquiry {
 
         @Test
         @DisplayName("성공")
-        void success_get_every_song() throws Exception {
+        void success_get_every_track() throws Exception {
             given(musicService.getEveryTrack(pageable, any())).willReturn(pagedTracks);
 
             String url = "/api/v1/music/all";
@@ -96,7 +96,7 @@ class MusicRestControllerTest {
         void success_search_by_keyword() throws Exception {
             String searchKey = "Horizon";
 
-            given(musicService.findSongsWithKeyword(eq(pageable), eq(searchKey))).willReturn(pagedTracks);
+            given(musicService.findtracksWithKeyword(eq(pageable), eq(searchKey))).willReturn(pagedTracks);
 
             String url = "/api/v1/music/search/" + searchKey;
 
@@ -109,7 +109,7 @@ class MusicRestControllerTest {
                             .value("YOUNHA 6th Album Repackage 'END THEORY : Final Edition'"))
                     .andDo(print());
 
-            verify(musicService).findSongsWithKeyword(eq(pageable), eq(searchKey));
+            verify(musicService).findtracksWithKeyword(eq(pageable), eq(searchKey));
         }
     }
 }

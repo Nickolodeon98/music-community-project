@@ -18,7 +18,7 @@ public class RecommendListResponse {
   private String recommendImageUrl;
   private String memberNickname;
   private String albumImageUrl;
-  private String songTitle;
+  private String trackTitle;
   private String artistName;
   private String recommendContent;
   private Long countLikes;
@@ -30,9 +30,9 @@ public class RecommendListResponse {
         .recommendTitle(recommend.getRecommendTitle())
         .recommendImageUrl(recommend.getRecommendImageUrl())
         .memberNickname(recommend.getMember().getNickName())
-        .albumImageUrl(recommend.getSong().getAlbum().getAlbumImageUrl())
-        .songTitle(recommend.getSong().getSongTitle())
-        .artistName(recommend.getSong().getAlbum().getArtist().getArtistName())
+        .albumImageUrl(recommend.getTrack().getAlbum().getAlbumImageUrl())
+        .trackTitle(recommend.getTrack().gettrackTitle())
+        .artistName(recommend.getTrack().getAlbum().getArtist().getArtistName())
         .recommendContent(recommend.getRecommendContent())
         .countLikes((long) recommend.getLikes().size())
         .accumulatedPoints(recommend.getComments().stream()

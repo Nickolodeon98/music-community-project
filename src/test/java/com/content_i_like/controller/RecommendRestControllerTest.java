@@ -25,7 +25,7 @@ import com.content_i_like.domain.entity.Artist;
 import com.content_i_like.domain.entity.Comment;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Recommend;
-import com.content_i_like.domain.entity.Song;
+import com.content_i_like.domain.entity.Track;
 import com.content_i_like.fixture.Fixture;
 import com.content_i_like.service.RecommendService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,7 +68,7 @@ class RecommendRestControllerTest {
 
 
   Artist artist;
-  Song song;
+  Track track;
   Album album;
   Recommend recommend;
   Member member;
@@ -79,11 +79,11 @@ class RecommendRestControllerTest {
 
     album = Fixture.getAlbumFixture(artist);
 
-    song = Fixture.getSongFixture(album);
+    track = Fixture.gettrackFixture(album);
 
     member = Fixture.getMemberFixture();
 
-    recommend = Fixture.getRecommendFixture(member, song);
+    recommend = Fixture.getRecommendFixture(member, track);
 
   }
   String jwtToken;
@@ -170,7 +170,7 @@ class RecommendRestControllerTest {
         .recommendTitle("제목")
         .memberNickname("작성자")
         .albumImageUrl("앨범 이미지")
-        .songTitle("노래 제목")
+        .trackTitle("노래 제목")
         .artistName("아티스트 이름")
         .recommendContent("추천 내용")
         .countLikes(100L)
@@ -195,8 +195,8 @@ class RecommendRestControllerTest {
         .andExpect(jsonPath("$.result.memberNickname").value("작성자"))
         .andExpect(jsonPath("$.result.albumImageUrl").exists())
         .andExpect(jsonPath("$.result.albumImageUrl").value("앨범 이미지"))
-        .andExpect(jsonPath("$.result.songTitle").exists())
-        .andExpect(jsonPath("$.result.songTitle").value("노래 제목"))
+        .andExpect(jsonPath("$.result.trackTitle").exists())
+        .andExpect(jsonPath("$.result.trackTitle").value("노래 제목"))
         .andExpect(jsonPath("$.result.comments").exists())
         .andDo(print());
   }

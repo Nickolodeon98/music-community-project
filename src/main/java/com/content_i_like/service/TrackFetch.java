@@ -1,9 +1,9 @@
 package com.content_i_like.service;
 
-import com.content_i_like.domain.entity.Song;
+import com.content_i_like.domain.entity.Track;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class TrackFetch implements Fetch<Song> {
+public class TrackFetch implements Fetch<Track> {
 
   @Override
   public String extractTitle(JsonNode root, int count) {

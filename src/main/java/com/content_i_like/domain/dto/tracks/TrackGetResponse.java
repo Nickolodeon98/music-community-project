@@ -1,6 +1,6 @@
 package com.content_i_like.domain.dto.tracks;
 
-import com.content_i_like.domain.entity.Song;
+import com.content_i_like.domain.entity.Track;
 import lombok.*;
 
 @Builder
@@ -14,12 +14,12 @@ public class TrackGetResponse {
   private String trackAlbum;
   private String trackArtist;
 
-  public static TrackGetResponse of(Song song) {
+  public static TrackGetResponse of(Track track) {
 
     return TrackGetResponse.builder()
-        .trackTitle(song.getSongTitle())
-        .trackAlbum(song.getAlbum().getAlbumTitle())
-        .trackArtist(song.getArtist().getArtistName())
+        .trackTitle(track.getTrackTitle())
+        .trackAlbum(track.getAlbum().getAlbumTitle())
+        .trackArtist(track.getArtist().getArtistName())
         .build();
 
   }
