@@ -74,11 +74,16 @@ public class SearchService {
   }
 
   public SearchPageGetResponse<SearchMembersResponse> findMembersWithKeyword(String searchKey, Pageable pageable, String memberEmail) {
-    Page<Member> members = memberRepository.findByNickNameContaining(searchKey);
+    Optional<Page<Member>> members = memberRepository.findByNickNameContaining(searchKey, pageable);
 
-    Page<SearchMembersResponse> membersPageResponse = members.map(SearchMembersResponse::of);
+    Page<SearchMembersResponse> membersPageResponse =
+            members.map(memberPage -> memberPage.map(SearchMembersResponse::of))
+                    .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
 
-    return SearchPageGetResponse.of(String.format("총 %s명의 사용자를 찾았습니다.",
-            membersPageResponse.getTotalElements()), membersPageResponse);
+    return membersPageResponse.isEmpty()
+            ? SearchPageGetResponse.of("찾는 음원이 존재하지 않습니다.", membersPageResponse)
+            : SearchPageGetResponse.of(
+                    String.format("'%s'로 총 %s명의 사용자를 찾았습니다.", searchKey, membersPageResponse.getTotalElements()),
+            membersPageResponse);
   }
 }
