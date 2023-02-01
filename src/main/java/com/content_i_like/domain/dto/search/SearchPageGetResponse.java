@@ -1,19 +1,19 @@
 package com.content_i_like.domain.dto.search;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.domain.Page;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class SearchPageGetResponse<T> {
     private String message;
-    private Page<T> tracks;
+    private Page<T> pages;
 
-    public SearchPageGetResponse(String message, Page<T> tracks) {
-        this.message = message;
-        this.tracks = tracks;
+
+    public static <T> SearchPageGetResponse<T> of(String message, Page<T> pages) {
+        return new SearchPageGetResponse<>(message, pages);
     }
 }
