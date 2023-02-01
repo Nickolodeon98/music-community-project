@@ -1,6 +1,8 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
+import com.content_i_like.domain.dto.search.SearchMembersResponse;
+import com.content_i_like.domain.dto.search.SearchPageGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackPageGetResponse;
 import com.content_i_like.service.SearchService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,7 @@ public class SearchRestController {
 
     private final SearchService searchService;
 
-    @GetMapping("/search")
+    @GetMapping("/tracks")
     public Response<TrackPageGetResponse> showAllTracks(final Authentication authentication,
                                                           @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
 
@@ -29,7 +31,7 @@ public class SearchRestController {
         return Response.success(searchResults);
     }
 
-    @GetMapping("/search/{trackTitle}")
+    @GetMapping("/tracks/{trackTitle}")
     public Response<TrackPageGetResponse> searchByKeyword(final Authentication authentication,
                                                           @PathVariable String trackTitle,
                                                           @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -38,6 +40,16 @@ public class SearchRestController {
                 searchService.findTracksWithKeyword(pageable, trackTitle, authentication.getName());
 
         return Response.success(searchResults);
+    }
+
+    @GetMapping("/members")
+    public Response<SearchPageGetResponse<SearchMembersResponse>> searchAllMembers(final Authentication authentication,
+                                                            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        SearchPageGetResponse<SearchMembersResponse> searchedMembers =
+                searchService.getEveryMember(pageable, authentication.getName());
+
+        return Response.success(searchedMembers);
     }
 
 }
