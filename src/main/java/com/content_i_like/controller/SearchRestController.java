@@ -25,7 +25,7 @@ public class SearchRestController {
     private final SearchService searchService;
 
     @GetMapping("/tracks")
-    public Response<SearchPageGetResponse<TrackGetResponse>> showAllTracks(final Authentication authentication,
+    public Response<SearchPageGetResponse<TrackGetResponse>> searchAllTracks(final Authentication authentication,
                                                                            @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
 
         SearchPageGetResponse<TrackGetResponse> searchResults =
@@ -35,7 +35,7 @@ public class SearchRestController {
     }
 
     @GetMapping("/tracks/{trackTitle}")
-    public Response<SearchPageGetResponse<TrackGetResponse>> searchByKeyword(final Authentication authentication,
+    public Response<SearchPageGetResponse<TrackGetResponse>> searchTracksByKeyword(final Authentication authentication,
                                                           @PathVariable String trackTitle,
                                                           @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
 

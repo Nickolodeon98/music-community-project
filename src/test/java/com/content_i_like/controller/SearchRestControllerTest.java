@@ -88,8 +88,8 @@ class SearchRestControllerTest {
     }
 
     @Nested
-    @DisplayName("모든 음원 조회")
-    class AllTracksInquiry {
+    @DisplayName("모든 음원 검색")
+    class AllTracksSearch {
 
         @Test
         @DisplayName("성공")
@@ -110,8 +110,8 @@ class SearchRestControllerTest {
     }
 
     @Nested
-    @DisplayName("검색어에 해당되는 음원 조회")
-    class SearchTrackByTitle {
+    @DisplayName("검색어에 해당되는 음원 검색")
+    class CertainTracksSearch {
         @Test
         @DisplayName("성공")
         void success_search_by_keyword() throws Exception {
