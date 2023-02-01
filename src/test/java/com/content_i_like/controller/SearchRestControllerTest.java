@@ -3,9 +3,7 @@ package com.content_i_like.controller;
 import com.content_i_like.config.JwtService;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackPageGetResponse;
-import com.content_i_like.domain.dto.tracks.TrackResponse;
-import com.content_i_like.service.MusicService;
-import com.content_i_like.service.TrackService;
+import com.content_i_like.service.SearchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,12 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,15 +31,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(MusicRestController.class)
+@WebMvcTest(SearchRestController.class)
 @WithMockUser
-class MusicRestControllerTest {
+class SearchRestControllerTest {
 
     @Autowired
     MockMvc mockMvc;
 
     @MockBean
-    MusicService musicService;
+    SearchService searchService;
 
     @MockBean
     JwtService jwtService;
@@ -79,7 +75,7 @@ class MusicRestControllerTest {
         @Test
         @DisplayName("성공")
         void success_get_every_track() throws Exception {
-            given(musicService.getEveryTrack(eq(pageable), any())).willReturn(pagedTracksWithMessage);
+            given(searchService.getEveryTrack(eq(pageable), any())).willReturn(pagedTracksWithMessage);
 
             String url = "/api/v1/music/search";
 
@@ -89,7 +85,7 @@ class MusicRestControllerTest {
                     .andExpect(jsonPath("$.result.tracks.content").exists())
                     .andDo(print());
 
-            verify(musicService).getEveryTrack(argumentCaptor.capture(), any());
+            verify(searchService).getEveryTrack(argumentCaptor.capture(), any());
 
             Pageable actualPageable = argumentCaptor.getValue();
             assertEquals(pageable, actualPageable);
@@ -103,7 +99,7 @@ class MusicRestControllerTest {
         @DisplayName("성공")
         void success_search_by_keyword() throws Exception {
             String searchKey = "Horizon";
-            given(musicService.findTracksWithKeyword(eq(pageable), eq(searchKey), any())).willReturn(pagedTracksWithMessage);
+            given(searchService.findTracksWithKeyword(eq(pageable), eq(searchKey), any())).willReturn(pagedTracksWithMessage);
 
             String url = "/api/v1/music/search/" + searchKey;
 
@@ -116,7 +112,7 @@ class MusicRestControllerTest {
                             .value("YOUNHA 6th Album Repackage 'END THEORY : Final Edition'"))
                     .andDo(print());
 
-            verify(musicService).findTracksWithKeyword(eq(pageable), eq(searchKey), any());
+            verify(searchService).findTracksWithKeyword(eq(pageable), eq(searchKey), any());
         }
     }
 }
