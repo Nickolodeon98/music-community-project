@@ -81,7 +81,7 @@ public class SearchService {
                     .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
 
     return membersPageResponse.isEmpty()
-            ? SearchPageGetResponse.of("찾는 음원이 존재하지 않습니다.", membersPageResponse)
+            ? SearchPageGetResponse.of("찾는 사용자가 존재하지 않습니다.", membersPageResponse)
             : SearchPageGetResponse.of(
                     String.format("'%s'로 총 %s명의 사용자를 찾았습니다.", searchKey, membersPageResponse.getTotalElements()),
             membersPageResponse);
