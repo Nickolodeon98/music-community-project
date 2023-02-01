@@ -1,6 +1,7 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
+import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackResponse;
 import com.content_i_like.domain.enums.TrackEnum;
 import com.content_i_like.service.AlbumFetch;
@@ -40,16 +41,10 @@ public class TestRestController {
 //    }
 
   @GetMapping("/tracks")
-  public Response<List<String>> getTracks(@RequestParam String token) throws IOException {
-    log.info("hello");
-    log.info("tracksAPI token:{}", token);
-    List<String> trackTitles = trackService.fetchTracks(token, new TrackFetch());
-    List<String> artistTitles = trackService.fetchTracks(token, new ArtistFetch());
-    List<String> albumTitles = trackService.fetchTracks(token, new AlbumFetch());
+  public String getTracks(@RequestParam String token) throws IOException {
+    trackService.createAllThreeTypesDB(token);
 
-    trackService.createMusicDatabase(trackTitles, artistTitles, albumTitles);
-
-    return Response.success(trackTitles);
+    return "DB 저장이 완료되었습니다.";
   }
 
   @GetMapping("/token")
@@ -57,8 +52,8 @@ public class TestRestController {
     HttpHeaders headers = new HttpHeaders();
 
     String uri = "https://accounts.spotify.com/authorize?"
-        + String.format("client_id=%s&response_type=%s&redirect_uri=%s", CLIENT_ID,
-        "code", TrackEnum.REDIRECT_URI.getValue());
+            + String.format("client_id=%s&response_type=%s&redirect_uri=%s", CLIENT_ID,
+            "code", TrackEnum.REDIRECT_URI.getValue());
 
     headers.setLocation(URI.create(uri));
 
@@ -67,17 +62,14 @@ public class TestRestController {
 
   @GetMapping("")
   public ResponseEntity<?> getAccessToken(@RequestParam String code)
-      throws JsonProcessingException {
+          throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
 
-    log.info("code:{}", code);
     String accessToken = trackService.spotifyAccessTokenGenerator(code);
 
     String uri = "http://localhost:8080/api/v1/test/tracks?token=" + accessToken;
 
     headers.setLocation(URI.create(uri));
-
-    log.info("accessToken:{}", accessToken);
 
     return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
   }
