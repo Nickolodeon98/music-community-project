@@ -19,16 +19,23 @@ public class MusicService {
   private final TrackRepository trackRepository;
   private final MemberRepository memberRepository;
 
-  public Member validateMember(String userEmail) {
-    return memberRepository.findByEmail(userEmail)
-        .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
-            ErrorCode.NOT_FOUND.getMessage()));
+  public Member validateMember(String memberEmail) {
+    return memberRepository.findByEmail(memberEmail)
+            .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
+                    ErrorCode.NOT_FOUND.getMessage()));
   }
 
-  public Page<TrackGetResponse> getEveryTrack(Pageable pageable, String userEmail) {
-    Member member = validateMember(userEmail);
+  public Page<TrackGetResponse> getEveryTrack(Pageable pageable, String memberEmail) {
+    Member member = validateMember(memberEmail);
 
     Page<Track> tracks = trackRepository.findAll(pageable);
+
+    return tracks.map(TrackGetResponse::of);
+  }
+
+  public Page<TrackGetResponse> findTracksWithKeyword(Pageable pageable, String searchKey) {
+    Page<Track> tracks = trackRepository.findAllBytrackTitleContaining(searchKey, pageable)
+            .orElseThrow(()->new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage()));
 
     return tracks.map(TrackGetResponse::of);
   }

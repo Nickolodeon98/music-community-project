@@ -19,6 +19,7 @@ class TrackServiceTest {
   RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 
   TrackRepository trackRepository = Mockito.mock(TrackRepository.class);
+
   ArtistRepository artistRepository = Mockito.mock(ArtistRepository.class);
   AlbumRepository albumRepository = Mockito.mock(AlbumRepository.class);
   TrackService trackService = new TrackService(new ObjectMapper(), trackRepository, artistRepository, albumRepository);

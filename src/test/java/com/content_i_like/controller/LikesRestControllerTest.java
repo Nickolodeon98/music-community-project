@@ -60,6 +60,7 @@ class LikesRestControllerTest {
   public void set() {
     artist = Fixture.getArtistFixture();
     album = Fixture.getAlbumFixture(artist);
+
     track = Fixture.getTrackFixture(album);
 
     member = Fixture.getMemberFixture();
