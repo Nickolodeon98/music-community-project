@@ -157,14 +157,14 @@ class SearchRestControllerTest {
         @Test
         @DisplayName("성공")
         void success_search_by_keyword() throws Exception {
-            given(searchService.findMembersWithKeyword(eq(setPageable("createdAt"), any()))).willReturn(membersPage);
+            given(searchService.findMembersWithKeyword(eq(nickName), eq(setPageable("createdAt")), any())).willReturn(membersPage);
 
             mockMvc.perform(get(BASE_URL + "members/" + nickName).with(csrf()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.result.message").value("총 1명의 사용자를 찾았습니다."))
                     .andDo(print());
 
-            verify(searchService).findMembersWithKeyword(eq(setPageable("createdAt")), any());
+            verify(searchService).findMembersWithKeyword(eq(nickName), eq(setPageable("createdAt")), any());
         }
     }
 }
