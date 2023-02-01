@@ -15,12 +15,14 @@ public class TrackGetResponse {
   private String trackArtist;
 
   public static TrackGetResponse of(Track track) {
-
     return TrackGetResponse.builder()
-        .trackTitle(track.getTrackTitle())
-        .trackAlbum(track.getAlbum().getAlbumTitle())
-        .trackArtist(track.getArtist().getArtistName())
-        .build();
+            .trackTitle(track.getTrackTitle())
+            .trackAlbum(track.getAlbum().getAlbumTitle())
+            .trackArtist(track.getArtist().getArtistName())
+            .build();
+  }
 
+  public Track toEntity() {
+    return Track.builder().trackTitle(this.trackTitle).build();
   }
 }
