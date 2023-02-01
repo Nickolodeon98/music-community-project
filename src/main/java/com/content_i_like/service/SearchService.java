@@ -15,12 +15,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class MusicService {
+public class SearchService {
 
   private final TrackRepository trackRepository;
   private final MemberRepository memberRepository;
@@ -62,8 +61,4 @@ public class MusicService {
             ? TrackPageGetResponse.of(pagedTracks, "찾는 음원이 존재하지 않습니다.")
             : TrackPageGetResponse.of(pagedTracks, String.format("'%s'로 총 %s개의 음원을 찾았습니다.", searchKey, pagedTracks.getTotalElements()));
   }
-
-
-
-
 }
