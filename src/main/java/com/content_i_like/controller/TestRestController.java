@@ -35,11 +35,6 @@ public class TestRestController {
   @Value("${spotify.client.id}")
   private String CLIENT_ID;
 
-//    @GetMapping
-//    public String redirectPoint() {
-//        return "Hello World!";
-//    }
-
   @GetMapping("/tracks")
   public String getTracks(@RequestParam String token) throws IOException {
     trackService.createAllThreeTypesDB(token);
@@ -52,8 +47,8 @@ public class TestRestController {
     HttpHeaders headers = new HttpHeaders();
 
     String uri = "https://accounts.spotify.com/authorize?"
-            + String.format("client_id=%s&response_type=%s&redirect_uri=%s", CLIENT_ID,
-            "code", TrackEnum.REDIRECT_URI.getValue());
+        + String.format("client_id=%s&response_type=%s&redirect_uri=%s", CLIENT_ID,
+        "code", TrackEnum.REDIRECT_URI.getValue());
 
     headers.setLocation(URI.create(uri));
 
@@ -62,7 +57,7 @@ public class TestRestController {
 
   @GetMapping("")
   public ResponseEntity<?> getAccessToken(@RequestParam String code)
-          throws JsonProcessingException {
+      throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
 
     String accessToken = trackService.spotifyAccessTokenGenerator(code);

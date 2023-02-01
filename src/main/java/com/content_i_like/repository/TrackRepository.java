@@ -10,7 +10,8 @@ import java.util.Optional;
 
 public interface TrackRepository extends JpaRepository<Track, Long> {
 
-    Optional<Track> findByTrackTitle(String trackTitle);
-    Optional<Page<Track>> findAllByTrackTitleContaining(String searchKey, Pageable pageable);
+  Optional<Track> findByTrackTitle(String trackTitle);
+
+  Optional<Page<Track>> findAllByTrackTitleContaining(String searchKey, Pageable pageable);
 }
 

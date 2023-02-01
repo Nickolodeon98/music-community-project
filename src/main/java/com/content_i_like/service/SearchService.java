@@ -27,14 +27,17 @@ public class SearchService {
   private final MemberRepository memberRepository;
 
   interface ValidCheck<T> {
+
     T examine(String toCheck);
   }
 
   class MemberValidation implements ValidCheck<Member> {
+
     @Override
     public Member examine(String toCheck) {
       return memberRepository.findByEmail(toCheck)
-              .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage()));
+          .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
+              ErrorCode.NOT_FOUND.getMessage()));
     }
   }
 
@@ -42,48 +45,83 @@ public class SearchService {
     return validCheck.examine(toCheck);
   }
 
-  public TrackPageGetResponse getEveryTrack(Pageable pageable, String memberEmail) {
+  interface ItemSearch<T> {
+
+    Page<T> searchAll(Pageable pageable);
+
+    Page<T> search(String keyword, Pageable pageable);
+  }
+
+  class TracksSearchTool implements ItemSearch<TrackGetResponse> {
+
+    @Override
+    public Page<TrackGetResponse> searchAll(Pageable pageable) {
+      return trackRepository.findAll(pageable).map(TrackGetResponse::of);
+    }
+
+    @Override
+    public Page<TrackGetResponse> search(String keyword, Pageable pageable) {
+      return trackRepository.findAllByTrackTitleContaining(keyword, pageable)
+          .map(trackPage -> trackPage.map(TrackGetResponse::of))
+          .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
+    }
+  }
+
+  class MembersSearchTool implements ItemSearch<SearchMembersResponse> {
+
+    @Override
+    public Page<SearchMembersResponse> searchAll(Pageable pageable) {
+      return memberRepository.findAll(pageable)
+          .map(SearchMembersResponse::of);
+    }
+
+    @Override
+    public Page<SearchMembersResponse> search(String keyword, Pageable pageable) {
+      return memberRepository.findByNickNameContaining(keyword, pageable)
+          .map(memberPage -> memberPage.map(SearchMembersResponse::of))
+          .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
+    }
+  }
+
+  public <T> SearchPageGetResponse<T> getEveryItem(Pageable pageable, String memberEmail,
+      ItemSearch<T> searchTool) {
+    Member member = validate(memberEmail, new MemberValidation());
+    Page<T> pagedItems = searchTool.searchAll(pageable);
+
+    return SearchPageGetResponse.of(
+        String.format("총 %s명의 사용자를 찾았습니다.", pagedItems.getTotalElements()), pagedItems);
+  }
+
+  public SearchPageGetResponse<TrackGetResponse> getEveryTrack(Pageable pageable,
+      String memberEmail) {
+    return getEveryItem(pageable, memberEmail, new TracksSearchTool());
+  }
+
+  public SearchPageGetResponse<SearchMembersResponse> getEveryMember(Pageable pageable,
+      String memberEmail) {
+    return getEveryItem(pageable, memberEmail, new MembersSearchTool());
+  }
+
+  public <T> SearchPageGetResponse<T> findWithKeyword(Pageable pageable, String searchKey,
+      String memberEmail, ItemSearch<T> searchTool) {
     Member member = validate(memberEmail, new MemberValidation());
 
-    Page<Track> tracks = trackRepository.findAll(pageable);
+    Page<T> pagedItems = searchTool.search(searchKey, pageable);
 
-    return TrackPageGetResponse.of(tracks.map(TrackGetResponse::of), "총 " + tracks.getTotalElements() + "개의 음원을 찾았습니다.");
+    return pagedItems.isEmpty() ? SearchPageGetResponse.of("검색 결과가 없습니다.", pagedItems)
+        : SearchPageGetResponse.of(
+            String.format("'%s'로 총 %s개의 검색결과를 찾았습니다.",
+                searchKey,
+                pagedItems.getTotalElements()), pagedItems);
   }
 
-  public TrackPageGetResponse findTracksWithKeyword(Pageable pageable, String searchKey, String memberEmail) {
-    Member member = validate(memberEmail, new MemberValidation());
-
-    Optional<Page<Track>> tracks = trackRepository.findAllByTrackTitleContaining(searchKey, pageable);
-
-    Page<TrackGetResponse> pagedTracks =
-            tracks.map(trackPage -> trackPage.map(TrackGetResponse::of))
-            .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
-
-    return pagedTracks.isEmpty()
-            ? TrackPageGetResponse.of(pagedTracks, "찾는 음원이 존재하지 않습니다.")
-            : TrackPageGetResponse.of(pagedTracks, String.format("'%s'로 총 %s개의 음원을 찾았습니다.", searchKey, pagedTracks.getTotalElements()));
+  public SearchPageGetResponse<SearchMembersResponse> findMembersWithKeyword(Pageable pageable,
+      String searchKey, String memberEmail) {
+    return findWithKeyword(pageable, searchKey, memberEmail, new MembersSearchTool());
   }
 
-  public SearchPageGetResponse<SearchMembersResponse> getEveryMember(Pageable pageable, String memberEmail) {
-    Page<Member> members = memberRepository.findAll(pageable);
-
-    Page<SearchMembersResponse> membersPageResponse = members.map(SearchMembersResponse::of);
-
-    return SearchPageGetResponse.of(String.format("총 %s명의 사용자를 찾았습니다.",
-            membersPageResponse.getTotalElements()), membersPageResponse);
-  }
-
-  public SearchPageGetResponse<SearchMembersResponse> findMembersWithKeyword(String searchKey, Pageable pageable, String memberEmail) {
-    Optional<Page<Member>> members = memberRepository.findByNickNameContaining(searchKey, pageable);
-
-    Page<SearchMembersResponse> membersPageResponse =
-            members.map(memberPage -> memberPage.map(SearchMembersResponse::of))
-                    .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
-
-    return membersPageResponse.isEmpty()
-            ? SearchPageGetResponse.of("찾는 사용자가 존재하지 않습니다.", membersPageResponse)
-            : SearchPageGetResponse.of(
-                    String.format("'%s'로 총 %s명의 사용자를 찾았습니다.", searchKey, membersPageResponse.getTotalElements()),
-            membersPageResponse);
+  public SearchPageGetResponse<TrackGetResponse> findTracksWithKeyword(Pageable pageable,
+      String searchKey, String memberEmail) {
+    return findWithKeyword(pageable, searchKey, memberEmail, new TracksSearchTool());
   }
 }
