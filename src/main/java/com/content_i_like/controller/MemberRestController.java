@@ -81,9 +81,26 @@ public class MemberRestController {
     return Response.success(url);
   }
 
+  /**
+   * 내가 등록한 recommends를 불러옵니다.
+   *
+   * @return 작성한 recommends 목록
+   */
   @GetMapping("/recommends")
   public Response<Page<RecommendListResponse>> getMyRecommends(Authentication authentication,
-      @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) final Pageable pageable) {
+      @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) final Pageable pageable) {
     return Response.success(memberService.getMyRecommends(authentication.getName(), pageable));
+  }
+
+  /**
+   * 내가 등록한 recommends와 다른 정보를 통합해서 불러옵니다.
+   *
+   * @return 작성 게시글 수, 팔로워 수, 팔로윙 수, 작성한 recommends 목록
+   */
+  @GetMapping("/recommends/integrated")
+  public Response<MemberRecommendResponse> getMyRecommendsIntegrated(Authentication authentication,
+      @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) final Pageable pageable) {
+    return Response.success(
+        memberService.getMyRecommendsIntegrated(authentication.getName(), pageable));
   }
 }

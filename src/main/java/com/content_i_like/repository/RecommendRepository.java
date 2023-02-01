@@ -24,4 +24,6 @@ public interface RecommendRepository extends JpaRepository<Recommend, Long>,
       @Param("recommendNo") Long recommendNo);
 
   Page<Recommend> findAllByMember(Pageable pageable, Member member);
+
+  Long countByMember(Member member);
 }

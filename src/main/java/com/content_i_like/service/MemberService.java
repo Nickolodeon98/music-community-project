@@ -7,6 +7,7 @@ import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Point;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
+import com.content_i_like.repository.FollowRepository;
 import com.content_i_like.repository.MemberRepository;
 import com.content_i_like.repository.RecommendRepository;
 import java.util.List;
@@ -26,6 +27,7 @@ public class MemberService {
 
   private final MemberRepository memberRepository;
   private final RecommendRepository recommendRepository;
+  private final FollowRepository followRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final S3FileUploadService s3FileUploadService;
@@ -170,5 +172,18 @@ public class MemberService {
     Member member = validateExistingMember(memberEmail);
 
     return recommendRepository.findAllByMember(pageable, member).map(RecommendListResponse::of);
+  }
+
+  public MemberRecommendResponse getMyRecommendsIntegrated(String memberEmail, Pageable pageable) {
+    Member member = validateExistingMember(memberEmail);
+
+    Long recommendCnt = recommendRepository.countByMember(member);
+    Long followerCnt = followRepository.countByMember(member);
+    Long followingCnt = followRepository.countByFromMemberNo(member);
+    Page<RecommendListResponse> recommendListResponses = recommendRepository.findAllByMember(pageable, member)
+        .map(RecommendListResponse::of);
+
+    return new MemberRecommendResponse(member, recommendCnt, followerCnt, followingCnt,
+        recommendListResponses);
   }
 }
