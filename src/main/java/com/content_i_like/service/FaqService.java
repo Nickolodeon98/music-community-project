@@ -24,20 +24,20 @@ public class FaqService {
     return faqRepository.findAll(pageable).map(FaqResponse::of);
   }
 
-  public Page<FaqResponse> getFaqByCategory(Pageable pageable, String faqCategory) {
+  public Page<FaqResponse> getFaqByCategory(Pageable pageable, final String faqCategory) {
     return faqRepository.findAllByFaqCategory(pageable, faqCategory).map(FaqResponse::of);
   }
 
-  public Page<FaqResponse> getFaqByKeyWord(Pageable pageable, String keyWord) {
+  public Page<FaqResponse> getFaqByKeyWord(Pageable pageable, final String keyWord) {
     return faqRepository.findAllByFaqTitleContaining(pageable, keyWord).map(FaqResponse::of);
   }
 
-  public FaqDetailsResponse getFaqDetails(Long faqNo) {
+  public FaqDetailsResponse getFaqDetails(final Long faqNo) {
 
     //faq가 존재하는지 검증
     Optional<FAQ> optionalFAQ = faqRepository.findById(faqNo);
     optionalFAQ.orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
-        String.format("faqNo:%d not exist")));
+        String.format("faqNo:%d not exist", faqNo)));
 
     return FaqDetailsResponse.of(optionalFAQ.get());
   }
