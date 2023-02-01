@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -51,4 +52,7 @@ public class Recommend extends BaseEntity {
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "recommend")
   private List<Likes> likes;
+
+  @OneToMany(mappedBy = "recommend", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<PostHashtag> postHashtags = new ArrayList<>();
 }
