@@ -66,7 +66,7 @@ class MusicRestControllerTest {
 
     @Nested
     @DisplayName("모든 음원 조회")
-    class AlltracksInquiry {
+    class AllTracksInquiry {
 
         @Test
         @DisplayName("성공")
@@ -96,7 +96,7 @@ class MusicRestControllerTest {
         void success_search_by_keyword() throws Exception {
             String searchKey = "Horizon";
 
-            given(musicService.findTracksWithKeyword(eq(pageable), eq(searchKey))).willReturn(pagedTracks);
+            given(musicService.findTracksWithKeyword(eq(pageable), eq(searchKey), any())).willReturn(pagedTracks);
 
             String url = "/api/v1/music/search/" + searchKey;
 
@@ -109,7 +109,7 @@ class MusicRestControllerTest {
                             .value("YOUNHA 6th Album Repackage 'END THEORY : Final Edition'"))
                     .andDo(print());
 
-            verify(musicService).findTracksWithKeyword(eq(pageable), eq(searchKey));
+            verify(musicService).findTracksWithKeyword(eq(pageable), eq(searchKey), any());
         }
     }
 }

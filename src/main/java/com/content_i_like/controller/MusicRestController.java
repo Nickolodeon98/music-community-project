@@ -31,10 +31,11 @@ public class MusicRestController {
     }
 
     @GetMapping("/search/{trackTitle}")
-    public Response<Page<TrackGetResponse>> searchByKeyword(@PathVariable String trackTitle,
+    public Response<Page<TrackGetResponse>> searchByKeyword(final Authentication authentication,
+                                                            @PathVariable String trackTitle,
                                                             @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<TrackGetResponse> searchResults = musicService.findTracksWithKeyword(pageable, trackTitle);
+        Page<TrackGetResponse> searchResults = musicService.findTracksWithKeyword(pageable, trackTitle, authentication.getName());
         return Response.success(searchResults);
     }
 
