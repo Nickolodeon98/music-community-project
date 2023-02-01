@@ -34,7 +34,7 @@ public class MusicService {
   }
 
   public Page<TrackGetResponse> findTracksWithKeyword(Pageable pageable, String searchKey) {
-    Page<Track> tracks = trackRepository.findAllBytrackTitleContaining(searchKey, pageable)
+    Page<Track> tracks = trackRepository.findAllByTrackTitleContaining(searchKey, pageable)
             .orElseThrow(()->new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage()));
 
     return tracks.map(TrackGetResponse::of);
