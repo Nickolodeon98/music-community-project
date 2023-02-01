@@ -3,7 +3,9 @@ package com.content_i_like.controller;
 import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.search.SearchMembersResponse;
 import com.content_i_like.domain.dto.search.SearchPageGetResponse;
+import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackPageGetResponse;
+import com.content_i_like.domain.entity.Track;
 import com.content_i_like.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -23,20 +25,21 @@ public class SearchRestController {
     private final SearchService searchService;
 
     @GetMapping("/tracks")
-    public Response<TrackPageGetResponse> showAllTracks(final Authentication authentication,
-                                                          @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
+    public Response<SearchPageGetResponse<TrackGetResponse>> showAllTracks(final Authentication authentication,
+                                                                           @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        TrackPageGetResponse searchResults = searchService.getEveryTrack(pageable, authentication.getName());
+        SearchPageGetResponse<TrackGetResponse> searchResults =
+                searchService.getEveryTrack(pageable, authentication.getName());
 
         return Response.success(searchResults);
     }
 
     @GetMapping("/tracks/{trackTitle}")
-    public Response<TrackPageGetResponse> searchByKeyword(final Authentication authentication,
+    public Response<SearchPageGetResponse<TrackGetResponse>> searchByKeyword(final Authentication authentication,
                                                           @PathVariable String trackTitle,
                                                           @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        TrackPageGetResponse searchResults =
+        SearchPageGetResponse<TrackGetResponse> searchResults =
                 searchService.findTracksWithKeyword(pageable, trackTitle, authentication.getName());
 
         return Response.success(searchResults);
@@ -57,7 +60,7 @@ public class SearchRestController {
                                                                                          @PathVariable final String nickName,
                                                                                          @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         SearchPageGetResponse<SearchMembersResponse> searchedMembers =
-                searchService.findMembersWithKeyword(nickName, pageable, authentication.getName());
+                searchService.findMembersWithKeyword(pageable, nickName, authentication.getName());
 
         return Response.success(searchedMembers);
     }

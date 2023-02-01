@@ -55,7 +55,7 @@ class SearchRestControllerTest {
     final String BASE_URL = "/api/v1/search/";
     TrackGetResponse foundTrack;
     Page<TrackGetResponse> pagedTracks;
-    TrackPageGetResponse pagedTracksWithMessage;
+    SearchPageGetResponse<TrackGetResponse> pagedTracksWithMessage;
     SearchMembersResponse member;
     SearchPageGetResponse<SearchMembersResponse> membersPage;
     final String nickName = "nickName";
@@ -72,11 +72,9 @@ class SearchRestControllerTest {
                 .trackAlbum("YOUNHA 6th Album Repackage 'END THEORY : Final Edition'")
                 .build();
         pagedTracks = new PageImpl<>(List.of(foundTrack));
-        pagedTracksWithMessage = TrackPageGetResponse
-                .builder()
-                .message("총 " + pagedTracks.getTotalElements() + "개의 음원을 찾았습니다.")
-                .tracks(pagedTracks)
-                .build();
+
+        pagedTracksWithMessage = SearchPageGetResponse
+                .of("총 " + pagedTracks.getTotalElements() + "개의 음원을 찾았습니다.", pagedTracks);
 
         member = SearchMembersResponse
                 .builder()
@@ -157,14 +155,14 @@ class SearchRestControllerTest {
         @Test
         @DisplayName("성공")
         void success_search_by_keyword() throws Exception {
-            given(searchService.findMembersWithKeyword(eq(nickName), eq(setPageable("createdAt")), any())).willReturn(membersPage);
+            given(searchService.findMembersWithKeyword(eq(setPageable("createdAt")), eq(nickName), any())).willReturn(membersPage);
 
             mockMvc.perform(get(BASE_URL + "members/" + nickName).with(csrf()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.result.message").value("총 1명의 사용자를 찾았습니다."))
                     .andDo(print());
 
-            verify(searchService).findMembersWithKeyword(eq(nickName), eq(setPageable("createdAt")), any());
+            verify(searchService).findMembersWithKeyword(eq(setPageable("createdAt")), eq(nickName), any());
         }
     }
 }
