@@ -2,14 +2,17 @@ package com.content_i_like.service;
 
 import com.content_i_like.config.JwtService;
 import com.content_i_like.domain.dto.member.*;
+import com.content_i_like.domain.dto.recommend.RecommendListResponse;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Point;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.MemberRepository;
+import com.content_i_like.repository.RecommendRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +25,7 @@ import java.io.IOException;
 public class MemberService {
 
   private final MemberRepository memberRepository;
+  private final RecommendRepository recommendRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final S3FileUploadService s3FileUploadService;
@@ -160,5 +164,11 @@ public class MemberService {
     memberRepository.saveAndFlush(member);
 
     return url;
+  }
+
+  public Page<RecommendListResponse> getMyRecommends(String memberEmail, Pageable pageable) {
+    Member member = validateExistingMember(memberEmail);
+
+    return recommendRepository.findAllByMember(pageable, member).map(RecommendListResponse::of);
   }
 }
