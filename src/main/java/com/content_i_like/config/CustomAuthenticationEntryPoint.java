@@ -16,30 +16,36 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
-public class JwtExceptionFilter extends OncePerRequestFilter {
+public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-      FilterChain filterChain) throws ServletException, IOException {
-    try {
-      filterChain.doFilter(request, response);
-    } catch (JwtException e) {
-      System.out.println(e.getMessage());
-      if (e.getMessage().equals("토큰 기한 만료")) {
-        setErrorResponse(response, ErrorCode.EXPIRED_TOKEN);
-      } else if (e.getMessage().equals("유효하지 않은 토큰") || e.getMessage().equals("사용자 인증 실패")) {
-        setErrorResponse(response, ErrorCode.INVALID_TOKEN);
-      } else if (e.getMessage().equals("권한 없음. 접근 불가")) {
-        setErrorResponse(response, ErrorCode.INVALID_PERMISSION);
-      } else {
-        setErrorResponse(response, ErrorCode.UNKNOWN_ERROR);
-      }
+  public void commence(HttpServletRequest request, HttpServletResponse response,
+      AuthenticationException authException) throws IOException, ServletException {
+    String exception = String.valueOf(request.getAttribute("exception"));
+    ErrorCode errorCode;
+
+    if (exception == null) {
+      setErrorResponse(response, ErrorCode.NOT_EXIST_TOKEN);
+    }
+    if (exception.equals(ErrorCode.INVALID_TOKEN.name())) {
+      setErrorResponse(response, ErrorCode.INVALID_TOKEN);
+    }
+    if (exception.equals(ErrorCode.INVALID_PERMISSION.name())) {
+      setErrorResponse(response, ErrorCode.INVALID_PERMISSION);
+    }
+    if (exception.equals(ErrorCode.EXPIRED_TOKEN.name())) {
+      setErrorResponse(response, ErrorCode.EXPIRED_TOKEN);
+    }
+    if (exception.equals(ErrorCode.UNKNOWN_ERROR.name())) {
+      setErrorResponse(response, ErrorCode.UNKNOWN_ERROR);
     }
   }
 
@@ -56,5 +62,6 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         objectMapper.writeValueAsString(
             Response.error("ERROR", result)));
   }
+
 
 }

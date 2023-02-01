@@ -5,7 +5,6 @@ import com.content_i_like.domain.entity.*;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.*;
-import java.io.File;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,8 +25,10 @@ public class RecommendService {
 
   private final AlbumRepository albumRepository;
   private final ArtistRepository artistRepository;
-  private final SongRepository songRepository;
+  private final TrackRepository trackRepository;
   private final S3FileUploadService s3FileUploadService;
+  private final HashtagRepository hashtagRepository;
+  private final PostHashtagRepository postHashtagRepository;
 
 
   /**
@@ -35,28 +36,58 @@ public class RecommendService {
    *
    * @param userEmail 작성자의 email
    * @param request   등록할 추천글 정보
+   * @param image     등록할 이미지 정보
+   * @param hashtags  추천글에 작성된 해시태그
    * @return 등록된 추천글 정보
+   * @throws IOException
    */
   @Transactional
   public RecommendPostResponse uploadPost(final String userEmail,
       final RecommendPostRequest request,
-      MultipartFile image) throws IOException {
+      MultipartFile image, List<String> hashtags) throws IOException {
     // 글을 작성하는 Member 확인
     Member member = validateGetMemberInfoByUserEmail(userEmail);
 
     // 글과 연결되어 있는 음악 검색
-    Song song = songRepository.findById(request.getSongNo())
+    Track track = validateGetTrackByTrackNo(request.getTrackNo());
+
+    String url = getUploadImageURL(image);
+
+    Recommend recommend = recommendRepository.save(
+        RecommendPostRequest.toEntity(request, member, track, url));
+
+    // 해시 태그 추가 로직
+    savePostHashtags(hashtags, recommend);
+
+    return RecommendPostResponse.fromEntity(recommend);
+  }
+
+  private Track validateGetTrackByTrackNo(Long request) {
+    return trackRepository.findById(request)
         .orElseThrow(() -> {
           throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
         });
+  }
 
-    String url = s3FileUploadService.uploadFile(image);
+  private String getUploadImageURL(MultipartFile image) throws IOException {
+    if (image != null) {
+      return s3FileUploadService.uploadFile(image);
+    }
+    return "https://content-i-like.s3.ap-northeast-2.amazonaws.com/default-recommend.jpg";
+  }
 
-    Recommend recommend = recommendRepository.save(
-        RecommendPostRequest.toEntity(request, member, song, url));
+  private void savePostHashtags(List<String> hashtags, Recommend recommend) {
+    for (String hashtag : hashtags) {
+      Hashtag existingHashtag = hashtagRepository.findByName(hashtag)
+          .orElseGet(() -> {
+            Hashtag newHashtag = Hashtag.of(hashtag);
+            hashtagRepository.save(newHashtag);
+            return newHashtag;
+          });
 
-    return new RecommendPostResponse(recommend.getRecommendNo(), recommend.getRecommendTitle(),
-        recommend.getRecommendPoint());
+      PostHashtag postHashtag = PostHashtag.of(recommend, existingHashtag);
+      postHashtagRepository.save(postHashtag);
+    }
   }
 
   /**
@@ -126,13 +157,10 @@ public class RecommendService {
     Member member = validateGetMemberInfoByUserEmail(post.getMember().getEmail());
 
     // 해당 글의 음악 정보를 받아옵니다.
-    Song song = songRepository.findById(post.getSong().getSongNo())
-        .orElseThrow(() -> {
-          throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
-        });
+    Track track = validateGetTrackByTrackNo(post.getTrack().getTrackNo());
 
     // 앨범 정보를 받아옵니다.
-    Album album = albumRepository.findById(song.getAlbum().getAlbumNo())
+    Album album = albumRepository.findById(track.getAlbum().getAlbumNo())
         .orElseThrow(() -> {
           throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
         });
@@ -158,7 +186,7 @@ public class RecommendService {
         .recommendTitle(post.getRecommendTitle())
         .memberNickname(member.getNickName())
         .albumImageUrl(album.getAlbumImageUrl())
-        .songTitle(song.getSongTitle())
+        .trackTitle(track.getTrackTitle())
         .artistName(artist.getArtistName())
         .comments(comments)
         .recommendContent(post.getRecommendContent())
