@@ -1,11 +1,13 @@
 package com.content_i_like.service;
 
+import com.content_i_like.domain.dto.member.PointResponse;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Point;
 import com.content_i_like.domain.enums.PointTypeEnum;
 import com.content_i_like.repository.PointRepository;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,12 @@ public class PointService {
     }
 
     return point;
+  }
+
+  //포인트 내역
+  public List<PointResponse> pointList(Member member) {
+    List<Point> points = pointRepository.findByMember(member);
+    return points.stream().map(point -> point.toResponse()).collect(Collectors.toList());
   }
 
   @Transactional

@@ -24,20 +24,7 @@ public class MemberResponse {
   private Integer birth;
   private Long point;
 
-  public MemberResponse toResponse(Member member) {
-    return MemberResponse.builder()
-        .email(member.getEmail())
-        .profileImgUrl(member.getProfileImgUrl())
-        .nickName(member.getNickName())
-        .introduction(member.getIntroduction())
-        .status(String.valueOf(member.getStatus()))
-        .gender(String.valueOf(member.getGender()))
-        .birth(member.getBirth())
-        .point(this.point)
-        .build();
-  }
-
-  public MemberResponse responseWithPoint(Member member, Long point) {
+  public static MemberResponse responseWithPoint(Member member, Long point) {
     return MemberResponse.builder()
         .email(member.getEmail())
         .profileImgUrl(member.getProfileImgUrl())

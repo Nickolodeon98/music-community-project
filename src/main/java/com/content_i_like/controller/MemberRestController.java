@@ -21,14 +21,11 @@ import java.io.IOException;
 public class MemberRestController {
 
   private final MemberService memberService;
-  private final MailService mailService;
-  private final PointService pointService;
 
   @PostMapping("/join")
   public Response<MemberJoinResponse> join(@RequestBody @Valid final MemberJoinRequest request) {
-    Member member = memberService.join(request);
-    pointService.giveWelcomePoint(member);
-    return Response.success(new MemberJoinResponse(member.getMemberNo(), member.getNickName()));
+    MemberJoinResponse response = memberService.join(request);
+    return Response.success(response);
   }
 
   @PostMapping("/login")
@@ -39,26 +36,26 @@ public class MemberRestController {
 
   @PostMapping("/passwd/find_pw")
   public Response<String> findPw(@RequestBody @Valid final MemberFindRequest request) {
-    MailDto mailDto = memberService.findPwByEmail(request);
-    System.out.println("메일을 발송하겠습니다.");
-    mailService.mailSend(mailDto);
-    return Response.success("임시 비밀번호를 메일로 발송했습니다.");
+    String message = memberService.findPwByEmail(request);
+    return Response.success(message);
   }
 
   @PostMapping("/passwd/change")
   public Response<String> changePw(@RequestBody @Valid final ChangePwRequest request,
       final Authentication authentication) {
-    String username = authentication.getName();
-    return Response.success(memberService.changePw(request, username));
+    return Response.success(memberService.changePw(request, authentication.getName()));
   }
 
   @GetMapping("/my")
   public Response<MemberResponse> getMyInfo(final Authentication authentication) {
-    String username = authentication.getName();
-    Member member = memberService.getMyInfo(username);
-    Long point = pointService.calculatePoint(member);
-    MemberResponse memberResponse = new MemberResponse();
-    return Response.success(memberResponse.responseWithPoint(member, point));
+    MemberResponse memberResponse = memberService.getMyInfo(authentication.getName());
+    return Response.success(memberResponse);
+  }
+
+  @GetMapping("/my/point")
+  public Response<MemberPointResponse> getMyPoint(final Authentication authentication) {
+    MemberPointResponse memberPointResponse = memberService.getMyPoint(authentication.getName());
+    return Response.success(memberPointResponse);
   }
 
   @PutMapping("/my")
@@ -66,16 +63,15 @@ public class MemberRestController {
       @RequestPart(value = "dto") @Valid final MemberModifyRequest request,
       @RequestPart(value = "file", required = false) MultipartFile file,
       final Authentication authentication) throws IOException {
-    String username = authentication.getName();
-    MemberResponse memberResponse = memberService.modifyMyInfo(request, file, username);
+    MemberResponse memberResponse = memberService
+        .modifyMyInfo(request, file, authentication.getName());
     return Response.success(memberResponse);
   }
 
   @PutMapping("/my/profileImg")
   public Response<String> updateProfileImg(@RequestPart(value = "file") MultipartFile file,
       Authentication authentication) throws IOException {
-    String username = authentication.getName();
-    String url = memberService.uploadProfileImg(username, file);
+    String url = memberService.uploadProfileImg(authentication.getName(), file);
     return Response.success(url);
   }
 
