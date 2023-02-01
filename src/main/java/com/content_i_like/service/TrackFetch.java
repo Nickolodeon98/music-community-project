@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Slf4j
 public class TrackFetch implements Fetch<Track> {
 
@@ -16,7 +17,8 @@ public class TrackFetch implements Fetch<Track> {
     String albumImageUrl = "";
     try {
       albumName = root.get("tracks").get(count).get("album").get("name").asText();
-      albumImageUrl = root.get("tracks").get(count).get("album").get("images").get(1).get("url").asText();
+      albumImageUrl = root.get("tracks").get(count).get("album").get("images").get(1).get("url")
+          .asText();
       data = root.get("tracks").get(count).get("name").asText();
     } catch (NullPointerException e) {
       log.warn("JsonNode 가 null 값입니다.");
@@ -29,8 +31,8 @@ public class TrackFetch implements Fetch<Track> {
     List<Track> tracks = new ArrayList<>();
     for (String title : titles) {
       Track track = Track.builder()
-              .trackTitle(title)
-              .build();
+          .trackTitle(title)
+          .build();
       tracks.add(track);
     }
     return tracks;
