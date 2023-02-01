@@ -2,6 +2,7 @@ package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.member.*;
+import com.content_i_like.domain.dto.recommend.RecommendListResponse;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Point;
 import com.content_i_like.service.MailService;
@@ -9,6 +10,11 @@ import com.content_i_like.service.MemberService;
 import com.content_i_like.service.PointService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -75,4 +81,26 @@ public class MemberRestController {
     return Response.success(url);
   }
 
+  /**
+   * 내가 등록한 recommends를 불러옵니다.
+   *
+   * @return 작성한 recommends 목록
+   */
+  @GetMapping("/recommends")
+  public Response<Page<RecommendListResponse>> getMyRecommends(Authentication authentication,
+      @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) final Pageable pageable) {
+    return Response.success(memberService.getMyRecommends(authentication.getName(), pageable));
+  }
+
+  /**
+   * 내가 등록한 recommends와 다른 정보를 통합해서 불러옵니다.
+   *
+   * @return 작성 게시글 수, 팔로워 수, 팔로윙 수, 작성한 recommends 목록
+   */
+  @GetMapping("/recommends/integrated")
+  public Response<MemberRecommendResponse> getMyRecommendsIntegrated(Authentication authentication,
+      @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) final Pageable pageable) {
+    return Response.success(
+        memberService.getMyRecommendsIntegrated(authentication.getName(), pageable));
+  }
 }
