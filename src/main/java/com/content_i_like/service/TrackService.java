@@ -3,12 +3,12 @@ package com.content_i_like.service;
 import com.content_i_like.domain.dto.tracks.TrackResponse;
 import com.content_i_like.domain.entity.Album;
 import com.content_i_like.domain.entity.Artist;
-import com.content_i_like.domain.entity.Song;
+import com.content_i_like.domain.entity.Track;
 import com.content_i_like.domain.enums.TrackEnum;
 import com.content_i_like.repository.AlbumRepository;
 import com.content_i_like.repository.ArtistRepository;
 import com.content_i_like.repository.RecommendRepository;
-import com.content_i_like.repository.SongRepository;
+import com.content_i_like.repository.TrackRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,7 +44,7 @@ public class TrackService {
   private String CLIENT_SECRET;
 
   private final ObjectMapper objectMapper;
-  private final SongRepository songRepository;
+  private final TrackRepository trackRepository;
   private ArtistRepository artistRepository;
   private AlbumRepository albumRepository;
 
@@ -229,14 +229,14 @@ public class TrackService {
     return titles;
   }
 
-  public void createMusicDatabase(List<String> songTitles, List<String> artistTitles,
+  public void createMusicDatabase(List<String> trackTitles, List<String> artistTitles,
       List<String> albumTitles) {
 
     /* TODO: 반복을 줄이기 위해 템플릿 콜백 패턴 적용 */
 
-    for (String songTitle : songTitles) {
-      Song singleSongRecord = Song.builder().songTitle(songTitle).build();
-      songRepository.save(singleSongRecord);
+    for (String trackTitle : trackTitles) {
+      Track singleTrackRecord = Track.builder().trackTitle(trackTitle).build();
+      trackRepository.save(singleTrackRecord);
     }
 
     for (String artistTitle : artistTitles) {

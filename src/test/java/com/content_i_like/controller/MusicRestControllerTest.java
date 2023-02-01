@@ -51,12 +51,12 @@ class MusicRestControllerTest {
 
   @Nested
   @DisplayName("모든 음원 조회")
-  class AllSongsInquiry {
+  class AllTracksInquiry {
 
     @Test
     @DisplayName("성공")
-    void success_get_every_song() throws Exception {
-      Pageable pageable = PageRequest.of(0, 10, Sort.by("songNo").descending());
+    void success_get_every_track() throws Exception {
+      Pageable pageable = PageRequest.of(0, 10, Sort.by("trackNo").descending());
 
       TrackGetResponse track = TrackGetResponse.builder()
           .trackTitle("title")

@@ -1,6 +1,6 @@
 package com.content_i_like.service;
 
-import com.content_i_like.repository.SongRepository;
+import com.content_i_like.repository.TrackRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -19,8 +19,8 @@ class TrackServiceTest {
   @Mock
   RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 
-  SongRepository songRepository = Mockito.mock(SongRepository.class);
-  TrackService trackService = new TrackService(new ObjectMapper(), songRepository);
+  TrackRepository trackRepository = Mockito.mock(TrackRepository.class);
+  TrackService trackService = new TrackService(new ObjectMapper(), trackRepository);
 
   final String CODE =
       "AQBO1RY1Fd0nhdxGNZmg6PmmFuZ0tJauQq7AliyEOKC8jR04QRStsscveeovc_FyydCYxx0w5avPCQqCUEmBLl25-3lI"
