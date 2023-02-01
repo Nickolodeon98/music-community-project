@@ -79,7 +79,7 @@ class MusicRestControllerTest {
         @Test
         @DisplayName("성공")
         void success_get_every_track() throws Exception {
-            given(musicService.getEveryTrack(pageable, any())).willReturn(pagedTracksWithMessage);
+            given(musicService.getEveryTrack(eq(pageable), any())).willReturn(pagedTracksWithMessage);
 
             String url = "/api/v1/music/search";
 
