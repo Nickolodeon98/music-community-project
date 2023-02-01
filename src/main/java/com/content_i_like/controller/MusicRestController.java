@@ -22,7 +22,7 @@ public class MusicRestController {
 
     private final MusicService musicService;
 
-    @GetMapping("/all")
+    @GetMapping("/search")
     public Response<Page<TrackGetResponse>> showAllTracks(final Authentication authentication,
                                                           @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
 
