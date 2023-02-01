@@ -1,12 +1,13 @@
 package com.content_i_like.service;
 
 import com.content_i_like.config.JwtService;
+import com.content_i_like.domain.dto.comment.CommentReadResponse;
 import com.content_i_like.domain.dto.member.*;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
 import com.content_i_like.domain.entity.Member;
-import com.content_i_like.domain.entity.Point;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
+import com.content_i_like.repository.CommentRepository;
 import com.content_i_like.repository.FollowRepository;
 import com.content_i_like.repository.MemberRepository;
 import com.content_i_like.repository.RecommendRepository;
@@ -27,6 +28,7 @@ public class MemberService {
 
   private final MemberRepository memberRepository;
   private final RecommendRepository recommendRepository;
+  private final CommentRepository commentRepository;
   private final FollowRepository followRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
@@ -43,7 +45,7 @@ public class MemberService {
     validateDuplicatedMember(memberJoinRequest);
 
     Member member = memberJoinRequest
-        .toEntity(passwordEncoder.encode(memberJoinRequest.getPassword()),DEFAULT_PROFILE);
+        .toEntity(passwordEncoder.encode(memberJoinRequest.getPassword()), DEFAULT_PROFILE);
 
     Member savedMember = memberRepository.save(member);
     pointService.giveWelcomePoint(savedMember);
@@ -174,16 +176,38 @@ public class MemberService {
     return recommendRepository.findAllByMember(pageable, member).map(RecommendListResponse::of);
   }
 
+  private Long[] getFollowCnt(Member member) {
+
+    Long[] followCnt = new Long[3];
+
+    followCnt[0] = recommendRepository.countByMember(member);   //게시글 수
+    followCnt[1] = followRepository.countByMember(member);      //팔로워 수
+    followCnt[2] = followRepository.countByFromMemberNo(member);//팔로윙 수
+
+    return followCnt;
+  }
+
   public MemberRecommendResponse getMyRecommendsIntegrated(String memberEmail, Pageable pageable) {
     Member member = validateExistingMember(memberEmail);
 
-    Long recommendCnt = recommendRepository.countByMember(member);
-    Long followerCnt = followRepository.countByMember(member);
-    Long followingCnt = followRepository.countByFromMemberNo(member);
-    Page<RecommendListResponse> recommendListResponses = recommendRepository.findAllByMember(pageable, member)
+    Long[] followerCnt = getFollowCnt(member);
+
+    Page<RecommendListResponse> recommendListResponses = recommendRepository.findAllByMember(
+            pageable, member)
         .map(RecommendListResponse::of);
 
-    return new MemberRecommendResponse(member, recommendCnt, followerCnt, followingCnt,
-        recommendListResponses);
+    return new MemberRecommendResponse(member, followerCnt, recommendListResponses);
+  }
+
+  public MemberCommentResponse getMyComments(String memberEmail,
+      Pageable pageable) {
+    Member member = validateExistingMember(memberEmail);
+
+    Long[] followerCnt = getFollowCnt(member);
+
+    Page<CommentReadResponse> commentReadResponses = commentRepository.findAllByMember(member,
+        pageable).map(CommentReadResponse::of);
+
+    return new MemberCommentResponse(member, followerCnt, commentReadResponses);
   }
 }
