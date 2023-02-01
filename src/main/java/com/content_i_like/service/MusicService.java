@@ -50,6 +50,8 @@ public class MusicService {
   }
 
   public TrackPageGetResponse findTracksWithKeyword(Pageable pageable, String searchKey, String memberEmail) {
+    Member member = validate(memberEmail, new MemberValidation());
+
     Optional<Page<Track>> tracks = trackRepository.findAllByTrackTitleContaining(searchKey, pageable);
 
     Page<TrackGetResponse> pagedTracks =
@@ -58,7 +60,7 @@ public class MusicService {
 
     return pagedTracks.isEmpty()
             ? TrackPageGetResponse.of(pagedTracks, "찾는 음원이 존재하지 않습니다.")
-            : TrackPageGetResponse.of(pagedTracks, "총 " + pagedTracks.getTotalElements() + "개의 음원을 찾았습니다.");
+            : TrackPageGetResponse.of(pagedTracks, String.format("'%s'로 총 %s개의 음원을 찾았습니다.", searchKey, pagedTracks.getTotalElements()));
   }
 
 
