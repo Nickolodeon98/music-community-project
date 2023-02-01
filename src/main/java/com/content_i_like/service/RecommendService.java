@@ -20,190 +20,199 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class RecommendService {
 
-    private final MemberRepository memberRepository;
-    private final RecommendRepository recommendRepository;
+  private final MemberRepository memberRepository;
+  private final RecommendRepository recommendRepository;
 
-    private final AlbumRepository albumRepository;
-    private final ArtistRepository artistRepository;
-    private final TrackRepository trackRepository;
-    private final S3FileUploadService s3FileUploadService;
-    private final HashtagRepository hashtagRepository;
-    private final PostHashtagRepository postHashtagRepository;
+  private final AlbumRepository albumRepository;
+  private final ArtistRepository artistRepository;
+  private final TrackRepository trackRepository;
+  private final S3FileUploadService s3FileUploadService;
+  private final HashtagRepository hashtagRepository;
+  private final PostHashtagRepository postHashtagRepository;
 
 
-    /**
-     * 추천 글을 작성합니다.
-     *
-     * @param userEmail 작성자의 email
-     * @param request   등록할 추천글 정보
-     * @param hashtags
-     * @return 등록된 추천글 정보
-     */
-    @Transactional
-    public RecommendPostResponse uploadPost(final String userEmail,
-                                            final RecommendPostRequest request,
-                                            MultipartFile image, List<String> hashtags) throws IOException {
-        // 글을 작성하는 Member 확인
-        Member member = validateGetMemberInfoByUserEmail(userEmail);
+  /**
+   * 추천 글을 작성합니다.
+   *
+   * @param userEmail 작성자의 email
+   * @param request   등록할 추천글 정보
+   * @param image     등록할 이미지 정보
+   * @param hashtags  추천글에 작성된 해시태그
+   * @return 등록된 추천글 정보
+   * @throws IOException
+   */
+  @Transactional
+  public RecommendPostResponse uploadPost(final String userEmail,
+      final RecommendPostRequest request,
+      MultipartFile image, List<String> hashtags) throws IOException {
+    // 글을 작성하는 Member 확인
+    Member member = validateGetMemberInfoByUserEmail(userEmail);
 
-        // 글과 연결되어 있는 음악 검색
-        Track track = trackRepository.findById(request.getTrackNo())
-                .orElseThrow(() -> {
-                    throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
-                });
+    // 글과 연결되어 있는 음악 검색
+    Track track = validateGetTrackByTrackNo(request.getTrackNo());
 
-        String url = s3FileUploadService.uploadFile(image);
+    String url = getUploadImageURL(image);
 
-        Recommend recommend = recommendRepository.save(
-                RecommendPostRequest.toEntity(request, member, track, url));
+    Recommend recommend = recommendRepository.save(
+        RecommendPostRequest.toEntity(request, member, track, url));
 
-        // 해시 태그 추가 로직
-        savePostHashtags(hashtags, recommend);
+    // 해시 태그 추가 로직
+    savePostHashtags(hashtags, recommend);
 
-        return new RecommendPostResponse(recommend.getRecommendNo(), recommend.getRecommendTitle(),
-                recommend.getRecommendPoint());
+    return RecommendPostResponse.fromEntity(recommend);
+  }
+
+  private Track validateGetTrackByTrackNo(Long request) {
+    return trackRepository.findById(request)
+        .orElseThrow(() -> {
+          throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+        });
+  }
+
+  private String getUploadImageURL(MultipartFile image) throws IOException {
+    if (image != null) {
+      return s3FileUploadService.uploadFile(image);
+    }
+    return "https://content-i-like.s3.ap-northeast-2.amazonaws.com/default-recommend.jpg";
+  }
+
+  private void savePostHashtags(List<String> hashtags, Recommend recommend) {
+    for (String hashtag : hashtags) {
+      Hashtag existingHashtag = hashtagRepository.findByName(hashtag)
+          .orElseGet(() -> {
+            Hashtag newHashtag = Hashtag.of(hashtag);
+            hashtagRepository.save(newHashtag);
+            return newHashtag;
+          });
+
+      PostHashtag postHashtag = PostHashtag.of(recommend, existingHashtag);
+      postHashtagRepository.save(postHashtag);
+    }
+  }
+
+  /**
+   * 등록된 추천글을 수정합니다.
+   *
+   * @param userEmail   수정을 요청한 사용자 email
+   * @param recommendNo 수정할 추천글 고유 번호
+   * @param request     수정할 추천글 정보
+   * @return 수정된 추천글 내용
+   */
+  @Transactional
+  public RecommendModifyResponse modifyPost(final String userEmail, final Long recommendNo,
+      final RecommendModifyRequest request) {
+    // 글을 작성하는 Member 확인
+    Member member = validateGetMemberInfoByUserEmail(userEmail);
+
+    // 수정 글 확인
+    Recommend recommend = validateGetRecommendInfoByRecommendNo(recommendNo);
+
+    // Member와 Recommen의 작성자가 동일한지 확인
+    if (!Objects.equals(member.getMemberNo(), recommend.getMember().getMemberNo())) {
+      throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
     }
 
-    private void savePostHashtags(List<String> hashtags, Recommend recommend) {
-        for (String hashtag : hashtags) {
-            Hashtag existingHashtag = hashtagRepository.findByName(hashtag)
-                    .orElseGet(() -> {
-                        Hashtag newHashtag = Hashtag.of(hashtag);
-                        hashtagRepository.save(newHashtag);
-                        return newHashtag;
-                    });
+    // 수정 게시물
+    recommendRepository.update(request.getRecommendTitle(), request.getRecommendContent(),
+        request.getRecommendImageUrl(), request.getRecommendYoutubeUrl(), recommendNo);
+    recommend = validateGetRecommendInfoByRecommendNo(recommendNo);
 
-            PostHashtag postHashtag = PostHashtag.of(recommend, existingHashtag);
-            postHashtagRepository.save(postHashtag);
-        }
+    return new RecommendModifyResponse(recommend.getRecommendNo(), recommend.getRecommendTitle());
+  }
+
+
+  /**
+   * 등록된 추천 글을 삭제합니다.
+   *
+   * @param userEmail   삭제를 요청한 사용자 email
+   * @param recommendNo 삭제할 추천 글 고유번호
+   */
+  @Transactional
+  public void deletePost(final String userEmail, final Long recommendNo) {
+    // 글을 작성하는 Member 확인
+    Member member = validateGetMemberInfoByUserEmail(userEmail);
+
+    // 수정 글 확인
+    Recommend recommend = validateGetRecommendInfoByRecommendNo(recommendNo);
+
+    // Member와 Recommen의 작성자가 동일한지 확인
+    if (!Objects.equals(member.getMemberNo(), recommend.getMember().getMemberNo())) {
+      throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
     }
 
-    /**
-     * 등록된 추천글을 수정합니다.
-     *
-     * @param userEmail   수정을 요청한 사용자 email
-     * @param recommendNo 수정할 추천글 고유 번호
-     * @param request     수정할 추천글 정보
-     * @return 수정된 추천글 내용
-     */
-    @Transactional
-    public RecommendModifyResponse modifyPost(final String userEmail, final Long recommendNo,
-                                              final RecommendModifyRequest request) {
-        // 글을 작성하는 Member 확인
-        Member member = validateGetMemberInfoByUserEmail(userEmail);
+    recommendRepository.delete(recommend);
+  }
 
-        // 수정 글 확인
-        Recommend recommend = validateGetRecommendInfoByRecommendNo(recommendNo);
+  /**
+   * 추천글의 정보를 받아옵니다.
+   *
+   * @param recommendNo 정보를 받아올 추천글 고유번호
+   * @return 추천 글의 정보를 반환합니다.
+   */
+  public RecommendReadResponse readPost(final Long recommendNo) {
+    // 해당 글을 불러 옵니다.
+    Recommend post = validateGetRecommendInfoByRecommendNo(recommendNo);
 
-        // Member와 Recommen의 작성자가 동일한지 확인
-        if (!Objects.equals(member.getMemberNo(), recommend.getMember().getMemberNo())) {
-            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
-        }
+    // 해당 글의 작성자 정보를 받아옵니다.
+    Member member = validateGetMemberInfoByUserEmail(post.getMember().getEmail());
 
-        // 수정 게시물
-        recommendRepository.update(request.getRecommendTitle(), request.getRecommendContent(),
-                request.getRecommendImageUrl(), request.getRecommendYoutubeUrl(), recommendNo);
-        recommend = validateGetRecommendInfoByRecommendNo(recommendNo);
+    // 해당 글의 음악 정보를 받아옵니다.
+    Track track = validateGetTrackByTrackNo(post.getTrack().getTrackNo());
 
-        return new RecommendModifyResponse(recommend.getRecommendNo(), recommend.getRecommendTitle());
-    }
+    // 앨범 정보를 받아옵니다.
+    Album album = albumRepository.findById(track.getAlbum().getAlbumNo())
+        .orElseThrow(() -> {
+          throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+        });
 
+    // 아티스트의 정보를 받아옵니다.
+    Artist artist = artistRepository.findById(album.getArtist().getArtistNo())
+        .orElseThrow(() -> {
+          throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+        });
 
-    /**
-     * 등록된 추천 글을 삭제합니다.
-     *
-     * @param userEmail   삭제를 요청한 사용자 email
-     * @param recommendNo 삭제할 추천 글 고유번호
-     */
-    @Transactional
-    public void deletePost(final String userEmail, final Long recommendNo) {
-        // 글을 작성하는 Member 확인
-        Member member = validateGetMemberInfoByUserEmail(userEmail);
+    // 해당 글에 속해있는 comment 목록
+    List<Comment> comments = post.getComments();
 
-        // 수정 글 확인
-        Recommend recommend = validateGetRecommendInfoByRecommendNo(recommendNo);
+    // 좋아요 총 합
+    Long countLikes = (long) post.getLikes().size();
 
-        // Member와 Recommen의 작성자가 동일한지 확인
-        if (!Objects.equals(member.getMemberNo(), recommend.getMember().getMemberNo())) {
-            throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
-        }
+    // 댓글과 게시물의 포인트 총 합
+    Long accumulatedPoints = comments.stream()
+        .mapToLong(Comment::getCommentPoint)
+        .sum();
 
-        recommendRepository.delete(recommend);
-    }
+    return RecommendReadResponse.builder()
+        .recommendTitle(post.getRecommendTitle())
+        .memberNickname(member.getNickName())
+        .albumImageUrl(album.getAlbumImageUrl())
+        .trackTitle(track.getTrackTitle())
+        .artistName(artist.getArtistName())
+        .comments(comments)
+        .recommendContent(post.getRecommendContent())
+        .countLikes(countLikes)
+        .recommendPoint(post.getRecommendPoint())
+        .accumulatedPoints(accumulatedPoints)
+        .recommendYoutubeUrl(post.getRecommendYoutubeUrl())
+        .build();
+  }
 
-    /**
-     * 추천글의 정보를 받아옵니다.
-     *
-     * @param recommendNo 정보를 받아올 추천글 고유번호
-     * @return 추천 글의 정보를 반환합니다.
-     */
-    public RecommendReadResponse readPost(final Long recommendNo) {
-        // 해당 글을 불러 옵니다.
-        Recommend post = validateGetRecommendInfoByRecommendNo(recommendNo);
+  private Recommend validateGetRecommendInfoByRecommendNo(final Long recommendNo) {
+    return recommendRepository.findById(recommendNo)
+        .orElseThrow(() -> {
+          throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+        });
+  }
 
-        // 해당 글의 작성자 정보를 받아옵니다.
-        Member member = validateGetMemberInfoByUserEmail(post.getMember().getEmail());
+  private Member validateGetMemberInfoByUserEmail(final String userEmail) {
+    return memberRepository.findByEmail(userEmail)
+        .orElseThrow(() -> {
+          throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+        });
+  }
 
-        // 해당 글의 음악 정보를 받아옵니다.
-        Track track = trackRepository.findById(post.getTrack().getTrackNo())
-                .orElseThrow(() -> {
-                    throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
-                });
-
-        // 앨범 정보를 받아옵니다.
-        Album album = albumRepository.findById(track.getAlbum().getAlbumNo())
-                .orElseThrow(() -> {
-                    throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
-                });
-
-        // 아티스트의 정보를 받아옵니다.
-        Artist artist = artistRepository.findById(album.getArtist().getArtistNo())
-                .orElseThrow(() -> {
-                    throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
-                });
-
-        // 해당 글에 속해있는 comment 목록
-        List<Comment> comments = post.getComments();
-
-        // 좋아요 총 합
-        Long countLikes = (long) post.getLikes().size();
-
-        // 댓글과 게시물의 포인트 총 합
-        Long accumulatedPoints = comments.stream()
-                .mapToLong(Comment::getCommentPoint)
-                .sum();
-
-        return RecommendReadResponse.builder()
-                .recommendTitle(post.getRecommendTitle())
-                .memberNickname(member.getNickName())
-                .albumImageUrl(album.getAlbumImageUrl())
-                .trackTitle(track.getTrackTitle())
-                .artistName(artist.getArtistName())
-                .comments(comments)
-                .recommendContent(post.getRecommendContent())
-                .countLikes(countLikes)
-                .recommendPoint(post.getRecommendPoint())
-                .accumulatedPoints(accumulatedPoints)
-                .recommendYoutubeUrl(post.getRecommendYoutubeUrl())
-                .build();
-    }
-
-    private Recommend validateGetRecommendInfoByRecommendNo(final Long recommendNo) {
-        return recommendRepository.findById(recommendNo)
-                .orElseThrow(() -> {
-                    throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
-                });
-    }
-
-    private Member validateGetMemberInfoByUserEmail(final String userEmail) {
-        return memberRepository.findByEmail(userEmail)
-                .orElseThrow(() -> {
-                    throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
-                });
-    }
-
-    public Page<RecommendListResponse> getPostList(final Pageable pageable) {
-        return recommendRepository.findAll(pageable)
-                .map(RecommendListResponse::of);
-    }
+  public Page<RecommendListResponse> getPostList(final Pageable pageable) {
+    return recommendRepository.findAll(pageable)
+        .map(RecommendListResponse::of);
+  }
 }
