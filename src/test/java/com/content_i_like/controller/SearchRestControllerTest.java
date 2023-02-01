@@ -52,10 +52,13 @@ class SearchRestControllerTest {
     UserDetailsService userDetailsService;
     @Captor
     ArgumentCaptor<Pageable> argumentCaptor;
+    final String BASE_URL = "/api/v1/search/";
     TrackGetResponse foundTrack;
     Page<TrackGetResponse> pagedTracks;
     TrackPageGetResponse pagedTracksWithMessage;
-    final String BASE_URL = "/api/v1/search/";
+    SearchMembersResponse member;
+    SearchPageGetResponse<SearchMembersResponse> membersPage;
+    final String nickName = "nickName";
 
     Pageable setPageable(String sortCondition) {
         return PageRequest.of(0, 10, Sort.by(sortCondition).descending());
@@ -74,6 +77,16 @@ class SearchRestControllerTest {
                 .message("총 " + pagedTracks.getTotalElements() + "개의 음원을 찾았습니다.")
                 .tracks(pagedTracks)
                 .build();
+
+        member = SearchMembersResponse
+                .builder()
+                .nickName(nickName)
+                .profileImgUrl("profileimagurl")
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        /* TrackPageGetResponse 랑 비슷하니까 인터페이스 적용 가능 보류 */
+        membersPage = SearchPageGetResponse.of("총 1명의 사용자를 찾았습니다.", new PageImpl<>(List.of(member)));
     }
 
     @Nested
@@ -122,21 +135,10 @@ class SearchRestControllerTest {
 
     @Nested
     @DisplayName("모든 사용자 검색")
-    class SearchAllMembers {
+    class AllMembersSearch {
         @Test
         @DisplayName("성공")
         void success_search_all_members() throws Exception {
-            SearchMembersResponse member = SearchMembersResponse
-                    .builder()
-                    .nickName("nickname")
-                    .profileImgUrl("profileimagurl")
-                    .createdAt(LocalDateTime.now())
-                    .build();
-
-            /* TrackPageGetResponse 랑 비슷하니까 인터페이스 적용 가능 보류 */
-            SearchPageGetResponse<SearchMembersResponse> membersPage =
-                    new SearchPageGetResponse<>("message", new PageImpl<>(List.of(member)));
-
             /* Authentication 객체, pageable 객체(slice 는 보류사항)  */
             given(searchService.getEveryMember(eq(setPageable("createdAt")), any())).willReturn(membersPage);
 
@@ -146,6 +148,23 @@ class SearchRestControllerTest {
                     .andDo(print());
 
             verify(searchService).getEveryMember(eq(setPageable("createdAt")), any());
+        }
+    }
+
+    @Nested
+    @DisplayName("검색어에 해당되는 사용자 검색")
+    class CertainMembersSearch {
+        @Test
+        @DisplayName("성공")
+        void success_search_by_keyword() throws Exception {
+            given(searchService.findMembersWithKeyword(eq(setPageable("createdAt"), any()))).willReturn(membersPage);
+
+            mockMvc.perform(get(BASE_URL + "members/" + nickName).with(csrf()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.result.message").value("총 1명의 사용자를 찾았습니다."))
+                    .andDo(print());
+
+            verify(searchService).findMembersWithKeyword(eq(setPageable("createdAt")), any());
         }
     }
 }
