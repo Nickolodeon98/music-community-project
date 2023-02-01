@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,6 +28,14 @@ public class MusicRestController {
     Page<TrackGetResponse> tracks = musicService.getEveryTrack(pageable, authentication.getName());
 
     return Response.success(tracks);
+  }
+
+  @GetMapping("/search/{trackTitle}")
+  public Response<Page<TrackGetResponse>> searchByKeyword(@PathVariable String trackTitle,
+                                                    @PageableDefault(sort = "songNo", direction = Sort.Direction.DESC) Pageable pageable) {
+
+    Page<TrackGetResponse> searchResults = musicService.findSongsWithKeyword(pageable, trackTitle);
+    return Response.success(searchResults);
   }
 
 }
