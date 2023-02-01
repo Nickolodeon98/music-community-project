@@ -22,47 +22,51 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class SearchRestController {
 
-    private final SearchService searchService;
+  private final SearchService searchService;
 
-    @GetMapping("/tracks")
-    public Response<SearchPageGetResponse<TrackGetResponse>> searchAllTracks(final Authentication authentication,
-                                                                           @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
+  @GetMapping("/tracks")
+  public Response<SearchPageGetResponse<TrackGetResponse>> searchAllTracks(
+      final Authentication authentication,
+      @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        SearchPageGetResponse<TrackGetResponse> searchResults =
-                searchService.getEveryTrack(pageable, authentication.getName());
+    SearchPageGetResponse<TrackGetResponse> searchResults =
+        searchService.getEveryTrack(pageable, authentication.getName());
 
-        return Response.success(searchResults);
-    }
+    return Response.success(searchResults);
+  }
 
-    @GetMapping("/tracks/{trackTitle}")
-    public Response<SearchPageGetResponse<TrackGetResponse>> searchTracksByKeyword(final Authentication authentication,
-                                                          @PathVariable final String trackTitle,
-                                                          @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
+  @GetMapping("/tracks/{trackTitle}")
+  public Response<SearchPageGetResponse<TrackGetResponse>> searchTracksByKeyword(
+      final Authentication authentication,
+      @PathVariable final String trackTitle,
+      @PageableDefault(sort = "trackNo", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        SearchPageGetResponse<TrackGetResponse> searchResults =
-                searchService.findTracksWithKeyword(pageable, trackTitle, authentication.getName());
+    SearchPageGetResponse<TrackGetResponse> searchResults =
+        searchService.findTracksWithKeyword(pageable, trackTitle, authentication.getName());
 
-        return Response.success(searchResults);
-    }
+    return Response.success(searchResults);
+  }
 
-    @GetMapping("/members")
-    public Response<SearchPageGetResponse<SearchMembersResponse>> searchAllMembers(final Authentication authentication,
-                                                            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+  @GetMapping("/members")
+  public Response<SearchPageGetResponse<SearchMembersResponse>> searchAllMembers(
+      final Authentication authentication,
+      @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        SearchPageGetResponse<SearchMembersResponse> searchedMembers =
-                searchService.getEveryMember(pageable, authentication.getName());
+    SearchPageGetResponse<SearchMembersResponse> searchedMembers =
+        searchService.getEveryMember(pageable, authentication.getName());
 
-        return Response.success(searchedMembers);
-    }
+    return Response.success(searchedMembers);
+  }
 
-    @GetMapping("/members/{nickName}")
-    public Response<SearchPageGetResponse<SearchMembersResponse>> searchMembersByKeyword(final Authentication authentication,
-                                                                                         @PathVariable final String nickName,
-                                                                                         @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        SearchPageGetResponse<SearchMembersResponse> searchedMembers =
-                searchService.findMembersWithKeyword(pageable, nickName, authentication.getName());
+  @GetMapping("/members/{nickName}")
+  public Response<SearchPageGetResponse<SearchMembersResponse>> searchMembersByKeyword(
+      final Authentication authentication,
+      @PathVariable final String nickName,
+      @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+    SearchPageGetResponse<SearchMembersResponse> searchedMembers =
+        searchService.findMembersWithKeyword(pageable, nickName, authentication.getName());
 
-        return Response.success(searchedMembers);
-    }
+    return Response.success(searchedMembers);
+  }
 
 }

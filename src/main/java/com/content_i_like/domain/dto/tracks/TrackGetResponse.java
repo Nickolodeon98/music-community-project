@@ -16,10 +16,10 @@ public class TrackGetResponse {
 
   public static TrackGetResponse of(Track track) {
     return TrackGetResponse.builder()
-            .trackTitle(track.getTrackTitle())
-            .trackAlbum(track.getAlbum().getAlbumTitle())
-            .trackArtist(track.getArtist().getArtistName())
-            .build();
+        .trackTitle(track.getTrackTitle())
+        .trackAlbum(track.getAlbum().getAlbumTitle())
+        .trackArtist(track.getArtist().getArtistName())
+        .build();
   }
 
   public Track toEntity() {

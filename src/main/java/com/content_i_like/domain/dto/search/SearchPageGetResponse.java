@@ -9,11 +9,12 @@ import org.springframework.data.domain.Page;
 @AllArgsConstructor
 @Builder
 public class SearchPageGetResponse<T> {
-    private String message;
-    private Page<T> pages;
+
+  private String message;
+  private Page<T> pages;
 
 
-    public static <T> SearchPageGetResponse<T> of(String message, Page<T> pages) {
-        return new SearchPageGetResponse<>(message, pages);
-    }
+  public static <T> SearchPageGetResponse<T> of(String message, Page<T> pages) {
+    return new SearchPageGetResponse<>(message, pages);
+  }
 }
