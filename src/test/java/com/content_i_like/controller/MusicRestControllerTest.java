@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.fixture.Fixture;
+import com.content_i_like.service.MusicService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
