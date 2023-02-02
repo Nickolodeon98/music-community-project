@@ -194,7 +194,7 @@ class SearchRestControllerTest {
           SearchPageGetResponse.of("총 1개의 검색결과를 찾았습니다.", new PageImpl<>(List.of(searchedRecommends)));
 
       given(searchService.findRecommendsWithKeyword(eq(setPageable("recommendNo")),eq(recommendTitle), any()))
-          .willReturn(searchedRecommends);
+          .willReturn(pagedRecommends);
 
       mockMvc.perform(get(BASE_URL + "/recommends/" + recommendTitle).with(csrf()))
           .andExpect(status().isOk())
