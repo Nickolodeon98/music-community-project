@@ -5,6 +5,7 @@ import com.content_i_like.domain.dto.search.SearchMembersResponse;
 import com.content_i_like.domain.dto.search.SearchPageGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackPageGetResponse;
+import com.content_i_like.fixture.Fixture;
 import com.content_i_like.service.SearchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -171,6 +172,34 @@ class SearchRestControllerTest {
 
       verify(searchService).findMembersWithKeyword(eq(setPageable("createdAt")), eq(nickName),
           any());
+    }
+  }
+
+  @Nested
+  @DisplayName("검색어에 해당되는 추천글 검색")
+  class RecommendsSearch {
+
+    @Test
+    @DisplayName("성공")
+    void success_search_recommends_by_keyword() throws Exception {
+      String recommendTitle = "title";
+
+      SearchRecommendsResponse searchedRecommends = SearchRecommendsResponse.of(
+          Fixture.getRecommendFixture(
+              Fixture.getMemberFixture(),
+              Fixture.getTrackFixture(
+                  Fixture.getAlbumFixture(
+                      Fixture.getArtistFixture()))));
+
+      given(searchService.findRecommendsWithKeyword(eq(setPageable("recommendNo")),eq(recommendTitle), any()))
+          .willReturn(searchedRecommends);
+
+      mockMvc.perform(get(BASE_URL + "/recommends/" + recommendTitle).with(csrf()))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+          .andDo(print());
+
+      verify(searchService).findRecommendsWithKeyword(eq(setPageable("recommendNo")),eq(recommendTitle), any());
     }
   }
 }
