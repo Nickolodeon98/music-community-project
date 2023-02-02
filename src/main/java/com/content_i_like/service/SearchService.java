@@ -2,6 +2,7 @@ package com.content_i_like.service;
 
 import static com.content_i_like.service.validchecks.ArbitraryValidationService.validate;
 
+import com.content_i_like.domain.dto.recommend.RecommendReadResponse;
 import com.content_i_like.domain.dto.search.SearchMembersResponse;
 import com.content_i_like.domain.dto.search.SearchPageGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
@@ -55,13 +56,16 @@ public class SearchService {
     return getEveryItem(pageable, memberEmail, new MembersSearchTool(memberRepository));
   }
 
+  public SearchPageGetResponse<TrackGetResponse> findTracksWithKeyword(Pageable pageable,
+      String searchKey, String memberEmail) {
+    return findWithKeyword(pageable, searchKey, memberEmail, new TracksSearchTool(trackRepository));
+  }
+
   public SearchPageGetResponse<SearchMembersResponse> findMembersWithKeyword(Pageable pageable,
       String searchKey, String memberEmail) {
     return findWithKeyword(pageable, searchKey, memberEmail, new MembersSearchTool(memberRepository));
   }
 
-  public SearchPageGetResponse<TrackGetResponse> findTracksWithKeyword(Pageable pageable,
-      String searchKey, String memberEmail) {
-    return findWithKeyword(pageable, searchKey, memberEmail, new TracksSearchTool(trackRepository));
+  public SearchPageGetResponse<SearchRecommendResponse> findRecommendsWithKeyword(Pageable recommendNo, String eq, Object any) {
   }
 }
