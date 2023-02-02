@@ -29,7 +29,7 @@ public class SearchService {
     Page<T> pagedItems = searchTool.searchAll(pageable);
 
     return SearchPageGetResponse.of(
-        String.format("총 %s명의 사용자를 찾았습니다.", pagedItems.getTotalElements()), pagedItems);
+        String.format("총 %s개의 검색결과를 찾았습니다.", pagedItems.getTotalElements()), pagedItems);
   }
 
   public <T> SearchPageGetResponse<T> findWithKeyword(Pageable pageable, String searchKey,
