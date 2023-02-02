@@ -11,6 +11,5 @@ public class RecommendModifyRequest {
 
   private String recommendTitle;
   private String recommendContent;
-  private String recommendImageUrl;
   private String recommendYoutubeUrl;
 }
