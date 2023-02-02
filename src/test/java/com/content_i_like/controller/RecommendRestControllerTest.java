@@ -8,7 +8,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,11 +31,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Date;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,179 +50,191 @@ import org.springframework.test.web.servlet.MockMvc;
 @WithMockCustomOAuth2Account(registrationId = "google")
 class RecommendRestControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+  @Autowired
+  MockMvc mockMvc;
 
-    @Autowired
-    ObjectMapper objectMapper;
+  @Autowired
+  ObjectMapper objectMapper;
 
-    @MockBean
-    RecommendService recommendService;
+  @MockBean
+  RecommendService recommendService;
 
-    @MockBean
-    UserDetailsService userDetailsService;
+  @MockBean
+  UserDetailsService userDetailsService;
 
-    @MockBean
-    JwtService jwtService;
-
-
-    Artist artist;
-    Track track;
-    Album album;
-    Recommend recommend;
-    Member member;
-
-    @BeforeEach
-    public void set() {
-        artist = Fixture.getArtistFixture();
-
-        album = Fixture.getAlbumFixture(artist);
-
-        track = Fixture.getTrackFixture(album);
-
-        member = Fixture.getMemberFixture();
-
-        recommend = Fixture.getRecommendFixture(member, track);
-
-    }
-
-    String jwtToken;
-
-    @BeforeEach
-    void getToken() {
-        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        jwtToken = Jwts.builder()
-                .setSubject("user")
-                .setIssuer("issuer")
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-    }
+  @MockBean
+  JwtService jwtService;
 
 
-    @Test
-    @DisplayName("추천글 작성")
-    void success_post_recommend() throws Exception {
+  Artist artist;
+  Track track;
+  Album album;
+  Recommend recommend;
+  Member member;
 
-        RecommendPostRequest request = new RecommendPostRequest("제목", "내용", "유튜브", 100L, 1L);
-        RecommendPostResponse response = new RecommendPostResponse(1L, "제목", 100L);
+  @BeforeEach
+  public void set() {
+    artist = Fixture.getArtistFixture();
 
-        given(recommendService.uploadPost(any(), any(), any(), any())).willReturn(response);
+    album = Fixture.getAlbumFixture(artist);
 
-        MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg",
-                "test data".getBytes());
+    track = Fixture.getTrackFixture(album);
 
-        String url = "/api/v1/recommends";
+    member = Fixture.getMemberFixture();
 
-        MockMultipartFile jsonPart = new MockMultipartFile("request", "request.json",
-                "application/json", objectMapper.writeValueAsBytes(request));
+    recommend = Fixture.getRecommendFixture(member, track);
 
-        MockMultipartFile hashtag1 = new MockMultipartFile("hashtag1", "hashtag1.json",
-                "application/json", objectMapper.writeValueAsBytes("#안녕"));
+  }
 
-        mockMvc.perform(multipart(url)
-                        .file(file)
-                        .file(jsonPart)
-                        .file(hashtag1)
-                        .with(csrf())
-                        .with(httpBasic("username", "password"))
-                        .header(HttpHeaders.AUTHORIZATION, jwtToken))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultCode").exists())
-                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                .andExpect(jsonPath("$.result.recommendNo").exists())
-                .andExpect(jsonPath("$.result.recommendNo").value(1))
-                .andExpect(jsonPath("$.result.recommendTitle").exists())
-                .andExpect(jsonPath("$.result.recommendTitle").value("제목"))
-                .andExpect(jsonPath("$.result.recommendPoint").exists())
-                .andExpect(jsonPath("$.result.recommendPoint").value(100L))
-                .andDo(print());
-    }
+  String jwtToken;
 
-    @Test
-    @DisplayName("추천글 수정")
-    void success_modify_recommend() throws Exception {
+  @BeforeEach
+  void getToken() {
+    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    jwtToken = Jwts.builder()
+        .setSubject("user")
+        .setIssuer("issuer")
+        .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+        .signWith(key, SignatureAlgorithm.HS256)
+        .compact();
+  }
 
-        RecommendModifyRequest request = new RecommendModifyRequest("수정", "수정내용", "수정 이미지", "수정 유튜브");
-        RecommendModifyResponse response = new RecommendModifyResponse(1L, "수정");
 
-        given(recommendService.modifyPost(any(), any(), any())).willReturn(response);
+  @Test
+  @DisplayName("추천글 작성")
+  void success_post_recommend() throws Exception {
 
-        String url = String.format("/api/v1/recommends/%d", response.getRecommendNo());
+    RecommendPostRequest request = new RecommendPostRequest("제목", "내용", "유튜브", 100L, 1L);
+    RecommendPostResponse response = new RecommendPostResponse(1L, "제목", 100L);
 
-        mockMvc.perform(put(url).with(csrf())
-                        .header(HttpHeaders.AUTHORIZATION, jwtToken)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultCode").exists())
-                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                .andExpect(jsonPath("$.result.recommendNo").exists())
-                .andExpect(jsonPath("$.result.recommendNo").value(1))
-                .andExpect(jsonPath("$.result.recommendTitle").exists())
-                .andExpect(jsonPath("$.result.recommendTitle").value("수정"))
-                .andDo(print());
-    }
+    given(recommendService.uploadPost(any(), any(), any(), any())).willReturn(response);
 
-    @Test
-    @DisplayName("추천글 읽기")
-    void success_read_recommend() throws Exception {
-        ArrayList<Long> commentPoints = new ArrayList<>();
-        ArrayList<Comment> comments = new ArrayList<>();
+    MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg",
+        "test data".getBytes());
 
-        RecommendReadResponse response = RecommendReadResponse
-                .builder()
-                .recommendTitle("제목")
-                .memberNickname("작성자")
-                .albumImageUrl("앨범 이미지")
-                .trackTitle("노래 제목")
-                .artistName("아티스트 이름")
-                .recommendContent("추천 내용")
-                .countLikes(100L)
-                .recommendPoint(1000L)
-                .accumulatedPoints(1200L)
-                .recommendYoutubeUrl("유튜브 링크")
-                .comments(comments)
-                .build();
+    String url = "/api/v1/recommends";
 
-        given(recommendService.readPost(any())).willReturn(response);
+    MockMultipartFile jsonPart = new MockMultipartFile("request", "request.json",
+        "application/json", objectMapper.writeValueAsBytes(request));
 
-        String url = String.format("/api/v1/recommends/%d", 1);
+    MockMultipartFile hashtag1 = new MockMultipartFile("hashtag1", "hashtag1.json",
+        "application/json", objectMapper.writeValueAsBytes("#안녕"));
 
-        mockMvc.perform(get(url).with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultCode").exists())
-                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                .andExpect(jsonPath("$.result.recommendTitle").exists())
-                .andExpect(jsonPath("$.result.recommendTitle").value("제목"))
-                .andExpect(jsonPath("$.result.memberNickname").exists())
-                .andExpect(jsonPath("$.result.memberNickname").value("작성자"))
-                .andExpect(jsonPath("$.result.albumImageUrl").exists())
-                .andExpect(jsonPath("$.result.albumImageUrl").value("앨범 이미지"))
-                .andExpect(jsonPath("$.result.trackTitle").exists())
-                .andExpect(jsonPath("$.result.trackTitle").value("노래 제목"))
-                .andExpect(jsonPath("$.result.comments").exists())
-                .andDo(print());
-    }
+    mockMvc.perform(multipart(url)
+            .file(file)
+            .file(jsonPart)
+            .file(hashtag1)
+            .with(csrf())
+            .with(httpBasic("username", "password"))
+            .header(HttpHeaders.AUTHORIZATION, jwtToken))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.resultCode").exists())
+        .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+        .andExpect(jsonPath("$.result.recommendNo").exists())
+        .andExpect(jsonPath("$.result.recommendNo").value(1))
+        .andExpect(jsonPath("$.result.recommendTitle").exists())
+        .andExpect(jsonPath("$.result.recommendTitle").value("제목"))
+        .andExpect(jsonPath("$.result.recommendPoint").exists())
+        .andExpect(jsonPath("$.result.recommendPoint").value(100L))
+        .andDo(print());
+  }
 
-    @Test
-    @DisplayName("추천글 삭제")
-    void success_delete_recommend() throws Exception {
-        doNothing().when(recommendService).deletePost(any(), any());
+  @Test
+  @DisplayName("추천글 수정")
+  void success_modify_recommend() throws Exception {
 
-        String url = String.format("/api/v1/recommends/%d", 1);
+    RecommendModifyRequest request = new RecommendModifyRequest("수정", "수정내용", "수정 유튜브");
+    RecommendModifyResponse response = new RecommendModifyResponse(1L, "수정");
 
-        mockMvc.perform(delete(url).with(csrf())
-                        .header(HttpHeaders.AUTHORIZATION, jwtToken)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultCode").exists())
-                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                .andExpect(jsonPath("$.result.recommendNo").exists())
-                .andExpect(jsonPath("$.result.recommendNo").value(1))
-                .andExpect(jsonPath("$.result.message").exists())
-                .andExpect(jsonPath("$.result.message").value("추천 글이 삭제 되었습니다."))
-                .andDo(print());
-    }
+    given(recommendService.modifyPost(any(), any(), any(), any(), any())).willReturn(response);
+
+    MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg",
+        "test data".getBytes());
+
+    MockMultipartFile jsonPart = new MockMultipartFile("request", "request.json",
+        "application/json", objectMapper.writeValueAsBytes(request));
+
+    MockMultipartFile hashtag1 = new MockMultipartFile("hashtag1", "hashtag1.json",
+        "application/json", objectMapper.writeValueAsBytes("#안녕"));
+
+    String url = String.format("/api/v1/recommends/%d/update", response.getRecommendNo());
+
+    mockMvc.perform(multipart(url)
+            .file(file)
+            .file(jsonPart)
+            .file(hashtag1)
+            .with(csrf())
+            .with(httpBasic("username", "password"))
+            .header(HttpHeaders.AUTHORIZATION, jwtToken))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.resultCode").exists())
+        .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+        .andExpect(jsonPath("$.result.recommendNo").exists())
+        .andExpect(jsonPath("$.result.recommendNo").value(1))
+        .andExpect(jsonPath("$.result.recommendTitle").exists())
+        .andExpect(jsonPath("$.result.recommendTitle").value("수정"))
+        .andDo(print());
+  }
+
+  @Test
+  @DisplayName("추천글 읽기")
+  void success_read_recommend() throws Exception {
+    ArrayList<Long> commentPoints = new ArrayList<>();
+    ArrayList<Comment> comments = new ArrayList<>();
+
+    RecommendReadResponse response = RecommendReadResponse
+        .builder()
+        .recommendTitle("제목")
+        .memberNickname("작성자")
+        .albumImageUrl("앨범 이미지")
+        .trackTitle("노래 제목")
+        .artistName("아티스트 이름")
+        .recommendContent("추천 내용")
+        .countLikes(100L)
+        .recommendPoint(1000L)
+        .accumulatedPoints(1200L)
+        .recommendYoutubeUrl("유튜브 링크")
+        .comments(comments)
+        .build();
+
+    given(recommendService.readPost(any())).willReturn(response);
+
+    String url = String.format("/api/v1/recommends/%d", 1);
+
+    mockMvc.perform(get(url).with(csrf())
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.resultCode").exists())
+        .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+        .andExpect(jsonPath("$.result.recommendTitle").exists())
+        .andExpect(jsonPath("$.result.recommendTitle").value("제목"))
+        .andExpect(jsonPath("$.result.memberNickname").exists())
+        .andExpect(jsonPath("$.result.memberNickname").value("작성자"))
+        .andExpect(jsonPath("$.result.albumImageUrl").exists())
+        .andExpect(jsonPath("$.result.albumImageUrl").value("앨범 이미지"))
+        .andExpect(jsonPath("$.result.trackTitle").exists())
+        .andExpect(jsonPath("$.result.trackTitle").value("노래 제목"))
+        .andExpect(jsonPath("$.result.comments").exists())
+        .andDo(print());
+  }
+
+  @Test
+  @DisplayName("추천글 삭제")
+  void success_delete_recommend() throws Exception {
+    doNothing().when(recommendService).deletePost(any(), any());
+
+    String url = String.format("/api/v1/recommends/%d", 1);
+
+    mockMvc.perform(delete(url).with(csrf())
+            .header(HttpHeaders.AUTHORIZATION, jwtToken)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.resultCode").exists())
+        .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+        .andExpect(jsonPath("$.result.recommendNo").exists())
+        .andExpect(jsonPath("$.result.recommendNo").value(1))
+        .andExpect(jsonPath("$.result.message").exists())
+        .andExpect(jsonPath("$.result.message").value("추천 글이 삭제 되었습니다."))
+        .andDo(print());
+  }
 }
