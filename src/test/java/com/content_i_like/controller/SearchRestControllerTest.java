@@ -1,10 +1,10 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.config.JwtService;
+import com.content_i_like.domain.dto.search.SearchRecommendsResponse;
 import com.content_i_like.domain.dto.search.SearchMembersResponse;
 import com.content_i_like.domain.dto.search.SearchPageGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
-import com.content_i_like.domain.dto.tracks.TrackPageGetResponse;
 import com.content_i_like.fixture.Fixture;
 import com.content_i_like.service.SearchService;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +22,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -190,6 +189,9 @@ class SearchRestControllerTest {
               Fixture.getTrackFixture(
                   Fixture.getAlbumFixture(
                       Fixture.getArtistFixture()))));
+
+      SearchPageGetResponse<SearchRecommendsResponse> pagedRecommends =
+          SearchPageGetResponse.of("총 1개의 검색결과를 찾았습니다.", new PageImpl<>(List.of(searchedRecommends)));
 
       given(searchService.findRecommendsWithKeyword(eq(setPageable("recommendNo")),eq(recommendTitle), any()))
           .willReturn(searchedRecommends);
