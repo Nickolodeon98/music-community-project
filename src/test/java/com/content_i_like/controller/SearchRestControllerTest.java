@@ -5,6 +5,7 @@ import com.content_i_like.domain.dto.search.SearchRecommendsResponse;
 import com.content_i_like.domain.dto.search.SearchMembersResponse;
 import com.content_i_like.domain.dto.search.SearchPageGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
+import com.content_i_like.domain.entity.Recommend;
 import com.content_i_like.fixture.Fixture;
 import com.content_i_like.service.SearchService;
 import org.junit.jupiter.api.BeforeEach;
@@ -183,12 +184,13 @@ class SearchRestControllerTest {
     void success_search_recommends_by_keyword() throws Exception {
       String recommendTitle = "title";
 
-      SearchRecommendsResponse searchedRecommends = SearchRecommendsResponse.of(
-          Fixture.getRecommendFixture(
-              Fixture.getMemberFixture(),
-              Fixture.getTrackFixture(
-                  Fixture.getAlbumFixture(
-                      Fixture.getArtistFixture()))));
+      Recommend recommend = Fixture.getRecommendFixture(
+          Fixture.getMemberFixture(),
+          Fixture.getTrackFixture(
+              Fixture.getAlbumFixture(
+                  Fixture.getArtistFixture())));
+
+      SearchRecommendsResponse searchedRecommends = SearchRecommendsResponse.of(recommend);
 
       SearchPageGetResponse<SearchRecommendsResponse> pagedRecommends =
           SearchPageGetResponse.of("총 1개의 검색결과를 찾았습니다.", new PageImpl<>(List.of(searchedRecommends)));
