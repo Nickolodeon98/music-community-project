@@ -16,7 +16,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@SQLDelete(sql = "UPDATE recommend SET deleted_at = current_timestamp WHERE id = ?")
+@SQLDelete(sql = "UPDATE recommend SET deleted_at = current_timestamp WHERE recommend_no = ?")
 @Where(clause = "deleted_at is null")
 public class Recommend extends BaseEntity {
 
