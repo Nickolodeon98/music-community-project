@@ -1,8 +1,8 @@
-package com.content_i_like.service;
+package com.content_i_like.service.saveoptions;
 
 import com.content_i_like.domain.entity.Album;
 import com.content_i_like.repository.AlbumRepository;
-import com.content_i_like.repository.RecommendRepository;
+import com.content_i_like.service.saveoptions.DBSaveOption;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
