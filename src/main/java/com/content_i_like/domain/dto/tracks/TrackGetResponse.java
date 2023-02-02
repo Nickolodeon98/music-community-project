@@ -13,6 +13,7 @@ public class TrackGetResponse {
   private String trackTitle;
   private String trackAlbum;
   private String trackArtist;
+  private String thumbnailUrl;
 
   public static TrackGetResponse of(Track track) {
     return TrackGetResponse.builder()
