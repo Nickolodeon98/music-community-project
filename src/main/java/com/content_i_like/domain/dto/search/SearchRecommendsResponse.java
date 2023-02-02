@@ -24,17 +24,18 @@ public class SearchRecommendsResponse {
   private Long accumulatedPoints;
   private String createdAt;
 
-  public static SearchRecommendsResponse of(Recommend recommend) {
+  public static SearchRecommendsResponse of(Recommend recommend) throws NullPointerException {
     return SearchRecommendsResponse.builder()
         .recommendTitle(recommend.getRecommendTitle())
+        .summarizedRecommendContent(recommend.getRecommendContent().substring(0, 1))
         .memberNickname(recommend.getMember().getNickName())
         .recommendImageUrl(recommend.getRecommendImageUrl())
         .albumImageUrl(recommend.getTrack().getAlbum().getAlbumImageUrl())
-        .countLikes((long) recommend.getLikes().size())
-        .accumulatedPoints(recommend.getComments().stream()
-            .mapToLong(Comment::getCommentPoint)
-            .sum() + recommend.getRecommendPoint())
-        .createdAt(recommend.getCreatedAt().toString())
+//        .countLikes((long) recommend.getLikes().size())
+//        .accumulatedPoints(recommend.getComments().stream()
+//            .mapToLong(Comment::getCommentPoint)
+//            .sum() + recommend.getRecommendPoint())
+//        .createdAt(recommend.getCreatedAt().toString())
         .build();
   }
 }
