@@ -45,6 +45,9 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:7.3.0'
+
+    implementation 'org.springframework.boot:spring-boot-starter-cache:3.0.2'
+
     // === QueryDsl 시작 ===
 
     // == 스프링 부트 3.0 이상 ==
