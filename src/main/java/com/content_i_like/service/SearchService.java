@@ -3,9 +3,7 @@ package com.content_i_like.service;
 import com.content_i_like.domain.dto.search.SearchMembersResponse;
 import com.content_i_like.domain.dto.search.SearchPageGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
-import com.content_i_like.domain.dto.tracks.TrackPageGetResponse;
 import com.content_i_like.domain.entity.Member;
-import com.content_i_like.domain.entity.Track;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.MemberRepository;
@@ -17,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,13 +42,6 @@ public class SearchService {
     return validCheck.examine(toCheck);
   }
 
-  interface ItemSearch<T> {
-
-    Page<T> searchAll(Pageable pageable);
-
-    Page<T> search(String keyword, Pageable pageable);
-  }
-
   class TracksSearchTool implements ItemSearch<TrackGetResponse> {
 
     @Override
@@ -61,7 +51,9 @@ public class SearchService {
 
     @Override
     public Page<TrackGetResponse> search(String keyword, Pageable pageable) {
-      return trackRepository.findAllByTrackTitleContaining(keyword, pageable)
+      return trackRepository
+          .findAllByTrackTitleContainingOrAlbumAlbumTitleContainingOrArtistArtistNameContaining
+              (keyword, keyword, keyword, pageable)
           .map(trackPage -> trackPage.map(TrackGetResponse::of))
           .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
     }
