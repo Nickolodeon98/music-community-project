@@ -40,7 +40,6 @@ class MusicRestControllerTest {
   @BeforeEach
   void setUp() {
     track = TrackGetResponse.of(Fixture.getTrackFixture(Fixture.getAlbumFixture(Fixture.getArtistFixture())));
-    track.setThumbnailUrl("https://i.scdn.co/image/ab67616d00001e021abe22e6883e5a8b3f4726e2");
   }
 
   @Nested

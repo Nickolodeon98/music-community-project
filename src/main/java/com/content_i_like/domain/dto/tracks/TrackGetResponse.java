@@ -20,6 +20,7 @@ public class TrackGetResponse {
         .trackTitle(track.getTrackTitle())
         .trackAlbum(track.getAlbum().getAlbumTitle())
         .trackArtist(track.getArtist().getArtistName())
+        .thumbnailUrl(track.getAlbum().getAlbumImageUrl())
         .build();
   }
 
