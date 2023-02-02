@@ -47,30 +47,50 @@ public class RecommendService {
   public RecommendPostResponse uploadPost(final String userEmail,
       final RecommendPostRequest request,
       MultipartFile image, List<String> hashtags) throws IOException {
-    // 글을 작성하는 Member 확인
+
     Member member = validateGetMemberInfoByUserEmail(userEmail);
-
-    // 글과 연결되어 있는 음악 검색
     Track track = validateGetTrackByTrackNo(request.getTrackNo());
-
     String url = getUploadImageURL(image);
-
-    Recommend recommend = recommendRepository.save(
-        RecommendPostRequest.toEntity(request, member, track, url));
-
-    // 해시 태그 추가 로직
+    Recommend recommend = saveRecommend(request, member, track, url);
     savePostHashtags(hashtags, recommend);
-
     return RecommendPostResponse.fromEntity(recommend);
   }
 
-  private Track validateGetTrackByTrackNo(Long request) {
-    return trackRepository.findById(request)
+  /**
+   * 추천글을 Database에 저장합니다.
+   *
+   * @param request 등록할 추천글 정보
+   * @param member  추천글을 작성하는 작성자
+   * @param track   추천글의 음원 정보
+   * @param url     추천글 썸네일 이미지 주소
+   * @return 저장된 추천글 엔티티 반환
+   */
+  private Recommend saveRecommend(RecommendPostRequest request, Member member, Track track,
+      String url) {
+    return recommendRepository.save(
+        RecommendPostRequest.toEntity(request, member, track, url));
+  }
+
+  /**
+   * 트랙 정보를 검증하고 받아옵니다.
+   *
+   * @param trackNo 찾고자 하는 트랙의 고유번호
+   * @return 트랙 정보를 반환합니다.
+   */
+  private Track validateGetTrackByTrackNo(Long trackNo) {
+    return trackRepository.findById(trackNo)
         .orElseThrow(() -> {
           throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
         });
   }
 
+  /**
+   * 이미지를 업로드하고, 업로드 된 URL을 반환합니다.
+   *
+   * @param image 업로드 된 image 파일
+   * @return image url을 반환
+   * @throws IOException
+   */
   private String getUploadImageURL(MultipartFile image) throws IOException {
     if (image != null) {
       return s3FileUploadService.uploadFile(image);
@@ -78,6 +98,12 @@ public class RecommendService {
     return "https://content-i-like.s3.ap-northeast-2.amazonaws.com/default-recommend.jpg";
   }
 
+  /**
+   * 해시태그를 검증하고 저장합니다.
+   *
+   * @param hashtags  웹에서 받아온 hashtags
+   * @param recommend 해시태그를 저장할 추천글
+   */
   private void savePostHashtags(List<String> hashtags, Recommend recommend) {
     for (String hashtag : hashtags) {
       Hashtag existingHashtag = hashtagRepository.findByName(hashtag)
@@ -128,7 +154,8 @@ public class RecommendService {
     return new RecommendModifyResponse(recommend.getRecommendNo(), recommend.getRecommendTitle());
   }
 
-  private void updateAndManageHashtags(Long recommendNo, List<String> hashtags, Recommend recommend) {
+  private void updateAndManageHashtags(Long recommendNo, List<String> hashtags,
+      Recommend recommend) {
     List<PostHashtag> existingPostHashtags = postHashtagRepository.findAllByRecommendRecommendNo(
         recommendNo);
     List<String> existingHashtags = getExistingHashtags(existingPostHashtags);
