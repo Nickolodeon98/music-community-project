@@ -2,14 +2,18 @@ package com.content_i_like.service;
 
 import static com.content_i_like.service.validchecks.ArbitraryValidationService.validate;
 
+import com.content_i_like.domain.dto.recommend.RecommendReadResponse;
 import com.content_i_like.domain.dto.search.SearchMembersResponse;
 import com.content_i_like.domain.dto.search.SearchPageGetResponse;
+import com.content_i_like.domain.dto.search.SearchRecommendsResponse;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.repository.MemberRepository;
+import com.content_i_like.repository.RecommendRepository;
 import com.content_i_like.repository.TrackRepository;
 import com.content_i_like.service.searchtools.ItemSearch;
 import com.content_i_like.service.searchtools.MembersSearchTool;
+import com.content_i_like.service.searchtools.RecommendsSearchTool;
 import com.content_i_like.service.searchtools.TracksSearchTool;
 import com.content_i_like.service.validchecks.MemberValidation;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,7 @@ import org.springframework.stereotype.Service;
 public class SearchService {
   private final TrackRepository trackRepository;
   private final MemberRepository memberRepository;
+  private final RecommendRepository recommendRepository;
 
   public <T> SearchPageGetResponse<T> getEveryItem(Pageable pageable, String memberEmail,
       ItemSearch<T> searchTool) {
@@ -55,13 +60,18 @@ public class SearchService {
     return getEveryItem(pageable, memberEmail, new MembersSearchTool(memberRepository));
   }
 
+  public SearchPageGetResponse<TrackGetResponse> findTracksWithKeyword(Pageable pageable,
+      String searchKey, String memberEmail) {
+    return findWithKeyword(pageable, searchKey, memberEmail, new TracksSearchTool(trackRepository));
+  }
+
   public SearchPageGetResponse<SearchMembersResponse> findMembersWithKeyword(Pageable pageable,
       String searchKey, String memberEmail) {
     return findWithKeyword(pageable, searchKey, memberEmail, new MembersSearchTool(memberRepository));
   }
 
-  public SearchPageGetResponse<TrackGetResponse> findTracksWithKeyword(Pageable pageable,
+  public SearchPageGetResponse<SearchRecommendsResponse> findRecommendsWithKeyword(Pageable pageable,
       String searchKey, String memberEmail) {
-    return findWithKeyword(pageable, searchKey, memberEmail, new TracksSearchTool(trackRepository));
+    return findWithKeyword(pageable, searchKey, memberEmail, new RecommendsSearchTool(recommendRepository));
   }
 }
