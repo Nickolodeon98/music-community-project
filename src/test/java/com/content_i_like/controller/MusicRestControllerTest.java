@@ -1,6 +1,7 @@
 package com.content_i_like.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -48,14 +49,14 @@ class MusicRestControllerTest {
     @Test
     @DisplayName("성공")
     void success_specify_a_track() throws Exception {
-      given(musicService.getASingleTrackInfo(TRACK_ID)).willReturn(track);
+      given(musicService.getASingleTrackInfo(TRACK_ID, any())).willReturn(track);
 
       mockMvc.perform(get(BASE_URL + "track/" + TRACK_ID).with(csrf()))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
           .andDo(print());
 
-      verify(musicService).getASingleTrackInfo(TRACK_ID);
+      verify(musicService).getASingleTrackInfo(TRACK_ID, any());
     }
   }
 }

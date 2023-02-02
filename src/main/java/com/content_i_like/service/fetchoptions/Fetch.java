@@ -1,4 +1,4 @@
-package com.content_i_like.service;
+package com.content_i_like.service.fetchoptions;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

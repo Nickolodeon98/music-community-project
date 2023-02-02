@@ -1,28 +1,18 @@
 package com.content_i_like.controller;
 
-import com.content_i_like.domain.Response;
-import com.content_i_like.domain.dto.tracks.TrackGetResponse;
-import com.content_i_like.domain.dto.tracks.TrackResponse;
 import com.content_i_like.domain.enums.TrackEnum;
-import com.content_i_like.service.AlbumFetch;
-import com.content_i_like.service.ArtistFetch;
-import com.content_i_like.service.TrackFetch;
 import com.content_i_like.service.TrackService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/test")
