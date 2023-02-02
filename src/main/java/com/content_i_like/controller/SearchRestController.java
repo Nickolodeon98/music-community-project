@@ -3,6 +3,7 @@ package com.content_i_like.controller;
 import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.search.SearchMembersResponse;
 import com.content_i_like.domain.dto.search.SearchPageGetResponse;
+import com.content_i_like.domain.dto.search.SearchRecommendsResponse;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackPageGetResponse;
 import com.content_i_like.domain.entity.Track;
@@ -10,6 +11,7 @@ import com.content_i_like.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,5 +70,17 @@ public class SearchRestController {
 
     return Response.success(searchedMembers);
   }
+
+  @GetMapping("/recommends/{recommendTitle}")
+  public Response<SearchPageGetResponse<SearchRecommendsResponse>> searchRecommendsByKeyword(
+      final Authentication authentication,
+      @PathVariable final String recommendTitle,
+      @PageableDefault(sort = "recommendNo", direction = Direction.DESC) Pageable pageable) {
+    SearchPageGetResponse<SearchRecommendsResponse> pagedResponseRecommends =
+        searchService.findRecommendsWithKeyword(pageable, recommendTitle, authentication.getName());
+
+    return Response.success(pagedResponseRecommends);
+  }
+
 
 }
