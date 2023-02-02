@@ -1,4 +1,4 @@
-package com.content_i_like.service;
+package com.content_i_like.service.searchtools;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
