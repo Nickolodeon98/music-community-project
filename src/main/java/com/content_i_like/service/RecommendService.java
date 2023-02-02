@@ -5,6 +5,8 @@ import com.content_i_like.domain.entity.*;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -96,28 +98,80 @@ public class RecommendService {
    * @param userEmail   수정을 요청한 사용자 email
    * @param recommendNo 수정할 추천글 고유 번호
    * @param request     수정할 추천글 정보
+   * @param image
+   * @param hashtags
    * @return 수정된 추천글 내용
    */
   @Transactional
   public RecommendModifyResponse modifyPost(final String userEmail, final Long recommendNo,
-      final RecommendModifyRequest request) {
-    // 글을 작성하는 Member 확인
+      final RecommendModifyRequest request, MultipartFile image, List<String> hashtags)
+      throws IOException {
+
+    // get member
     Member member = validateGetMemberInfoByUserEmail(userEmail);
-
-    // 수정 글 확인
+    // get recommend
     Recommend recommend = validateGetRecommendInfoByRecommendNo(recommendNo);
-
-    // Member와 Recommen의 작성자가 동일한지 확인
-    if (!Objects.equals(member.getMemberNo(), recommend.getMember().getMemberNo())) {
-      throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
-    }
+    // validate Member, Recommend
+    validateMemberMatchInRecommend(member, recommend);
+    // get image url
+    String url = getModifyImageURL(image, recommend);
 
     // 수정 게시물
     recommendRepository.update(request.getRecommendTitle(), request.getRecommendContent(),
-        request.getRecommendImageUrl(), request.getRecommendYoutubeUrl(), recommendNo);
+        url, request.getRecommendYoutubeUrl(), recommendNo);
+
     recommend = validateGetRecommendInfoByRecommendNo(recommendNo);
 
+    // 해시태그
+    updateAndManageHashtags(recommendNo, hashtags, recommend);
+
     return new RecommendModifyResponse(recommend.getRecommendNo(), recommend.getRecommendTitle());
+  }
+
+  private void updateAndManageHashtags(Long recommendNo, List<String> hashtags, Recommend recommend) {
+    List<PostHashtag> existingPostHashtags = postHashtagRepository.findAllByRecommendRecommendNo(
+        recommendNo);
+    List<String> existingHashtags = getExistingHashtags(existingPostHashtags);
+
+    // 두 해시태그가 동일하면 패스, 다르면 이전 해시태그 모두 삭제, 새로운 해시태그 등록.
+    updateHashtags(hashtags, recommend, existingHashtags);
+  }
+
+  private void validateMemberMatchInRecommend(Member member, Recommend recommend) {
+    if (!Objects.equals(member.getMemberNo(), recommend.getMember().getMemberNo())) {
+      throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+    }
+  }
+
+  private void updateHashtags(List<String> hashtags, Recommend recommend,
+      List<String> existingHashtags) {
+    if (!new HashSet<>(existingHashtags).equals(
+        new HashSet<>(hashtags))) {
+      // Hash 태그 삭제
+      postHashtagRepository.deleteAllByRecommend(recommend);
+      savePostHashtags(hashtags, recommend);
+    }
+  }
+
+  private List<String> getExistingHashtags(List<PostHashtag> existingPostHashtags) {
+    List<String> existingHashtags = new ArrayList<>();
+    for (PostHashtag postHashtag : existingPostHashtags) {
+      Hashtag hashtag = hashtagRepository.findById(postHashtag.getHashtag().getHashtagNo())
+          .orElseThrow(
+              () -> {
+                throw new ContentILikeAppException(ErrorCode.NOT_FOUND,
+                    ErrorCode.NOT_FOUND.getMessage());
+              });
+      existingHashtags.add(hashtag.getName());
+    }
+    return existingHashtags;
+  }
+
+  private String getModifyImageURL(MultipartFile image, Recommend recommend) throws IOException {
+    if (image.isEmpty()) {
+      return recommend.getRecommendImageUrl();
+    }
+    return s3FileUploadService.uploadFile(image);
   }
 
 
