@@ -12,6 +12,6 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
 
   Optional<Track> findByTrackTitle(String trackTitle);
 
-  Optional<Page<Track>> findAllByTrackTitleContainingOrAlbumAlbumTitleContaining(String searchKey, Pageable pageable);
+  Optional<Page<Track>> findAllByTrackTitleContainingOrAlbumAlbumTitleContainingOrArtistArtistNameContaining(String trackTitle, String albumTitle, Pageable pageable);
 }
 
