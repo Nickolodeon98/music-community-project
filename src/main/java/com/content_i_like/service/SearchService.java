@@ -66,6 +66,8 @@ public class SearchService {
     return findWithKeyword(pageable, searchKey, memberEmail, new MembersSearchTool(memberRepository));
   }
 
-  public SearchPageGetResponse<SearchRecommendResponse> findRecommendsWithKeyword(Pageable recommendNo, String eq, Object any) {
+  public SearchPageGetResponse<SearchRecommendResponse> findRecommendsWithKeyword(Pageable pageable,
+      String searchKey, String memberEmail) {
+    return findWithKeyword(pageable, searchKey, memberEmail, new RecommendsSearchTool(recommendRepository));
   }
 }
