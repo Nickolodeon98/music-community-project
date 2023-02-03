@@ -42,4 +42,12 @@ public class S3FileUploadService {
   private String generateFileName(MultipartFile file) {
     return UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
   }
+
+  public void deleteFile(String fileName) throws IOException {
+    try {
+      s3Client.deleteObject(bucketName, fileName);
+    } catch (SdkClientException e) {
+      throw new IOException("Error deleting file from S3", e);
+    }
+  }
 }

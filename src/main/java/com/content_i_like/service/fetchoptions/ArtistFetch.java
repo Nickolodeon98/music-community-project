@@ -1,7 +1,6 @@
-package com.content_i_like.service;
+package com.content_i_like.service.fetchoptions;
 
 import com.content_i_like.domain.entity.Artist;
-import com.content_i_like.domain.entity.Track;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,11 +21,13 @@ public class ArtistFetch implements Fetch<Artist> {
     int valuesCount = 0;
     try {
       albumName = root.get("tracks").get(count).get("album").get("name").asText();
-      albumImageUrl = root.get("tracks").get(count).get("album").get("images").get(1).get("url").asText();
+      albumImageUrl = root.get("tracks").get(count).get("album").get("images").get(1).get("url")
+          .asText();
 
       artistNode = root.get("tracks").get(count).get("artists");
-      if (artistNode.isArray())
+      if (artistNode.isArray()) {
         valuesCount = artistNode.size();
+      }
     } catch (NullPointerException e) {
       log.warn("JsonNode 가 null 값입니다.");
       return "";
@@ -35,7 +36,9 @@ public class ArtistFetch implements Fetch<Artist> {
     for (int i = 0; i < valuesCount; i++) {
       artistName = artistNode.get(i).get("name").asText();
       artistNames.append(artistName);
-      if (i != valuesCount-1) artistNames.append(", ");
+      if (i != valuesCount - 1) {
+        artistNames.append(", ");
+      }
     }
 
     return artistNames.toString();
@@ -46,8 +49,8 @@ public class ArtistFetch implements Fetch<Artist> {
     List<Artist> artists = new ArrayList<>();
     for (String title : titles) {
       Artist artist = Artist.builder()
-              .artistName(title)
-              .build();
+          .artistName(title)
+          .build();
       artists.add(artist);
     }
     return artists;
