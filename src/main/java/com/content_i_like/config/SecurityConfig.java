@@ -1,6 +1,6 @@
 package com.content_i_like.config;
 
-import com.content_i_like.service.OAuthService;
+import com.content_i_like.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +19,7 @@ public class SecurityConfig {
 
   private final JwtAuthenticationFilter jwtFilter;
   private final AuthenticationProvider authenticationProvider;
-  private final OAuthService oAuthService;
+  private final CustomOAuth2UserService customOAuth2UserService;
   private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
   private final String[] AUTHORIZATION = {"/api/v1/**", ""};
@@ -53,10 +53,11 @@ public class SecurityConfig {
         .authenticationProvider(authenticationProvider)
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         .oauth2Login()                  // OAuth2 로그인 설정
-        .loginPage("/swagger-ui/index.html")
+        //.loginPage("/api/v1/oauth/google")
+        .defaultSuccessUrl("/api/v1/oauth/google")
         .failureUrl("/api/v1/hello")
         .userInfoEndpoint()             // OAuth2 로그인 성공 이후 사용자 정보를 가져올 때 설정
-        .userService(oAuthService);     // OAuth2 로그인 성공 시, 후작업을 진행할 UserService 인터페이스 구현체 등록;
+        .userService(customOAuth2UserService);     // OAuth2 로그인 성공 시, 후작업을 진행할 UserService 인터페이스 구현체 등록;
     return http.build();
   }
 }
