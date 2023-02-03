@@ -8,22 +8,26 @@ import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.MemberRepository;
 import com.content_i_like.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationService {
-    private final NotificationRepository notificationRepository;
-    private final MemberRepository memberRepository;
 
-    // To-do: refactor NOT_FOUND -> MEMBER_NOT_FOUND
-    public Slice<NotificationResponse> getAllNotifications(String nickName, Pageable pageable) {
-        Member member = memberRepository.findByNickName(nickName).orElseThrow(()-> new ContentILikeAppException(ErrorCode.NOT_FOUND, "존재하지 않는 사용자입니다"));
+  private final NotificationRepository notificationRepository;
+  private final MemberRepository memberRepository;
 
-        Slice<Notification> notifications = notificationRepository.findSliceAllByMember(member, pageable);
-        return notifications.map(NotificationResponse::of);
-    }
+  // To-do: refactor NOT_FOUND -> MEMBER_NOT_FOUND
+  public Slice<NotificationResponse> getAllNotifications(String nickName, Pageable pageable) {
+    Member member = memberRepository.findByNickName(nickName)
+        .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND, "존재하지 않는 사용자입니다"));
 
+    Slice<Notification> notifications = notificationRepository.findSliceAllByMember(member,
+        pageable);
+    return notifications.map(NotificationResponse::of);
+  }
 }
