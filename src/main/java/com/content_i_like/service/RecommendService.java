@@ -51,9 +51,9 @@ public class RecommendService {
     Member member = validateGetMemberInfoByUserEmail(userEmail);
     Track track = validateGetTrackByTrackNo(request.getTrackNo());
     String url = getUploadImageURL(image);
-    Recommend recommend = saveRecommend(request, member, track, url);
-    savePostHashtags(hashtags, recommend);
-    return RecommendPostResponse.fromEntity(recommend);
+    Recommend post = saveRecommend(request, member, track, url);
+    savePostHashtags(hashtags, post);
+    return RecommendPostResponse.fromEntity(post);
   }
 
   /**
@@ -101,10 +101,10 @@ public class RecommendService {
   /**
    * 해시태그를 검증하고 저장합니다.
    *
-   * @param hashtags  웹에서 받아온 hashtags
-   * @param recommend 해시태그를 저장할 추천글
+   * @param hashtags 웹에서 받아온 hashtags
+   * @param post     해시태그를 저장할 추천글
    */
-  private void savePostHashtags(List<String> hashtags, Recommend recommend) {
+  private void savePostHashtags(List<String> hashtags, Recommend post) {
     for (String hashtag : hashtags) {
       Hashtag existingHashtag = hashtagRepository.findByName(hashtag)
           .orElseGet(() -> {
@@ -113,7 +113,7 @@ public class RecommendService {
             return newHashtag;
           });
 
-      PostHashtag postHashtag = PostHashtag.of(recommend, existingHashtag);
+      PostHashtag postHashtag = PostHashtag.of(post, existingHashtag);
       postHashtagRepository.save(postHashtag);
     }
   }
@@ -124,8 +124,8 @@ public class RecommendService {
    * @param userEmail   수정을 요청한 사용자 email
    * @param recommendNo 수정할 추천글 고유 번호
    * @param request     수정할 추천글 정보
-   * @param image
-   * @param hashtags
+   * @param image       수정할 이미지 정보
+   * @param hashtags    수정할 해시태그 정보
    * @return 수정된 추천글 내용
    */
   @Transactional
@@ -133,53 +133,79 @@ public class RecommendService {
       final RecommendModifyRequest request, MultipartFile image, List<String> hashtags)
       throws IOException {
 
-    // get member
     Member member = validateGetMemberInfoByUserEmail(userEmail);
-    // get recommend
-    Recommend recommend = validateGetRecommendInfoByRecommendNo(recommendNo);
-    // validate Member, Recommend
-    validateMemberMatchInRecommend(member, recommend);
-    // get image url
-    String url = getModifyImageURL(image, recommend);
-
-    // 수정 게시물
-    recommendRepository.update(request.getRecommendTitle(), request.getRecommendContent(),
-        url, request.getRecommendYoutubeUrl(), recommendNo);
-
-    recommend = validateGetRecommendInfoByRecommendNo(recommendNo);
-
-    // 해시태그
-    updateAndManageHashtags(recommendNo, hashtags, recommend);
-
-    return new RecommendModifyResponse(recommend.getRecommendNo(), recommend.getRecommendTitle());
+    Recommend post = validateGetRecommendInfoByRecommendNo(recommendNo);
+    validateMemberMatchInRecommend(member, post);
+    String url = getModifyImageURL(image, post);
+    updatePost(recommendNo, request, url);
+    post = validateGetRecommendInfoByRecommendNo(recommendNo);
+    updateAndManageHashtags(post, hashtags);
+    return new RecommendModifyResponse(post.getRecommendNo(), post.getRecommendTitle());
   }
 
-  private void updateAndManageHashtags(Long recommendNo, List<String> hashtags,
-      Recommend recommend) {
+  /**
+   * 추천글을 수정합니다.
+   *
+   * @param recommendNo 수정할 추천글 고유 번호
+   * @param request     수정할 추천글 정보
+   * @param url         수정할 추천글의 이미지 url
+   */
+  private void updatePost(Long recommendNo, RecommendModifyRequest request, String url) {
+    recommendRepository.update(request.getRecommendTitle(), request.getRecommendContent(),
+        url, request.getRecommendYoutubeUrl(), recommendNo);
+  }
+
+  /**
+   * 추천글에 입력된 해시태그를 검증하고 수정합니다.
+   *
+   * @param hashtags  수정할 추천글 해시태그
+   * @param recommend 수정할 추천글
+   */
+  private void updateAndManageHashtags(Recommend recommend, List<String> hashtags) {
     List<PostHashtag> existingPostHashtags = postHashtagRepository.findAllByRecommendRecommendNo(
-        recommendNo);
+        recommend.getRecommendNo());
     List<String> existingHashtags = getExistingHashtags(existingPostHashtags);
 
     // 두 해시태그가 동일하면 패스, 다르면 이전 해시태그 모두 삭제, 새로운 해시태그 등록.
     updateHashtags(hashtags, recommend, existingHashtags);
   }
 
-  private void validateMemberMatchInRecommend(Member member, Recommend recommend) {
-    if (!Objects.equals(member.getMemberNo(), recommend.getMember().getMemberNo())) {
+  /**
+   * 해당 글의 작성자와 해당 기능 요청자가 같은 사용자인지 검증합니다.
+   * @param member  사용자
+   * @param post    추천 글
+   */
+  private void validateMemberMatchInRecommend(Member member, Recommend post) {
+    if (!Objects.equals(member.getMemberNo(), post.getMember().getMemberNo())) {
       throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
     }
   }
 
-  private void updateHashtags(List<String> hashtags, Recommend recommend,
+  /**
+   * 이미 추천 글에 존재하던 해시 태그와 수정된 글에 존재하는 해시 태그를 비교하고 두 값이 다를 시 기존의 해시태그를 삭제 후 새로운 해시 태그를 저장합니다. 두 값이
+   * 동일하다면 해당 로직은 진행되지 않습니다.
+   *
+   * @param hashtags         수정하고자 하는 해시태그
+   * @param post             수정 글
+   * @param existingHashtags 이미 글에 존재하는 해시태그
+   */
+  private void updateHashtags(List<String> hashtags, Recommend post,
       List<String> existingHashtags) {
     if (!new HashSet<>(existingHashtags).equals(
         new HashSet<>(hashtags))) {
       // Hash 태그 삭제
-      postHashtagRepository.deleteAllByRecommend(recommend);
-      savePostHashtags(hashtags, recommend);
+      postHashtagRepository.deleteAllByRecommend(post);
+      savePostHashtags(hashtags, post);
     }
   }
 
+  /**
+   * 추천글과 해시태그가 연결되어 있는 중간 테이블의 정보로
+   * 기존 추천 글에 존재하는 해시 태그를 불러옵니다.
+   *
+   * @param existingPostHashtags postHashtag 정보
+   * @return 기존 글에 저장되어 있는 해시태그를 리스트로 반환합니다.
+   */
   private List<String> getExistingHashtags(List<PostHashtag> existingPostHashtags) {
     List<String> existingHashtags = new ArrayList<>();
     for (PostHashtag postHashtag : existingPostHashtags) {
@@ -194,10 +220,21 @@ public class RecommendService {
     return existingHashtags;
   }
 
-  private String getModifyImageURL(MultipartFile image, Recommend recommend) throws IOException {
+  /**
+   * 수정할 이미지의 url을 반환합니다.
+   * 이미지의 값이 null이라면 기존 등록된 url을 반환하고,
+   * 이미지의 값이 not null 이라면, 이미지를 새롭게 업로드합니다.
+   * @param image 이미지 정보
+   * @param post 추천글 정보
+   * @return 이미지 url 반환
+   * @throws IOException
+   */
+  private String getModifyImageURL(MultipartFile image, Recommend post) throws IOException {
+    String url = post.getRecommendImageUrl();
     if (image.isEmpty()) {
-      return recommend.getRecommendImageUrl();
+      return url;
     }
+    s3FileUploadService.deleteFile(url.split("/")[3]);
     return s3FileUploadService.uploadFile(image);
   }
 
@@ -210,18 +247,15 @@ public class RecommendService {
    */
   @Transactional
   public void deletePost(final String userEmail, final Long recommendNo) {
-    // 글을 작성하는 Member 확인
     Member member = validateGetMemberInfoByUserEmail(userEmail);
-
-    // 수정 글 확인
-    Recommend recommend = validateGetRecommendInfoByRecommendNo(recommendNo);
+    Recommend post = validateGetRecommendInfoByRecommendNo(recommendNo);
 
     // Member와 Recommen의 작성자가 동일한지 확인
-    if (!Objects.equals(member.getMemberNo(), recommend.getMember().getMemberNo())) {
+    if (!Objects.equals(member.getMemberNo(), post.getMember().getMemberNo())) {
       throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
     }
 
-    recommendRepository.delete(recommend);
+    recommendRepository.delete(post);
   }
 
   /**
@@ -231,53 +265,58 @@ public class RecommendService {
    * @return 추천 글의 정보를 반환합니다.
    */
   public RecommendReadResponse readPost(final Long recommendNo) {
-    // 해당 글을 불러 옵니다.
     Recommend post = validateGetRecommendInfoByRecommendNo(recommendNo);
-
-    // 해당 글의 작성자 정보를 받아옵니다.
     Member member = validateGetMemberInfoByUserEmail(post.getMember().getEmail());
-
-    // 해당 글의 음악 정보를 받아옵니다.
     Track track = validateGetTrackByTrackNo(post.getTrack().getTrackNo());
-
-    // 앨범 정보를 받아옵니다.
-    Album album = albumRepository.findById(track.getAlbum().getAlbumNo())
-        .orElseThrow(() -> {
-          throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
-        });
-
-    // 아티스트의 정보를 받아옵니다.
-    Artist artist = artistRepository.findById(album.getArtist().getArtistNo())
-        .orElseThrow(() -> {
-          throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
-        });
-
-    // 해당 글에 속해있는 comment 목록
+    Album album = validateGetAlbumByAlbumNo(track);
+    Artist artist = validateGetArtistByArtistNo(album);
     List<Comment> comments = post.getComments();
-
-    // 좋아요 총 합
     Long countLikes = (long) post.getLikes().size();
-
-    // 댓글과 게시물의 포인트 총 합
-    Long accumulatedPoints = comments.stream()
-        .mapToLong(Comment::getCommentPoint)
-        .sum();
-
-    return RecommendReadResponse.builder()
-        .recommendTitle(post.getRecommendTitle())
-        .memberNickname(member.getNickName())
-        .albumImageUrl(album.getAlbumImageUrl())
-        .trackTitle(track.getTrackTitle())
-        .artistName(artist.getArtistName())
-        .comments(comments)
-        .recommendContent(post.getRecommendContent())
-        .countLikes(countLikes)
-        .recommendPoint(post.getRecommendPoint())
-        .accumulatedPoints(accumulatedPoints)
-        .recommendYoutubeUrl(post.getRecommendYoutubeUrl())
-        .build();
+    Long accumulatedPoints = getAccumulatedPoints(comments, post);
+    return RecommendReadResponse.of(post, member, album, artist, track, comments, countLikes,
+        accumulatedPoints);
   }
 
+  /**
+   * artistNo을 사용하여 Artist 정보를 받아옵니다.
+   * @param album Artist 고유 번호가 담겨 있는 앨범 정보
+   * @return Artist 정보를 반환
+   */
+  private Artist validateGetArtistByArtistNo(Album album) {
+    return artistRepository.findById(album.getArtist().getArtistNo())
+        .orElseThrow(() -> {
+          throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+        });
+  }
+
+  /**
+   * AlbumNo를 사용하여 Album 정보를 받아옵니다.
+   * @param track Album 고유 번호가 담겨 있는 트랙 정보
+   * @return Album 정보를 반환
+   */
+  private Album validateGetAlbumByAlbumNo(Track track) {
+    return albumRepository.findById(track.getAlbum().getAlbumNo())
+        .orElseThrow(() -> {
+          throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+        });
+  }
+
+  /**
+   * 게시글과 댓글에 있는 포인트를 모두 더합니다.
+   * @param comments 댓글 리스트
+   * @return 댓글 포인트와 게시물 포인트의 합 반환
+   */
+  private long getAccumulatedPoints(List<Comment> comments, Recommend post) {
+    return comments.stream()
+        .mapToLong(Comment::getCommentPoint)
+        .sum() + post.getRecommendPoint();
+  }
+
+  /**
+   * 추천글 고유 번호를 통하여 추천글 정보를 받아옵니다.
+   * @param recommendNo 추천글 고유 번호
+   * @return 추천글 정보 반환
+   */
   private Recommend validateGetRecommendInfoByRecommendNo(final Long recommendNo) {
     return recommendRepository.findById(recommendNo)
         .orElseThrow(() -> {
@@ -285,6 +324,11 @@ public class RecommendService {
         });
   }
 
+  /**
+   * 사용자 이메일을 통하여 사용자 정보를 받아옵니다.
+   * @param userEmail 사용자 이메일
+   * @return 사용자 정보 반환
+   */
   private Member validateGetMemberInfoByUserEmail(final String userEmail) {
     return memberRepository.findByEmail(userEmail)
         .orElseThrow(() -> {
@@ -292,6 +336,11 @@ public class RecommendService {
         });
   }
 
+  /**
+   * 추천글 목록을 불러옵니다.
+   * @param pageable
+   * @return
+   */
   public Page<RecommendListResponse> getPostList(final Pageable pageable) {
     return recommendRepository.findAll(pageable)
         .map(RecommendListResponse::of);
