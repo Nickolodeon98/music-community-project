@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class GoogleOAuthToken extends OAuthToken {
+public class OAuthToken {
 
-  private String scope;
-  private String id_token;
-
+  private String access_token;
+  private int expires_in;
+  private String token_type;
 }

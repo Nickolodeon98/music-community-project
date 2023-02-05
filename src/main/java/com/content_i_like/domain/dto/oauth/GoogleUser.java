@@ -8,12 +8,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
-public class GoogleUser {
-  public String id;
-  public String email;
+public class GoogleUser extends OAuthUser {
+
   public Boolean verifiedEmail;
-  public String name;
   public String givenName;
   public String familyName;
   public String picture;

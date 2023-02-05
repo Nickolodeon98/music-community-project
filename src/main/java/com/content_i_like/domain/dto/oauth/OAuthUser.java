@@ -1,15 +1,15 @@
 package com.content_i_like.domain.dto.oauth;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class GoogleOAuthToken extends OAuthToken {
+@Getter
+public class OAuthUser {
 
-  private String scope;
-  private String id_token;
-
+  public String id;
+  public String email;
+  public String name;
 }
