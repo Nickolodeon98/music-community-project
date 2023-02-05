@@ -59,7 +59,10 @@ class SearchRestControllerTest {
   SearchPageGetResponse<TrackGetResponse> pagedTracksWithMessage;
   SearchMembersResponse member;
   SearchPageGetResponse<SearchMembersResponse> membersPage;
-  final String nickName = "nickName";
+  final String nickName = "nickname";
+  final String recommendTitle = "title";
+  Recommend recommend;
+  SearchRecommendsResponse searchedRecommends;
 
   Pageable setPageable(String sortCondition) {
     return PageRequest.of(0, 10, Sort.by(sortCondition).descending());
@@ -86,6 +89,14 @@ class SearchRestControllerTest {
 
     /* TrackPageGetResponse 랑 비슷하니까 인터페이스 적용 가능 보류 */
     membersPage = SearchPageGetResponse.of("총 1명의 사용자를 찾았습니다.", new PageImpl<>(List.of(member)));
+
+    recommend = Fixture.getRecommendFixture(
+        Fixture.getMemberFixture(),
+        Fixture.getTrackFixture(
+            Fixture.getAlbumFixture(
+                Fixture.getArtistFixture())));
+
+    searchedRecommends = SearchRecommendsResponse.of(recommend);
   }
 
   @Nested
@@ -182,16 +193,6 @@ class SearchRestControllerTest {
     @Test
     @DisplayName("성공")
     void success_search_recommends_by_keyword() throws Exception {
-      String recommendTitle = "title";
-
-      Recommend recommend = Fixture.getRecommendFixture(
-          Fixture.getMemberFixture(),
-          Fixture.getTrackFixture(
-              Fixture.getAlbumFixture(
-                  Fixture.getArtistFixture())));
-
-      SearchRecommendsResponse searchedRecommends = SearchRecommendsResponse.of(recommend);
-
       SearchPageGetResponse<SearchRecommendsResponse> pagedRecommends =
           SearchPageGetResponse.of("총 1개의 검색결과를 찾았습니다.", new PageImpl<>(List.of(searchedRecommends)));
 
@@ -204,6 +205,20 @@ class SearchRestControllerTest {
           .andDo(print());
 
       verify(searchService).findRecommendsWithKeyword(eq(setPageable("recommendNo")),eq(recommendTitle), any());
+    }
+
+    @Test
+    @DisplayName("성공 - 사용자 이름으로 검색")
+    void success_search_recommends_by_nickname() throws Exception {
+      given(searchService.findRecommendsWithMemberInfo(eq(nickName))).willReturn(searchedRecommends);
+
+      mockMvc.perform(get(BASE_URL + "recommends/" + nickName).with(csrf()))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+          .andExpect(jsonPath("$.result.content").exists())
+          .andDo(print());
+
+      verify(searchService).findRecommendsWithMemberInf(eq(nickName));
     }
   }
 }
