@@ -5,10 +5,10 @@ import com.content_i_like.domain.dto.search.SearchMembersResponse;
 import com.content_i_like.domain.dto.search.SearchPageGetResponse;
 import com.content_i_like.domain.dto.search.SearchRecommendsResponse;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
-import com.content_i_like.domain.dto.tracks.TrackPageGetResponse;
-import com.content_i_like.domain.entity.Track;
+import com.content_i_like.service.CacheService;
 import com.content_i_like.service.SearchService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -22,10 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/search")
 @RequiredArgsConstructor
+@Slf4j
 public class SearchRestController {
 
   private final SearchService searchService;
-
+  private final CacheService cacheService;
   @GetMapping("/tracks")
   public Response<SearchPageGetResponse<TrackGetResponse>> searchAllTracks(
       final Authentication authentication,
@@ -81,6 +82,4 @@ public class SearchRestController {
 
     return Response.success(pagedResponseRecommends);
   }
-
-
 }
