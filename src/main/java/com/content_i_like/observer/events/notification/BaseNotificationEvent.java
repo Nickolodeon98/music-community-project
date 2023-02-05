@@ -15,8 +15,8 @@ public class BaseNotificationEvent { // Spring 4.2 부터는 POJO 로 event 객�
 
   private boolean isDeleted = Boolean.FALSE;
 
-  public BaseNotificationEvent(NotificationType notificationType, Member receiver, Long fromMemberNo,
-      Long recommendNo, Long commentNo) {
+  public BaseNotificationEvent(NotificationType notificationType, Member receiver,
+      Long fromMemberNo, Long recommendNo, Long commentNo) {
     this.notificationType = notificationType;
     this.receiver = receiver;
     this.fromMemberNo = fromMemberNo;
