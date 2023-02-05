@@ -82,4 +82,16 @@ public class SearchRestController {
 
     return Response.success(pagedResponseRecommends);
   }
+
+  @GetMapping("/recommends/{memberNickName}")
+  public Response<SearchPageGetResponse<SearchRecommendsResponse>> searchRecommendsByKeywordOfMemberNickName(
+      final Authentication authentication,
+      @PathVariable final String memberNickName,
+      @PageableDefault(sort = "recommendNo", direction = Direction.DESC) Pageable pageable) {
+
+    SearchPageGetResponse<SearchRecommendsResponse> pagedResponseRecommends =
+        searchService.findRecommendsWithMemberInfo(pageable, memberNickName, authentication.getName());
+
+    return Response.success(pagedResponseRecommends);
+  }
 }
