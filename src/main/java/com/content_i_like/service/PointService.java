@@ -4,11 +4,14 @@ import com.content_i_like.domain.dto.member.PointResponse;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Point;
 import com.content_i_like.domain.enums.PointTypeEnum;
+import com.content_i_like.observer.events.notification.CommentNotificationEvent;
+import com.content_i_like.observer.events.notification.PointWelcomeNotificationEvent;
 import com.content_i_like.repository.PointRepository;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PointService {
 
   private final PointRepository pointRepository;
+  private final ApplicationEventPublisher applicationEventPublisher;
 
   /* 주의: income과 expense는 null이어서는 안된다 */
 
@@ -50,5 +54,8 @@ public class PointService {
         .build();
 
     pointRepository.save(point);
+
+    // 웰컴 포인트 이벤트 발생시킵니다.
+    applicationEventPublisher.publishEvent(PointWelcomeNotificationEvent.of(point));
   }
 }
