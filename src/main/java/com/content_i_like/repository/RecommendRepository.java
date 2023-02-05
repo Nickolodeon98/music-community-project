@@ -29,4 +29,8 @@ public interface RecommendRepository extends JpaRepository<Recommend, Long>,
   Long countByMember(Member member);
 
   Optional<Page<Recommend>> findByRecommendTitleContaining(String keyword, Pageable pageable);
+
+  /*  RecommendRepository 수정하신 분 계신가요? 계시다면 push 하시고서 pull 받은 후 수정 후 수정사항 merge 하고
+   * 안 계신다면 지금 상태에서 바로 수정 후 수정사항 merge 하겠습니다 */
+  Optional<Page<Recommend>> findAllByMemberMemberNickNameContaining(String keyword, Pageable pageable);
 }

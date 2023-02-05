@@ -13,6 +13,7 @@ import com.content_i_like.repository.RecommendRepository;
 import com.content_i_like.repository.TrackRepository;
 import com.content_i_like.service.searchtools.ItemSearch;
 import com.content_i_like.service.searchtools.MembersSearchTool;
+import com.content_i_like.service.searchtools.RecommendsByMembersSearchTool;
 import com.content_i_like.service.searchtools.RecommendsSearchTool;
 import com.content_i_like.service.searchtools.TracksSearchTool;
 import com.content_i_like.service.validchecks.MemberValidation;
@@ -73,5 +74,10 @@ public class SearchService {
   public SearchPageGetResponse<SearchRecommendsResponse> findRecommendsWithKeyword(Pageable pageable,
       String searchKey, String memberEmail) {
     return findWithKeyword(pageable, searchKey, memberEmail, new RecommendsSearchTool(recommendRepository));
+  }
+
+  public SearchPageGetResponse<SearchRecommendsResponse> findRecommendsWithMemberInfo(Pageable pageable,
+      String searchKey, String memberEmail) {
+    return findWithKeyword(pageable, searchKey, memberEmail, new RecommendsByMembersSearchTool(recommendRepository));
   }
 }
