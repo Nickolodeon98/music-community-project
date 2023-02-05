@@ -54,6 +54,7 @@ public class SecurityConfig {
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         .oauth2Login()                  // OAuth2 로그인 설정
         //.loginPage("/api/v1/oauth/google")
+        //.defaultSuccessUrl("/api/v1/oauth/naver")
         .defaultSuccessUrl("/api/v1/oauth/google")
         .failureUrl("/api/v1/hello")
         .userInfoEndpoint()             // OAuth2 로그인 성공 이후 사용자 정보를 가져올 때 설정

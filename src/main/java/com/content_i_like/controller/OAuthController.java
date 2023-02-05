@@ -6,6 +6,7 @@ import com.content_i_like.service.OAuthService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +26,26 @@ public class OAuthController {
   @GetMapping("/{type}")
   public void socialLoginRequest(@PathVariable("type") String type, HttpServletResponse response)
       throws IOException {
+    System.out.println("/{type}");
     String requestURL = oAuthService.request(type.toUpperCase());
+    System.out.println(requestURL);
     response.sendRedirect(requestURL);
   }
 
-  @GetMapping("/{type}/redirect")
-  public ResponseEntity<?> callback(@PathVariable(name = "type") String type,
-      @RequestParam(name = "code") String code) throws JsonProcessingException {
-    GetSocialOauthRes getSocialOAuthRes = oAuthService.oAuthLogin(code);
+  @GetMapping("/google/redirect")
+  public ResponseEntity<?> callbackGoogle(@RequestParam(name = "code") String code)
+      throws JsonProcessingException {
+    System.out.println("/google/redirect");
+    GetSocialOauthRes getSocialOAuthRes = oAuthService.googleOAuthLogin(code);
+    return new ResponseEntity<>(getSocialOAuthRes, HttpStatus.OK);
+  }
+
+  @GetMapping("/naver/redirect")
+  public ResponseEntity<?> callbackNaver(@RequestParam(name = "code") String code,
+      @RequestParam(name = "state") String state)
+      throws JsonProcessingException, UnsupportedEncodingException {
+    System.out.println("/naver/redirect");
+    GetSocialOauthRes getSocialOAuthRes = oAuthService.naverOAuthLogin(code, state);
     return new ResponseEntity<>(getSocialOAuthRes, HttpStatus.OK);
   }
 }
