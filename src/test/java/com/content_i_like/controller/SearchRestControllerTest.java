@@ -63,7 +63,7 @@ class SearchRestControllerTest {
   final String recommendTitle = "title";
   Recommend recommend;
   SearchRecommendsResponse searchedRecommends;
-
+  SearchPageGetResponse<SearchRecommendsResponse> pagedRecommends;
   Pageable setPageable(String sortCondition) {
     return PageRequest.of(0, 10, Sort.by(sortCondition).descending());
   }
@@ -97,6 +97,9 @@ class SearchRestControllerTest {
                 Fixture.getArtistFixture())));
 
     searchedRecommends = SearchRecommendsResponse.of(recommend);
+
+    pagedRecommends =
+        SearchPageGetResponse.of("총 1개의 검색결과를 찾았습니다.", new PageImpl<>(List.of(searchedRecommends)));
   }
 
   @Nested
@@ -193,9 +196,6 @@ class SearchRestControllerTest {
     @Test
     @DisplayName("성공")
     void success_search_recommends_by_keyword() throws Exception {
-      SearchPageGetResponse<SearchRecommendsResponse> pagedRecommends =
-          SearchPageGetResponse.of("총 1개의 검색결과를 찾았습니다.", new PageImpl<>(List.of(searchedRecommends)));
-
       given(searchService.findRecommendsWithKeyword(eq(setPageable("recommendNo")),eq(recommendTitle), any()))
           .willReturn(pagedRecommends);
 
@@ -210,7 +210,8 @@ class SearchRestControllerTest {
     @Test
     @DisplayName("성공 - 사용자 이름으로 검색")
     void success_search_recommends_by_nickname() throws Exception {
-      given(searchService.findRecommendsWithMemberInfo(eq(nickName))).willReturn(searchedRecommends);
+      given(searchService.findRecommendsWithMemberInfo(eq(setPageable("recommendNo")), eq(nickName), any()))
+          .willReturn(pagedRecommends);
 
       mockMvc.perform(get(BASE_URL + "recommends/" + nickName).with(csrf()))
           .andExpect(status().isOk())
@@ -218,7 +219,7 @@ class SearchRestControllerTest {
           .andExpect(jsonPath("$.result.content").exists())
           .andDo(print());
 
-      verify(searchService).findRecommendsWithMemberInf(eq(nickName));
+      verify(searchService).findRecommendsWithMemberInfo(eq(setPageable("recommendsNo")), eq(nickName), any());
     }
   }
 }
