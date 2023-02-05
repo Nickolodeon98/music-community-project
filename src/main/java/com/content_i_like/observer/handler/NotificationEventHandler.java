@@ -15,15 +15,14 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 @Slf4j
 public class NotificationEventHandler {
-  private final NotificationRepository notificationRepository;
 
+  private final NotificationRepository notificationRepository;
 
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   @TransactionalEventListener
   public void saveCommentNotification(CommentNotificationEvent event) {
     log.info("알림 생성 type: {}, to: {}, from: {}", event.getNotificationType(),
-        event.getReceiver().getMemberNo(),
-        event.getFromMemberNo());
+        event.getReceiver().getMemberNo(), event.getFromMemberNo());
     notificationRepository.save(event.toEntity());
   }
 
@@ -31,10 +30,10 @@ public class NotificationEventHandler {
   @TransactionalEventListener
   public void saveLikesNotification(LikesNotificationEvent event) {
     log.info("알림 생성 type: {}, to: {}, from: {}", event.getNotificationType(),
-        event.getReceiver().getMemberNo(),
-        event.getFromMemberNo());
+        event.getReceiver().getMemberNo(), event.getFromMemberNo());
     notificationRepository.save(event.toEntity());
   }
+
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   @TransactionalEventListener
   public void savePointWelcomeNotification(PointWelcomeNotificationEvent event) {
