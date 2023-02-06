@@ -1,62 +1,84 @@
 package com.content_i_like.service;
 
-import com.content_i_like.domain.dto.member.UserProfile;
+import com.content_i_like.config.JwtService;
+import com.content_i_like.domain.dto.oauth.GetSocialOauthRes;
+import com.content_i_like.domain.dto.oauth.GoogleOAuthToken;
+import com.content_i_like.domain.dto.oauth.GoogleUser;
+import com.content_i_like.domain.dto.oauth.OAuthToken;
+import com.content_i_like.domain.dto.oauth.OAuthUser;
 import com.content_i_like.domain.entity.Member;
-import com.content_i_like.domain.enums.OAuthAttributes;
+import com.content_i_like.exception.ContentILikeAppException;
+import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.MemberRepository;
+import com.content_i_like.utils.GoogleOauth;
+import com.content_i_like.utils.NaverOauth;
+import com.content_i_like.utils.SocialOauth;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.UnsupportedEncodingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+public class OAuthService {
 
+  private final GoogleOauth googleOauth;
+  private final NaverOauth naverOauth;
+  private final JwtService jwtService;
   private final MemberRepository memberRepository;
 
-  @Override
-  public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-    OAuth2UserService delegate = new DefaultOAuth2UserService();
-    OAuth2User oAuth2User = delegate.loadUser(userRequest);     //구글, 네이버에서 가져온 유저 정보를 담고 있다
+  public String request(String type) throws UnsupportedEncodingException {
+    String redirectURL = "";
+    System.out.println(type);
+    if (type.equals("GOOGLE")) {
+      redirectURL = googleOauth.getOauthRedirectURL();
+    } else if (type.equals("NAVER")) {
+      redirectURL = naverOauth.getOauthRedirectURL();
+    }
+    //redirectURL = socialOauth.getOauthRedirectURL();
 
-    String registrationId = userRequest.getClientRegistration()
-        .getRegistrationId();                               //서비스 이름 (ex. google, naver)
-    String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
-        .getUserInfoEndpoint().getUserNameAttributeName();  //OAuth 로그인 시 키pk가 되는 값
-    Map<String, Object> attributes = oAuth2User.getAttributes();//OAuth 서비스의 유저 정보들
-
-    UserProfile userProfile = OAuthAttributes
-        .extract(registrationId, attributes);  //registrationId에 따라 유저 정보를 통해 공통된 UserProfile 객체로
-    System.out.println(
-        "oauthId: " + userProfile.getOauthId() + ", name: " + userProfile.getName() + ", email: "
-            + userProfile.getEmail());
-
-    Member member = saveOrUpdate(userProfile);                  //DB 저장
-    return new DefaultOAuth2User(
-        Collections.singleton(new SimpleGrantedAuthority(String.valueOf(member.getStatus()))),
-        attributes,
-        userNameAttributeName);
+    return redirectURL;
   }
 
-  private Member saveOrUpdate(UserProfile userProfile) {
-    Optional<Member> member = memberRepository.findBySnsCheck(userProfile.getOauthId());
-    //.map(m->m.update(userProfile.getName(), userProfile.getEmail()))        //OAuth 서비스 사이트에서 정보 변경이 있을 시 DB에 update
-    //.orElse(userProfile.toMember());
-    if (member
-        .isEmpty()) {                                                               //회원가입된 적이 없다면
-      Member savedMember = memberRepository.save(userProfile.toMember());             //save
-      return savedMember;
-    }
-    return member.get();
+  public GetSocialOauthRes naverOAuthLogin(String code, String state)
+      throws JsonProcessingException, UnsupportedEncodingException {
+    System.out.println("naverOAuthLogin메서드");
+    ResponseEntity<String> accessToken = naverOauth.requestAccessToken(code, state);
+    System.out.println(accessToken.getBody());
+    OAuthToken oAuthToken = naverOauth.getAccessToken(accessToken);
+    System.out.println(oAuthToken.getAccess_token());
+
+    ResponseEntity<String> userInfoResponse = naverOauth.requestUserInfo(oAuthToken);
+    OAuthUser oAuthUser = naverOauth.getUserInfo(userInfoResponse);
+
+    String userEmail = oAuthUser.getEmail();
+    System.out.println(userEmail);
+    Member member = memberRepository.findByEmail(userEmail)
+        .orElseThrow(() -> new ContentILikeAppException(
+            ErrorCode.MEMBER_NOT_FOUND, ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+    String jwt = jwtService.generateToken(member);
+    return new GetSocialOauthRes(jwt, member.getMemberNo(), oAuthToken.getAccess_token(),
+        oAuthToken.getToken_type());
+  }
+
+  public GetSocialOauthRes googleOAuthLogin(String code)
+      throws JsonProcessingException {
+    System.out.println("oauthservice - googleOAuthLogin");
+    ResponseEntity<String> accessToken = googleOauth.requestAccessToken(code);
+    OAuthToken oAuthToken = googleOauth.getAccessToken(accessToken);
+
+    ResponseEntity<String> userInfoResponse = googleOauth.requestUserInfo(oAuthToken);
+    OAuthUser oAuthUser = googleOauth.getUserInfo(userInfoResponse);
+
+    String userEmail = oAuthUser.getEmail();
+    System.out.println(userEmail);
+    Member member = memberRepository.findByEmail(userEmail)
+        .orElseThrow(() -> new ContentILikeAppException(
+            ErrorCode.MEMBER_NOT_FOUND, ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+    String jwt = jwtService.generateToken(member);
+    return new GetSocialOauthRes(jwt, member.getMemberNo(), oAuthToken.getAccess_token(),
+        oAuthToken.getToken_type());
   }
 }
