@@ -18,7 +18,7 @@ public class RecommendsByMembersSearchTool implements ItemSearch<SearchRecommend
 
   @Override
   public Page<SearchRecommendsResponse> search(String keyword, Pageable pageable) {
-    return recommendRepository.findAllByMemberMemberNickNameContaining(keyword, pageable)
+    return recommendRepository.findAllByMemberNickNameContaining(keyword, pageable)
         .map(recommendPage -> recommendPage.map(SearchRecommendsResponse::of))
         .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
   }
