@@ -10,10 +10,12 @@ import com.content_i_like.domain.entity.Recommend;
 import com.content_i_like.domain.enums.MemberStatusEnum;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
+import com.content_i_like.observer.events.notification.CommentNotificationEvent;
 import com.content_i_like.repository.CommentRepository;
 import com.content_i_like.repository.MemberRepository;
 import com.content_i_like.repository.RecommendRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,8 @@ public class CommentService {
   private final CommentRepository commentRepository;
   private final RecommendRepository recommendRepository;
   private final MemberRepository memberRepository;
+
+  private final ApplicationEventPublisher applicationEventPublisher;
 
   /**
    * 추천글에 댓글을 작성합니다.
@@ -48,6 +52,9 @@ public class CommentService {
 
     // 댓글을 저장합니다.
     Comment comment = commentRepository.save(request.toEntity(member, post));
+
+    // 댓글 알림 이벤트를 발생시킵니다.
+    applicationEventPublisher.publishEvent(CommentNotificationEvent.of(post, comment));
 
     return new CommentResponse(comment.getCommentNo(), post.getRecommendNo(),
         comment.getCommentContent(), comment.getCommentPoint());
