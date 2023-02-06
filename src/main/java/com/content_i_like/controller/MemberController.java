@@ -1,25 +1,40 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
-import com.content_i_like.domain.dto.member.*;
+import com.content_i_like.domain.dto.member.ChangePwRequest;
+import com.content_i_like.domain.dto.member.MemberCommentResponse;
+import com.content_i_like.domain.dto.member.MemberFindRequest;
+import com.content_i_like.domain.dto.member.MemberJoinRequest;
+import com.content_i_like.domain.dto.member.MemberJoinResponse;
+import com.content_i_like.domain.dto.member.MemberLoginRequest;
+import com.content_i_like.domain.dto.member.MemberLoginResponse;
+import com.content_i_like.domain.dto.member.MemberModifyRequest;
+import com.content_i_like.domain.dto.member.MemberPointResponse;
+import com.content_i_like.domain.dto.member.MemberRecommendResponse;
+import com.content_i_like.domain.dto.member.MemberResponse;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
 import com.content_i_like.service.MemberService;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
-@RestController
+@Controller
 @RequestMapping("/api/v1/member")
 @RequiredArgsConstructor
-public class MemberRestController {
+public class MemberController {
 
   private final MemberService memberService;
 

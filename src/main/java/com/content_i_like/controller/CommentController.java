@@ -1,7 +1,11 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
-import com.content_i_like.domain.dto.comment.*;
+import com.content_i_like.domain.dto.comment.CommentDeleteResponse;
+import com.content_i_like.domain.dto.comment.CommentModifyRequest;
+import com.content_i_like.domain.dto.comment.CommentReadResponse;
+import com.content_i_like.domain.dto.comment.CommentRequest;
+import com.content_i_like.domain.dto.comment.CommentResponse;
 import com.content_i_like.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,13 +15,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-@RestController
+@Controller
 @RequestMapping("/api/v1/recommends")
 @RequiredArgsConstructor
 @Slf4j
-public class CommentRestController {
+public class CommentController {
 
   private final CommentService commentService;
 

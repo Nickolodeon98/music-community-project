@@ -1,4 +1,4 @@
-package com.content_i_like.controller;
+package com.content_i_like.controller.restcontroller;
 
 import com.content_i_like.domain.dto.oauth.GetSocialOauthRes;
 import com.content_i_like.service.OAuthService;
@@ -9,16 +9,16 @@ import java.io.UnsupportedEncodingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/oauth")
-public class OAuthController {
+public class OAuthRestController {
 
   private final OAuthService oAuthService;
 
