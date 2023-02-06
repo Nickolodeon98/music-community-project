@@ -25,6 +25,10 @@ spring:
       mail.smtp.starttls.enable: true
   profiles:
     include: oauth
+  thymeleaf:
+    cache: false
+    check-template-location: true
+    prefix: /templates/
 
 springdoc:
   default-consumes-media-type: application/json
