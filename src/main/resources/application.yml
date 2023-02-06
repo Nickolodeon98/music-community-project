@@ -28,7 +28,9 @@ spring:
   thymeleaf:
     cache: false
     check-template-location: true
-    prefix: /templates/
+    prefix: classpath:/templates/
+    suffix: .html
+    enabled: true
 
 springdoc:
   default-consumes-media-type: application/json
