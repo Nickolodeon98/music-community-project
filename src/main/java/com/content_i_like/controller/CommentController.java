@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/api/v1/recommends")
+@RequestMapping("/recommends")
 @RequiredArgsConstructor
 @Slf4j
 public class CommentController {

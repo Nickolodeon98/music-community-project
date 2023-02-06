@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/api/v1/inquiry")
+@RequestMapping("/inquiry")
 @RequiredArgsConstructor
 public class InquiryController {
 

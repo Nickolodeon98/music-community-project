@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
-@RequestMapping("/api/v1/recommends")
+@RequestMapping("/recommends")
 @RequiredArgsConstructor
 @Slf4j
 public class RecommendController {

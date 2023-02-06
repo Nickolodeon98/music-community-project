@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/faq")
+@RequestMapping("/faq")
 public class FaqController {
 
   private final FaqService faqService;

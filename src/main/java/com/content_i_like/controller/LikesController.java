@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/recommends")
+@RequestMapping("/recommends")
 @Slf4j
 public class LikesController {
 

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
-@RequestMapping("/upload")
+//@RequestMapping("/upload")
 @RequiredArgsConstructor
 public class FileUploadController {
 

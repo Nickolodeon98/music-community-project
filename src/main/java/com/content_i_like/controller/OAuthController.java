@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/oauth")
+@RequestMapping("/oauth")
 public class OAuthController {
 
   private final OAuthService oAuthService;
