@@ -1,4 +1,4 @@
-package com.content_i_like.controller;
+package com.content_i_like.controller.restcontroller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,6 +1,7 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.config.JwtService;
+import com.content_i_like.controller.restcontroller.LikesRestController;
 import com.content_i_like.domain.entity.*;
 import com.content_i_like.fixture.Fixture;
 import com.content_i_like.service.LikesService;

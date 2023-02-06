@@ -4,18 +4,19 @@ import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.notification.NotificationResponse;
 import com.content_i_like.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 
-@RestController
+@Controller
 @RequestMapping("/api/v1/notifications")
 @RequiredArgsConstructor
-public class NotificationRestController {
+public class NotificationController {
 
     private final NotificationService notificationService;
 

@@ -1,4 +1,4 @@
-package com.content_i_like.controller;
+package com.content_i_like.controller.restcontroller;
 
 import com.content_i_like.domain.Response;
 import com.content_i_like.service.S3FileUploadService;

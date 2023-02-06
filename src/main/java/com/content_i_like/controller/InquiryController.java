@@ -1,3 +1,4 @@
+
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
@@ -8,12 +9,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-@RestController
+@Controller
 @RequestMapping("/api/v1/inquiry")
 @RequiredArgsConstructor
-public class InquiryRestController {
+public class InquiryController {
 
   private final InquiryService inquiryService;
 

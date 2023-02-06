@@ -1,6 +1,7 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.config.JwtService;
+import com.content_i_like.controller.restcontroller.MemberRestController;
 import com.content_i_like.domain.dto.member.*;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.enums.GenderEnum;
