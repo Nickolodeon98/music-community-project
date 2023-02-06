@@ -6,10 +6,9 @@ import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.enums.GenderEnum;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
-import com.content_i_like.fixture.Fixture;
 import com.content_i_like.service.MailService;
 import com.content_i_like.service.MemberService;
-import com.content_i_like.service.OAuthService;
+import com.content_i_like.service.CustomOAuth2UserService;
 import com.content_i_like.service.PointService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +57,7 @@ class MemberRestControllerTest {
   MailService mailService;
 
   @MockBean
-  OAuthService oAuthService;
+  CustomOAuth2UserService oAuthService;
 
   @MockBean
   UserDetailsService userDetailsService;
