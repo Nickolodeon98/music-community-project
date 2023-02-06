@@ -27,14 +27,14 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class GoogleOauth implements SocialOauth {
 
-  @Value(("${spring.security.oauth2.client.registration.google.url}"))
-  private String GOOGLE_SNS_LOGIN_URL;
+  //@Value(("${spring.security.oauth2.client.registration.google.url}"))
+  private String GOOGLE_SNS_LOGIN_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 
   @Value("${spring.security.oauth2.client.registration.google.client-id}")
   private String GOOGLE_SNS_CLIENT_ID;
 
-  @Value("${spring.security.oauth2.client.registration.google.redirect-url}")
-  private String GOOGLE_SNS_CALLBACK_URL;
+  //@Value("${spring.security.oauth2.client.registration.google.redirect-url}")
+  private String GOOGLE_SNS_CALLBACK_URL = "http://localhost:8080/api/v1/oauth/google/redirect";
 
   @Value("${spring.security.oauth2.client.registration.google.client-secret}")
   private String GOOGLE_SNS_CLIENT_SECRET;
