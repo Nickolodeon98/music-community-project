@@ -1,10 +1,10 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.config.JwtService;
+import com.content_i_like.controller.restcontroller.InquiryRestController;
 import com.content_i_like.domain.dto.inquiry.InquiryRequire;
 import com.content_i_like.domain.dto.inquiry.InquiryResponse;
 import com.content_i_like.service.InquiryService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static java.time.LocalDateTime.now;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;

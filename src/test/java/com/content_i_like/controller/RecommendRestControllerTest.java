@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.content_i_like.config.JwtService;
+import com.content_i_like.controller.restcontroller.RecommendRestController;
 import com.content_i_like.custom.WithMockCustomOAuth2Account;
 import com.content_i_like.domain.dto.recommend.RecommendModifyRequest;
 import com.content_i_like.domain.dto.recommend.RecommendModifyResponse;

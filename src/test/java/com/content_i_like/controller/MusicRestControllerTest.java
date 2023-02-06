@@ -1,6 +1,5 @@
 package com.content_i_like.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -10,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.content_i_like.controller.restcontroller.MusicRestController;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.fixture.Fixture;
 import com.content_i_like.service.MusicService;

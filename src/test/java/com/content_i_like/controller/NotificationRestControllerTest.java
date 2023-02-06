@@ -1,6 +1,5 @@
 package com.content_i_like.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -10,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.content_i_like.config.JwtService;
+import com.content_i_like.controller.restcontroller.NotificationRestController;
 import com.content_i_like.domain.dto.notification.NotificationResponse;
 import com.content_i_like.domain.enums.NotificationType;
 import com.content_i_like.service.NotificationService;
