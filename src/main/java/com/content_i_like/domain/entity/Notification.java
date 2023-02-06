@@ -13,19 +13,31 @@ import lombok.*;
 @Entity
 public class Notification extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long notificationNo;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long notificationNo;
 
-  @Enumerated(EnumType.STRING)
-  private NotificationType notificationType;
+    @Enumerated(EnumType.STRING)
+    private NotificationType notificationType;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "member_no")
-  private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_no")
+    private Member member;
 
-  private Long fromMemberNo;
+    private Long fromMemberNo;
 
-  private Long recommendNo;
-  private Long commentNo;
+    private Long recommendNo;
+    private Long commentNo;
+
+    private boolean isRead = Boolean.FALSE;
+
+    public static Notification of(NotificationType notificationType, Member member, Long fromMemberNo, Long recommendNo, Long commentNo) {
+        return Notification.builder()
+                .notificationType(notificationType)
+                .member(member)
+                .fromMemberNo(fromMemberNo)
+                .recommendNo(recommendNo)
+                .commentNo(commentNo)
+                .build();
+    }
 }
