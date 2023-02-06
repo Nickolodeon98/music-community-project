@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,36 +12,34 @@
   <link rel="stylesheet" href="../../static/css/index.css">
 </head>
 <body>
-<div class="wrapper">
+<div class="wrapper" th:fragment="headerFragment">
   <div class="header">
     <div class="header-nav">
-            <span id="logo">
-                <a href="">내미콘</a>
-            </span>
+
+      <span id="logo">
+        <a href="">내미콘</a>
+      </span>
 
       <span id="menu-recommend" class="menu">
-                <a href="">추천글</a>
-            </span>
-
+        <a href="">추천글</a>
+      </span>
       <span id="menu-chart" class="menu">
-                <a href="">차트</a>
-            </span>
-
+        <a href="">차트</a>
+      </span>
       <span id="menu-inquiry" class="menu">
-                <a href="">문의</a>
-            </span>
-
+        <a href="">문의</a>
+      </span>
       <span id="menu-search" class="menu">
-                <a href="">검색</a>
-            </span>
+        <a href="">검색</a>
+      </span>
 
       <span id="menu-login" class="menu-user">
-                <a href="">로그인</a>
-            </span>
+        <a href="">로그인</a>
+      </span>
 
       <span id="menu-join" class="menu-user">
-                <a href="">회원가입</a>
-            </span>
+        <a href="">회원가입</a>
+      </span>
     </div>
   </div>
 </div>
