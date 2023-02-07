@@ -40,6 +40,13 @@ public class RecommendController {
 
   private final RecommendService recommendService;
 
+
+  @GetMapping("/writeForm")
+  public String recommendWriteForm(){
+    return "pages/recommend/recommend-post";
+  }
+
+
   /**
    * 추천 글을 작성합니다.
    *
