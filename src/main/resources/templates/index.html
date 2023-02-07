@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/html"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-3.6.3.js"
+          integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+          crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-nav">
+            <span id="logo">
+                <a href="">내미콘</a>
+            </span>
+      <span id="menu-recommend" class="menu">
+                <a href="">추천글</a>
+            </span>
+
+      <span id="menu-chart" class="menu">
+                <a href="">차트</a>
+            </span>
+
+      <span id="menu-inquiry" class="menu">
+                <a href="">문의</a>
+            </span>
+
+      <span id="menu-search" class="menu">
+                <a href="">검색</a>
+            </span>
+
+      <span id="menu-login" class="menu-user">
+                <a href="">로그인</a>
+            </span>
+
+      <span id="menu-join" class="menu-user">
+                <a href="">회원가입</a>
+            </span>
+    </div>
+
+    <div class="index">
+      <span class="over-img" id="index-title">오늘의 내가 미는<br>콘텐츠는 무엇인가요?</span>
+      <span class="over-img" id="index-body">나만 알고 있던 혹은 잊혀졌던 그때의 음악을 같은 취향을 가진<br> 또 다른 누군가에게 공유해주세요.</span>
+      <span class="over-img" id="index-search"><a href="">음악 검색</a></span>
+    </div>
+  </div>
+
+  <div class="contents">
+    <nav id="sort-post">
+      <span class="selected-post-nav"><a href="">좋아요</a></span>
+      <span class="not-selected-post-nav"><a href="">포인트</a></span>
+      <span class="not-selected-post-nav"><a href="">구독</a></span>
+    </nav>
+
+    <div class="list-recommend">
+      <a href="">
+        <div class="card">
+          <div class="music-info">
+            <span class="music-img"><img src="img/event-horizon.jpg"/> </span>
+            <span class="music-info-text">사건의 지평선 - </span>
+            <span class="music-info-text">윤하</span>
+          </div>
+
+          <div class="body"></div>
+
+          <div class="post-info">
+            <div class="post-info-top">
+              <span class="post-title">드디어 찾아냈어요!</span>
+              <span class="like">♥ 1128</span>
+            </div>
+
+            <div class="line"></div>
+
+            <div class="post-content">Lorem ipsum dolor sit amet, consectetuer adipi
+              scing elit. Aenean commodo ligula eget dolor.
+              Aenean massa. Cum sociis natoqueum dolor sit
+              amet, consectetuer adipiscing elit.
+            </div>
+            <div class="post-author">Park Ron</div>
+          </div>
+        </div>
+      </a>
+
+      <div class="card">
+        <div class="music-info">
+          <span class="music-img"><img src="img/event-horizon.jpg"/> </span>
+          <span class="music-info-text">사건의 지평선 - </span>
+          <span class="music-info-text">윤하</span>
+        </div>
+
+        <div class="body"></div>
+
+        <div class="post-info">
+          <div class="post-info-top">
+            <span class="post-title">드디어 찾아냈어요!</span>
+            <span class="like">♥ 1128</span>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="post-content">Lorem ipsum dolor sit amet, consectetuer adipi
+            scing elit. Aenean commodo ligula eget dolor.
+            Aenean massa. Cum sociis natoqueum dolor sit
+            amet, consectetuer adipiscing elit.
+          </div>
+          <div class="post-author">Park Ron</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="music-info">
+          <span class="music-img"><img src="img/event-horizon.jpg"/> </span>
+          <span class="music-info-text">사건의 지평선 - </span>
+          <span class="music-info-text">윤하</span>
+        </div>
+
+        <div class="body"></div>
+
+        <div class="post-info">
+          <div class="post-info-top">
+            <span class="post-title">드디어 찾아냈어요!</span>
+            <span class="like">♥ 1128</span>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="post-content">Lorem ipsum dolor sit amet, consectetuer adipi
+            scing elit. Aenean commodo ligula eget dolor.
+            Aenean massa. Cum sociis natoqueum dolor sit
+            amet, consectetuer adipiscing elit.
+          </div>
+          <div class="post-author">Park Ron</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="music-info">
+          <span class="music-img"><img src="img/event-horizon.jpg"/> </span>
+          <span class="music-info-text">사건의 지평선 - </span>
+          <span class="music-info-text">윤하</span>
+        </div>
+
+        <div class="body"></div>
+
+        <div class="post-info">
+          <div class="post-info-top">
+            <span class="post-title">드디어 찾아냈어요!</span>
+            <span class="like">♥ 1128</span>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="post-content">Lorem ipsum dolor sit amet, consectetuer adipi
+            scing elit. Aenean commodo ligula eget dolor.
+            Aenean massa. Cum sociis natoqueum dolor sit
+            amet, consectetuer adipiscing elit.
+          </div>
+          <div class="post-author">Park Ron</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="music-info">
+          <span class="music-img"><img src="img/event-horizon.jpg"/> </span>
+          <span class="music-info-text">사건의 지평선 - </span>
+          <span class="music-info-text">윤하</span>
+        </div>
+
+        <div class="body"></div>
+
+        <div class="post-info">
+          <div class="post-info-top">
+            <span class="post-title">드디어 찾아냈어요!</span>
+            <span class="like">♥ 1128</span>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="post-content">Lorem ipsum dolor sit amet, consectetuer adipi
+            scing elit. Aenean commodo ligula eget dolor.
+            Aenean massa. Cum sociis natoqueum dolor sit
+            amet, consectetuer adipiscing elit.
+          </div>
+          <div class="post-author">Park Ron</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="music-info">
+          <span class="music-img"><img src="img/event-horizon.jpg"/> </span>
+          <span class="music-info-text">사건의 지평선 - </span>
+          <span class="music-info-text">윤하</span>
+        </div>
+
+        <div class="body"></div>
+
+        <div class="post-info">
+          <div class="post-info-top">
+            <span class="post-title">드디어 찾아냈어요!</span>
+            <span class="like">♥ 1128</span>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="post-content">Lorem ipsum dolor sit amet, consectetuer adipi
+            scing elit. Aenean commodo ligula eget dolor.
+            Aenean massa. Cum sociis natoqueum dolor sit
+            amet, consectetuer adipiscing elit.
+          </div>
+          <div class="post-author">Park Ron</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="music-info">
+          <span class="music-img"><img src="img/event-horizon.jpg"/> </span>
+          <span class="music-info-text">사건의 지평선 - </span>
+          <span class="music-info-text">윤하</span>
+        </div>
+
+        <div class="body"></div>
+
+        <div class="post-info">
+          <div class="post-info-top">
+            <span class="post-title">드디어 찾아냈어요!</span>
+            <span class="like">♥ 1128</span>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="post-content">Lorem ipsum dolor sit amet, consectetuer adipi
+            scing elit. Aenean commodo ligula eget dolor.
+            Aenean massa. Cum sociis natoqueum dolor sit
+            amet, consectetuer adipiscing elit.
+          </div>
+          <div class="post-author">Park Ron</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="music-info">
+          <span class="music-img"><img src="img/event-horizon.jpg"/> </span>
+          <span class="music-info-text">사건의 지평선 - </span>
+          <span class="music-info-text">윤하</span>
+        </div>
+
+        <div class="body"></div>
+
+        <div class="post-info">
+          <div class="post-info-top">
+            <span class="post-title">드디어 찾아냈어요!</span>
+            <span class="like">♥ 1128</span>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="post-content">Lorem ipsum dolor sit amet, consectetuer adipi
+            scing elit. Aenean commodo ligula eget dolor.
+            Aenean massa. Cum sociis natoqueum dolor sit
+            amet, consectetuer adipiscing elit.
+          </div>
+          <div class="post-author">Park Ron</div>
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+
+  <div class="footer">
+
+  </div>
+</div>
+</body>
+
+</html>
