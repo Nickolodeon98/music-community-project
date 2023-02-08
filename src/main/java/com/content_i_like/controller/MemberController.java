@@ -97,9 +97,8 @@ public class MemberController {
    * @return 작성한 recommends 목록
    */
   @GetMapping("/recommends")
-  public Response<Page<RecommendListResponse>> getMyRecommends(Authentication authentication,
-      @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) final Pageable pageable) {
-    return Response.success(memberService.getMyRecommends(authentication.getName(), pageable));
+  public String getMyRecommends() {
+    return "pages/member/myFeed-recommends";
   }
 
   /**
