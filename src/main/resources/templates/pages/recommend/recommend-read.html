@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-3.6.3.js"
+          integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+          crossorigin="anonymous"></script>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/recommend-read.css}">
+
+
+</head>
+<body>
+<div class="container">
+  <div th:replace="/common/fragments/header"></div>
+  <div class="contents">
+    <div class="left-div">
+      <div class="post-read-top">
+        <span class="post-read-title" th:text="${post.getRecommendTitle()}">혹시 기억하시나요?</span>
+
+        <span class="post-read-menu">
+                        <a href="">수정</a>
+                </span>
+
+        <span class="post-read-menu">
+                        <a href="">삭제</a>
+                </span>
+      </div>
+      <div class="post-read-hashtag">
+        <span th:each="hashtag : ${post.getHashtags()}" th:text="|#${hashtag} |"></span>
+      </div>
+      <div class="post-read-user-info">
+        <span class="author-img"><img th:src="${post.getMemberProfileImgUrl()}"></span>
+        <span class="user-info-name-date">
+                    <div class="user-info-name" th:text="${post.getMemberNickname()}"></div>
+                    <div class="post-date"
+                         th:text="${#temporals.format(post.getRecommendCreatedAt(), 'yyyy/MM/dd HH:mm:ss')}"></div>
+                </span>
+        <span class="like-and-point" th:text="|♥ ${post.getCountLikes()}|"></span>
+        <span class="like-and-point" th:text="|글 pt ${post.getRecommendPoint()}|"></span>
+        <span class="like-and-point" th:text="|누적 pt ${post.getAccumulatedPoints()}|"></span>
+      </div>
+
+      <div class="line"></div>
+
+      <div class="album-info">
+        <span class="album-img"><img th:src="${post.getAlbumImageUrl()}"></span>
+        <span class="song-info">
+                    <span class="song-name" th:text="${post.getTrackTitle()}"></span>
+                    <span class="artist-name" th:text="${post.getArtistName()}"></span>
+                </span>
+
+        <a th:href="${post.getRecommendYoutubeUrl()}">
+          <span class="youtube-url">유튜브 링크</span>
+        </a>
+      </div>
+
+      <div class="line"></div>
+
+      <div class="post-content" th:text="${post.getRecommendContent()}">
+
+      </div>
+
+      <div class="line"></div>
+
+      <form method="" action="">
+        <div class="comment-input">
+
+                    <span class="comment-user-info">
+                        <div class="comment-user-img"><img src="img/younha.jpg"></div>
+                        <div class="comment-user-name">댓글 작성자 이름</div>
+                    </span>
+          <span class="comment-input-area"><textarea placeholder="댓글을 입력해 주세요."></textarea></span>
+          <span class="button-comment-input"><input type="button" value="등록"></span>
+        </div>
+      </form>
+
+      <div class="comment-title">
+        댓글
+      </div>
+
+      <div class="super-chat-list">
+        <div class="super-chat-user" th:each="superchat:${superchats}">
+          <span class="super-chat-user-img"><img th:src="${superchat.getProfileImgUrl()}"></span>
+          <div>
+            <div class="super-chat-point" th:text="|${superchat.getCommentPoint()} pt|">pt</div>
+            <div class="super-chat-user-name" th:text="${superchat.getMemberNickname()}"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comment-list">
+        <div class="comment" th:each="comment : ${comments}">
+          <span class="comment-list-user-info">
+              <div class="comment-list-user-img">
+                <img th:src="${comment.getProfileImgUrl()}">
+              </div>
+              <div class="comment-list-user-name" th:text="${comment.getMemberNickname()}"></div>
+              <div class="comment-list-user-point" th:text="${comment.getCommentPoint()}"></div>
+          </span>
+          <span class="comment-list-body-menu">
+              <div class="comment-list-body" th:text="${comment.getCommentContent()}"></div>
+              <div class="comment-list-menu">
+                <span><a href="">댓글</a></span>
+                <span><a href="">삭제</a></span>
+                <span><a href="">신고</a></span>
+              </div>
+            </span>
+          <div class="comment-list-date"
+               th:text="${#temporals.format(comment.getCreatedAt(), 'yyyy/MM/dd HH:mm:ss')}">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="right-div">
+      <div id="thumbnails">
+        <img th:src="${post.getRecommendImageUrl()}">
+      </div>
+
+      <div id="accumulate-point-area">
+        <div id="accumulate-point-explain">내가 후원한 포인트는?</div>
+        <div id="accumulate-point"><span id="number">800</span><span id="point">pt</span></div>
+      </div>
+    </div>
+
+    <div class="footer">
+
+    </div>
+  </div>
+</div>
+</body>
+
+</html>

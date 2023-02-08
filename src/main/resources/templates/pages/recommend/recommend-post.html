@@ -1,89 +1,89 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns="http://www.w3.org/1999/html"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://code.jquery.com/jquery-3.6.3.js"
-            integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
-            crossorigin="anonymous"></script>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/recommend-post.css}">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-3.6.3.js"
+          integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+          crossorigin="anonymous"></script>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/recommend-post.css}">
 </head>
 <body>
 <div class="container">
-    <div th:replace="/common/fragments/header"/>
+  <div th:replace="/common/fragments/header"/>
 
-    <div class="contents">
-        <div class="board">
-            <form action="" method="post">
-                <div class="board-top">
-                    <span class="board-title">게시글 작성</span>
-                    <span class="button-exit">나가기 X</span>
-                </div>
-
-                <div class="board-body">
-                    <span class="board-body-title">제목</span>
-                    <span id="board-input-title"> <input placeholder="제목을 입력해주세요(100자 이내)" /></span>
-                </div>
-
-                <div class="board-body">
-                    <span class="board-body-title">추천 음악</span>
-                    <span id="board-input-search"><input readonly placeholder="검색 버튼을 눌러 음악을 검색해주세요" /></span>
-                    <span id="button-search"> 검색 </span>
-                </div>
-
-                <div class="board-body">
-                    <span class="board-body-title">추천 내용</span>
-                    <span id="board-input-content"> <textarea placeholder="추천 글을 작성해주세요"></textarea></span>
-                </div>
-
-                <div class="board-body">
-                    <span class="board-body-title">해시태그</span>
-                    <span id="board-input-hashtag"><input placeholder="#으로 구분하여 해시태그를 입력해주세요(최대 3개)" /></span>
-                </div>
-
-                <div class="board-body">
-                    <span class="board-body-title">썸네일</span>
-                    <span><input type="file" placeholder="이미지를 업로드하세요" /></span>
-                </div>
-
-                <div class="board-body">
-                    <span class="board-body-title">유튜브 링크</span>
-                    <span id="youtube-link">https://youtu.be/</span>
-                    <span id="board-input-youtube"><input type="text" /></span>
-
-                </div>
-
-                <div class="board-body">
-                    <span id="button-post"><input type="button" value="작성하기" readonly></span>
-                </div>
-            </form>
+  <div class="contents">
+    <div class="board">
+      <form action="" method="post">
+        <div class="board-top">
+          <span class="board-title">게시글 작성</span>
+          <span class="button-exit">나가기 X</span>
         </div>
-    </div>
 
-    <div class="footer">
+        <div class="board-body">
+          <span class="board-body-title">제목</span>
+          <span id="board-input-title"> <input placeholder="제목을 입력해주세요(100자 이내)"/></span>
+        </div>
 
+        <div class="board-body">
+          <span class="board-body-title">추천 음악</span>
+          <span id="board-input-search"><input readonly placeholder="검색 버튼을 눌러 음악을 검색해주세요"/></span>
+          <span id="button-search"> 검색 </span>
+        </div>
+
+        <div class="board-body">
+          <span class="board-body-title">추천 내용</span>
+          <span id="board-input-content"> <textarea placeholder="추천 글을 작성해주세요"></textarea></span>
+        </div>
+
+        <div class="board-body">
+          <span class="board-body-title">해시태그</span>
+          <span id="board-input-hashtag"><input placeholder="#으로 구분하여 해시태그를 입력해주세요(최대 3개)"/></span>
+        </div>
+
+        <div class="board-body">
+          <span class="board-body-title">썸네일</span>
+          <span><input type="file" placeholder="이미지를 업로드하세요"/></span>
+        </div>
+
+        <div class="board-body">
+          <span class="board-body-title">유튜브 링크</span>
+          <span id="youtube-link">https://youtu.be/</span>
+          <span id="board-input-youtube"><input type="text"/></span>
+
+        </div>
+
+        <div class="board-body">
+          <span id="button-post"><input type="button" value="작성하기" readonly></span>
+        </div>
+      </form>
     </div>
+  </div>
+
+  <div class="footer">
+
+  </div>
 </div>
 
 <!-- 위치 재설정 모달 -->
-<div id="modal-search-music" role="dialog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="" role="document">
-        <div class="modal-content">
-            <div class="modal-header" style="border-bottom-color: rgb(255,255,255);">
-                <input type="text" placeholder="찾으시는 음악을 입력해 주세요">
-                <span></span>
-            </div>
+<div id="modal-search-music" role="dialog" tabindex="-1" data-bs-backdrop="static"
+     data-bs-keyboard="false">
+  <div class="" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom-color: rgb(255,255,255);">
+        <input type="text" placeholder="찾으시는 음악을 입력해 주세요">
+        <span></span>
+      </div>
 
-            <div class="modal-body">
+      <div class="modal-body">
 
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
 </div>
 </body>
 

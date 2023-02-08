@@ -24,4 +24,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
   Page<Comment> findAllByRecommendRecommendNo(Long recommendNo, Pageable pageable);
 
   Page<Comment> findAllByMember(Member member, Pageable pageable);
+
+  Page<Comment> findCommentsByCommentPointGreaterThanAndRecommendRecommendNo(Long point,
+      Long recommendNo,
+      Pageable pageable);
 }
