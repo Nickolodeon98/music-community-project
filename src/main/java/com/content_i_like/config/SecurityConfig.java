@@ -22,7 +22,7 @@ public class SecurityConfig {
   private final CustomOAuth2UserService customOAuth2UserService;
   private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-  private final String[] AUTHORIZATION = {"/api/v1/**", "/**"};
+  private final String[] AUTHORIZATION = {"/api/v1/**", "/**", "http://www.thymeleaf.org/**", "http://www.ultraq.net.nz/**"};
   private final String[] TEST_URL = {"/api/v1/hello/**", "/api/v1/member/join",
       "/api/v1/member/login", "/api/v1/member/passwd/find_pw"
       , "/api/v1/test/**", "/upload"};

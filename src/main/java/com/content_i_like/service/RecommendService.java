@@ -200,7 +200,7 @@ public class RecommendService {
   }
 
   /**
-   * 추천글과 해시태그가 연결되어 있는 중간 테이블의 정보로
+   * 추천글과 해시태그가 연결되어 있는 중간 테이블의 정보입니다.
    * 기존 추천 글에 존재하는 해시 태그를 불러옵니다.
    *
    * @param existingPostHashtags postHashtag 정보
