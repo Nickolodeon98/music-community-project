@@ -18,10 +18,10 @@
   <div class="header">
     <div class="header-nav">
             <span id="logo">
-                <a href="">내미콘</a>
+                <a th:href="@{/}">내미콘</a>
             </span>
       <span id="menu-recommend" class="menu">
-                <a href="">추천글</a>
+                <a th:href="@{/}">추천글</a>
             </span>
 
       <span id="menu-chart" class="menu">
@@ -62,7 +62,7 @@
     <div class="list-recommend">
 
       <div class="card" th:each="list : ${response}">
-        <a th:href="@{/recommends/${list.getRecommendNo()}}">
+        <a th:href="@{/recommends/__${list.getRecommendNo()}__}">
           <img class="card-bg" th:src="${list.getRecommendImageUrl()}"/>
           <div class="music-info">
             <span class="music-img"><img th:src="${list.getAlbumImageUrl()}"/></span>
