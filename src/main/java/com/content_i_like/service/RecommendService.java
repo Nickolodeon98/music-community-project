@@ -273,9 +273,14 @@ public class RecommendService {
     List<Comment> comments = post.getComments();
     Long countLikes = (long) post.getLikes().size();
     Long accumulatedPoints = getAccumulatedPoints(comments, post);
+    List<PostHashtag> postHashtags = postHashtagRepository.findAllByRecommendRecommendNo(
+        recommendNo);
+    List<String> hashtags = getExistingHashtags(postHashtags);
     return RecommendReadResponse.of(post, member, album, artist, track, comments, countLikes,
-        accumulatedPoints);
+        accumulatedPoints, hashtags);
   }
+
+
 
   /**
    * artistNo을 사용하여 Artist 정보를 받아옵니다.

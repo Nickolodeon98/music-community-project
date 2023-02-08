@@ -4,6 +4,7 @@ import com.content_i_like.domain.dto.comment.CommentModifyRequest;
 import com.content_i_like.domain.dto.comment.CommentReadResponse;
 import com.content_i_like.domain.dto.comment.CommentRequest;
 import com.content_i_like.domain.dto.comment.CommentResponse;
+import com.content_i_like.domain.dto.comment.SuperChatReadResponse;
 import com.content_i_like.domain.entity.Comment;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Recommend;
@@ -165,6 +166,11 @@ public class CommentService {
         .map(CommentReadResponse::of);
   }
 
+  public Page<SuperChatReadResponse> gerSuperChatUser(Pageable pageable, Long recommendNo) {
+    return commentRepository.findCommentsByCommentPointGreaterThanAndRecommendRecommendNo(1l,
+        recommendNo, pageable).map(SuperChatReadResponse::of);
+  }
+
   private Comment validateGetCommentInfoByCommentNo(final Long commentNo) {
     return commentRepository.findById(commentNo)
         .orElseThrow(() -> {
@@ -185,5 +191,7 @@ public class CommentService {
           throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
         });
   }
+
+
 }
 
