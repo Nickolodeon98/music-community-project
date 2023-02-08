@@ -33,7 +33,7 @@
         </span>
       </div>
       <div class="post-read-hashtag">
-        <span th:each="hashtag : ${post.getHashtags()}" th:text="|# ${hashtag} |"></span>
+        <span th:each="hashtag : ${post.getHashtags()}" th:text="|#${hashtag} |"></span>
       </div>
       <div class="post-read-user-info">
         <span class="author-img"><img th:src="${post.getMemberProfileImgUrl()}"></span>
