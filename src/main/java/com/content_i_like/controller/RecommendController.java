@@ -2,6 +2,7 @@ package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.comment.CommentReadResponse;
+import com.content_i_like.domain.dto.comment.SuperChatReadResponse;
 import com.content_i_like.domain.dto.recommend.RecommendDeleteResponse;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
 import com.content_i_like.domain.dto.recommend.RecommendModifyRequest;
@@ -64,9 +65,10 @@ public class RecommendController {
     Pageable pageable = PageRequest.of(0, 20, Sort.by("createdAt").ascending());
     RecommendReadResponse response = recommendService.readPost(recommendNo);
     Page<CommentReadResponse> comments = commentService.getReadAllComment(pageable, recommendNo);
-
+    Page<SuperChatReadResponse> superChats = commentService.gerSuperChatUser(pageable, recommendNo);
     model.addAttribute("post", response);
     model.addAttribute("comments", comments);
+    model.addAttribute("superchats", superChats);
 
     return "pages/recommend/recommend-read";
   }
