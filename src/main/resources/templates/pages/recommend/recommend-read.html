@@ -16,19 +16,21 @@
 </head>
 <body>
 <div class="container">
-  <div th:replace="~{/common/fragments/header::header}"></div>
+
+  <div th:replace="~{common/fragments/header::header}"></div>
+
   <div class="contents">
     <div class="left-div">
       <div class="post-read-top">
-        <span class="post-read-title" th:text="${post.getRecommendTitle()}">혹시 기억하시나요?</span>
+        <span class="post-read-title" th:text="${post.getRecommendTitle()}"></span>
 
         <span class="post-read-menu">
-                        <a href="">수정</a>
-                </span>
+          <a href="">수정</a>
+        </span>
 
         <span class="post-read-menu">
-                        <a href="">삭제</a>
-                </span>
+          <a href="">삭제</a>
+        </span>
       </div>
       <div class="post-read-hashtag">
         <span th:each="hashtag : ${post.getHashtags()}" th:text="|${hashtag} |"></span>
