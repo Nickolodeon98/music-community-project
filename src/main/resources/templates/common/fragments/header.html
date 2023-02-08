@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th=http://www.thymeleaf.org>
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,8 +8,6 @@
   <script src="https://code.jquery.com/jquery-3.6.3.js"
           integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
           crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="../../static/css/style.css">
-  <link rel="stylesheet" href="../../static/css/index.css">
 </head>
 <body>
 <div class="header">
@@ -35,7 +33,7 @@
             </span>
 
     <span id="menu-login" class="menu-user">
-                <a href="">로그인</a>
+                <a href="/member/login">로그인</a>
             </span>
 
     <span id="menu-join" class="menu-user">
