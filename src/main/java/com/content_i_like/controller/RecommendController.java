@@ -1,6 +1,7 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
+import com.content_i_like.domain.dto.comment.CommentReadResponse;
 import com.content_i_like.domain.dto.recommend.RecommendDeleteResponse;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
 import com.content_i_like.domain.dto.recommend.RecommendModifyRequest;
@@ -8,6 +9,7 @@ import com.content_i_like.domain.dto.recommend.RecommendModifyResponse;
 import com.content_i_like.domain.dto.recommend.RecommendPostRequest;
 import com.content_i_like.domain.dto.recommend.RecommendPostResponse;
 import com.content_i_like.domain.dto.recommend.RecommendReadResponse;
+import com.content_i_like.service.CommentService;
 import com.content_i_like.service.RecommendService;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -21,8 +23,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,13 +43,33 @@ import org.springframework.web.multipart.MultipartFile;
 public class RecommendController {
 
   private final RecommendService recommendService;
+  private final CommentService commentService;
 
 
   @GetMapping("/writeForm")
-  public String recommendWriteForm(){
+  public String recommendWriteForm() {
     return "pages/recommend/recommend-post";
   }
 
+  /**
+   * 추천글의 정보를 받아옵니다.
+   *
+   * @param recommendNo 정보를 받아올 추천글 고유번호
+   * @return 추천글의 정보를 반환합니다.
+   */
+  @GetMapping("/{recommendNo}")
+  public String ReadRecommendPost(@PathVariable final Long recommendNo,
+      Model model) {
+    log.info("recommend_no = {}", recommendNo);
+    Pageable pageable = PageRequest.of(0, 20, Sort.by("createdAt").ascending());
+    RecommendReadResponse response = recommendService.readPost(recommendNo);
+    Page<CommentReadResponse> comments = commentService.getReadAllComment(pageable, recommendNo);
+
+    model.addAttribute("post", response);
+    model.addAttribute("comments", comments);
+
+    return "pages/recommend/recommend-read";
+  }
 
   /**
    * 추천 글을 작성합니다.
@@ -117,20 +141,6 @@ public class RecommendController {
 
     recommendService.deletePost(userEmail, recommendNo);
     return Response.success(new RecommendDeleteResponse(recommendNo, "추천 글이 삭제 되었습니다."));
-  }
-
-  /**
-   * 추천글의 정보를 받아옵니다.
-   *
-   * @param recommendNo 정보를 받아올 추천글 고유번호
-   * @return 추천글의 정보를 반환합니다.
-   */
-  @GetMapping("/{recommendNo}")
-  public Response<RecommendReadResponse> ReadRecommendPost(@PathVariable final Long recommendNo) {
-    log.info("recommend_no = {}", recommendNo);
-
-    RecommendReadResponse response = recommendService.readPost(recommendNo);
-    return Response.success(response);
   }
 
 
