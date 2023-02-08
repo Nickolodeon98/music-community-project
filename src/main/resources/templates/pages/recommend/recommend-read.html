@@ -31,7 +31,7 @@
                 </span>
       </div>
       <div class="post-read-hashtag">
-        <span th:each="hashtag : ${post.getHashtags()}" th:text="|#${hashtag} |"></span>
+        <span th:each="hashtag : ${post.getHashtags()}" th:text="|${hashtag} |"></span>
       </div>
       <div class="post-read-user-info">
         <span class="author-img"><img th:src="${post.getMemberProfileImgUrl()}"></span>
@@ -40,7 +40,7 @@
                     <div class="post-date"
                          th:text="${#temporals.format(post.getRecommendCreatedAt(), 'yyyy/MM/dd HH:mm:ss')}"></div>
                 </span>
-        <span class="like-and-point" th:text="|♥ ${post.getCountLikes()}|"></span>
+        <span class="like-and-point" th:text="| ${post.getCountLikes()}|"></span>
         <span class="like-and-point" th:text="|글 pt ${post.getRecommendPoint()}|"></span>
         <span class="like-and-point" th:text="|누적 pt ${post.getAccumulatedPoints()}|"></span>
       </div>
