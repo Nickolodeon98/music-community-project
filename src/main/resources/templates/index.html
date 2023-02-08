@@ -61,25 +61,25 @@
 
     <div class="list-recommend">
 
-      <div class="card" th:each="response : ${response}">
+      <div class="card" th:each="list : ${response}">
         <div class="music-info">
-          <span class="music-img" th:src="${response.getAlbumImageUrl()}"></span>
-          <span class="music-info-text" th:text="|${response.getTrackTitle()} - |"></span>
-          <span class="music-info-text" th:text="${response.getArtistName()}"></span>
+          <span class="music-img"><img th:src="${list.getAlbumImageUrl()}"/></span>
+          <span class="music-info-text" th:text="|${list.getTrackTitle()} - |"></span>
+          <span class="music-info-text" th:text="${list.getArtistName()}"></span>
         </div>
 
         <div class="body"></div>
 
         <div class="post-info">
           <div class="post-info-top">
-            <span class="post-title" th:text="${response.getRecommendTitle()}"></span>
-            <span class="like" th:text="|♥ ${response.getCountLikes()}|"></span>
+            <span class="post-title" th:text="${list.getRecommendTitle()}"></span>
+            <span class="like" th:text="|♥ ${list.getCountLikes()}|"></span>
           </div>
 
           <div class="line"></div>
 
-          <div class="post-content" th:text="${response.getRecommendContent()}"></div>
-          <div class="post-author" th:text="${response.getMemberNickname()}"></div>
+          <div class="post-content" th:text="${list.getRecommendContent()}"></div>
+          <div class="post-author" th:text="${list.getMemberNickname()}"></div>
         </div>
       </div>
 
