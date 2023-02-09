@@ -31,4 +31,51 @@ public interface RecommendRepository extends JpaRepository<Recommend, Long>,
   Optional<Page<Recommend>> findByRecommendTitleContaining(String keyword, Pageable pageable);
 
   Optional<Page<Recommend>> findAllByMemberNickNameContaining(String keyword, Pageable pageable);
+
+  //@Query("SELECT r, COUNT(l) FROM Recommend r LEFT JOIN r.likes l GROUP BY r ORDER BY COUNT(l) DESC")
+  @Query(value = "SELECT rec.recommendNo, rec.recommendTitle, rec.recommendImageUrl, mem.nickName as memberNickname, "
+      + "tr.trackTitle, al.albumImageUrl, ar.artistName, rec.recommendContent, "
+      + "COUNT(l.likesNo) as countLikes, "
+      + "(SELECT SUM(c.commentPoint) + rec.recommendPoint "
+      + "FROM Comment c "
+      + "WHERE c.recommend = rec) as accumulatedPoints "
+      + "FROM Recommend rec "
+      + "LEFT JOIN Member mem ON rec.member = mem "
+      + "LEFT JOIN Track tr ON rec.track = tr "
+      + "LEFT JOIN Album al ON tr.album = al "
+      + "LEFT JOIN Artist ar ON al.artist = ar "
+      + "LEFT JOIN Likes l ON rec.recommendNo = l.recommend.recommendNo "
+      + "GROUP BY rec.recommendNo "
+      + "ORDER BY countLikes DESC",
+      countQuery = "SELECT COUNT(rec) "
+          + "FROM Recommend rec "
+          + "LEFT JOIN Member mem ON rec.member = mem "
+          + "LEFT JOIN Track tr ON rec.track = tr "
+          + "LEFT JOIN Album al ON tr.album = al "
+          + "LEFT JOIN Artist ar ON al.artist = ar "
+          + "LEFT JOIN Likes l ON rec.recommendNo = l.recommend.recommendNo")
+  Page<Object[]> findAllWithLikeCount(Pageable pageable);
+
+  @Query(value = "SELECT rec.recommendNo, rec.recommendTitle, rec.recommendImageUrl, mem.nickName as memberNickname, "
+      + "tr.trackTitle, al.albumImageUrl, ar.artistName, rec.recommendContent, "
+      + "COUNT(l.likesNo) as countLikes, "
+      + "(SELECT SUM(c.commentPoint) + rec.recommendPoint "
+      + "FROM Comment c "
+      + "WHERE c.recommend = rec) as accumulatedPoints "
+      + "FROM Recommend rec "
+      + "LEFT JOIN Member mem ON rec.member = mem "
+      + "LEFT JOIN Track tr ON rec.track = tr "
+      + "LEFT JOIN Album al ON tr.album = al "
+      + "LEFT JOIN Artist ar ON al.artist = ar "
+      + "LEFT JOIN Likes l ON rec.recommendNo = l.recommend.recommendNo "
+      + "GROUP BY rec.recommendNo "
+      + "ORDER BY accumulatedPoints DESC",
+      countQuery = "SELECT COUNT(rec) "
+          + "FROM Recommend rec "
+          + "LEFT JOIN Member mem ON rec.member = mem "
+          + "LEFT JOIN Track tr ON rec.track = tr "
+          + "LEFT JOIN Album al ON tr.album = al "
+          + "LEFT JOIN Artist ar ON al.artist = ar "
+          + "LEFT JOIN Likes l ON rec.recommendNo = l.recommend.recommendNo")
+  Page<Object[]> findAllWithAccumulatedPoints(Pageable pageable);
 }
