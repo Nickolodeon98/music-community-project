@@ -3,13 +3,15 @@ div.block-middle>ul {
     flex-direction: row;
     margin-bottom: 60px;
     position: relative;
-    left:-43px;
+    /*left:-43px;*/
 }
 
 div.block-middle>ul>li {
     display: flex;
     flex-direction: row;
-    margin: auto 100px auto auto;
+    /*margin: auto auto auto auto;*/
+    margin: auto 125px auto 5px;
+
 }
 
 div.block-middle>ul>li>img {
@@ -46,11 +48,11 @@ div.block-middle>ul>li>span>span.track-info {
     color: rgba(255, 255, 255, 0.8);
 }
 
-div.block-middle>ul>li>div>span {
-    padding-top:0.4em;
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.7);
-    margin: auto;
-    text-align: left;
-    align-self: flex-end;
-}
+/*div.block-middle>ul>li>span {*/
+/*    padding-top:0.4em;*/
+/*    font-size: 15px;*/
+/*    color: rgba(255, 255, 255, 0.7);*/
+/*    margin: auto;*/
+/*    text-align: left;*/
+/*    align-self: flex-end;*/
+/*}*/
