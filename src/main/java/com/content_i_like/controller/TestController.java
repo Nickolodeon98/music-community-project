@@ -1,5 +1,8 @@
 package com.content_i_like.controller;
 
+import com.content_i_like.domain.dto.TrackRequest;
+import com.content_i_like.domain.dto.search.SearchRequest;
+import com.content_i_like.domain.entity.Track;
 import com.content_i_like.domain.enums.TrackEnum;
 import com.content_i_like.service.TrackService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,7 +15,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -61,5 +68,22 @@ public class TestController {
     return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
   }
 
+
+  @GetMapping("/page")
+  public String emptyObjectSAending(Model model) {
+    SearchRequest searchKeyword = SearchRequest.builder().build();
+    model.addAttribute("keywordDto", searchKeyword);
+    return "pages/search/tracks-search";
+
+  }
+  @GetMapping("/thymeleaf")
+  public String testForThymeleafListModel(@ModelAttribute("trackRequestDto") TrackRequest trcKM) {
+    log.info("로그입니다");
+    Track track = Track.builder().trackTitle(trcKM.getTrackTitle()).build();
+    log.info("titel:{}",trcKM.getTrackTitle());
+    return "pages/search/tracks-search";
+
+
+  }
 
 }

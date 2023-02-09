@@ -4,6 +4,7 @@ import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.search.SearchMembersResponse;
 import com.content_i_like.domain.dto.search.SearchPageGetResponse;
 import com.content_i_like.domain.dto.search.SearchRecommendsResponse;
+import com.content_i_like.domain.dto.search.SearchRequest;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.service.CacheService;
 import com.content_i_like.service.SearchService;
@@ -14,7 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,18 +43,20 @@ public class SearchController {
     return Response.success(searchResults);
   }
 
-  @GetMapping("/tracks/{trackTitle}")
-  public Response<SearchPageGetResponse<TrackGetResponse>> searchTracksByKeyword(
-      final Authentication authentication,
-      @PathVariable final String trackTitle,
-      @RequestParam(defaultValue = "trackTitle") String sort) {
+  @GetMapping("/tracks/test")
+  public String searchTracksByKeyword(
+      @ModelAttribute("keywordDto") final SearchRequest searchRequest,
+      @RequestParam(defaultValue = "trackTitle") String sort,
+      Model model) {
 
     Pageable pageable = PageRequest.of(0, 20, Sort.by(sort).descending());
 
     SearchPageGetResponse<TrackGetResponse> searchResults =
-        searchService.findTracksWithKeyword(pageable, trackTitle, authentication.getName());
+        searchService.findTracksWithKeyword(pageable, searchRequest.getKeyword(), "sjeon0730@gmail.com");
 
-    return Response.success(searchResults);
+    model.addAttribute("searchResult", searchResults.getMessage());
+
+    return "pages/search/tracks-search";
   }
 
   @GetMapping("/members")
@@ -98,7 +103,7 @@ public class SearchController {
   @GetMapping("/recommends/{memberNickName}")
   public Response<SearchPageGetResponse<SearchRecommendsResponse>> searchRecommendsByKeywordOfMemberNickName(
       final Authentication authentication,
-      @PathVariable final String memberNickName,
+      @ModelAttribute final String memberNickName,
       @RequestParam(required = false, defaultValue = "createdAt") String sort) {
 
     Pageable pageable = PageRequest.of(0, 20, Sort.by(sort).descending());

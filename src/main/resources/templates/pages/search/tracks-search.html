@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Search-Tracks</title>
-  <link rel="stylesheet" th:href="@{../../../../../../../content_i_like/src/main/resources/static/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
   <link rel="stylesheet" th:href="@{/css/tracks-search.css}">
   <link rel="stylesheet" th:href="@{/css/search.css}">
 <!--  <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/style.css">-->
@@ -53,15 +53,20 @@
                     <option value="음원">음원</option>
                     <option value="유저">유저</option>
                 </select>
-                <input class="search-input">
-                <a href="" class="search-button" type="button">
-                  <img src="../../../../../../../content_i_like/src/main/resources/static/img/search-icon-transparent-images-vector-15%201.png">
-                </a>
+              <form action="#" th:object="${keywordDto}" th:action="@{/search/tracks/test}"
+                    th:method="get">
+                 <input class="search-input" type="text" th:field="*{keyword}">
+
+                <button class="search-button" type="submit">
+                  <img th:src="@{/img/search-icon-transparent-images-vector-15 1.png}">
+                </button>
+              </form>
+
             </div>
         </div>
     </div>
     <div class="block-middle">
-        <span class="count-results">'사랑' 으로 총 3개의 검색결과를 찾았습니다.</span>
+        <span class="count-results" th:text="${searchResult}"></span>
         <hr>
         <br>
         <ul>
