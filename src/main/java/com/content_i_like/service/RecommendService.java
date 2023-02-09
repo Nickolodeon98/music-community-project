@@ -51,6 +51,20 @@ public class RecommendService {
     return RecommendPostResponse.fromEntity(post);
   }
 
+  @Transactional
+  public RecommendPostResponse uploadPost(final String userEmail,
+      final RecommendPostRequest request, List<String> hashtags) throws IOException {
+    Member member = validateGetMemberInfoByUserEmail(userEmail);
+//    Track track = validateGetTrackByTrackNo(request.getTrackNo());
+    Track track = validateGetTrackByTrackNo(1L);
+    String url = getUploadImageURL(request.getImage());
+    Recommend post = saveRecommend(request, member, track, url);
+    if (!(hashtags == null)) {
+      savePostHashtags(hashtags, post);
+    }
+    return RecommendPostResponse.fromEntity(post);
+  }
+
   /**
    * 추천글을 Database에 저장합니다.
    *
@@ -87,7 +101,7 @@ public class RecommendService {
    * @throws IOException
    */
   private String getUploadImageURL(MultipartFile image) throws IOException {
-    if (image != null) {
+    if (!image.isEmpty()) {
       return s3FileUploadService.uploadFile(image);
     }
     return "https://content-i-like.s3.ap-northeast-2.amazonaws.com/default-recommend.jpg";
