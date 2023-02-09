@@ -54,10 +54,17 @@
 
   <div class="contents">
     <nav id="sort-post">
-      <span class="selected-post-nav"><a th:href="@{/?sort=likes}">좋아요</a></span>
-      <span class="not-selected-post-nav"><a th:href="@{/?sort=point}">포인트</a></span>
-      <span class="not-selected-post-nav"><a href="">구독</a></span>
+      <span id="likes-span" class="not-selected-post-nav">
+        <a th:href="@{/?sort=likes}">좋아요</a>
+      </span>
+      <span id="point-span"class="not-selected-post-nav">
+        <a th:href="@{/?sort=point}">포인트</a>
+      </span>
+<!--      <span class="not-selected-post-nav">-->
+<!--        <a href="">구독</a>-->
+<!--      </span>-->
     </nav>
+
 
     <div class="list-recommend">
 
@@ -97,5 +104,42 @@
   </div>
 </div>
 </body>
+<script>
 
+  $(document).ready(function () {
+    const sort = getUrlParameter('sort');
+    console.log(sort);
+
+    if (sort === 'likes') {
+      $('#likes-span').removeClass('not-selected-post-nav').addClass('selected-post-nav');
+    } else if (sort === 'point') {
+      $('#point-span').removeClass('not-selected-post-nav').addClass('selected-post-nav');
+    }
+
+    $('#likes-link').click(function () {
+      $('#likes-span').removeClass('not-selected-post-nav').addClass('selected-post-nav');
+      $('#point-span').removeClass('selected-post-nav').addClass('not-selected-post-nav');
+    });
+
+    $('#point-link').click(function () {
+      $('#point-span').removeClass('not-selected-post-nav').addClass('selected-post-nav');
+      $('#likes-span').removeClass('selected-post-nav').addClass('not-selected-post-nav');
+    });
+  });
+
+  const getUrlParameter = function getUrlParameter(sParam) {
+    let sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+      sParameterName = sURLVariables[i].split('=');
+
+      if (sParameterName[0] === sParam) {
+        return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+      }
+    }
+  };
+</script>
 </html>
