@@ -110,7 +110,7 @@
     const sort = getUrlParameter('sort');
     console.log(sort);
 
-    if (sort === 'likes') {
+    if (sort === 'likes' || sort == null) {
       $('#likes-span').removeClass('not-selected-post-nav').addClass('selected-post-nav');
     } else if (sort === 'point') {
       $('#point-span').removeClass('not-selected-post-nav').addClass('selected-post-nav');
