@@ -1,0 +1,131 @@
+@font-face {
+    font-family: 'beanpoleM';
+    src: url('../fonts/beanpoleM.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'NotoSansKR';
+    src: url('../fonts/NotoSansKR-Regular.otf') format('opentype');
+}
+
+.block-top {
+    height: 300px;
+    width: 1400px;
+    display: flex;
+    justify-content: center;
+    /*background-color: lightblue;*/
+    margin: 40px auto 0 auto;
+}
+
+.block-middle {
+    height: 1200px;
+    width: 1400px;
+    /*display: flex;*/
+    /*justify-content: flex-start;*/
+    background-color: #1c1406;
+    /*background-color: lightblue;*/
+    opacity:0.78;
+    margin: auto auto 150px auto;
+    /*border-radius: 34px;*/
+    position: relative;
+    font-family: NotoSansKR;
+    font-size: 20px;
+    color: white;
+    border: none;
+    /*font-family: beanpoleM;*/
+}
+.search-engine {
+    /*background-color: black;*/
+    height:75px;
+    width: 1450px;
+    margin:30px auto 10px auto;
+    display: flex;
+    flex-direction: row;
+}
+
+.search-whole {
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    border-radius: 44px;
+}
+
+.categories {
+    display: flex;
+    justify-content: center;
+    padding: 14px 14px 15px 15px;
+    border: none;
+    border-radius: 44px;
+    font-size: 26px;
+    font-family:NotoSansKR;
+    margin: auto auto auto 15px;
+}
+.categories:focus {
+    outline: none;
+}
+
+.categories>option {
+    text-align:left;
+    display: flex;
+    justify-content: left;
+    margin: auto auto auto 15px;
+}
+
+.logo {
+    display: grid;
+    justify-content: space-between;
+    /*background-image: url("../../static/img/younha.jpg");*/
+    /*height: 31px;*/
+    padding-right: 20px;
+    padding-left: 5px;
+    font-family: beanpoleM;
+    font-size: 60px;
+    line-height: 1.4;
+    letter-spacing: normal;
+    text-align: center;
+    color: #fff;
+    /*background-color: black;*/
+    width: 120px;
+}
+
+.search-input {
+    display: flex;
+    justify-content: space-between;
+    /*background-color: grey;*/
+    width: 950px;
+    border-radius: 44px;
+    border: none;
+    font-family: NotoSansKR;
+    font-size: 30px;
+    padding-left: 30px;
+    padding-bottom: 5px;
+}
+
+.search-input:focus {
+    outline:none;
+}
+
+/*div.search-engine>button {*/
+/*    width: 50px;*/
+/*}*/
+.search-button {
+    padding: 14px 14px 15px 15px;
+    width: 70px;
+    height: 70px;
+    -webkit-border-radius: 38px;
+    -moz-border-radius: 38px;
+    border-radius: 38px;
+    margin: 5px 0 auto auto;
+    border: none;
+}
+
+.count-results {
+    position: relative;
+    /*left:40px;*/
+    top: 10px;
+    margin-bottom: 15px;
+    display: inline-block;
+    /*font-size: 24px;*/
+    font-style:italic;
+    font-size: 24px;
+}

@@ -1,0 +1,41 @@
+div.block-middle>ul {
+    display:flex;
+    flex-direction: column;
+    position:relative;
+    left:-43px;
+}
+div.block-middle>ul>li {
+    /*float:right;*/
+    display: flex;
+    margin: auto 0 30px 0;
+}
+
+div.block-middle>ul>li>img {
+    height:180px;
+    width:180px;
+}
+div.block-middle>ul>li>span {
+    /*font-size: 25px;*/
+    margin-left:30px;
+    position:relative;
+    right:-41px;
+}
+
+div.block-middle>ul>li>p {
+    /*font-size: 25px;*/
+    margin-left:30px;
+}
+
+span.recommend-title {
+    float:left;
+}
+
+span.recommend-date {
+    float: right;
+    /*margin-right: 30px;*/
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.recommend-title {
+    font-size: 22px;
+}

@@ -1,0 +1,37 @@
+div.block-middle>ul {
+    display:flex;
+    flex-direction: row;
+    margin-bottom: 60px;
+    position: relative;
+    left:-43px;
+}
+
+div.block-middle>ul>li {
+    display: flex;
+    flex-direction: column;
+    margin: auto 125px auto 0;
+}
+
+div.block-middle>ul>li>img {
+    margin: auto;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)) no-repeat center;
+    width: 180px;
+    height: 180px;
+    border-radius: 100%;
+    display: block;
+}
+
+div.block-middle>ul>li>a {
+    padding-top:0.5em;
+    font-size: 27px;
+    margin: auto;
+}
+
+div.block-middle>ul>li>span {
+    padding-top:0.4em;
+    font-size: 15px;
+    /*opacity:0.7%;*/
+    color: rgba(255, 255, 255, 0.7);
+    margin: auto;
+    text-align: center;
+}

@@ -1,0 +1,56 @@
+div.block-middle>ul {
+    display:flex;
+    flex-direction: row;
+    margin-bottom: 60px;
+    position: relative;
+    left:-43px;
+}
+
+div.block-middle>ul>li {
+    display: flex;
+    flex-direction: row;
+    margin: auto 100px auto auto;
+}
+
+div.block-middle>ul>li>img {
+    margin: auto;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)) no-repeat center;
+    width: 180px;
+    height: 180px;
+    border-radius: 44px;
+    display: flex;
+}
+
+div.block-middle>ul>li>span {
+    /*padding-top:0.5em;*/
+    padding: 0.4em 0 0 0.7em;
+    font-size: 23px;
+    /*color: rgba(255, 255, 255, 0.7);*/
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+}
+div.block-middle>ul>li>span>a.track-title {
+    font-size: 27px;
+}
+
+div.block-middle>ul>li>span>span.track-album {
+    font-size:24px;
+    color: rgba(255, 255, 255, 0.9);
+
+}
+
+div.block-middle>ul>li>span>span.track-info {
+    padding-bottom:2em;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+div.block-middle>ul>li>div>span {
+    padding-top:0.4em;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: auto;
+    text-align: left;
+    align-self: flex-end;
+}
