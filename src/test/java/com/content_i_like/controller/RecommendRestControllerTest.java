@@ -105,7 +105,7 @@ class RecommendRestControllerTest {
   @DisplayName("추천글 작성")
   void success_post_recommend() throws Exception {
 
-    RecommendPostRequest request = new RecommendPostRequest("제목", "내용", "유튜브", 100L, 1L);
+    RecommendPostRequest request = new RecommendPostRequest("제목", "내용", "유튜브", 100L, 1L, null, null);
     RecommendPostResponse response = new RecommendPostResponse(1L, "제목", 100L);
 
     given(recommendService.uploadPost(any(), any(), any(), any())).willReturn(response);

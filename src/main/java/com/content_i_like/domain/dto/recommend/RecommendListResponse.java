@@ -2,10 +2,13 @@ package com.content_i_like.domain.dto.recommend;
 
 import com.content_i_like.domain.entity.Comment;
 import com.content_i_like.domain.entity.Recommend;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,6 +28,7 @@ public class RecommendListResponse {
   private Long accumulatedPoints;
 
   public static RecommendListResponse of(Recommend recommend) {
+
     return RecommendListResponse.builder()
         .recommendNo(recommend.getRecommendNo())
         .recommendTitle(recommend.getRecommendTitle())
@@ -39,5 +43,29 @@ public class RecommendListResponse {
             .mapToLong(Comment::getCommentPoint)
             .sum() + recommend.getRecommendPoint())
         .build();
+  }
+
+  public static List<RecommendListResponse> of(Page<Object[]> result) {
+    return result.stream()
+        .map(objects -> RecommendListResponse.builder()
+            .recommendNo((Long) objects[0])
+            .recommendTitle(limitStringLength((String) objects[1], 10))
+            .recommendImageUrl((String) objects[2])
+            .memberNickname((String) objects[3])
+            .trackTitle((String) objects[4])
+            .albumImageUrl((String) objects[5])
+            .artistName((String) objects[6])
+            .recommendContent(limitStringLength((String) objects[7], 50))
+            .countLikes((Long) objects[8])
+            .accumulatedPoints(objects[9] == null ? 0L : (Long) objects[9])
+            .build())
+        .collect(Collectors.toList());
+  }
+
+  private static String limitStringLength(String str, int length) {
+    if (str.length() <= length) {
+      return str;
+    }
+    return str.substring(0, length) + "...";
   }
 }
