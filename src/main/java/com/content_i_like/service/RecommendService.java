@@ -5,18 +5,13 @@ import com.content_i_like.domain.entity.*;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.*;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.io.IOException;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -172,8 +167,9 @@ public class RecommendService {
 
   /**
    * 해당 글의 작성자와 해당 기능 요청자가 같은 사용자인지 검증합니다.
-   * @param member  사용자
-   * @param post    추천 글
+   *
+   * @param member 사용자
+   * @param post   추천 글
    */
   private void validateMemberMatchInRecommend(Member member, Recommend post) {
     if (!Objects.equals(member.getMemberNo(), post.getMember().getMemberNo())) {
@@ -200,8 +196,7 @@ public class RecommendService {
   }
 
   /**
-   * 추천글과 해시태그가 연결되어 있는 중간 테이블의 정보입니다.
-   * 기존 추천 글에 존재하는 해시 태그를 불러옵니다.
+   * 추천글과 해시태그가 연결되어 있는 중간 테이블의 정보입니다. 기존 추천 글에 존재하는 해시 태그를 불러옵니다.
    *
    * @param existingPostHashtags postHashtag 정보
    * @return 기존 글에 저장되어 있는 해시태그를 리스트로 반환합니다.
@@ -221,11 +216,10 @@ public class RecommendService {
   }
 
   /**
-   * 수정할 이미지의 url을 반환합니다.
-   * 이미지의 값이 null이라면 기존 등록된 url을 반환하고,
-   * 이미지의 값이 not null 이라면, 이미지를 새롭게 업로드합니다.
+   * 수정할 이미지의 url을 반환합니다. 이미지의 값이 null이라면 기존 등록된 url을 반환하고, 이미지의 값이 not null 이라면, 이미지를 새롭게 업로드합니다.
+   *
    * @param image 이미지 정보
-   * @param post 추천글 정보
+   * @param post  추천글 정보
    * @return 이미지 url 반환
    * @throws IOException
    */
@@ -281,9 +275,9 @@ public class RecommendService {
   }
 
 
-
   /**
    * artistNo을 사용하여 Artist 정보를 받아옵니다.
+   *
    * @param album Artist 고유 번호가 담겨 있는 앨범 정보
    * @return Artist 정보를 반환
    */
@@ -296,6 +290,7 @@ public class RecommendService {
 
   /**
    * AlbumNo를 사용하여 Album 정보를 받아옵니다.
+   *
    * @param track Album 고유 번호가 담겨 있는 트랙 정보
    * @return Album 정보를 반환
    */
@@ -308,6 +303,7 @@ public class RecommendService {
 
   /**
    * 게시글과 댓글에 있는 포인트를 모두 더합니다.
+   *
    * @param comments 댓글 리스트
    * @return 댓글 포인트와 게시물 포인트의 합 반환
    */
@@ -319,6 +315,7 @@ public class RecommendService {
 
   /**
    * 추천글 고유 번호를 통하여 추천글 정보를 받아옵니다.
+   *
    * @param recommendNo 추천글 고유 번호
    * @return 추천글 정보 반환
    */
@@ -331,6 +328,7 @@ public class RecommendService {
 
   /**
    * 사용자 이메일을 통하여 사용자 정보를 받아옵니다.
+   *
    * @param userEmail 사용자 이메일
    * @return 사용자 정보 반환
    */
@@ -342,12 +340,23 @@ public class RecommendService {
   }
 
   /**
-   * 추천글 목록을 불러옵니다.
    * @param pageable
+   * @param sort
    * @return
    */
-  public Page<RecommendListResponse> getPostList(final Pageable pageable) {
-    return recommendRepository.findAll(pageable)
-        .map(RecommendListResponse::of);
+  public Page<RecommendListResponse> getPostList(final Pageable pageable, String sort) {
+    if (sort.equals("subscribe")) {
+      Page<Object[]> result = recommendRepository.findAllWithLikeCount(pageable);
+      return new PageImpl<>(RecommendListResponse.of(result), pageable, result.getTotalElements());
+    }
+
+    if (sort.equals("point")) {
+      Page<Object[]> result = recommendRepository.findAllWithAccumulatedPoints(pageable);
+      return new PageImpl<>(RecommendListResponse.of(result), pageable, result.getTotalElements());
+    }
+
+    Page<Object[]> result = recommendRepository.findAllWithLikeCount(pageable);
+    return new PageImpl<>(RecommendListResponse.of(result), pageable, result.getTotalElements());
   }
+
 }

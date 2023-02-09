@@ -134,7 +134,7 @@ public class RecommendRestController {
 
     log.info("recommend_no = {}", sort);
 
-    Page<RecommendListResponse> response = recommendService.getPostList(pageable);
+    Page<RecommendListResponse> response = recommendService.getPostList(pageable, "createdAt");
     return Response.success(response);
   }
 }

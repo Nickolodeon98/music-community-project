@@ -26,6 +26,7 @@ public class Recommend extends BaseEntity {
 
   private String recommendTitle;
 
+  @Column(columnDefinition = "TEXT")
   private String recommendContent;
 
   private String recommendImageUrl;

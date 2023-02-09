@@ -54,8 +54,8 @@
 
   <div class="contents">
     <nav id="sort-post">
-      <span class="selected-post-nav"><a href="">좋아요</a></span>
-      <span class="not-selected-post-nav"><a href="">포인트</a></span>
+      <span class="selected-post-nav"><a th:href="@{/?sort=likes}">좋아요</a></span>
+      <span class="not-selected-post-nav"><a th:href="@{/?sort=point}">포인트</a></span>
       <span class="not-selected-post-nav"><a href="">구독</a></span>
     </nav>
 
@@ -76,6 +76,7 @@
             <div class="post-info-top">
               <span class="post-title" th:text="${list.getRecommendTitle()}"></span>
               <span class="like" th:text="|♥ ${list.getCountLikes()}|"></span>
+              <span class="point" th:text="|${list.getAccumulatedPoints()} pt|"></span>
             </div>
 
             <div class="line"></div>
