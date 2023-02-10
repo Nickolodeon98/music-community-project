@@ -25,7 +25,7 @@
         <span class="post-read-title" th:text="${post.getRecommendTitle()}"></span>
 
         <span class="post-read-menu">
-          <a href="">수정</a>
+          <a th:href="@{/recommends/{recommendNo}/modifyForm (recommendNo=${post.getRecommendNo()})}">수정</a>
         </span>
 
         <span class="post-read-menu">
@@ -137,5 +137,7 @@
   </div>
 </div>
 </body>
+<script>
 
+</script>
 </html>
