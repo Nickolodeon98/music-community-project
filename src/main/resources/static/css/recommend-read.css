@@ -169,7 +169,7 @@
 
 .post-content {
     margin: 32px 50px 33px 1px;
-    min-height: 227px;
+    height: 227px;
     font-family: NotoSansKR;
     font-size: 18px;
     text-align: left;

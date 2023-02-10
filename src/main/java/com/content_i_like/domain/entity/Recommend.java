@@ -2,12 +2,11 @@ package com.content_i_like.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
-
+import jakarta.persistence.CascadeType;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.*;
+import org.hibernate.annotations.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,6 +25,7 @@ public class Recommend extends BaseEntity {
 
   private String recommendTitle;
 
+  @Column(columnDefinition = "TEXT")
   private String recommendContent;
 
   private String recommendImageUrl;
