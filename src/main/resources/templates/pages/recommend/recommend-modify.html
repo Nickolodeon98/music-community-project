@@ -111,6 +111,10 @@
 </div>
 </body>
 <script>
+  $(".button-exit").on("click", function () {
+    const recommendNo = window.location.href.split('/')[4];
+    location.href = "/recommends/" + recommendNo;
+  });
 
   $("#btn-submit").on("click", function () {
     console.log("click");
