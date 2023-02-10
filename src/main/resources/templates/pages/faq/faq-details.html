@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/html"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-3.6.3.js"
+          integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+          crossorigin="anonymous"></script>
+  <link rel="stylesheet" th:href="@{/css/style.css}" href="../../../static/css/style.css">
+  <link rel="stylesheet" th:href="@{/css/myFeed.css}" href="../../../static/css/faq.css">
+  <!--  <link rel="stylesheet" th:href="@{/css/index.css}" href="../../../static/css/index.css">-->
+  <link rel="stylesheet" th:href="@{/css/recommend-post.css}" href="../../../static/css/recommend-post.css">
+</head>
+
+<body>
+<div class="container-faq">
+
+  <!-- 헤더 시작 -->
+  <div class="header">
+    <div class="header-nav">
+            <span id="logo">
+                <a href="">내미콘</a>
+            </span>
+
+      <span id="menu-recommend" class="menu">
+                <a href="">추천글</a>
+            </span>
+
+      <span id="menu-chart" class="menu">
+                <a href="">차트</a>
+            </span>
+
+      <span id="menu-inquiry" class="menu">
+                <a href="">문의</a>
+            </span>
+
+      <span id="menu-search" class="menu">
+                <a href="">검색</a>
+            </span>
+
+      <span id="menu-login" class="menu-user">
+                <a href="">로그인</a>
+            </span>
+
+      <span id="menu-join" class="menu-user">
+                <a href="">회원가입</a>
+            </span>
+    </div>
+  </div>
+  <!-- 헤더 끝 -->
+
+  <div class="container-faq-bottom">
+    <div class="faq-nav">
+      <span class="selected-faq-nav"><a href="">FAQ</a></span>
+      <span class="not-selected-faq-nav"><a href="">내 문의 내역</a></span>
+
+    </div>
+
+    <div class="faq-empty"></div>
+
+    <div class="faq-content-details">
+      <div class="faq-content-details-title">
+        <span class="font-title-blue">[슈퍼챗]</span>
+        <span class="font-title">슈퍼챗이 뭔가요?</span>
+      </div>
+
+      <div class="faq-content-details-list">
+        <span class="font-title">1. ‘슈퍼챗’이란? <br><br><br><br><br><br><br><br> img <br><br><br><br> 2.슈퍼챗의 기능<br><br><br><br><br><br>img</span>
+        <span class="font-gray">충분한 답변을 얻지 못하셨다면 1:1 문의를 통해 상세히 답변 드리겠습니다.</span>
+        <span class="inquire-btn"><a>문의하기</a></span>
+      </div>
+    </div>
+
+
+  </div>
+
+
+</div>
+</body>
+</html>

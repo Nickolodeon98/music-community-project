@@ -1,0 +1,448 @@
+.container-faq {
+  width: 100%;
+  height: 3000px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: #1c1406;
+}
+
+.container-faq-bottom {
+  width: 1844px;
+  height: 1200px;
+  margin-top: 100px;
+  display: flex;
+  flex-direction: row;
+}
+
+/*왼쪽 네비게이션 바*/
+
+.faq-nav {
+  width: 17%;
+  height: 100%;
+  border-radius: 30px;
+  border: white solid 1px;
+  display: flex;
+  flex-direction: column;
+}
+
+.selected-faq-nav {
+  width: 100%;
+  height: 174px;
+  background-color: white;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.not-selected-faq-nav {
+  width: 100%;
+  height: 174px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  border-bottom: white solid 1px;
+}
+
+.selected-inquire-nav {
+  width: 100%;
+  height: 174px;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.selected-faq-nav a {
+  font-family: NotoSansKR;
+  color: black;
+  font-size: 36px;
+}
+
+.not-selected-faq-nav a {
+  font-family: NotoSansKR;
+  color: white;
+  font-size: 36px;
+  text-align: center;
+}
+
+.selected-inquire-nav a {
+  font-family: NotoSansKR;
+  color: black;
+  font-size: 36px;
+  text-align: center;
+}
+
+
+.faq-empty {
+  width: 5%;
+  height: 100%;
+}
+
+/*오른쪽 컨텐츠*/
+
+.faq-content {
+  width: 78%;
+  height: 100%;
+  border-radius: 30px;
+  border: white solid 1px;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+}
+
+.category-btn {
+  width: 100%;
+  height: 55px;
+  margin-top: 81px;
+  margin-bottom: 90px;
+  display: flex;
+  flex-direction: row;
+}
+
+.not-selected-category-btn {
+  width: 214px;
+  height: 55px;
+  margin-right: 47px;
+  display: flex;
+  flex-direction: row;
+  border-radius: 24px;
+  border: white solid 1px;
+  align-items: center;
+  justify-content: center
+}
+
+.not-selected-category-btn a {
+  font-family: NotoSansKR;
+  font-size: 18px;
+  color: white;
+  text-align: center;
+}
+
+.search-faq {
+  width: 725px;
+  height: 66px;
+  margin-top: 16px;
+  margin-bottom: 101px;
+  border-bottom: white solid 1px;
+  display: flex;
+  justify-content: flex-end;
+
+}
+
+.img-search {
+  width: 48px;
+  height: 48px;
+}
+
+.faq-elements {
+  height: 29px;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 42px;
+  justify-content: flex-start;
+}
+
+/*문의내역 상세*/
+
+.faq-content-details {
+  width: 78%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.faq-content-details-title {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.faq-content-details-list {
+  width: 93%;
+  height: 100%;
+  border-radius: 24px;
+  border: white solid 1px;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+}
+
+.inquire-btn {
+  width: 200px;
+  height: 55px;
+  margin-top: 56px;
+  background-color: white;
+  border-radius: 24px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.inquire-btn a{
+  font-family: NotoSansKR;
+  color: black;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/*1:1 문의 작성*/
+
+.container-register-bottom {
+  width: 1844px;
+  height: 800px;
+  margin-top: 100px;
+  display: flex;
+  flex-direction: row;
+}
+
+.faq-content-register-title {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+.faq-register-details-title {
+  border-bottom: white solid 1px;
+  height: 60px;
+  margin-bottom: 97px;
+}
+
+.faq-register-details-content {
+  height: 370px;
+}
+
+.faq-register-btn {
+  width: 100%;
+  height: 55px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.faq-register-selected-btn {
+  width: 200px;
+  height: 55px;
+  background-color: white;
+  border-radius: 24px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.faq-register-not-selected-btn {
+  width: 200px;
+  height: 55px;
+  border-radius: 24px;
+  border: white solid 1px;
+  margin-right: 50px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.faq-register-selected-btn a {
+  font-family: NotoSansKR;
+  color: black;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.faq-register-not-selected-btn {
+  font-family: NotoSansKR;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/*내 문의내역*/
+
+.inquire-content {
+  width: 93%;
+  height: 100%;
+  border-radius: 24px;
+  border: white solid 1px;
+  display: flex;
+  flex-direction: column;
+}
+
+.inquire-title {
+  border-bottom: white solid 1px;
+  height: 105px;
+  display: flex;
+  flex-direction: row;
+  /*justify-content: center;*/
+  align-items: center;
+}
+
+.inquire-title span {
+  font-size: 28px;
+}
+
+.font-inquire-empty {
+  width: 6%;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.font-inquire-num {
+  width: 10%;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.font-inquire-title {
+  width: 53%;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.font-inquire-date {
+  width: 20%;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.font-inquire-status {
+  width: 11%;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.inquire-list {
+  height: 105px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.inquire-list-empty {
+  height: 80%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.inquire-list span {
+  color: white;
+  font-size: 28px;
+}
+
+/*1:1문의 상세*/
+.font-inquire-details-empty {
+  width: 3%;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.font-inquire-details-title {
+  width: 5%;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.font-inquire-details-title-content {
+  width: 73%;
+  color: white;
+}
+
+.font-inquire-details-num {
+  width: 5%;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.font-inquire-details-num-content {
+  width: 14%;
+  color: white;
+}
+
+.inquire-details {
+  padding: 40px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.inquire-details-content {
+  width: 5%;
+  font-size: 28px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.inquire-details-content-content {
+  width: 73%;
+  font-size: 28px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.inquire-content-date {
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.inquire-details-date {
+  width: 35%;
+  font-size: 28px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.inquire-details-date-date {
+  width: 65%;
+  font-size: 28px;
+  color: white;
+}
+
+
+
+
+
+/*폰트*/
+
+.font-title {
+  font-size: 32px;
+  color: white;
+  margin-bottom: 54px;
+  font-weight: 500;
+}
+
+.font-title-register {
+  font-size: 36px;
+  color: white;
+  font-weight: 500;
+}
+
+.font-title-blue {
+  font-size: 32px;
+  color: #2f6aff;
+  margin-right: 15px;
+}
+
+.font-title-gray-mrgBtm {
+  font-size: 26px;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 24px;
+}
+
+.font-title-gray {
+  font-size: 28px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.font-gray {
+  font-size: 28px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.font-white {
+  font-size: 28px;
+  color: white;
+}
+
+.font-blue {
+  font-size: 28px;
+  color: #2f6aff;
+  margin-right: 15px;
+}
+
+.font-btn {
+
+}
