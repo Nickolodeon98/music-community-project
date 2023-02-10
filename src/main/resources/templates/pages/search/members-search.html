@@ -1,103 +1,104 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{pages/search/search}">
 <head>
-    <meta charset="UTF-8">
-    <title>Search-Members</title>
-    <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/style.css">
-    <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/members-search.css">
-    <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/search.css">
+  <meta charset="UTF-8">
+  <title>Search-Members</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/members-search.css}">
+  <link rel="stylesheet" th:href="@{/css/search.css}">
+  <link rel="stylesheet"
+        href="../../../../../../../content_i_like/src/main/resources/static/css/style.css">
+  <link rel="stylesheet"
+        href="../../../../../../../content_i_like/src/main/resources/static/css/members-search.css">
+  <link rel="stylesheet"
+        href="../../../../../../../content_i_like/src/main/resources/static/css/search.css">
 
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <div class="header-nav">
-            <span id="logo">
-                <a href="">내미콘</a>
-            </span>
-            <span id="menu-recommend" class="menu">
-                <a href="">추천글</a>
-            </span>
+<div layout:fragment="search-fragment">
+  <div class="container">
+    <div th:replace="~{pages/search/search::search}"></div>
 
-            <span id="menu-chart" class="menu">
-                <a href="">차트</a>
-            </span>
-
-            <span id="menu-inquiry" class="menu">
-                <a href="">문의</a>
-            </span>
-
-            <span id="menu-search" class="menu">
-                <a href="">검색</a>
-            </span>
-
-            <span id="menu-login" class="menu-user">
-                <a href="">로그인</a>
-            </span>
-
-            <span id="menu-join" class="menu-user">
-                <a href="">회원가입</a>
-            </span>
-        </div>
-    </div>
-    <div class="block-top">
-        <div class="search-engine">
-            <div class="logo">내미콘</div>
-            <div class="search-whole">
-                <select class="categories">
-                    <option value="전체">전체</option>
-                    <option value="추천글"><b>추천글</b></option>
-                    <option value="음원">음원</option>
-                    <option value="유저">유저</option>
-                </select>
-                <input class="search-input">
-                <a href="" class="search-button" type="button">
-                    <img src="../../../../../../../content_i_like/src/main/resources/static/img/search-icon-transparent-images-vector-15%201.png">
-                </a>
-            </div>
-        </div>
-    </div>
     <div class="block-middle">
-        <span class="count-results">'사랑' 으로 총 3개의 검색결과를 찾았습니다.</span>
-        <hr>
-        <br>
-        <ul>
-            <li><img src="../../../../../../../content_i_like/src/main/resources/static/img/younha.jpg" class="card"/>
-                <a href="">사랑</a><span>가입일자<br>2023.02.09</span></li>
-            <li><img src="../../../../../../../content_i_like/src/main/resources/static/img/younha.jpg" class="card"/>
-                <a href="">사랑</a><span>가입일자<br>2023.02.09</span></li>
-            <li><img src="../../../../../../../content_i_like/src/main/resources/static/img/younha.jpg" class="card"/>
-                <a href="">사랑</a><span>가입일자<br>2023.02.09</span></li>
-            <li><img src="../../../../../../../content_i_like/src/main/resources/static/img/younha.jpg" class="card"/>
-                <a href="">사랑</a><span>가입일자<br>2023.02.09</span></li>
-            <li><img src="../../../../../../../content_i_like/src/main/resources/static/img/younha.jpg" class="card"/>
-                <a href="">사랑</a><span>가입일자<br>2023.02.09</span></li>
+      <span class="count-results"
+            th:text="${memberNickName} ? ${memberNickName.message} : '검색해주세요.'"></span>
+      <hr>
+      <br>
+      <th:block th:if="${memberNickName != null and memberNickNameAsList != null}">
+        <ul class="members-list"
+            th:if="${memberNickName.pages != null and memberNickNameAsList != null}"
+            th:unless="${counter == memberNickName.pages.getNumberOfElements()}"
+            th:each="counter: ${#numbers.sequence(0, memberNickName.pages.getNumberOfElements() - 1, 2)}">
+          <li class="members-list-element">
+            <!--              th:unless="${status.current % 5 != 0}">-->
+            <div class="members-profile-info">
+              <img th:src="${memberNickNameAsList.get(counter).profileImgUrl}"
+                   class="members-image"/>
+              <a class="members-name" th:text="${memberNickNameAsList.get(counter).nickName}"
+                 href=""></a>
+              <span class="members-date"
+                    th:text="${memberNickNameAsList.get(counter).createdAt}"><br>2023.02.09</span>
+            </div>
+          </li>
+
+          <li class="members-list-element"
+              th:unless="${counter + 1 == memberNickName.pages.getNumberOfElements()}">
+            <!--              th:unless="${status.current % 5 != 0}">-->
+            <div class="members-profile-info">
+              <img th:src="${memberNickNameAsList.get(counter+1).profileImgUrl}"
+                   class="members-image"/>
+              <a class="members-name" th:text="${memberNickNameAsList.get(counter+1).nickName}"
+                 href=""></a>
+              <span class="members-date" th:text="${memberNickNameAsList.get(counter+1).createdAt}"><br>2023.02.09</span>
+            </div>
+          </li>
+
+          <li class="members-list-element"
+              th:unless="${counter + 2 == memberNickName.pages.getNumberOfElements()}">
+            <!--              th:unless="${status.current % 5 != 0}">-->
+            <div class="members-profile-info">
+              <img th:src="${memberNickNameAsList.get(counter+2).profileImgUrl}"
+                   class="members-image"/>
+              <a class="members-name" th:text="${memberNickNameAsList.get(counter+2).nickName}"
+                 href=""></a>
+              <span class="members-date" th:text="${memberNickNameAsList.get(counter+2).createdAt}"><br>2023.02.09</span>
+            </div>
+
+          </li>
+
+          <li class="members-list-element"
+              th:unless="${counter + 3 == memberNickName.pages.getNumberOfElements()}">
+            <!--              th:unless="${status.current % 5 != 0}">-->
+            <div class="members-profile-info">
+              <img th:src="${memberNickNameAsList.get(counter+3).profileImgUrl}"
+                   class="members-image"/>
+              <a class="members-name" th:text="${memberNickNameAsList.get(counter+3).nickName}"
+                 href=""></a>
+              <span class="members-date" th:text="${memberNickNameAsList.get(counter+3).createdAt}"><br>2023.02.09</span>
+            </div>
+
+          </li>
+
+          <li class="members-list-element"
+              th:unless="${counter + 4 == memberNickName.pages.getNumberOfElements()}">
+            <!--              th:unless="${status.current % 5 != 0}">-->
+            <div class="members-profile-info">
+              <img th:src="${memberNickNameAsList.get(counter+4).profileImgUrl}"
+                   class="members-image"/>
+              <a class="members-name" th:text="${memberNickNameAsList.get(counter+4).nickName}"
+                 href=""></a>
+              <span class="members-date" th:text="${memberNickNameAsList.get(counter+4).createdAt}"><br>2023.02.09</span>
+            </div>
+
+          </li>
         </ul>
-        <ul>
-            <li><img src="../../../../../../../content_i_like/src/main/resources/static/img/younha.jpg" class="card"/>
-                <a href="">사랑</a><span>가입일자<br>2023.02.09</span></li>
-            <li><img src="../../../../../../../content_i_like/src/main/resources/static/img/younha.jpg" class="card"/>
-                <a href="">사랑</a><span>가입일자<br>2023.02.09</span></li>
-            <li><img src="../../../../../../../content_i_like/src/main/resources/static/img/younha.jpg" class="card"/>
-                <a href="">사랑</a><span>가입일자<br>2023.02.09</span></li>
-            <li><img src="../../../../../../../content_i_like/src/main/resources/static/img/younha.jpg" class="card"/>
-                <a href="">사랑</a><span>가입일자<br>2023.02.09</span></li>
-            <li><img src="../../../../../../../content_i_like/src/main/resources/static/img/younha.jpg" class="card"/>
-                <a href="">사랑</a><span>가입일자<br>2023.02.09</span></li>
-        </ul>
-        <ul>
-            <li><img src="../../../../../../../content_i_like/src/main/resources/static/img/younha.jpg" class="card"/>
-                <a href="">사랑</a><span>가입일자<br>2023.02.09</span></li>
-            <li><img src="../../../../../../../content_i_like/src/main/resources/static/img/younha.jpg" class="card"/>
-                <a href="">사랑</a><span>가입일자<br>2023.02.09</span></li>
-            <li><img src="../../../../../../../content_i_like/src/main/resources/static/img/younha.jpg" class="card"/>
-                <a href="">사랑</a><span>가입일자<br>2023.02.09</span></li>
-            <li><img src="../../../../../../../content_i_like/src/main/resources/static/img/younha.jpg" class="card"/>
-                <a href="">사랑</a><span>가입일자<br>2023.02.09</span></li>
-            <li><img src="../../../../../../../content_i_like/src/main/resources/static/img/younha.jpg" class="card"/>
-                <a href="">사랑</a><span>가입일자<br>2023.02.09</span></li>
-        </ul>
+
+      </th:block>
     </div>
+  </div>
 </div>
 </body>
 </html>

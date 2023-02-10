@@ -1,154 +1,46 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{pages/search/search}">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Search-Tracks</title>
+  <meta charset="UTF-8">
+  <title>Search-Tracks</title>
   <link rel="stylesheet" th:href="@{/css/style.css}">
   <link rel="stylesheet" th:href="@{/css/tracks-search.css}">
   <link rel="stylesheet" th:href="@{/css/search.css}">
-<!--  <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/style.css">-->
-<!--  <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/tracks-search.css">-->
-<!--  <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/search.css">-->
+  <!--  <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/style.css">-->
+  <!--  <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/tracks-search.css">-->
+  <!--  <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/search.css">-->
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <div class="header-nav">
-            <span id="logo">
-                <a href="">내미콘</a>
-            </span>
-            <span id="menu-recommend" class="menu">
-                <a href="">추천글</a>
-            </span>
 
-            <span id="menu-chart" class="menu">
-                <a href="">차트</a>
-            </span>
+<div layout:fragment="search-fragment">
+  <div th:replace="~{pages/search/search::search}"></div>
 
-            <span id="menu-inquiry" class="menu">
-                <a href="">문의</a>
-            </span>
+  <div class="container">
 
-            <span id="menu-search" class="menu">
-                <a href="">검색</a>
-            </span>
-
-            <span id="menu-login" class="menu-user">
-                <a href="">로그인</a>
-            </span>
-
-            <span id="menu-join" class="menu-user">
-                <a href="">회원가입</a>
-            </span>
-        </div>
-    </div>
-    <div class="block-top">
-        <div class="search-engine">
-            <div class="logo">내미콘</div>
-            <div class="search-whole">
-                <select class="categories">
-                    <option value="전체">전체</option>
-                    <option value="추천글"><b>추천글</b></option>
-                    <option value="음원">음원</option>
-                    <option value="유저">유저</option>
-                </select>
-              <form action="#" th:object="${keywordDto}" th:action="@{/search/tracks/test}"
-                    th:method="get">
-                 <input class="search-input" type="text" th:field="*{keyword}">
-
-                <button class="search-button" type="submit">
-                  <img th:src="@{/img/search-icon-transparent-images-vector-15 1.png}">
-                </button>
-              </form>
-
-            </div>
-        </div>
-    </div>
     <div class="block-middle">
-        <span class="count-results" th:text="${searchResult}"></span>
-        <hr>
-        <br>
+    <span class="count-results"
+          th:text="${searchResult} ? ${searchResult.message} : '검색해주세요'"></span>
+      <hr>
+      <br>
+      <th:block th:if="${searchResult != null}">
         <ul>
-            <li>
-              <img src="../../../../../../../content_i_like/src/main/resources/static/img/event-horizon.jpg"/>
-                    <span>
-                        <a href="" class="track-title">사랑인가봐</a>
-                        <span class="track-album">앨범명</span>
-                        <span class="track-info">멜로망스</span>
-                    </span>
-            </li>
-          <li>
-            <img src="../../../../../../../content_i_like/src/main/resources/static/img/event-horizon.jpg"/>
+          <li th:each="page, status : ${searchResult.pages}" th:if="${status.index<2}">
+            <img th:src="${page.thumbnailUrl}"/>
             <span>
-                        <a href="" class="track-title">사랑인가봐</a>
-                        <span class="track-album">앨범명</span>
-                        <span class="track-info">멜로망스</span>
-                    </span>
-          </li>
-          <li>
-            <img src="../../../../../../../content_i_like/src/main/resources/static/img/event-horizon.jpg"/>
-            <span>
-                        <a href="" class="track-title">사랑인가봐</a>
-                        <span class="track-album">앨범명</span>
-                        <span class="track-info">멜로망스</span>
-                    </span>
+              <a href="" class="track-title" th:text="${page.trackTitle}"></a>
+              <span class="track-album" th:text="${page.trackAlbum}"></span>
+              <span class="track-info" th:text="${page.trackArtist}"></span>
+          </span>
           </li>
         </ul>
-      <ul>
-        <li>
-          <img src="../../../../../../../content_i_like/src/main/resources/static/img/event-horizon.jpg"/>
-          <span>
-                        <a href="" class="track-title">사랑인가봐</a>
-                        <span class="track-album">앨범명</span>
-                        <span class="track-info">멜로망스</span>
-                    </span>
-        </li>
-        <li>
-          <img src="../../../../../../../content_i_like/src/main/resources/static/img/event-horizon.jpg"/>
-          <span>
-                        <a href="" class="track-title">사랑인가봐</a>
-                        <span class="track-album">앨범명</span>
-                        <span class="track-info">멜로망스</span>
-                    </span>
-        </li>
-        <li>
-          <img src="../../../../../../../content_i_like/src/main/resources/static/img/event-horizon.jpg"/>
-          <span>
-                        <a href="" class="track-title">사랑인가봐</a>
-                        <span class="track-album">앨범명</span>
-                        <span class="track-info">멜로망스</span>
-                    </span>
-        </li>
-      </ul>
-      <ul>
-        <li>
-          <img src="../../../../../../../content_i_like/src/main/resources/static/img/event-horizon.jpg"/>
-          <span>
-                        <a href="" class="track-title">사랑인가봐</a>
-                        <span class="track-album">앨범명</span>
-                        <span class="track-info">멜로망스</span>
-                    </span>
-        </li>
-        <li>
-          <img src="../../../../../../../content_i_like/src/main/resources/static/img/event-horizon.jpg"/>
-          <span>
-                        <a href="" class="track-title">사랑인가봐</a>
-                        <span class="track-album">앨범명</span>
-                        <span class="track-info">멜로망스</span>
-                    </span>
-        </li>
-        <li>
-          <img src="../../../../../../../content_i_like/src/main/resources/static/img/event-horizon.jpg"/>
-          <span>
-                        <a href="" class="track-title">사랑인가봐</a>
-                        <span class="track-album">앨범명</span>
-                        <span class="track-info">멜로망스</span>
-                    </span>
-        </li>
-      </ul>
-
+      </th:block>
     </div>
+  </div>
 </div>
+
 </body>
 </html>

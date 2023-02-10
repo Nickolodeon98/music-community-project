@@ -1,4 +1,4 @@
-div.block-middle>ul {
+.members-list {
     display:flex;
     flex-direction: row;
     margin-bottom: 60px;
@@ -6,13 +6,19 @@ div.block-middle>ul {
     left:-43px;
 }
 
-div.block-middle>ul>li {
+.members-list-element {
     display: flex;
     flex-direction: column;
-    margin: auto 125px auto 0;
+    /*margin: auto 100px auto 0;*/
 }
 
-div.block-middle>ul>li>img {
+.members-profile-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.members-image {
     margin: auto;
     background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)) no-repeat center;
     width: 180px;
@@ -21,13 +27,13 @@ div.block-middle>ul>li>img {
     display: block;
 }
 
-div.block-middle>ul>li>a {
+.members-name {
     padding-top:0.5em;
     font-size: 27px;
     margin: auto;
 }
 
-div.block-middle>ul>li>span {
+.members-date {
     padding-top:0.4em;
     font-size: 15px;
     /*opacity:0.7%;*/

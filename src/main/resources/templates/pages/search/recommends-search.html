@@ -1,105 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{pages/search/search}">
 <head>
-    <meta charset="UTF-8">
-    <title>Search-Recommends</title>
-    <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/style.css">
-    <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/recommends-search.css">
-    <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/search.css">
+  <meta charset="UTF-8">
+  <title>Search-Recommends</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/recommends-search.css}">
+  <link rel="stylesheet" th:href="@{/css/search.css}">
+  <link rel="stylesheet"
+        href="../../../../../../../content_i_like/src/main/resources/static/css/style.css">
+  <link rel="stylesheet"
+        href="../../../../../../../content_i_like/src/main/resources/static/css/recommends-search.css">
+  <link rel="stylesheet"
+        href="../../../../../../../content_i_like/src/main/resources/static/css/search.css">
 
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <div class="header-nav">
-            <span id="logo">
-                <a href="">내미콘</a>
-            </span>
-            <span id="menu-recommend" class="menu">
-                <a href="">추천글</a>
-            </span>
+<div layout:fragment="search-fragment">
+  <div class="container">
 
-            <span id="menu-chart" class="menu">
-                <a href="">차트</a>
-            </span>
+    <div th:replace="~{pages/search/search::search}"></div>
+    <div class="block-middle">
+      <span class="count-results"
+            th:text="${recommendsList} ? ${recommendsList.message} : '검색해주세요.'"></span>
+      <hr>
+      <br>
+      <th:block th:if="${recommendsList != null}">
+        <ul class="recommend-list" th:each="element, status : ${recommendsList.pages}" th:if="${status.index<5}">
+          <li class="recommend-list-elements">
+            <img class="recommend-image" th:src="${element.recommendImageUrl}"
+                 src="https://content-i-like.s3.ap-northeast-2.amazonaws.com/power.jpg"/>
+            <div class="title-and-contents">
+              <div class="recommend-text">
+                <a href="" class="recommend-title" th:style="${'font-weight:bold'}" th:text="${element.recommendTitle}"></a>
+                <span class="recommend-date" th:text="${element.getCreatedAt()}"></span>
+              </div>
 
-            <span id="menu-inquiry" class="menu">
-                <a href="">문의</a>
-            </span>
-
-            <span id="menu-search" class="menu">
-                <a href="">검색</a>
-            </span>
-
-            <span id="menu-login" class="menu-user">
-                <a href="">로그인</a>
-            </span>
-
-            <span id="menu-join" class="menu-user">
-                <a href="">회원가입</a>
-            </span>
-        </div>
-        </div>
-        <div class="block-top">
-            <div class="search-engine">
-                <div class="logo">내미콘</div>
-                <div class="search-whole">
-                    <select class="categories">
-                        <option value="전체">전체</option>
-                        <option value="추천글"><b>추천글</b></option>
-                        <option value="음원">음원</option>
-                        <option value="유저">유저</option>
-                    </select>
-                <input class="search-input">
-                <a href="" class="search-button" type="button">
-                    <img src="../../../../../../../content_i_like/src/main/resources/static/img/search-icon-transparent-images-vector-15%201.png">
-                </a>
-                </div>
+              <div class="separator"></div>
+              <span th:text="${element.summarizedRecommendContent}"></span>
             </div>
-        </div>
-        <div class="block-middle">
-            <span class="count-results">'사랑' 으로 총 3개의 검색결과를 찾았습니다.</span>
-            <hr>
-            <br>
-            <ul>
-                <li>
-                    <img src="../../../../../../../content_i_like/src/main/resources/static/img/index-img.jpg">
-                    <span>
-                <a href="" class="recommend-title"><b>사랑이 뭔가요</b></a>
-                <span class="recommend-date">3일 전</span>
-                <br><hr>
-            <span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque  penatibus
-et magnis dis parturient montes,nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quisem. Nulla consequat m
-assa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo</span>
-
-            </span>
-                </li>
-                <li>
-                    <img src="../../../../../../../content_i_like/src/main/resources/static/img/index-img.jpg">
-                    <span>
-                <span class="recommend-title">1번 추천글입니다.</span>
-                <span class="recommend-date">날짜입니다.</span>
-                <br><hr>
-            <span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque  penatibus
-et magnis dis parturient montes,nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quisem. Nulla consequat m
-assa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo</span>
-
-            </span>
-                </li>
-                <li>
-                    <img src="../../../../../../../content_i_like/src/main/resources/static/img/index-img.jpg">
-                    <span>
-                <span class="recommend-title">1번 추천글입니다.</span>
-                <span class="recommend-date">날짜입니다.</span>
-                <br><hr>
-            <span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque  penatibus
-et magnis dis parturient montes,nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quisem. Nulla consequat m
-assa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo</span>
-
-            </span>
-                </li>
-            </ul>
-        </div>
+          </li>
+        </ul>
+      </th:block>
     </div>
+  </div>
+</div>
 </body>
 </html>

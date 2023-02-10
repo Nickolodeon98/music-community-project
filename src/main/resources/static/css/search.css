@@ -8,6 +8,11 @@
     src: url('../fonts/NotoSansKR-Regular.otf') format('opentype');
 }
 
+.default-layout {
+    background-color: #1c1406;
+
+}
+
 .block-top {
     height: 300px;
     width: 1400px;
@@ -88,11 +93,17 @@
     width: 120px;
 }
 
+.search-form {
+    display: flex;
+    flex-direction: row;
+}
+
 .search-input {
     display: flex;
     justify-content: space-between;
     /*background-color: grey;*/
     width: 950px;
+    height:92%;
     border-radius: 44px;
     border: none;
     font-family: NotoSansKR;
@@ -117,6 +128,9 @@
     border-radius: 38px;
     margin: 5px 0 auto auto;
     border: none;
+    position: relative;
+    float:right;
+    background-color: white;
 }
 
 .count-results {
