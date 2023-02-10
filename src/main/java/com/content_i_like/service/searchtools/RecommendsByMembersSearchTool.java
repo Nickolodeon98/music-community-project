@@ -13,13 +13,19 @@ public class RecommendsByMembersSearchTool implements ItemSearch<SearchRecommend
   private final RecommendRepository recommendRepository;
   @Override
   public Page<SearchRecommendsResponse> searchAll(Pageable pageable) {
-    return recommendRepository.findAll(pageable).map(SearchRecommendsResponse::of);
+    return recommendRepository.findAll(pageable).map(recommend ->
+        recommend.getRecommendContent().length() < 10
+            ? SearchRecommendsResponse.of(recommend, recommend.getRecommendContent())
+            : SearchRecommendsResponse.of(recommend, recommend.getRecommendContent().substring(0, 10)));
   }
 
   @Override
   public Page<SearchRecommendsResponse> search(String keyword, Pageable pageable) {
     return recommendRepository.findAllByMemberNickNameContaining(keyword, pageable)
-        .map(recommendPage -> recommendPage.map(SearchRecommendsResponse::of))
-        .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
+        .map(recommendPage -> recommendPage.map(recommend ->
+                recommend.getRecommendContent().length() < 10
+                    ? SearchRecommendsResponse.of(recommend, recommend.getRecommendContent())
+                    : SearchRecommendsResponse.of(recommend, recommend.getRecommendContent().substring(0, 10))))
+            .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
   }
 }

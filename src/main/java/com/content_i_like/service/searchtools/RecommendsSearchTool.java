@@ -17,13 +17,23 @@ public class RecommendsSearchTool implements ItemSearch<SearchRecommendsResponse
 
   @Override
   public Page<SearchRecommendsResponse> searchAll(Pageable pageable) {
-    return recommendRepository.findAll(pageable).map(SearchRecommendsResponse::of);
+    return recommendRepository.findAll(pageable).map(recommend ->
+        recommend.getRecommendContent().length() < 10
+            ? SearchRecommendsResponse.of(recommend, recommend.getRecommendContent())
+            : SearchRecommendsResponse.of(recommend,
+                recommend.getRecommendContent().substring(0, 10)));
   }
 
   @Override
   public Page<SearchRecommendsResponse> search(String keyword, Pageable pageable) {
+
     return recommendRepository.findByRecommendTitleContaining(keyword, pageable)
-        .map(recommendPage -> recommendPage.map(SearchRecommendsResponse::of))
+        .map(recommendPage -> recommendPage
+            .map(recommend ->
+                recommend.getRecommendContent().length() < 100
+                    ? SearchRecommendsResponse.of(recommend, recommend.getRecommendContent())
+                    : SearchRecommendsResponse.of(recommend,
+                        recommend.getRecommendContent().substring(0, 100))))
         .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
   }
 }

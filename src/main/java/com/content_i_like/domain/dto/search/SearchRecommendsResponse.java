@@ -24,10 +24,10 @@ public class SearchRecommendsResponse {
   private Long accumulatedPoints;
   private String createdAt;
 
-  public static SearchRecommendsResponse of(Recommend recommend) throws NullPointerException {
+  public static SearchRecommendsResponse of(Recommend recommend, String summarizedContent) throws NullPointerException {
     return SearchRecommendsResponse.builder()
         .recommendTitle(recommend.getRecommendTitle())
-        .summarizedRecommendContent(recommend.getRecommendContent().substring(0, 1))
+        .summarizedRecommendContent(summarizedContent)
         .memberNickname(recommend.getMember().getNickName())
         .recommendImageUrl(recommend.getRecommendImageUrl())
         .albumImageUrl(recommend.getTrack().getAlbum().getAlbumImageUrl())
@@ -35,7 +35,7 @@ public class SearchRecommendsResponse {
 //        .accumulatedPoints(recommend.getComments().stream()
 //            .mapToLong(Comment::getCommentPoint)
 //            .sum() + recommend.getRecommendPoint())
-//        .createdAt(recommend.getCreatedAt().toString())
+        .createdAt(recommend.getCreatedAt().toString())
         .build();
   }
 }
