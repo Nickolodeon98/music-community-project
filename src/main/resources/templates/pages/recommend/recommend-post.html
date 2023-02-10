@@ -56,19 +56,28 @@
 
         <div class="board-body">
           <span class="board-body-title">썸네일</span>
-          <span><input th:field="*{image}" type="file" placeholder="이미지를 업로드하세요"/></span>
+          <span><input id="img-file" th:field="*{image}" type="file"
+                       placeholder="이미지를 업로드하세요"/></span>
+          <span>
+            <span class="board-body-title preview">미리보기</span>
+            <img class="preview" id="preview-img" src="">
+          </span>
         </div>
 
         <div class="board-body">
           <span class="board-body-title">유튜브 링크</span>
           <span id="youtube-link">https://youtu.be/</span>
-          <span id="board-input-youtube"><input th:field="*{recommendYoutubeUrl}"
+          <span id="board-input-youtube"><input name="youtube-url"
+                                                th:field="*{recommendYoutubeUrl}"
                                                 type="text"/></span>
         </div>
 
         <div class="board-body">
           <span class="board-body-title">포인트</span>
-          <span id="board-input-point"><input th:field="*{recommendPoint}" type="text"/></span>
+          <span id="board-input-point">
+              <input name="recommendPoint" placeholder="등록된 포인트는 수정할 수 없습니다."
+                     th:field="*{recommendPoint}" type="number" min="0"/>
+          </span>
         </div>
 
         <div class="board-body">
@@ -121,12 +130,44 @@
     if (trackNo === "" || trackNo == null) {
       alert("음악을 선택해주세요.");
       //return false;
-      return true;
     }
 
     return true;
-
   });
+
+  const fileDOM = document.querySelector('#img-file');
+  const preview = document.querySelector('#preview-img');
+
+  fileDOM.addEventListener('change', () => {
+    const file = fileDOM.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    let maxSize = 3 * 1024 * 1024;
+    let fileSize = file.size;
+
+    if (!file.type.match("image.*")) {
+      alert("이미지 파일만 선택 가능합니다.");
+      return false;
+    }
+
+    if (fileSize > maxSize) {
+      alert("첨부파일 사이즈는 3MB 이내로 등록 가능합니다.");
+      $(fileDOM).val('');
+      return false;
+    }
+
+    const reader = new FileReader();
+    reader.onload = ({target}) => {
+      preview.src = target.result;
+    };
+    preview.src = URL.createObjectURL(file);
+  });
+
+
 </script>
+
 
 </html>
