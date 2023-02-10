@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-3.6.3.js"
+          integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+          crossorigin="anonymous"></script>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/recommend-post.css}">
+</head>
+<body>
+<div class="container">
+  <div th:replace="~{common/fragments/header::header}"></div>
+
+  <div class="contents">
+    <div class="board">
+      <form th:action="@{/recommends/{recommendNo}/update (recommendNo = ${post.getRecommendNo()})}"
+            method="post" th:object="${request}"
+            enctype="multipart/form-data">
+        <div class="board-top">
+          <span class="board-title">게시글 작성</span>
+          <span class="button-exit button">나가기 X</span>
+        </div>
+
+        <div class="board-body">
+          <span class="board-body-title">제목</span>
+          <span id="board-input-title"> <input name="recommendTitle"
+                                               th:value="${post.getRecommendTitle()}"
+                                               th:placeholder="|제목을 입력해주세요(100자 이내)|"/></span>
+        </div>
+
+        <div class="board-body">
+          <span class="board-body-title">추천 음악</span>
+          <span id="board-input-search">
+            <input name="trackTitle" th:value="${post.getTrack().getTrackTitle()}" readonly/>
+            <input type="hidden" name="trackNo" th:value="${post.getTrack().getTrackNo()}"
+                   readonly/>
+          </span>
+        </div>
+
+        <div class="board-body">
+          <span class="board-body-title">추천 내용</span>
+          <span id="board-input-content"> <textarea name="recommendContent"
+                                                    th:text="${post.getRecommendContent()}"
+                                                    placeholder="추천 글을 작성해주세요"></textarea>
+          </span>
+        </div>
+
+        <div class="board-body">
+          <span class="board-body-title">해시태그</span>
+          <span id="board-input-hashtag">
+            <input th:name="hashtag" th:value="${hashtags}"/>
+          </span>
+        </div>
+
+        <div class="board-body">
+          <span class="board-body-title">썸네일</span>
+          <span><input id="img-file" type="file" placeholder="이미지를 업로드하세요"/></span>
+          <span th:if="${!post.recommendImageUrl.isEmpty()}">
+            <span class="board-body-title preview">미리보기</span>
+            <img class="preview" id="preview-img" th:src="${post.getRecommendImageUrl()}">
+          </span>
+        </div>
+
+        <div class="board-body">
+          <span class="board-body-title">유튜브 링크</span>
+          <span id="youtube-link">https://youtu.be/</span>
+          <span id="board-input-youtube"><input name="youtube-url"
+                                                th:value="${post.getRecommendYoutubeUrl != null ? post.getRecommendYoutubeUrl().split('/')[3] : ' '}"
+                                                type="text"/></span>
+        </div>
+
+        <div class="board-body">
+          <span class="board-body-title">포인트</span>
+          <span id="board-input-point">
+              <input type="number" th:value="${post.getRecommendPoint()}" readonly/>
+          </span>
+        </div>
+
+        <div class="board-body">
+          <span id="button-post"><input id="btn-submit" type="submit" value="작성하기" readonly></span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="footer">
+
+  </div>
+</div>
+
+<!-- 위치 재설정 모달 -->
+<div id="modal-search-music" role="dialog" tabindex="-1" data-bs-backdrop="static"
+     data-bs-keyboard="false">
+  <div class="" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom-color: rgb(255,255,255);">
+        <input type="text" placeholder="찾으시는 음악을 입력해 주세요">
+        <span></span>
+      </div>
+
+      <div class="modal-body">
+
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+
+  $("#btn-submit").on("click", function () {
+    console.log("click");
+    let recommendTitle = $('#board-input-title [name = recommendTitle]').val();
+    let recommendContent = $('#board-input-content [name = recommendContent]').val();
+    let trackNo = $('#board-input-search [name=trackNo]').val();
+
+    if (recommendTitle === "" || recommendTitle == null) {
+      alert("제목을 입력해주세요.");
+      return false;
+    }
+
+    if (recommendContent === "" || recommendContent == null) {
+      alert("내용을 입력해주세요.");
+      return false;
+    }
+
+    if (trackNo === "" || trackNo == null) {
+      alert("음악을 선택해주세요.");
+      //return false;
+    }
+
+    return true;
+  });
+
+  const fileDOM = document.querySelector('#img-file');
+  const preview = document.querySelector('#preview-img');
+
+  fileDOM.addEventListener('change', () => {
+    const file = fileDOM.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    let maxSize = 3 * 1024 * 1024;
+    let fileSize = file.size;
+
+    if (!file.type.match("image.*")) {
+      alert("이미지 파일만 선택 가능합니다.");
+      return false;
+    }
+
+    if (fileSize > maxSize) {
+      alert("첨부파일 사이즈는 3MB 이내로 등록 가능합니다.");
+      $(fileDOM).val('');
+      return false;
+    }
+
+    const reader = new FileReader();
+    reader.onload = ({target}) => {
+      preview.src = target.result;
+    };
+    preview.src = URL.createObjectURL(file);
+  });
+
+
+</script>
+
+</html>
