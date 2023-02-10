@@ -14,16 +14,23 @@ import com.content_i_like.domain.dto.member.MemberRecommendResponse;
 import com.content_i_like.domain.dto.member.MemberResponse;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
 import com.content_i_like.service.MemberService;
+import com.content_i_like.utils.SessionConstants;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,9 +41,17 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @RequestMapping("/member")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
   private final MemberService memberService;
+
+  @GetMapping("/login")
+  public String joinForm(Model model) {
+    model.addAttribute("request", new MemberLoginRequest());
+    return "pages/member/login";
+  }
+
 
   @PostMapping("/join")
   public Response<MemberJoinResponse> join(@RequestBody @Valid final MemberJoinRequest request) {
@@ -44,11 +59,6 @@ public class MemberController {
     return Response.success(response);
   }
 
-  @PostMapping("/login")
-  public Response<MemberLoginResponse> login(@RequestBody @Valid final MemberLoginRequest request) {
-    MemberLoginResponse response = memberService.login(request);
-    return Response.success(response);
-  }
 
   @PostMapping("/passwd/find_pw")
   public Response<String> findPw(@RequestBody @Valid final MemberFindRequest request) {
