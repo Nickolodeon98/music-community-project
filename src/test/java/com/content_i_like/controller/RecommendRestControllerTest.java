@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import java.io.FileInputStream;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,6 +47,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.multipart.MultipartFile;
 
 @WebMvcTest(RecommendRestController.class)
 @WithMockCustomOAuth2Account(registrationId = "google")
@@ -143,11 +145,14 @@ class RecommendRestControllerTest {
   @Test
   @DisplayName("추천글 수정")
   void success_modify_recommend() throws Exception {
-
-    RecommendModifyRequest request = new RecommendModifyRequest("수정", "수정내용", "수정 유튜브");
+    MultipartFile requestFile = new MockMultipartFile("image",
+        "test.png",
+        "image/png",
+        new FileInputStream("업로드 할 실제 파일 path 입력"));
+    RecommendModifyRequest request = new RecommendModifyRequest("수정", "수정내용", "수정 유튜브",requestFile,"dd");
     RecommendModifyResponse response = new RecommendModifyResponse(1L, "수정");
 
-    given(recommendService.modifyPost(any(), any(), any(), any(), any())).willReturn(response);
+    given(recommendService.modifyPost(any(), any(), any())).willReturn(response);
 
     MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg",
         "test data".getBytes());
