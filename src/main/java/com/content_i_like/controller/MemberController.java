@@ -13,6 +13,7 @@ import com.content_i_like.domain.dto.member.MemberPointResponse;
 import com.content_i_like.domain.dto.member.MemberRecommendResponse;
 import com.content_i_like.domain.dto.member.MemberResponse;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
+import com.content_i_like.domain.entity.Member;
 import com.content_i_like.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -61,10 +62,10 @@ public class MemberController {
     if (bindingResult.hasErrors()) {
       return "pages/member/login";
     }
-    MemberLoginResponse loginResponse = memberService.login(memberLoginRequest);
+    MemberLoginResponse response = memberService.login(memberLoginRequest);
 
     HttpSession session = request.getSession();   //세션이 있으면 있는 세션 반환, 없으면 신규 세션
-    session.setAttribute("loginUser", loginResponse);
+    session.setAttribute("loginUser", response);
     log.info("로그인 완료");
     return "redirect:/";
   }
