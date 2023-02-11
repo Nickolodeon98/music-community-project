@@ -2,6 +2,8 @@ server:
   servlet:
     encoding:
       force-response: true
+    sessio:
+      timeout: 60m
 
 spring:
   mvc:

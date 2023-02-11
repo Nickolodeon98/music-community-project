@@ -111,7 +111,7 @@
     width: 100%;
     flex-wrap: wrap;
     display: flex;
-    justify-content: space-between;
+    justify-content: start;
 }
 
 /*카드*/

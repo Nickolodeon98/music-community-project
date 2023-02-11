@@ -90,8 +90,7 @@ public class RecommendRestController {
         .distinct()
         .filter(Objects::nonNull).toList();
 
-    RecommendModifyResponse response = recommendService.modifyPost(userEmail, recommendNo, request,
-        image, hashtags);
+    RecommendModifyResponse response = recommendService.modifyPost(userEmail, recommendNo, request);
     return Response.success(response);
   }
 

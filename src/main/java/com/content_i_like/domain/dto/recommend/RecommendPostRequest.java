@@ -26,17 +26,23 @@ public class RecommendPostRequest {
   public static Recommend toEntity(RecommendPostRequest request, Member member, Track track,
       String url) {
     Long point;
+
     if (request.getRecommendPoint() == null) {
       point = 0L;
     }else{
       point = request.getRecommendPoint();
+    }
+    String youtubeUrl = "";
+
+    if (request.getRecommendYoutubeUrl() != null) {
+      youtubeUrl = "https://youtu.be/" + request.getRecommendYoutubeUrl();
     }
 
     return Recommend.builder()
         .recommendTitle(request.getRecommendTitle())
         .recommendContent(request.getRecommendContent())
         .recommendImageUrl(url)
-        .recommendYoutubeUrl(request.getRecommendYoutubeUrl())
+        .recommendYoutubeUrl(youtubeUrl)
         .recommendPoint(point)
         .recommendViews(0L)
         .member(member)
