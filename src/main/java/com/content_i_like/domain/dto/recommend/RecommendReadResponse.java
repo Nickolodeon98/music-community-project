@@ -22,6 +22,7 @@ import java.util.List;
 @Builder
 public class RecommendReadResponse {
 
+  private Long recommendNo;
   private String recommendTitle;
   private String memberNickname;
   private String memberProfileImgUrl;
@@ -41,6 +42,7 @@ public class RecommendReadResponse {
   public static RecommendReadResponse of(Recommend post, Member member, Album album, Artist artist,
       Track track, List<Comment> comments, Long countLikes, Long accumulatedPoints, List<String> hashtags) {
     return RecommendReadResponse.builder()
+        .recommendNo(post.getRecommendNo())
         .recommendTitle(post.getRecommendTitle())
         .memberNickname(member.getNickName())
         .memberProfileImgUrl(member.getProfileImgUrl())

@@ -7,6 +7,8 @@ import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -53,16 +55,24 @@ public class RecommendService {
 
   @Transactional
   public RecommendPostResponse uploadPost(final String userEmail,
-      final RecommendPostRequest request, List<String> hashtags) throws IOException {
+      final RecommendPostRequest request) throws IOException {
     Member member = validateGetMemberInfoByUserEmail(userEmail);
 //    Track track = validateGetTrackByTrackNo(request.getTrackNo());
     Track track = validateGetTrackByTrackNo(1L);
     String url = getUploadImageURL(request.getImage());
     Recommend post = saveRecommend(request, member, track, url);
-    if (!(hashtags == null)) {
-      savePostHashtags(hashtags, post);
-    }
+    saveHashTags(request, post);
     return RecommendPostResponse.fromEntity(post);
+  }
+
+  private void saveHashTags(RecommendPostRequest request, Recommend post) {
+    Optional.ofNullable(request.getHashtag())
+        .filter(str -> str.contains("#"))
+        .map(str -> Stream.of(str.split("#"))
+            .map(h -> h.replaceAll(" ", ""))
+            .filter(h -> !h.isEmpty())
+            .distinct()
+            .toList()).ifPresent(hashtags -> savePostHashtags(hashtags, post));
   }
 
   /**
@@ -133,23 +143,35 @@ public class RecommendService {
    * @param userEmail   수정을 요청한 사용자 email
    * @param recommendNo 수정할 추천글 고유 번호
    * @param request     수정할 추천글 정보
-   * @param image       수정할 이미지 정보
-   * @param hashtags    수정할 해시태그 정보
    * @return 수정된 추천글 내용
    */
   @Transactional
   public RecommendModifyResponse modifyPost(final String userEmail, final Long recommendNo,
-      final RecommendModifyRequest request, MultipartFile image, List<String> hashtags)
+      final RecommendModifyRequest request)
       throws IOException {
 
     Member member = validateGetMemberInfoByUserEmail(userEmail);
     Recommend post = validateGetRecommendInfoByRecommendNo(recommendNo);
     validateMemberMatchInRecommend(member, post);
-    String url = getModifyImageURL(image, post);
+    String url = getModifyImageURL(request.getImage(), post);
     updatePost(recommendNo, request, url);
     post = validateGetRecommendInfoByRecommendNo(recommendNo);
+
+    List<String> hashtags = getHashtagsFromRequest(request);
     updateAndManageHashtags(post, hashtags);
     return new RecommendModifyResponse(post.getRecommendNo(), post.getRecommendTitle());
+  }
+
+  private List<String> getHashtagsFromRequest(RecommendModifyRequest request) {
+    List<String> hashtags = Optional.ofNullable(request.getHashtag())
+        .filter(str -> str.contains("#"))
+        .map(str -> Stream.of(str.split("#"))
+            .map(h -> h.replaceAll(" ", ""))
+            .filter(h -> !h.isEmpty())
+            .distinct()
+            .toList())
+        .orElse(null);
+    return hashtags;
   }
 
   /**
@@ -160,23 +182,38 @@ public class RecommendService {
    * @param url         수정할 추천글의 이미지 url
    */
   private void updatePost(Long recommendNo, RecommendModifyRequest request, String url) {
+    String youtubeUrl = getYoutubeURL(request);
+
     recommendRepository.update(request.getRecommendTitle(), request.getRecommendContent(),
-        url, request.getRecommendYoutubeUrl(), recommendNo);
+        url, youtubeUrl, recommendNo);
+  }
+
+  private String getYoutubeURL(RecommendModifyRequest request) {
+    String youtubeUrl = "https://youtu.be/";
+    if (request.getRecommendYoutubeUrl() != null) {
+      youtubeUrl += request.getRecommendYoutubeUrl();
+    }
+    return youtubeUrl;
   }
 
   /**
    * 추천글에 입력된 해시태그를 검증하고 수정합니다.
    *
    * @param hashtags  수정할 추천글 해시태그
-   * @param recommend 수정할 추천글
+   * @param post 수정할 추천글
    */
-  private void updateAndManageHashtags(Recommend recommend, List<String> hashtags) {
+  private void updateAndManageHashtags(Recommend post, List<String> hashtags) {
+
+    if (hashtags == null) {
+      postHashtagRepository.deleteAllByRecommend(post);
+      return;
+    }
     List<PostHashtag> existingPostHashtags = postHashtagRepository.findAllByRecommendRecommendNo(
-        recommend.getRecommendNo());
+        post.getRecommendNo());
     List<String> existingHashtags = getExistingHashtags(existingPostHashtags);
 
     // 두 해시태그가 동일하면 패스, 다르면 이전 해시태그 모두 삭제, 새로운 해시태그 등록.
-    updateHashtags(hashtags, recommend, existingHashtags);
+    updateHashtags(hashtags, post, existingHashtags);
   }
 
   /**
@@ -239,7 +276,7 @@ public class RecommendService {
    */
   private String getModifyImageURL(MultipartFile image, Recommend post) throws IOException {
     String url = post.getRecommendImageUrl();
-    if (image.isEmpty()) {
+    if (image == null) {
       return url;
     }
     s3FileUploadService.deleteFile(url.split("/")[3]);
@@ -373,4 +410,20 @@ public class RecommendService {
     return new PageImpl<>(RecommendListResponse.of(result), pageable, result.getTotalElements());
   }
 
+  public Recommend findPostById(Long recommendNo) {
+    return recommendRepository.findById(recommendNo).orElseThrow(
+        ()->{
+          throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+        }
+    );
+  }
+
+  public String getHashtagsToString(Long recommendNo) {
+
+    List<PostHashtag> postHashtags = postHashtagRepository.findAllByRecommendRecommendNo(
+        validateGetRecommendInfoByRecommendNo(recommendNo).getRecommendNo());
+
+    return "#" + postHashtags.stream().map(postHashtag -> postHashtag.getHashtag().getName())
+        .collect(Collectors.joining(" #"));
+  }
 }

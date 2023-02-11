@@ -11,6 +11,7 @@
           crossorigin="anonymous"></script>
   <link rel="stylesheet" th:href="@{/css/style.css}">
   <link rel="stylesheet" th:href="@{/css/recommend-read.css}">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
 
 
 </head>
@@ -25,11 +26,11 @@
         <span class="post-read-title" th:text="${post.getRecommendTitle()}"></span>
 
         <span class="post-read-menu">
-          <a href="">수정</a>
+          <a th:href="@{/recommends/{recommendNo}/modifyForm (recommendNo=${post.getRecommendNo()})}">수정</a>
         </span>
 
         <span class="post-read-menu">
-          <a href="">삭제</a>
+          <a th:href="'javascript:deletePost(\''+${post.getRecommendNo()}+'\')'">삭제</a>
         </span>
       </div>
       <div class="post-read-hashtag">
@@ -137,5 +138,19 @@
   </div>
 </div>
 </body>
+<script>
 
+  function deletePost(recommendNo){
+    let form = document.createElement('form');
+
+    if (confirm("정말 삭제하시겠습니까?")) {
+      form.setAttribute('method', 'post');
+      form.setAttribute('action', '/recommends/'+recommendNo+'/delete');
+      document.body.appendChild(form);
+      form.submit();
+      alert("삭제되었습니다.");
+    }
+
+  }
+</script>
 </html>
