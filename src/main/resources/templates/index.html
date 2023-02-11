@@ -11,6 +11,7 @@
           crossorigin="anonymous"></script>
 
   <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
   <link rel="stylesheet" th:href="@{/css/index.css}">
 </head>
 <body>
@@ -36,13 +37,41 @@
                 <a href="">검색</a>
             </span>
 
-      <span id="menu-login" class="menu-user">
-                <a href="">로그인</a>
+      <th:block th:if="${session.loginUser==null}">
+        <span id="menu-login" class="menu-user">
+                  <a href="/member/login">로그인</a>
+              </span>
+
+        <span id="menu-join" class="menu-user">
+                  <a href="">회원가입</a>
+              </span>
+      </th:block>
+
+      <th:block th:if="${session.loginUser!=null}">
+        <span id="menu-post" class="menu-userinfo">
+                <a href=""><img class="pen-img" th:src="@{/img/pen.png}" src="../../../static/img/pen.png"> 글 작성하기</a>
+        </span>
+
+
+        <span id="menu-alarm" class="menu-img">
+                <a href=""><img class="alarm-img" th:src="@{/img/bell-img.png}" src="../../../static/img/bell-img.png"></a>
             </span>
 
-      <span id="menu-join" class="menu-user">
-                <a href="">회원가입</a>
-            </span>
+        <div class="dropdown">
+          <span id="menu-profile" class="menu-img">
+  <!--                <a href="">-->
+            <!--                  <img src="../static/img/event-horizion.jpg" class="profile-img">-->
+            <!--                </a>-->
+            <span th:text="${session.loginUser.nickName}"></span>
+                    <div class="dropdown-content">
+                        <a href="#">profile</a>
+                        <a href="#">피드</a>
+                        <a href="#">로그아웃</a>
+                    </div>
+              </span>
+        </div>
+      </th:block>
+
     </div>
 
     <div class="index">
@@ -60,9 +89,9 @@
       <span id="point-span"class="not-selected-post-nav">
         <a th:href="@{/?sort=point}">포인트</a>
       </span>
-<!--      <span class="not-selected-post-nav">-->
-<!--        <a href="">구독</a>-->
-<!--      </span>-->
+      <!--      <span class="not-selected-post-nav">-->
+      <!--        <a href="">구독</a>-->
+      <!--      </span>-->
     </nav>
 
 
