@@ -32,10 +32,10 @@ public class RecommendPostRequest {
     }else{
       point = request.getRecommendPoint();
     }
-    String youtubeUrl = "";
+    String youtubeUrl = "https://youtu.be/";
 
     if (request.getRecommendYoutubeUrl() != null) {
-      youtubeUrl = "https://youtu.be/" + request.getRecommendYoutubeUrl();
+      youtubeUrl += request.getRecommendYoutubeUrl();
     }
 
     return Recommend.builder()
