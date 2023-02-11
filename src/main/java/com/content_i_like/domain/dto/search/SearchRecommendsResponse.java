@@ -3,6 +3,7 @@ package com.content_i_like.domain.dto.search;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
 import com.content_i_like.domain.entity.Comment;
 import com.content_i_like.domain.entity.Recommend;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class SearchRecommendsResponse {
   private String albumImageUrl;
   private Long countLikes;
   private Long accumulatedPoints;
-  private String createdAt;
+  private LocalDateTime createdAt;
 
   public static SearchRecommendsResponse of(Recommend recommend, String summarizedContent) throws NullPointerException {
     return SearchRecommendsResponse.builder()
@@ -35,7 +36,7 @@ public class SearchRecommendsResponse {
 //        .accumulatedPoints(recommend.getComments().stream()
 //            .mapToLong(Comment::getCommentPoint)
 //            .sum() + recommend.getRecommendPoint())
-        .createdAt(recommend.getCreatedAt().toString())
+        .createdAt(recommend.getCreatedAt())
         .build();
   }
 }
