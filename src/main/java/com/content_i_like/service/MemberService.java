@@ -78,7 +78,7 @@ public class MemberService {
 
     String jwt = jwtService.generateToken(member);
 
-    return new MemberLoginResponse(jwt, member.getNickName());
+    return MemberLoginResponse.toResponse(member, jwt);
   }
 
   private Member validateExistingMember(String email) {
