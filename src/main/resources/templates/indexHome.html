@@ -39,7 +39,7 @@
 
       <th:block th:if="${session.loginUser==null}">
         <span id="menu-login" class="menu-user">
-                  <a href="/member/login">로그인</a>
+                  <a href="">로그인</a>
               </span>
 
         <span id="menu-join" class="menu-user">
@@ -60,9 +60,9 @@
         <div class="dropdown">
           <span id="menu-profile" class="menu-img">
   <!--                <a href="">-->
-            <!--                  <img src="../static/img/event-horizion.jpg" class="profile-img">-->
-            <!--                </a>-->
-            <span th:text="${session.loginUser.nickName}"></span>
+  <!--                  <img src="../static/img/event-horizion.jpg" class="profile-img">-->
+  <!--                </a>-->
+            <a href="" th:text="${session.loginUser.nickName}"></a>
                     <div class="dropdown-content">
                         <a href="#">profile</a>
                         <a href="#">피드</a>

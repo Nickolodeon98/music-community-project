@@ -1,0 +1,175 @@
+
+.login {
+  width: 1521px;
+  height: 800px;
+  margin: 40px;
+  border-radius: 50px;
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+}
+
+.login-box{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-box{
+  margin: 40px 0;
+  padding: 100px 100px 100px 150px;
+}
+
+.login-hello {
+  width: 500px;
+  height: 40px;
+  margin: 0 110px 26px 0;
+  font-family: NotoSansKR;
+  font-size: 40px;
+  text-align: left;
+  color: #000;
+  display: flex;
+  }
+
+.login-message {
+  width: 450px;
+  height: 20px;
+  margin: 26px 218px 35px 0;
+  font-family: NotoSansKR;
+  font-size: 20px;
+  text-align: left;
+  color: rgba(25, 25, 25, 0.45);
+  }
+
+.login-form{
+  width: 396px;
+  height: 200px;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+}
+
+input[type="email"],
+input[type="password"]{
+  font-family: NotoSansKR;
+  font-size: 18px;
+  height: 49px;
+  padding: 10px;
+  border-radius: 16px;
+  border: solid 1px #c5c5c5;
+}
+
+input[type="submit"]{
+  font-family: NotoSansKR;
+  font-size: 16px;
+  margin: 22px 0 0 0;
+  height: 60px;
+  border-radius: 16px;
+  background-color: #1c1406;
+  color: white;
+  border: solid 1px purple;
+}
+
+.login-img-box{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+
+#login-img {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
+ }
+
+.login-service{
+  width: 395px;
+  height: 16px;
+  margin: 38px 0 0 0;
+  display: flex;
+  flex-direction: row;
+}
+
+.service{
+  height: 18px;
+  font-family: NotoSansKR;
+  font-size: 16px;
+  text-align: center;
+  color: rgba(25, 25, 25, 0.45);
+  display: flex;
+  flex-direction: column;
+}
+
+#find-pw{
+  width: 150px;
+  margin-left: 8%;
+  padding-left: 0%;
+}
+
+#signup{
+  width: 100px;
+  padding-left: 20%;
+}
+
+div.login-service>span>a,
+div.sns-box-message>a{
+  color: rgba(25, 25, 25, 0.45);
+}
+
+.sns-message{
+  width: 220px;
+  height: 18px;
+  margin: 43px 100px 0 2px;
+  font-family: NotoSansKR;
+  font-size: 18px;
+  text-align: center;
+  color: #191919;
+}
+
+.sns-box{
+  width: 300px;
+  height: 30px;
+  margin-top: 16px;
+  padding: 10px 50px 10px 50px;
+  border-radius: 16px;
+  border: solid 1px #c5c5c5;
+  background-color: var(--white);
+  display: flex;
+  flex-direction: row;
+}
+
+.sns-box-message{
+  width: 150px;
+  height: 18px;
+  margin: 0 0 6px 5px;
+  opacity: 0.45;
+  font-family: NotoSansKR;
+  font-size: 18px;
+  text-align: center;
+  color: rgba(25, 25, 25, 0.45);
+  display: flex;
+  flex-direction: column;
+}
+
+.sns-logo{
+  width: 21px;
+  height: 24px;
+  margin: 0 0 0 80px;
+  display: flex;
+  flex-direction: column;
+}
+
+.find-by-username{
+  font-family: NotoSansKR;
+  font-size: 18px;
+  height: 49px;
+  padding: 10px;
+  margin: 10px 0 15px 0;
+  border-radius: 16px;
+  border: solid 1px #c5c5c5;
+}
