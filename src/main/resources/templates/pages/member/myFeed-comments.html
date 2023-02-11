@@ -61,17 +61,17 @@
 
     <!-- 프로필이미지-->
     <div class="profileImg">
-      <img class="rounded-circle" th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg">
+      <img class="rounded-circle" th:src="${comments.getProfileImgUrl()}" src="../../../static/img/event-horizon.jpg">
     </div>
 
     <!-- 이름, 팔로워, 팔로윙 -->
     <div class="contents-myInfo">
       <div class="contents-myInfo-name">
-        <span class="name">이도록</span>
+        <span class="name" th:text="${comments.getNickName()}">이도록</span>
         <span class="gray">팔로워</span>
-        <span class="number">189</span>
+        <span class="number" th:text="${comments.getFollowerCnt()}">189</span>
         <span class="gray">팔로잉</span>
-        <span class="number">189</span>
+        <span class="number" th:text="${comments.getFollowingCnt()}">189</span>
       </div>
       <!-- 수정하기 -->
       <div class="contents-myInfo-modify">
@@ -83,18 +83,18 @@
       </div>
       <!-- 이메일 -->
       <div class="contents-myInfo-email">
-        <span class="email">broch2up@naemicon.com</span>
+        <span class="email" th:text="${comments.getEmail()}">broch2up@naemicon.com</span>
       </div>
       <!-- 한줄소개 -->
       <div class="contents-myInfo-introduce">
-        <span class="introduce">제가 좋아하는 노래와 함께 늙어갈래요. 너무 빠르게 흘러가는 흐름에 지치셨다면 들렸다가세요 좋은 곡이 있다면 언제든 소개시켜드릴게요.<br>
+        <span class="introduce" th:text="${comments.getIntroduction()}">제가 좋아하는 노래와 함께 늙어갈래요. 너무 빠르게 흘러가는 흐름에 지치셨다면 들렸다가세요 좋은 곡이 있다면 언제든 소개시켜드릴게요.<br>
 또, 괜찮은 곡이 있다면 언제든지 환영이에요. 잊혀졌던 다양한 노래를 같이 공유해봐요:)</span>
       </div>
       <!-- 작성 글, 작성 댓글 네비게이션 -->
       <div class="contents-myInfo-nav">
         <nav id="convert-post">
-          <span class="not-selected-post-nav"><a href="">작성 글(32)</a></span>
-          <span class="selected-post-nav"><a href="">작성 댓글(48)</a></span>
+          <a href="/member/recommends"><span class="not-selected-post-nav" th:text="|작성 글(${comments.getRecommendCnt()})|"><a href="">작성 글(32)</a></span></a>
+          <a href="/member/comments"> <span class="selected-post-nav" th:text="|작성 댓글(${comments.getCommentCnt()})|"><a href="">작성 댓글(48)</a></span></a>
         </nav>
       </div>
       <div class="contents-myInfo-bottom">
@@ -107,71 +107,74 @@
 
   <!-- 댓글 목록 시작 -->
   <div class="contents">
-    <div class="list-recommend">
+    <div class="list-recommend" th:each="cards:${comments.getCommentMyFeedResponse()}">
 
-      <div class="comment-card">
-        <span class="music-img-comments"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/></span>
-        <div class="comment-info">
-          <div class="comment-border">
-            <span class="number">혹시 기억하시나요?</span>
-            <span class="comment-date">2일 전</span>
-          </div>
-          <span class="comment-content">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque
+      <a th:href="@{/recommends/__${cards.getRecommendNo()}__}">
+        <div class="comment-card">
+          <span class="music-img-comments"><img th:src="${cards.getRecommendImgUrl()}" src="../../../static/img/event-horizon.jpg"/></span>
+          <div class="comment-info">
+            <div class="comment-border">
+              <span class="number" th:text="${cards.getRecommendTitle()}">혹시 기억하시나요?</span>
+              <span class="comment-date" th:text="|${cards.getFewDaysAgo()}일 전|">2일 전</span>
+            </div>
+            <span class="comment-content" th:text="${cards.getCommentContent()}">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque
            penatibus et magnis dis parturient montes,nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium qui
           sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut
           imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus element
           um semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. </span>
-          <span class="comment-musicTitle">My Hair - Ariana Grande</span>
-        </div>
-      </div>
-
-      <div class="comment-card">
-        <span class="music-img-comments"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/></span>
-        <div class="comment-info">
-          <div class="comment-border">
-            <span class="number">드디어 찾아냈어요!</span>
-            <span class="comment-date">2일 전</span>
+            <span class="comment-musicTitle" th:text="${cards.getTrackInfo()}">My Hair - Ariana Grande</span>
           </div>
-          <span class="comment-content">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque
-           penatibus et magnis dis parturient montes,nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium qui
-          sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut
-          imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus element
-          um semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. </span>
-          <span class="comment-musicTitle">Mother - Charlie Puth</span>
         </div>
-      </div>
 
-      <div class="comment-card">
-        <span class="music-img-comments"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/></span>
-        <div class="comment-info">
-          <div class="comment-border">
-            <span class="number">드디어 찾아냈어요!</span>
-            <span class="comment-date">2일 전</span>
-          </div>
-          <span class="comment-content">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque
-           penatibus et magnis dis parturient montes,nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium qui
-          sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut
-          imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus element
-          um semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. </span>
-          <span class="comment-musicTitle">Mother - Charlie Puth</span>
-        </div>
-      </div>
+      </a>
 
-      <div class="comment-card">
-        <span class="music-img-comments"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/></span>
-        <div class="comment-info">
-          <div class="comment-border">
-            <span class="number">드디어 찾아냈어요!</span>
-            <span class="comment-date">2일 전</span>
-          </div>
-          <span class="comment-content">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque
-           penatibus et magnis dis parturient montes,nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium qui
-          sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut
-          imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus element
-          um semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. </span>
-          <span class="comment-musicTitle">Mother - Charlie Puth</span>
-        </div>
-      </div>
+<!--      <div class="comment-card">-->
+<!--        <span class="music-img-comments"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/></span>-->
+<!--        <div class="comment-info">-->
+<!--          <div class="comment-border">-->
+<!--            <span class="number">드디어 찾아냈어요!</span>-->
+<!--            <span class="comment-date">2일 전</span>-->
+<!--          </div>-->
+<!--          <span class="comment-content">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque-->
+<!--           penatibus et magnis dis parturient montes,nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium qui-->
+<!--          sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut-->
+<!--          imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus element-->
+<!--          um semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. </span>-->
+<!--          <span class="comment-musicTitle">Mother - Charlie Puth</span>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      <div class="comment-card">-->
+<!--        <span class="music-img-comments"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/></span>-->
+<!--        <div class="comment-info">-->
+<!--          <div class="comment-border">-->
+<!--            <span class="number">드디어 찾아냈어요!</span>-->
+<!--            <span class="comment-date">2일 전</span>-->
+<!--          </div>-->
+<!--          <span class="comment-content">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque-->
+<!--           penatibus et magnis dis parturient montes,nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium qui-->
+<!--          sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut-->
+<!--          imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus element-->
+<!--          um semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. </span>-->
+<!--          <span class="comment-musicTitle">Mother - Charlie Puth</span>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      <div class="comment-card">-->
+<!--        <span class="music-img-comments"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/></span>-->
+<!--        <div class="comment-info">-->
+<!--          <div class="comment-border">-->
+<!--            <span class="number">드디어 찾아냈어요!</span>-->
+<!--            <span class="comment-date">2일 전</span>-->
+<!--          </div>-->
+<!--          <span class="comment-content">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque-->
+<!--           penatibus et magnis dis parturient montes,nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium qui-->
+<!--          sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut-->
+<!--          imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus element-->
+<!--          um semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. </span>-->
+<!--          <span class="comment-musicTitle">Mother - Charlie Puth</span>-->
+<!--        </div>-->
+<!--      </div>-->
 
     </div>
   </div>

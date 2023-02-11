@@ -13,12 +13,15 @@ import com.content_i_like.domain.dto.member.MemberPointResponse;
 import com.content_i_like.domain.dto.member.MemberRecommendResponse;
 import com.content_i_like.domain.dto.member.MemberResponse;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
+import com.content_i_like.domain.entity.Member;
 import com.content_i_like.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.Iterator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,6 +39,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -146,20 +150,16 @@ public class MemberController {
    * @return 작성한 recommends 목록
    */
   @GetMapping("/recommends")
-  public String getMyRecommends() {
-    return "pages/member/myFeed-recommends";
-  }
+  public String getMyRecommends(HttpServletRequest request, Model model , Pageable pageable) {
 
-  /**
-   * 내가 등록한 recommends와 다른 정보를 통합해서 불러옵니다.
-   *
-   * @return 작성 게시글 수, 팔로워 수, 팔로윙 수, 작성한 recommends 목록
-   */
-  @GetMapping("/recommends/integrated")
-  public Response<MemberRecommendResponse> getMyRecommendsIntegrated(Authentication authentication,
-      @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) final Pageable pageable) {
-    return Response.success(
-        memberService.getMyRecommendsIntegrated(authentication.getName(), pageable));
+    HttpSession session = request.getSession(false);
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+    MemberRecommendResponse recommends = memberService.getMyRecommendsByNickName(
+        loginResponse.getNickName(), pageable);
+
+    model.addAttribute("recommendsResponse", recommends);
+
+    return "pages/member/myFeed-recommends";
   }
 
   /**
@@ -167,9 +167,15 @@ public class MemberController {
    *
    * @return 작성 게시글 수, 팔로워 수, 팔로윙 수, 작성한 comments 목록
    */
-  @GetMapping("/comments/integrated")
-  public Response<MemberCommentResponse> getMyComments(Authentication authentication,
-      @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) final Pageable pageable) {
-    return Response.success(memberService.getMyComments(authentication.getName(), pageable));
+  @GetMapping("/comments")
+  public String getMyComments(HttpServletRequest request, Model model , Pageable pageable) {
+    HttpSession session = request.getSession(false);
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+    MemberCommentResponse comments = memberService.getMyCommentsByNickName(
+        loginResponse.getNickName(), pageable);
+
+    model.addAttribute("comments", comments);
+
+    return "pages/member/myFeed-comments";
   }
 }

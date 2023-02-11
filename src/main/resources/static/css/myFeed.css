@@ -139,10 +139,18 @@
 .not-selected-post-nav {
   border: 1px solid #ffffff;
   font-size: 20px;
+  font-family: NotoSansKR;
+  color: #ffffff;
+  font-size: 20px;
+  text-align: center;
 }
 
 .selected-post-nav {
   background-color: #fff;
+  font-family: NotoSansKR;
+  color: black;
+  font-size: 20px;
+  text-align: center;
 }
 
 #convert-post {
@@ -199,7 +207,7 @@
 .card {
   background-size: 100%;
   background-size: cover;
-  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("../img/younha.jpg") no-repeat center;
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3));
   margin: 19px;
   display: flex;
   flex-direction: column;

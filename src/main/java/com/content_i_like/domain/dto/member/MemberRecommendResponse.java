@@ -16,7 +16,9 @@ public class MemberRecommendResponse {
   private String email;
   private String profileImgUrl;
   private String nickName;
+  private String introduction;
   private Long recommendCnt;
+  private Long commentCnt;
   private Long followerCnt;
   private Long followingCnt;
   private Page<RecommendListResponse> recommendListResponses;
@@ -27,7 +29,9 @@ public class MemberRecommendResponse {
     this.email = member.getEmail();
     this.profileImgUrl = member.getProfileImgUrl();
     this.nickName = member.getNickName();
+    this.introduction = member.getIntroduction();
     this.recommendCnt = followCnt[0];
+    this.commentCnt = followCnt[3];
     this.followerCnt = followCnt[1];
     this.followingCnt = followCnt[2];
     this.recommendListResponses = recommendListResponses;

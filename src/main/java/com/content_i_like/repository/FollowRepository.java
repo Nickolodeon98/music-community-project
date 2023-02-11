@@ -8,5 +8,5 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
   Long countByMember(Member member);
 
-  Long countByFromMemberNo(Member member);
+  Long countByFromMemberNo(Long memberNo);
 }

@@ -1,6 +1,7 @@
 package com.content_i_like.service;
 
 import com.content_i_like.config.JwtService;
+import com.content_i_like.domain.dto.comment.CommentMyFeedResponse;
 import com.content_i_like.domain.dto.comment.CommentReadResponse;
 import com.content_i_like.domain.dto.member.*;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
@@ -13,6 +14,7 @@ import com.content_i_like.repository.MemberRepository;
 import com.content_i_like.repository.RecommendRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +26,7 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberService {
 
   private final MemberRepository memberRepository;
@@ -178,11 +181,12 @@ public class MemberService {
 
   private Long[] getFollowCnt(Member member) {
 
-    Long[] followCnt = new Long[3];
+    Long[] followCnt = new Long[4];
 
     followCnt[0] = recommendRepository.countByMember(member);   //게시글 수
     followCnt[1] = followRepository.countByMember(member);      //팔로워 수
-    followCnt[2] = followRepository.countByFromMemberNo(member);//팔로윙 수
+    followCnt[2] = followRepository.countByFromMemberNo(member.getMemberNo());//팔로윙 수
+    followCnt[3] = commentRepository.countByMember(member);
 
     return followCnt;
   }
@@ -205,9 +209,42 @@ public class MemberService {
 
     Long[] followerCnt = getFollowCnt(member);
 
-    Page<CommentReadResponse> commentReadResponses = commentRepository.findAllByMember(member,
-        pageable).map(CommentReadResponse::of);
+    Page<CommentMyFeedResponse> commentMyFeedResponse = commentRepository.findAllByMember(member,
+        pageable).map(CommentMyFeedResponse::of);
 
-    return new MemberCommentResponse(member, followerCnt, commentReadResponses);
+    return new MemberCommentResponse(member, followerCnt, commentMyFeedResponse);
+  }
+
+  public MemberRecommendResponse getMyRecommendsByNickName(String nickName, Pageable pageable) {
+    Member member = validateExistingMemberByNickName(nickName);
+
+    Long[] followerCnt = getFollowCnt(member);
+    log.info("member={}", member.getMemberNo());
+
+
+    Page<RecommendListResponse> recommendListResponses = recommendRepository.findAllByMember(
+            pageable, member)
+        .map(RecommendListResponse::of);
+
+
+    return new MemberRecommendResponse(member, followerCnt, recommendListResponses);
+  }
+
+  private Member validateExistingMemberByNickName(String nickName) {
+    Member member = memberRepository.findByNickName(nickName)
+        .orElseThrow(() -> new ContentILikeAppException(ErrorCode.MEMBER_NOT_FOUND,
+            ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+    return member;
+  }
+
+  public MemberCommentResponse getMyCommentsByNickName(String nickName, Pageable pageable) {
+    Member member = validateExistingMemberByNickName(nickName);
+
+    Long[] followerCnt = getFollowCnt(member);
+
+    Page<CommentMyFeedResponse> commentMyFeedResponse = commentRepository.findAllByMember(member,
+        pageable).map(CommentMyFeedResponse::of);
+
+    return new MemberCommentResponse(member, followerCnt, commentMyFeedResponse);
   }
 }
