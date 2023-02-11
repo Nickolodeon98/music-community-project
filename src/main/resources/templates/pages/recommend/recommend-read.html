@@ -29,7 +29,7 @@
         </span>
 
         <span class="post-read-menu">
-          <a href="">삭제</a>
+          <a th:href="'javascript:deletePost(\''+${post.getRecommendNo()}+'\')'">삭제</a>
         </span>
       </div>
       <div class="post-read-hashtag">
@@ -139,5 +139,20 @@
 </body>
 <script>
 
+  function deletePost(recommendNo){
+    let form = document.createElement('form');
+
+    // let obj;
+    // obj = document.createElement('input');
+    // obj.setAttribute('type', 'hidden');
+    // obj.setAttribute('name', 'recommendNo');
+    // obj.setAttribute('value', recommendNo);
+    // f.appendChild(obj);
+    form.setAttribute('method', 'post');
+    form.setAttribute('action', '/recommends/'+recommendNo+'/delete');
+    document.body.appendChild(form);
+    form.submit();
+    alert("삭제되었습니다.");
+  }
 </script>
 </html>
