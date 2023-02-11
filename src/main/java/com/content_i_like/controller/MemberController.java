@@ -15,10 +15,11 @@ import com.content_i_like.domain.dto.member.MemberResponse;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
 import com.content_i_like.service.MemberService;
 import com.content_i_like.utils.SessionConstants;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -52,6 +53,55 @@ public class MemberController {
     return "pages/member/login";
   }
 
+  @PostMapping("/login")
+  public String login(
+      @Valid @ModelAttribute("memberLoginRequest") MemberLoginRequest memberLoginRequest,
+      BindingResult bindingResult,
+      HttpServletRequest request, Model model) {
+
+    if (bindingResult.hasErrors()) {
+      return "pages/member/login";
+    }
+    MemberLoginResponse loginResponse = memberService.login(memberLoginRequest);
+
+    HttpSession session = request.getSession();   //세션이 있으면 있는 세션 반환, 없으면 신규 세션
+    session.setAttribute("loginUser", loginResponse);
+    log.info("로그인 완료");
+//    return "redirect:/";
+    return "indexHome";
+  }
+
+  @PostMapping("/logout")
+  public String logout(HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session != null) {
+      session.invalidate();
+    }
+    return "redirect:/";
+  }
+
+  @GetMapping("/session-info")
+  public String sessionInfo(HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "세션이 없습니다.";
+    }
+    // 세션 id와 저장된 객체 정보 출력
+    System.out.println(session.getId() + ", " + session.getAttribute("loginMember"));
+
+    //세션 데이터 출력
+    session.getAttributeNames().asIterator()
+        .forEachRemaining(name -> log.info("session name={}, value={}", name, session.getAttribute(name)));
+
+    log.info("sessionId={}", session.getId());
+    log.info("getMaxInactiveInterval={}", session.getMaxInactiveInterval());
+    log.info("creationTime={}", new Date(session.getCreationTime()));
+    log.info("lastAccessedTime={}", new Date(session.getLastAccessedTime()));
+    log.info("isNew={}", session.isNew());
+
+    return "세션 출력";
+
+  }
 
   @PostMapping("/join")
   public Response<MemberJoinResponse> join(@RequestBody @Valid final MemberJoinRequest request) {
