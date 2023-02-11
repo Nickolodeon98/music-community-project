@@ -118,11 +118,7 @@ class MemberRestControllerTest {
   @WithMockUser
   void login_success() throws Exception {
     MemberLoginRequest request = new MemberLoginRequest("test@gmail.com", "123456789");
-    MemberLoginResponse response = MemberLoginResponse.builder()
-        .memberNo(1l)
-        .jwt("token")
-        .nickName("nick")
-        .build();
+    MemberLoginResponse response = new MemberLoginResponse("token",1l,"nick");
 
     Mockito.when(memberService.login(any())).thenReturn(response);
 
