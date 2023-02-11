@@ -15,9 +15,8 @@
 .title-and-contents {
     display: flex;
     flex-direction: column;
-    margin: 0 -167px auto 88px;
+    margin: 0 -43px auto 88px;
     width:100%;
-
 }
 
 .recommend-image {
@@ -35,7 +34,6 @@ span.recommend-title {
 
 span.recommend-date {
     float: right;
-    /*margin-right: 30px;*/
     color: rgba(255, 255, 255, 0.5);
 }
 

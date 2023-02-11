@@ -22,83 +22,101 @@
   <div class="container">
     <div th:replace="~{pages/search/search::search}"></div>
 
-    <div class="block-middle">
+    <form class="block-middle" id="paging" th:object="${pagedContents}" th:method="get"
+          th:action="@{/search/test/members}">
+      <input type="hidden" th:name="keyword" th:value="${keyword}">
       <span class="count-results"
             th:text="${memberNickName} ? ${memberNickName.message} : '검색해주세요.'"></span>
       <hr>
       <br>
-      <th:block th:if="${memberNickName != null and memberNickNameAsList != null}">
-        <ul class="members-list"
-            th:if="${memberNickName.pages != null and memberNickNameAsList != null}"
-            th:unless="${counter == memberNickName.pages.getNumberOfElements()}"
-            th:each="counter: ${#numbers.sequence(0, memberNickName.pages.getNumberOfElements() - 1, 2)}">
-          <li class="members-list-element">
-            <!--              th:unless="${status.current % 5 != 0}">-->
-            <div class="members-profile-info">
-              <img th:src="${memberNickNameAsList.get(counter).profileImgUrl}"
-                   class="members-image"/>
-              <a class="members-name" th:text="${memberNickNameAsList.get(counter).nickName}"
-                 href=""></a>
-              <span class="members-date"
-                    th:text="${memberNickNameAsList.get(counter).createdAt}"><br>2023.02.09</span>
-            </div>
-          </li>
+        <th:block th:if="${memberNickName != null and memberNickNameAsList != null}">
+          <ul class="members-list"
+              th:each="counter: ${#numbers.sequence(0, memberNickName.pages.getNumberOfElements()-1, 5)}"
+              th:unless="${counter >= memberNickName.pages.getNumberOfElements()}">
+            <th:block th:unless="${counter >= memberNickName.pages.getNumberOfElements()}">
+              <li class="members-list-element">
+                <!--              th:unless="${status.current % 5 != 0}">-->
+                <div class="members-profile-info">
+                  <img th:src="${memberNickNameAsList.get(counter).profileImgUrl}"
+                       class="members-image"/>
+                  <a class="members-name" th:text="${memberNickNameAsList.get(counter).nickName}"
+                     href=""></a>
+                  <span class="members-date"
+                        th:utext="'가입일자<br>' +
+                        ${#temporals.format(memberNickNameAsList.get(counter).createdAt, 'yyyy.MM.dd')}"><br>2023.02.09</span>
+                </div>
 
-          <li class="members-list-element"
-              th:unless="${counter + 1 == memberNickName.pages.getNumberOfElements()}">
-            <!--              th:unless="${status.current % 5 != 0}">-->
-            <div class="members-profile-info">
-              <img th:src="${memberNickNameAsList.get(counter+1).profileImgUrl}"
-                   class="members-image"/>
-              <a class="members-name" th:text="${memberNickNameAsList.get(counter+1).nickName}"
-                 href=""></a>
-              <span class="members-date" th:text="${memberNickNameAsList.get(counter+1).createdAt}"><br>2023.02.09</span>
-            </div>
-          </li>
+              </li>
+            </th:block>
+            <th:block th:unless="${counter + 1 >= memberNickName.pages.getNumberOfElements()}">
+              <li class="members-list-element">
+                <!--              th:unless="${status.current % 5 != 0}">-->
+                <div class="members-profile-info">
+                  <img th:src="${memberNickNameAsList.get(counter+1).profileImgUrl}"
+                       class="members-image"/>
+                  <a class="members-name" th:text="${memberNickNameAsList.get(counter+1).nickName}"
+                     href=""></a>
+                  <span class="members-date"
+                        th:utext="'가입일자<br>' +
+                        ${#temporals.format(memberNickNameAsList.get(counter+1).createdAt, 'yyyy.MM.dd')}"><br>2023.02.09</span>
+                </div>
 
-          <li class="members-list-element"
-              th:unless="${counter + 2 == memberNickName.pages.getNumberOfElements()}">
-            <!--              th:unless="${status.current % 5 != 0}">-->
-            <div class="members-profile-info">
-              <img th:src="${memberNickNameAsList.get(counter+2).profileImgUrl}"
-                   class="members-image"/>
-              <a class="members-name" th:text="${memberNickNameAsList.get(counter+2).nickName}"
-                 href=""></a>
-              <span class="members-date" th:text="${memberNickNameAsList.get(counter+2).createdAt}"><br>2023.02.09</span>
-            </div>
+              </li>
+            </th:block>
+            <th:block th:unless="${counter + 2 >= memberNickName.pages.getNumberOfElements()}">
+              <li class="members-list-element">
+                <!--              th:unless="${status.current % 5 != 0}">-->
+                <div class="members-profile-info">
+                  <img th:src="${memberNickNameAsList.get(counter+2).profileImgUrl}"
+                       class="members-image"/>
+                  <a class="members-name" th:text="${memberNickNameAsList.get(counter+2).nickName}"
+                     href=""></a>
+                  <span class="members-date"
+                        th:utext="'가입일자<br>' +
+                        ${#temporals.format(memberNickNameAsList.get(counter+2).createdAt, 'yyyy.MM.dd')}"><br>2023.02.09</span>
+                </div>
 
-          </li>
+              </li>
+            </th:block>
+            <th:block th:unless="${counter + 3 >= memberNickName.pages.getNumberOfElements()}">
+              <li class="members-list-element">
+                <!--              th:unless="${status.current % 5 != 0}">-->
+                <div class="members-profile-info">
+                  <img th:src="${memberNickNameAsList.get(counter+3).profileImgUrl}"
+                       class="members-image"/>
+                  <a class="members-name" th:text="${memberNickNameAsList.get(counter+3).nickName}"
+                     href=""></a>
+                  <span class="members-date"
+                        th:utext="'가입일자<br>' +
+                        ${#temporals.format(memberNickNameAsList.get(counter+3).createdAt, 'yyyy.MM.dd')}"><br>2023.02.09</span>
+                </div>
 
-          <li class="members-list-element"
-              th:unless="${counter + 3 == memberNickName.pages.getNumberOfElements()}">
-            <!--              th:unless="${status.current % 5 != 0}">-->
-            <div class="members-profile-info">
-              <img th:src="${memberNickNameAsList.get(counter+3).profileImgUrl}"
-                   class="members-image"/>
-              <a class="members-name" th:text="${memberNickNameAsList.get(counter+3).nickName}"
-                 href=""></a>
-              <span class="members-date" th:text="${memberNickNameAsList.get(counter+3).createdAt}"><br>2023.02.09</span>
-            </div>
+              </li>
+            </th:block>
+            <th:block th:unless="${counter + 4 >= memberNickName.pages.getNumberOfElements()}">
+              <li class="members-list-element">
+                <!--              th:unless="${status.current % 5 != 0}">-->
+                <div class="members-profile-info">
+                  <img th:src="${memberNickNameAsList.get(counter+4).profileImgUrl}"
+                       class="members-image"/>
+                  <a class="members-name" th:text="${memberNickNameAsList.get(counter+4).nickName}"
+                     href=""></a>
+                  <span class="members-date"
+                        th:utext="'가입일자<br>' +
+                        ${#temporals.format(memberNickNameAsList.get(counter+4).createdAt, 'yyyy.MM.dd')}"><br>2023.02.09</span>
+                </div>
 
-          </li>
+              </li>
+            </th:block>
 
-          <li class="members-list-element"
-              th:unless="${counter + 4 == memberNickName.pages.getNumberOfElements()}">
-            <!--              th:unless="${status.current % 5 != 0}">-->
-            <div class="members-profile-info">
-              <img th:src="${memberNickNameAsList.get(counter+4).profileImgUrl}"
-                   class="members-image"/>
-              <a class="members-name" th:text="${memberNickNameAsList.get(counter+4).nickName}"
-                 href=""></a>
-              <span class="members-date" th:text="${memberNickNameAsList.get(counter+4).createdAt}"><br>2023.02.09</span>
-            </div>
-
-          </li>
-        </ul>
-
-      </th:block>
-    </div>
+          </ul>
+        </th:block>
+      <button class="paging-button" type="submit" th:unless="${memberNickName.pages.isFirst()}" th:name="page" th:value="${pagedContents.previousOrFirst().pageNumber}">이전</button>
+      <button class="paging-button" type="submit" th:unless="${memberNickName.pages.isLast()}" th:name="page" th:value="${pagedContents.next().pageNumber}">다음</button>
+    </form>
   </div>
 </div>
+<script th:inline="javascript">
+</script>
 </body>
 </html>

@@ -39,6 +39,12 @@
     border: none;
     /*font-family: beanpoleM;*/
 }
+
+.search-results {
+    display: flex;
+    flex-direction: column;
+}
+
 .search-engine {
     /*background-color: black;*/
     height:75px;
