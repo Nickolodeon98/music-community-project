@@ -37,11 +37,11 @@
         <div>
           <div class="sns-message">SNS 계정이 있으신가요?</div>
           <div class="sns-box">
-            <img src="../../../../static/img/naver-logo.png" class="sns-logo">
+            <img th:src="@{/img/naver-logo.png}" src="../../../static/img/naver-logo.png" class="sns-logo">
             <div class="sns-box-message"><a href="">네이버로 로그인</a></div>
           </div>
           <div class="sns-box">
-            <img src="@{/img/google-logo.jpg}" class="sns-logo">
+            <img th:src="@{/img/google-logo.jpg}" src="../../../static/img/google-logo.jpg" class="sns-logo">
             <div class="sns-box-message"><a href="">구글로 로그인</a></div>
           </div>
         </div>
@@ -49,7 +49,7 @@
     </div>
 
     <div class="login-img-box">
-      <img id="login-img" src="./img/index-img.jpg">
+      <img id="login-img" th:src="@{/img/index-img.jpg}" src="../../../static/img/index-img.jpg">
     </div>
   </div>
 
