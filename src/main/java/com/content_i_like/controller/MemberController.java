@@ -1,6 +1,8 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
+import com.content_i_like.domain.dto.follow.FollowMyFeedResponse;
+import com.content_i_like.domain.dto.follow.FollowResponse;
 import com.content_i_like.domain.dto.member.ChangePwRequest;
 import com.content_i_like.domain.dto.member.MemberCommentResponse;
 import com.content_i_like.domain.dto.member.MemberFindRequest;
@@ -84,7 +86,8 @@ public class MemberController {
 
     //세션 데이터 출력
     session.getAttributeNames().asIterator()
-        .forEachRemaining(name -> log.info("session name={}, value={}", name, session.getAttribute(name)));
+        .forEachRemaining(
+            name -> log.info("session name={}, value={}", name, session.getAttribute(name)));
 
     log.info("sessionId={}", session.getId());
     log.info("getMaxInactiveInterval={}", session.getMaxInactiveInterval());
@@ -144,13 +147,8 @@ public class MemberController {
     return Response.success(url);
   }
 
-  /**
-   * 내가 등록한 recommends를 불러옵니다.
-   *
-   * @return 작성한 recommends 목록
-   */
   @GetMapping("/recommends")
-  public String getMyRecommends(HttpServletRequest request, Model model , Pageable pageable) {
+  public String getMyRecommends(HttpServletRequest request, Model model, Pageable pageable) {
 
     HttpSession session = request.getSession(false);
     MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
@@ -162,13 +160,8 @@ public class MemberController {
     return "pages/member/myFeed-recommends";
   }
 
-  /**
-   * 내가 등록한 comments와 다른 정보를 통합해서 불러옵니다.
-   *
-   * @return 작성 게시글 수, 팔로워 수, 팔로윙 수, 작성한 comments 목록
-   */
   @GetMapping("/comments")
-  public String getMyComments(HttpServletRequest request, Model model , Pageable pageable) {
+  public String getMyComments(HttpServletRequest request, Model model, Pageable pageable) {
     HttpSession session = request.getSession(false);
     MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
     MemberCommentResponse comments = memberService.getMyCommentsByNickName(
@@ -177,5 +170,27 @@ public class MemberController {
     model.addAttribute("comments", comments);
 
     return "pages/member/myFeed-comments";
+  }
+
+  @GetMapping("/followers")
+  public String getMyFollowers(HttpServletRequest request, Model model, Pageable pageable) {
+    HttpSession session = request.getSession(false);
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+    FollowMyFeedResponse myFollowersByNickName = memberService.getMyFollowersByNickName(
+        loginResponse.getNickName(), pageable);
+
+    model.addAttribute("followers", myFollowersByNickName);
+    return "pages/member/myFeed-followers";
+  }
+
+  @GetMapping("/followings")
+  public String getMyFollowings(HttpServletRequest request, Model model, Pageable pageable) {
+    HttpSession session = request.getSession(false);
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+    FollowMyFeedResponse myFollowersByNickName = memberService.getMyFollowingsByNickName(
+        loginResponse.getNickName(), pageable);
+
+    model.addAttribute("followers", myFollowersByNickName);
+    return "pages/member/myFeed-followings";
   }
 }

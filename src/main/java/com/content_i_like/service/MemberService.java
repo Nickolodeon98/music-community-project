@@ -3,8 +3,11 @@ package com.content_i_like.service;
 import com.content_i_like.config.JwtService;
 import com.content_i_like.domain.dto.comment.CommentMyFeedResponse;
 import com.content_i_like.domain.dto.comment.CommentReadResponse;
+import com.content_i_like.domain.dto.follow.FollowMyFeedResponse;
+import com.content_i_like.domain.dto.follow.FollowResponse;
 import com.content_i_like.domain.dto.member.*;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
+import com.content_i_like.domain.entity.Follow;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
@@ -13,9 +16,11 @@ import com.content_i_like.repository.FollowRepository;
 import com.content_i_like.repository.MemberRepository;
 import com.content_i_like.repository.RecommendRepository;
 import java.util.List;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -221,11 +226,9 @@ public class MemberService {
     Long[] followerCnt = getFollowCnt(member);
     log.info("member={}", member.getMemberNo());
 
-
     Page<RecommendListResponse> recommendListResponses = recommendRepository.findAllByMember(
             pageable, member)
         .map(RecommendListResponse::of);
-
 
     return new MemberRecommendResponse(member, followerCnt, recommendListResponses);
   }
@@ -246,5 +249,35 @@ public class MemberService {
         pageable).map(CommentMyFeedResponse::of);
 
     return new MemberCommentResponse(member, followerCnt, commentMyFeedResponse);
+  }
+
+  public FollowMyFeedResponse getMyFollowersByNickName(String nickName, Pageable pageable) {
+    Member member = validateExistingMemberByNickName(nickName);
+
+    Long[] followerCnt = getFollowCnt(member);
+
+    Stream<FollowResponse> followResponseStream = followRepository.findAllByMember(
+            member, pageable).stream()
+        .map(follow -> new FollowResponse(
+            memberRepository.findById(follow.getFromMemberNo()).get().getNickName(),
+            memberRepository.findById(follow.getFromMemberNo()).get().getProfileImgUrl()));
+
+    List<FollowResponse> followResponses = followResponseStream.toList();
+    return new FollowMyFeedResponse(member, followerCnt, new PageImpl<>(followResponses));
+  }
+
+  public FollowMyFeedResponse getMyFollowingsByNickName(String nickName, Pageable pageable) {
+    Member member = validateExistingMemberByNickName(nickName);
+
+    Long[] followerCnt = getFollowCnt(member);
+
+    Stream<FollowResponse> followResponseStream = followRepository.findAllByFromMemberNo(
+            member.getMemberNo(), pageable).stream()
+        .map(follow -> new FollowResponse(
+            memberRepository.findById(follow.getMember().getMemberNo()).get().getNickName(),
+            memberRepository.findById(follow.getMember().getMemberNo()).get().getProfileImgUrl()));
+
+    List<FollowResponse> followResponses = followResponseStream.toList();
+    return new FollowMyFeedResponse(member, followerCnt, new PageImpl<>(followResponses));
   }
 }
