@@ -11,6 +11,7 @@
           crossorigin="anonymous"></script>
   <link rel="stylesheet" th:href="@{/css/style.css}">
   <link rel="stylesheet" th:href="@{/css/recommend-read.css}">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
 
 
 </head>
@@ -142,17 +143,14 @@
   function deletePost(recommendNo){
     let form = document.createElement('form');
 
-    // let obj;
-    // obj = document.createElement('input');
-    // obj.setAttribute('type', 'hidden');
-    // obj.setAttribute('name', 'recommendNo');
-    // obj.setAttribute('value', recommendNo);
-    // f.appendChild(obj);
-    form.setAttribute('method', 'post');
-    form.setAttribute('action', '/recommends/'+recommendNo+'/delete');
-    document.body.appendChild(form);
-    form.submit();
-    alert("삭제되었습니다.");
+    if (confirm("정말 삭제하시겠습니까?")) {
+      form.setAttribute('method', 'post');
+      form.setAttribute('action', '/recommends/'+recommendNo+'/delete');
+      document.body.appendChild(form);
+      form.submit();
+      alert("삭제되었습니다.");
+    }
+
   }
 </script>
 </html>

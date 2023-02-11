@@ -43,7 +43,12 @@ public class RecommendController {
 
 
   @GetMapping("/writeForm")
-  public String recommendWriteForm(Model model) {
+  public String recommendWriteForm(
+      Model model) {
+//    HttpSession session = servletRequest.getSession(false);
+//    MemberLoginResponse loginUser = (MemberLoginResponse) session.getAttribute("loginUser");
+//    System.out.println(loginUser.getMemberNo());
+
     model.addAttribute("request", new RecommendPostRequest());
     return "pages/recommend/recommend-post";
   }
@@ -73,7 +78,7 @@ public class RecommendController {
   public String uploadRecommendPost(/*final HttpSession session,*/
       @ModelAttribute("request") @Valid final RecommendPostRequest request) throws IOException {
 //    String userEmail = (String) session.getAttribute("member");
-    String userEmail = "abcd@naver.com";
+    String userEmail = "test@naver.com";
 
     RecommendPostResponse response = recommendService.uploadPost(userEmail, request);
     return "redirect:/";
@@ -102,18 +107,28 @@ public class RecommendController {
 //    String userEmail = authentication.getName();
 //    log.info("user_email = {}, recommend_modify_request = {}", userEmail, request);
 
-    String userEmail = "sjeon0730@gmail.com";
+    String userEmail = "test@naver.com";
     System.out.println(request.getHashtag());
-
 
     RecommendModifyResponse response = recommendService.modifyPost(userEmail, recommendNo, request);
     return "redirect:/recommends/" + recommendNo;
   }
 
-  //////////// REST Controller //////////
-/*
+  @PostMapping("/{recommendNo}/delete")
+  public String deleteRecommendPost(
+      @PathVariable final Long recommendNo) {
+    //String userEmail = authentication.getName();
+    String userEmail = "test@naver.com";
+    log.info("user email = {}, recommend_no = {}", userEmail, recommendNo);
 
-  */
+    recommendService.deletePost(userEmail, recommendNo);
+    return "redirect:/";
+  }
+
+  //////////// REST Controller //////////
+  /*
+
+   */
 /*
    * 등록된 추천글을 수정합니다.
    *
