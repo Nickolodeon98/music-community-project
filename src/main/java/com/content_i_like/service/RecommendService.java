@@ -189,9 +189,9 @@ public class RecommendService {
   }
 
   private String getYoutubeURL(RecommendModifyRequest request) {
-    String youtubeUrl = null;
+    String youtubeUrl = "https://youtu.be/";
     if (request.getRecommendYoutubeUrl() != null) {
-      youtubeUrl = "https://youtu.be/" + request.getRecommendYoutubeUrl();
+      youtubeUrl += request.getRecommendYoutubeUrl();
     }
     return youtubeUrl;
   }
