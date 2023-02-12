@@ -16,6 +16,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class SearchRecommendsResponse {
+  private Long recommendNo;
   private String recommendTitle;
   private String summarizedRecommendContent;
   private String memberNickname;
@@ -27,6 +28,7 @@ public class SearchRecommendsResponse {
 
   public static SearchRecommendsResponse of(Recommend recommend, String summarizedContent) throws NullPointerException {
     return SearchRecommendsResponse.builder()
+        .recommendNo(recommend.getRecommendNo())
         .recommendTitle(recommend.getRecommendTitle())
         .summarizedRecommendContent(summarizedContent)
         .memberNickname(recommend.getMember().getNickName())
