@@ -28,6 +28,7 @@ public class RecommendService {
   private final S3FileUploadService s3FileUploadService;
   private final HashtagRepository hashtagRepository;
   private final PostHashtagRepository postHashtagRepository;
+  private final LikesRepository likesRepository;
 
 
   /**
@@ -316,7 +317,8 @@ public class RecommendService {
     Album album = validateGetAlbumByAlbumNo(track);
     Artist artist = validateGetArtistByArtistNo(album);
     List<Comment> comments = post.getComments();
-    Long countLikes = (long) post.getLikes().size();
+    Long countLikes = likesRepository.countLikesByRecommend(
+        validateGetRecommendInfoByRecommendNo(recommendNo));
     Long accumulatedPoints = getAccumulatedPoints(comments, post);
     List<PostHashtag> postHashtags = postHashtagRepository.findAllByRecommendRecommendNo(
         recommendNo);

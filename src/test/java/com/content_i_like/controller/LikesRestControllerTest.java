@@ -124,7 +124,7 @@ class LikesRestControllerTest {
   @DisplayName("좋아요 개수 반환")
   void success_return_number_likes() throws Exception {
 
-    given(likesService.countNumberLikes(any())).willReturn(123);
+    given(likesService.countNumberLikes(any())).willReturn(123L);
 
     String url = "/api/v1/recommends/1/likes";
 
