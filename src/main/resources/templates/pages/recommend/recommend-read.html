@@ -43,7 +43,10 @@
                     <div class="post-date"
                          th:text="${#temporals.format(post.getRecommendCreatedAt(), 'yyyy/MM/dd HH:mm:ss')}"></div>
                 </span>
-        <span class="like-and-point" th:text="|♥ ${post.getCountLikes()}|"></span>
+        <span class="like-and-point" id="likes">
+          <a th:if="${session.loginUser!=null}" id="like-click" th:text="|♥ ${post.getCountLikes()}|"></a>
+          <a th:if="${session.loginUser==null}" th:text="|♥ ${post.getCountLikes()}|"></a>
+        </span>
         <span class="like-and-point" th:text="|글 pt ${post.getRecommendPoint()}|"></span>
         <span class="like-and-point" th:text="|누적 pt ${post.getAccumulatedPoints()}|"></span>
       </div>
@@ -140,17 +143,37 @@
 </body>
 <script>
 
-  function deletePost(recommendNo){
+  function deletePost(recommendNo) {
     let form = document.createElement('form');
 
     if (confirm("정말 삭제하시겠습니까?")) {
       form.setAttribute('method', 'post');
-      form.setAttribute('action', '/recommends/'+recommendNo+'/delete');
+      form.setAttribute('action', '/recommends/' + recommendNo + '/delete');
       document.body.appendChild(form);
       form.submit();
       alert("삭제되었습니다.");
     }
-
   }
+
+  $(document).ready(function () {
+    $(document).on('click', '#like-click', function (event) {
+      event.preventDefault();
+      const recommendNo = window.location.href.split("/").pop();
+      alert(recommendNo);
+      $.ajax({
+        type: 'POST',
+        url: '/recommends/' + recommendNo + '/likes',
+        success: function (data) {
+          $('#likes').html(`<a id="like-click">♥ ${data}</a>`);
+          alert(data);
+        },
+        error: function (err) {
+          console.error(err);
+        }
+      });
+    });
+  });
+
+
 </script>
 </html>

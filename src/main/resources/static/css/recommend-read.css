@@ -112,6 +112,10 @@
     color: #fff;
 }
 
+#like-click{
+    cursor: pointer;
+}
+
 .line {
     margin: 30px 0px;
     border-bottom: 1px white solid;

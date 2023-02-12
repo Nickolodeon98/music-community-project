@@ -59,7 +59,7 @@ public class LikesService {
       like = recordedLikes.get();
 
       // 알림 기록이 있다면 정보를 받아옵니다.
-      notification = recordedNotification.get();
+//      notification = recordedNotification.get();
 
     } else {
       like = likesRepository.save(Likes.toEntity(post, member));
@@ -75,16 +75,20 @@ public class LikesService {
     // 받아온 like 기록중 getDeletedAt의 정보를 확인합니다.
     if (like.getDeletedAt() == null) {
       // 이미 like를 한 적이 있는데 getDeletedAt이 NULL이라면 다시 한 번 버튼을 누른 것이므로 좋아요를 취소합니다.
+      System.out.println("좋아요를 취소 합니다.");
       likesRepository.delete(like);
 
       // like를 soft delete 처리한 후 알람 기록도 삭제합니다.
-      notificationRepository.delete(notification);
+//      notificationRepository.delete(notification);
 
       return "좋아요를 취소했습니다.";
     } else {
       // 이미 like를 한 기록이 있는데 getDeletedAt이 있다면, 좋아요를 취소한 상태에서 다시 좋아요 버튼을 누른 상황입니다.
       // deletedAt 기록을 삭제합니다.
       like.cancelDeletion();
+      likesRepository.save(like);
+      System.out.println("삭제된 좋아요를 다시 누릅니다.");
+
 
       // 다시 알람을 보냅니다.
       applicationEventPublisher.publishEvent(LikesNotificationEvent.of(post, like));
@@ -99,7 +103,7 @@ public class LikesService {
    * @param recommendNo 추천글 고유 번호
    * @return 좋아요 개수
    */
-  public Integer countNumberLikes(Long recommendNo) {
+  public Long countNumberLikes(Long recommendNo) {
     // 해당 추천글이 존재하는지 확인해야한다.
     return likesRepository.countLikesByRecommend(
         validateGetRecommendInfoByRecommendNo(recommendNo));
