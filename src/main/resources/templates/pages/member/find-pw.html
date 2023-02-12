@@ -20,18 +20,18 @@
   <div class="login">
     <div class="login-box">
       <div class="message-box">
-        <div class="login-hello">안녕하세요</div>
-        <div class="login-message">오늘 들려주실 여러분만의 음악은 무엇인가요?</div>
+        <div class="login-hello">비밀번호 찾기</div>
+        <div class="login-message">도움이 필요하신가요? 아래 정보를 입력해주세요</div>
         <div class="login-form">
-          <form th:action="@{/member/login}" method="post" class="login-form" th:object="${request}">
-            <input type="email" name="email" th:field="*{email}" placeholder="이메일"/>
-            <input type="password" name="password" th:field="*{password}" placeholder="비밀번호"/>
-            <input type="submit" value="로그인"/>
+          <form th:action="@{/member/passwd/find_pw}" method="post" class="login-form" th:object="${request}">
+            <input type="text" name="name" th:field="*{name}" class="find-by-username" placeholder="  이름"/>
+            <input type="email" name="email" th:field="*{email}" placeholder="  이메일"/>
+            <input type="submit" value="확인" onclick="alert('올바른 정보 입력 시 메일로 임시비밀번호를 발송됩니다. 다음 화면이 뜰 때까지 기다려주세요.')"/>
           </form>
         </div>
         <div class="login-service">
-          <span id="find-pw" class="service"><a th:href="@{/member/passwd/find_pw}">비밀번호 찾기</a></span>
-          <span id="signup" class="service"><a th:href="@{/member/join}">회원가입</a></span>
+          <span id="find-pw" class="service"><a href="@{/member/passwd/find_pw}"><strong>비밀번호 찾기</strong></a></span>
+          <span id="signup" class="service"><a href="@{/member/join}">회원가입</a></span>
         </div>
 
         <div>
@@ -45,6 +45,7 @@
             <div class="sns-box-message"><a href="">구글로 로그인</a></div>
           </div>
         </div>
+
       </div>
     </div>
 

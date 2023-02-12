@@ -99,17 +99,24 @@ public class MemberController {
 
   }
 
+  @GetMapping("/passwd/find_pw")
+  public String findPwForm(Model model) {
+    model.addAttribute("request", new MemberFindRequest());
+    return "pages/member/find-pw";
+  }
+
+  @PostMapping("/passwd/find_pw")
+  public String findPw(@Valid @ModelAttribute("memberFindRequest") MemberFindRequest request) {
+    log.info("request정보: {} and {}",request.getName(), request.getEmail());
+    String message = memberService.findPwByEmail(request);
+    return "redirect:/member/login";
+  }
+
+
   @PostMapping("/join")
   public Response<MemberJoinResponse> join(@RequestBody @Valid final MemberJoinRequest request) {
     MemberJoinResponse response = memberService.join(request);
     return Response.success(response);
-  }
-
-
-  @PostMapping("/passwd/find_pw")
-  public Response<String> findPw(@RequestBody @Valid final MemberFindRequest request) {
-    String message = memberService.findPwByEmail(request);
-    return Response.success(message);
   }
 
   @PostMapping("/passwd/change")
