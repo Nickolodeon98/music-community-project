@@ -11,52 +11,24 @@
           integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
           crossorigin="anonymous"></script>
   <link rel="stylesheet" th:href="@{/css/style.css}" href="../../../static/css/style.css">
-  <link rel="stylesheet" th:href="@{/css/myFeed.css}" href="../../../static/css/faq.css">
+  <link rel="stylesheet" th:href="@{/css/faq.css}" hr ef="../../../static/css/faq.css">
   <!--  <link rel="stylesheet" th:href="@{/css/index.css}" href="../../../static/css/index.css">-->
-  <link rel="stylesheet" th:href="@{/css/recommend-post.css}" href="../../../static/css/recommend-post.css">
+  <link rel="stylesheet" th:href="@{/css/recommend-post.css}"
+        href="../../../static/css/recommend-post.css">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
 </head>
 
 <body>
 <div class="container-faq">
 
   <!-- 헤더 시작 -->
-  <div class="header">
-    <div class="header-nav">
-            <span id="logo">
-                <a href="">내미콘</a>
-            </span>
-
-      <span id="menu-recommend" class="menu">
-                <a href="">추천글</a>
-            </span>
-
-      <span id="menu-chart" class="menu">
-                <a href="">차트</a>
-            </span>
-
-      <span id="menu-inquiry" class="menu">
-                <a href="">문의</a>
-            </span>
-
-      <span id="menu-search" class="menu">
-                <a href="">검색</a>
-            </span>
-
-      <span id="menu-login" class="menu-user">
-                <a href="">로그인</a>
-            </span>
-
-      <span id="menu-join" class="menu-user">
-                <a href="">회원가입</a>
-            </span>
-    </div>
-  </div>
+  <div th:replace="/common/fragments/header"/>
   <!-- 헤더 끝 -->
 
   <div class="container-register-bottom">
     <div class="faq-nav">
-      <span class="not-selected-faq-nav"><a href="">FAQ</a></span>
-      <span class="selected-inquire-nav"><a href="">내 문의 내역</a></span>
+      <span class="not-selected-faq-nav"><a href="/faq">FAQ</a></span>
+      <span class="selected-inquire-nav"><a href="/inquiry">내 문의 내역</a></span>
 
     </div>
 
@@ -76,30 +48,25 @@
           <span class="font-inquire-date">날짜</span>
           <span class="font-inquire-status">처리상태</span>
         </div>
-
-        <div class="inquire-list">
-          <span class="font-inquire-empty"></span>
-          <span class="font-inquire-num">1</span>
-          <span class="font-inquire-title">계정이 도용당했습니다.</span>
-          <span class="font-inquire-date">2023.01.06</span>
-          <span class="font-inquire-status">답변 완료</span>
+        <div th:each="lists:${inquiryList}">
+          <div class="inquire-list">
+            <span class="font-inquire-empty"></span>
+            <span class="font-inquire-num" th:text="${lists.getInquiryNo()}">1</span>
+            <a class="font-inquire-title" th:href="@{/inquiry/__${lists.getInquiryNo()}__}"><span
+                class="font-inquire-title"
+                th:text="${lists.getTitle()}"></span></a>
+            <span class="font-inquire-date" th:text="${lists.getCreatedAt()}">2023.01.06</span>
+            <th:block th:if="${lists.getProcessingStatus()=='처리중'}">
+              <span class="font-inquire-status" th:text="${lists.getProcessingStatus()}"></span>
+            </th:block>
+            <th:block th:if="${lists.getProcessingStatus()=='처리완료'}">
+              <a class="font-inquire-status" th:href="@{/inquiry/answer/__${lists.getInquiryNo()}__}"><span
+                  class="font-inquire-status"
+                  th:text="${lists.getProcessingStatus()}"></span></a>
+            </th:block>
+          </div>
         </div>
 
-        <div class="inquire-list">
-          <span class="font-inquire-empty"></span>
-          <span class="font-inquire-num">2</span>
-          <span class="font-inquire-title">문의 테스트 1.</span>
-          <span class="font-inquire-date">2023.01.05</span>
-          <span class="font-inquire-status">답변 완료</span>
-        </div>
-
-        <div class="inquire-list">
-          <span class="font-inquire-empty"></span>
-          <span class="font-inquire-num">3</span>
-          <span class="font-inquire-title">문의 테스트 2.</span>
-          <span class="font-inquire-date">2023.01.04</span>
-          <span class="font-inquire-status">답변 완료</span>
-        </div>
 
       </div>
     </div>

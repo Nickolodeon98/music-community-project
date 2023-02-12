@@ -45,15 +45,14 @@
           <span class="font-inquire-details-title">제목</span>
           <span class="font-inquire-details-title-content" th:text="${inquiryDetail.getTitle()}">계정이 도용당했습니다.</span>
           <span class="font-inquire-details-num">번호</span>
-          <span class="font-inquire-details-num-content" th:text="${inquiryDetail.getInquiryNo()}">1</span>
+          <span class="font-inquire-details-num-content" th:text="${inquiryAnswer.getAnswerNo()}">1</span>
         </div>
         <div class="inquire-details">
-          <span class="inquire-details-content">내용</span>
-          <span class="inquire-details-content-content" th:text="${inquiryDetail.getContent()}">안녕하세요. User1 회원님. 회원님의 계정 도용을 확인하여 조치하였습니다.<br>내미콘을 이용해주셔서 감사합니다.</span>
+          <span class="inquire-details-content">답변</span>
+          <span class="inquire-details-content-content" th:text="${inquiryAnswer.getContent()}">
           <div class="inquire-content-date">
             <span class="inquire-details-date">날짜</span>
-            <span class="inquire-details-date-date" th:text="${inquiryDetail.getCreatedAt()}">2023.01.06</span>
-
+            <span class="inquire-details-date-date" th:text="${inquiryAnswer.getCreatedAt()}">2023.01.06</span>
           </div>
 
         </div>

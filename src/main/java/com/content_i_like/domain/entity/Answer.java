@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @Entity
-public class Answer {
+public class Answer extends BaseEntity{
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
