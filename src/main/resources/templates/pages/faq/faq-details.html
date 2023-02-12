@@ -43,7 +43,7 @@
       <div class="faq-content-details-list">
         <span class="font-title" th:text="${faqDetails.getFaqContent()}"></span>
         <span class="font-gray">충분한 답변을 얻지 못하셨다면 1:1 문의를 통해 상세히 답변 드리겠습니다.</span>
-        <span class="inquire-btn"><a href="/inquiry/writeForm">문의하기</a></span>
+        <span class="inquire-btn"><a th:href="@{/inquiry/writeForm}">문의하기</a></span>
       </div>
     </div>
 
