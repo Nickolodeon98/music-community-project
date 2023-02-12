@@ -12,7 +12,7 @@ import org.hibernate.annotations.Where;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@SQLDelete(sql = "UPDATE likes SET deleted_at = current_timestamp WHERE id = ?")
+@SQLDelete(sql = "UPDATE likes SET deleted_at = current_timestamp WHERE likes_no = ?")
 public class Likes extends BaseEntity {
 
   @Id

@@ -38,7 +38,7 @@ public class LikesRestController {
    * @return 좋아요 개수를 숫자로 반환합니다.
    */
   @GetMapping("/{recommendNo}/likes")
-  public Response<Integer> returnNumberLikes(@PathVariable final Long recommendNo) {
+  public Response<Long> returnNumberLikes(@PathVariable final Long recommendNo) {
     return Response.success(likesService.countNumberLikes(recommendNo));
   }
 }
