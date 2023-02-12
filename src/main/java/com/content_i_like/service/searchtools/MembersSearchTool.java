@@ -25,4 +25,9 @@ public class MembersSearchTool implements ItemSearch<SearchMembersResponse> {
         .map(memberPage -> memberPage.map(SearchMembersResponse::of))
         .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
   }
+
+  @Override
+  public String buildMessage() {
+    return "유저정보를";
+  }
 }

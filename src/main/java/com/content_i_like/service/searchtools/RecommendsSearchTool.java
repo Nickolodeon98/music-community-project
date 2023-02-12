@@ -36,4 +36,9 @@ public class RecommendsSearchTool implements ItemSearch<SearchRecommendsResponse
                         recommend.getRecommendContent().substring(0, 100))))
         .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
   }
+
+  @Override
+  public String buildMessage() {
+    return "추천글을";
+  }
 }

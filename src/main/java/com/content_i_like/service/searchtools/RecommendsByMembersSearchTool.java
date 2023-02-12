@@ -28,4 +28,9 @@ public class RecommendsByMembersSearchTool implements ItemSearch<SearchRecommend
                     : SearchRecommendsResponse.of(recommend, recommend.getRecommendContent().substring(0, 10))))
             .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
   }
+
+  @Override
+  public String buildMessage() {
+    return "추천글을";
+  }
 }
