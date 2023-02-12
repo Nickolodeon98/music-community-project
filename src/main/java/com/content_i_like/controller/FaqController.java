@@ -55,7 +55,6 @@ public class FaqController {
     FaqDetailsResponse faqDetails = faqService.getFaqDetails(faqNo);
 
     model.addAttribute("faqDetails", faqDetails);
-    model.addAttribute("faqCategory", new FaqCategoryResponse());
     return "/pages/faq/faq-details";
   }
 //
