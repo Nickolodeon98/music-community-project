@@ -1,6 +1,7 @@
 
 package com.content_i_like.controller;
 
+import ch.qos.logback.core.model.Model;
 import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.inquiry.InquiryRequire;
 import com.content_i_like.domain.dto.inquiry.InquiryResponse;
@@ -26,6 +27,11 @@ public class InquiryController {
   public Response<InquiryResponse> postInquiry(@RequestBody InquiryRequire inquiryRequire,
       Authentication authentication) {
     return Response.success(inquiryService.postInquiry(authentication.getName(), inquiryRequire));
+  }
+  @GetMapping("/writeForm")
+  public String registerInquiry(Model model) {
+
+    return "/pages/faq/faq-register-inquiry";
   }
 
   @GetMapping()

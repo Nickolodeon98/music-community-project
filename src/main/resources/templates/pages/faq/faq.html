@@ -11,46 +11,18 @@
           integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
           crossorigin="anonymous"></script>
   <link rel="stylesheet" th:href="@{/css/style.css}" href="../../../static/css/style.css">
-  <link rel="stylesheet" th:href="@{/css/myFeed.css}" href="../../../static/css/faq.css">
+  <link rel="stylesheet" th:href="@{/css/faq.css}" href="../../../static/css/faq.css">
   <!--  <link rel="stylesheet" th:href="@{/css/index.css}" href="../../../static/css/index.css">-->
   <link rel="stylesheet" th:href="@{/css/recommend-post.css}" href="../../../static/css/recommend-post.css">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
 </head>
 
 <body>
 <div class="container-faq">
 
   <!-- 헤더 시작 -->
-  <div class="header">
-    <div class="header-nav">
-            <span id="logo">
-                <a href="">내미콘</a>
-            </span>
+  <div th:replace="/common/fragments/header"/>
 
-      <span id="menu-recommend" class="menu">
-                <a href="">추천글</a>
-            </span>
-
-      <span id="menu-chart" class="menu">
-                <a href="">차트</a>
-            </span>
-
-      <span id="menu-inquiry" class="menu">
-                <a href="">문의</a>
-            </span>
-
-      <span id="menu-search" class="menu">
-                <a href="">검색</a>
-            </span>
-
-      <span id="menu-login" class="menu-user">
-                <a href="">로그인</a>
-            </span>
-
-      <span id="menu-join" class="menu-user">
-                <a href="">회원가입</a>
-            </span>
-    </div>
-  </div>
   <!-- 헤더 끝 -->
 
   <div class="container-faq-bottom">
@@ -80,26 +52,28 @@
       </div>
 
       <span class="font-title">자주 찾는 도움말</span>
-
-      <div class="faq-elements">
-        <span class="font-blue">[포인트 복구] </span>
-        <span class="font-white"><a>포인트를 복구하려면 어떻게 해야 하나요.</a></span>
+      <div th:each="faqs:${faq}">
+        <div class="faq-elements">
+          <span class="font-blue" th:text="|[${faqs.getFaqCategory()}]|">[포인트 복구] </span>
+          <a th:href="@{/faq/details/__${faqs.getFaqNo()}__}"><span class="font-white" th:text="${faqs.getTitle()}"></span></a>
+        </div>
       </div>
 
-      <div class="faq-elements">
-        <span class="font-blue">[계정 삭제] </span>
-        <span class="font-white"><a>계정을 삭제하려면 어떻게 해야 하나요.</a></span>
-      </div>
 
-      <div class="faq-elements">
-        <span class="font-blue">[슈퍼챗] </span>
-        <span class="font-white"><a>슈퍼챗이 뭔가요.</a></span>
-      </div>
+<!--      <div class="faq-elements">-->
+<!--        <span class="font-blue">[계정 삭제] </span>-->
+<!--        <span class="font-white"><a>계정을 삭제하려면 어떻게 해야 하나요.</a></span>-->
+<!--      </div>-->
 
-      <div class="faq-elements">
-        <span class="font-blue">[계정]</span>
-        <span class="font-white"><a>비밀번호를 변경하려면 어떻게 해야 하나요.</a></span>
-      </div>
+<!--      <div class="faq-elements">-->
+<!--        <span class="font-blue">[슈퍼챗] </span>-->
+<!--        <span class="font-white"><a>슈퍼챗이 뭔가요.</a></span>-->
+<!--      </div>-->
+
+<!--      <div class="faq-elements">-->
+<!--        <span class="font-blue">[계정]</span>-->
+<!--        <span class="font-white"><a>비밀번호를 변경하려면 어떻게 해야 하나요.</a></span>-->
+<!--      </div>-->
     </div>
   </div>
 
