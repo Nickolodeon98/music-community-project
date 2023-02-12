@@ -88,7 +88,7 @@ public class MemberController {
   }
 
   @PostMapping("/join")
-  public String join(@Valid @ModelAttribute("memberJoinRequest") MemberJoinRequest request) {
+  public String join(@ModelAttribute("memberJoinRequest") MemberJoinRequest request) {
     MemberJoinResponse response = memberService.join(request);
     return "redirect:/member/login";
   }

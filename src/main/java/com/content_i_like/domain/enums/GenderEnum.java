@@ -1,5 +1,15 @@
 package com.content_i_like.domain.enums;
 
 public enum GenderEnum {
-  UNKNOWN, MALE, FEMALE;
+  MALE("남"), FEMALE("여"), UNKNOWN("X");
+
+  private final String description;
+
+  GenderEnum(String description) {
+    this.description = description;
+  }
+
+  public String getDescription() {
+    return description;
+  }
 }

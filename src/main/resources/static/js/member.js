@@ -8,7 +8,8 @@ function checkAll(){
  }
 
 function checkPw() {
-	var p1 = document.getElementById('password').value;
+
+	var p1 = document.getElementById('newPassword').value;
 	var num = p1.search(/[0-9]/g);
 	var eng = p1.search(/[a-z]/ig);
 	var spe = p1.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
@@ -33,5 +34,60 @@ function checkPw() {
 			alert("비밀번호가 변경되었습니다.");
 			return true;
 		  }
-
 }
+
+function checkJoinForm(){
+  var email = document.getElementById("email");
+  var password = document.getElementById("password");
+  var doubleCheckPw = document.getElementById("doubleCheckPw");
+  var nickName = document.getElementById("nickName");
+  var name = document.getElementById("name");
+
+  if(!checkExistData(email,"이메일"){
+     alert("이메일을 입력해주세요");
+     email.focus();
+    return false;
+  }
+  if(!checkExistData(password,"비밀번호")){
+     alert("비밀번호을 입력해주세요");
+     password.focus();
+    return false;
+  }
+  if(!checkExistData(doubleCheckPw,"비밀번호 확인")){
+     alert("비밀번호를 한 번 더 입력해주세요");
+     doubleCheckPw.focus();
+    return false;
+  }
+  if(!checkExistData(nickName,"닉네임")){
+     alert("닉네임을 입력해주세요");
+     nickName.focus();
+    return false;
+  }
+  if(!checkExistData(name,"이름")){
+     alert("이름을 입력해주세요");
+     name.focus();
+    return false;
+  }
+  if(!checkAccept()){
+    return false;
+  }
+  alert("가입되었습니다.")
+  return true;
+}
+
+function checkExistData(value){
+  if(value==""){
+    return false;
+  }
+  return true;
+}
+
+function checkAccept(){
+  if(document.getElementById('agreement1').checked && document.getElementById('agreement2').checked){
+    return true;
+  } else {
+    alert("서비스 이용 및 개인정보 수집과 이용에 대한 안내에 동의가 필요합니다.");
+    return false;
+  }
+}
+
