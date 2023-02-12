@@ -85,7 +85,7 @@
 
 .faq-content {
   width: 78%;
-  height: 100%;
+  height: 150%;
   border-radius: 30px;
   border: white solid 1px;
   padding: 50px;
@@ -256,6 +256,27 @@
   color: white;
   font-weight: bold;
   font-size: 18px;
+}
+
+.input-title {
+  font-size: 32px;
+  color: white;
+  font-weight: 500;
+  background-color: #1c1406;
+  border: none;
+  width: 100%;
+  outline: none;
+}
+
+.input-content {
+  font-size: 28px;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 500;
+  background-color: #1c1406;
+  border: none;
+  width: 100%;
+  height: 100%;
+  outline: none;
 }
 
 /*내 문의내역*/

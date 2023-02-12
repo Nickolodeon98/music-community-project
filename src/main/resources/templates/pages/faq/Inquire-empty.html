@@ -11,52 +11,23 @@
           integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
           crossorigin="anonymous"></script>
   <link rel="stylesheet" th:href="@{/css/style.css}" href="../../../static/css/style.css">
-  <link rel="stylesheet" th:href="@{/css/myFeed.css}" href="../../../static/css/faq.css">
+  <link rel="stylesheet" th:href="@{/css/faq.css}" href="../../../static/css/faq.css">
   <!--  <link rel="stylesheet" th:href="@{/css/index.css}" href="../../../static/css/index.css">-->
   <link rel="stylesheet" th:href="@{/css/recommend-post.css}" href="../../../static/css/recommend-post.css">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
 </head>
 
 <body>
 <div class="container-faq">
 
   <!-- 헤더 시작 -->
-  <div class="header">
-    <div class="header-nav">
-            <span id="logo">
-                <a href="">내미콘</a>
-            </span>
-
-      <span id="menu-recommend" class="menu">
-                <a href="">추천글</a>
-            </span>
-
-      <span id="menu-chart" class="menu">
-                <a href="">차트</a>
-            </span>
-
-      <span id="menu-inquiry" class="menu">
-                <a href="">문의</a>
-            </span>
-
-      <span id="menu-search" class="menu">
-                <a href="">검색</a>
-            </span>
-
-      <span id="menu-login" class="menu-user">
-                <a href="">로그인</a>
-            </span>
-
-      <span id="menu-join" class="menu-user">
-                <a href="">회원가입</a>
-            </span>
-    </div>
-  </div>
+  <div th:replace="/common/fragments/header"/>
   <!-- 헤더 끝 -->
 
   <div class="container-register-bottom">
     <div class="faq-nav">
-      <span class="not-selected-faq-nav"><a href="">FAQ</a></span>
-      <span class="selected-inquire-nav"><a href="">내 문의 내역</a></span>
+      <span class="not-selected-faq-nav"><a href="/faq">FAQ</a></span>
+      <span class="selected-inquire-nav"><a href="/inquiry">내 문의 내역</a></span>
 
     </div>
 

@@ -24,7 +24,7 @@ public class AnswerService {
         .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
             String.format("inquiryNo: %d not found", inquiryNo)));
 
-    return AnswerResponse.of(answerRepository.findByInquiry(inquiry), inquiry.getCreatedAt());
+    return AnswerResponse.of(answerRepository.findByInquiry(inquiry));
   }
 
   public AnswerResponse postAnswer(final Long inquiryNo, AnswerRequire answerRequire) {
@@ -37,6 +37,6 @@ public class AnswerService {
         .inquiry(inquiry)
         .build();
 
-    return AnswerResponse.of(answerRepository.save(answer), inquiry.getCreatedAt());
+    return AnswerResponse.of(answerRepository.save(answer));
   }
 }
