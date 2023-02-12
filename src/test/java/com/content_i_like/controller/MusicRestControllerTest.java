@@ -1,6 +1,7 @@
 package com.content_i_like.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -20,6 +21,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -38,6 +42,9 @@ class MusicRestControllerTest {
 
   final Long TRACK_ID = 1L;
 
+  Pageable setPageable(String sortCondition) {
+    return PageRequest.of(0, 10, Sort.by(sortCondition).descending());
+  }
   @BeforeEach
   void setUp() {
     track = TrackGetResponse.of(Fixture.getTrackFixture(Fixture.getAlbumFixture(Fixture.getArtistFixture())));
@@ -49,14 +56,14 @@ class MusicRestControllerTest {
     @Test
     @DisplayName("성공")
     void success_specify_a_track() throws Exception {
-      given(musicService.getASingleTrackInfo(TRACK_ID, any())).willReturn(track);
+      given(musicService.getASingleTrackInfo(TRACK_ID, eq(setPageable("recommendTitle")), any())).willReturn(track);
 
       mockMvc.perform(get(BASE_URL + "track/" + TRACK_ID).with(csrf()))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
           .andDo(print());
 
-      verify(musicService).getASingleTrackInfo(TRACK_ID, any());
+      verify(musicService).getASingleTrackInfo(TRACK_ID, eq(setPageable("recommendTitle")), any());
     }
   }
 }
