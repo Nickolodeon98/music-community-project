@@ -23,18 +23,18 @@
       <div class="message-box">
         <div class="login-hello">비밀번호 변경</div>
         <div class="login-message">새로운 비밀번호를 입력해주세요</div>
-        <div class="login-form">
-          <form th:action="@{/member/passwd/change}" method="post" class="login-form" th:object="${request}" onsubmit="return checkPw()">
+        <div class="pw-form">
+          <form th:action="@{/member/passwd/change}" method="post" class="pw-form" th:object="${request}" onsubmit="return checkPw()">
             <input type="password" id="password" name="newPassword" th:field="*{newPassword}" class="find-by-username" placeholder="  비밀번호"/>
             <input type="password" id="verification" name="verification" th:field="*{verification}" class="find-by-username" placeholder="  비밀번호 확인"/>
-            <input type="submit" value="확인"/>
+            <input type="submit" value="확인" class="change-pw"/>
           </form>
         </div>
       </div>
     </div>
 
     <div class="login-img-box">
-      <img id="login-img" src="./img/index-img.jpg">
+      <img id="login-img" th:src="@{/img/index-img.jpg}" src="../../../static/img/index-img.jpg">
     </div>
   </div>
 

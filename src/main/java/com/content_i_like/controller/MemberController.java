@@ -88,14 +88,16 @@ public class MemberController {
   }
 
   @GetMapping("/passwd/find_pw")
-  public String findPwForm(Model model) {
+  public String findPwForm(HttpServletRequest httpRequest, Model model) {
+    if (httpRequest.getSession(false) != null) {
+      return "redirect:/";
+    }
     model.addAttribute("request", new MemberFindRequest());
     return "pages/member/find-pw";
   }
 
   @PostMapping("/passwd/find_pw")
   public String findPw(@Valid @ModelAttribute("memberFindRequest") MemberFindRequest request) {
-    log.info("request정보: {} and {}", request.getName(), request.getEmail());
     String message = memberService.findPwByEmail(request);
     return "redirect:/member/login";
   }
