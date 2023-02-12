@@ -22,7 +22,7 @@
   <div class="container">
 
     <div th:replace="~{common/fragments/search::search}"></div>
-    <form class="block-middle" th:action="@{/search/test/recommends}" th:method="get">
+    <form class="block-middle" th:action="@{/search/recommends}" th:method="get">
       <input type="hidden" th:name="keyword" th:value="${keyword}">
       <span class="count-results"
             th:text="${recommendsList} ? ${recommendsList.message} : '검색해주세요.'"></span>
@@ -35,7 +35,7 @@
                  src="https://content-i-like.s3.ap-northeast-2.amazonaws.com/power.jpg"/>
             <div class="title-and-contents">
               <div class="recommend-text">
-                <a href="" class="recommend-title" th:style="${'font-weight:bold'}" th:text="${element.recommendTitle}"></a>
+                <a th:href="@{/recommends/__${element.recommendNo}__}" class="recommend-title" th:style="${'font-weight:bold'}" th:text="${element.recommendTitle}"></a>
                 <span class="recommend-date" th:text="${#temporals.format(element.createdAt, 'yyyy년 MM월 dd일 HH시 mm분')}"></span>
               </div>
 

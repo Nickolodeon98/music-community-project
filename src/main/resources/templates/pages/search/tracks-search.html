@@ -22,7 +22,7 @@
     <div th:replace="~{common/fragments/search::search}"></div>
 
     <form class="block-middle" id="paging" th:method="get"
-          th:action="@{/search/test/tracks}">
+          th:action="@{/search/tracks}">
       <input type="hidden" th:name="keyword" th:value="${keyword}">
       <span class="count-results"
             th:text="${trackResults} ? ${trackResults.message} : '검색해주세요'"></span>
@@ -40,7 +40,7 @@
                  th:src="${trackResultsAsList.get(counter).thumbnailUrl}"/>
             <span class="tracks-list-contents">
               <a class="track-title"
-                 th:href="@{/music/test/track(pk=${trackResultsAsList.get(counter).trackNo})}"
+                 th:href="@{/music/track(pk=${trackResultsAsList.get(counter).trackNo})}"
                  th:utext=
                      "${#strings.length(trackResultsAsList.get(counter).trackTitle) >= 25} ?
                      ${#strings.substring(trackResultsAsList.get(counter).trackTitle, 0, 25)} + '<br>'
@@ -65,7 +65,7 @@
                  th:src="${trackResultsAsList.get(counter+1).thumbnailUrl}"/>
             <span class="tracks-list-contents">
               <a href="" class="track-title"
-                 th:href="@{/music/test/track(pk=${trackResultsAsList.get(counter+1).trackNo})}"
+                 th:href="@{/music/track(pk=${trackResultsAsList.get(counter+1).trackNo})}"
                  th:utext=
                      "${#strings.length(trackResultsAsList.get(counter+1).trackTitle) >= 25} ?
                      ${#strings.substring(trackResultsAsList.get(counter+1).trackTitle, 0, 25)} + '<br>'

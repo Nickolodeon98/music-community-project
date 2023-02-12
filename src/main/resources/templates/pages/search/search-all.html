@@ -36,7 +36,7 @@
                  src="https://content-i-like.s3.ap-northeast-2.amazonaws.com/power.jpg"/>
             <div class="title-and-contents">
               <div class="recommend-text">
-                <a href="" class="recommend-title" th:style="${'font-weight:bold'}" th:text="${element.recommendTitle}"></a>
+                <a th:href="@{/recommends/${element.recommendNo}}" class="recommend-title" th:style="${'font-weight:bold'}" th:text="${element.recommendTitle}"></a>
                 <span class="recommend-date" th:text="${#temporals.format(element.createdAt, 'yyyy년 MM월 dd일 HH시 mm분')}"></span>
               </div>
 
@@ -45,7 +45,7 @@
             </div>
           </li>
         </ul>
-        <a class="more-contents" th:href="@{/search/test/recommends(keyword=__${keyword}__)}">더보기</a>
+        <a class="more-contents" th:href="@{/search/recommends(keyword=${keyword})}">더보기</a>
       </th:block>
       <span class="count-results"
             th:text="${tracks} ? ${tracks.message} : '검색해주세요'"></span>
@@ -63,7 +63,7 @@
                  th:src="${tracksAsList.get(counter).thumbnailUrl}"/>
             <span class="tracks-list-contents">
               <a class="track-title"
-                 th:href="@{/music/test/track(pk=${tracksAsList.get(counter).trackNo})}"
+                 th:href="@{/music/track(pk=${tracksAsList.get(counter).trackNo})}"
                  th:utext=
                      "${#strings.length(tracksAsList.get(counter).trackTitle) >= 25} ?
                      ${#strings.substring(tracksAsList.get(counter).trackTitle, 0, 25)} + '<br>'
@@ -88,7 +88,7 @@
                  th:src="${tracksAsList.get(counter+1).thumbnailUrl}"/>
             <span class="tracks-list-contents">
               <a href="" class="track-title"
-                 th:href="@{/music/test/track(pk=${tracksAsList.get(counter+1).trackNo})}"
+                 th:href="@{/music/track(pk=${tracksAsList.get(counter+1).trackNo})}"
                  th:utext=
                      "${#strings.length(tracksAsList.get(counter+1).trackTitle) >= 25} ?
                      ${#strings.substring(tracksAsList.get(counter+1).trackTitle, 0, 25)} + '<br>'
@@ -105,7 +105,7 @@
           </span>
           </li>
         </ul>
-        <a class="more-contents" th:href="@{/search/test/tracks(keyword=__${keyword}__)}">더보기</a>
+        <a class="more-contents" th:href="@{/search/tracks(keyword=${keyword})}">더보기</a>
       </div>
       <span class="count-results"
             th:text="${members} ? ${members.message} : '검색해주세요.'"></span>
@@ -192,7 +192,7 @@
           </th:block>
 
         </ul>
-        <a class="more-contents" th:href="@{/search/test/members(keyword=__${keyword}__)}">더보기</a>
+        <a class="more-contents" th:href="@{/search/members(keyword=${keyword})}">더보기</a>
       </th:block>
 <!--      <button th:unless="${tracks.pages.isFirst()}" th:name="page"-->
 <!--              th:value="${pageable.previousOrFirst().pageNumber}">이전-->
@@ -205,7 +205,7 @@
 </div>
 <script th:inline="javascript">
   function OnClickRecommends() {
-    const action = /*[[@{/search/test/recommends}]]*/ '/search/test/recommends';
+    const action = /*[[@{/search/recommends}]]*/ '/search/recommends';
     document.querySelector("#more-search").setAttribute("action", action);
   }
 </script>

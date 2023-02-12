@@ -68,7 +68,7 @@
 
                     <div class="post-info">
                         <div class="post-info-top">
-                            <span class="post-title" th:text="${trackRecommendsAsList.get(counter).recommendTitle}"></span>
+                            <span class="post-title" th:href="@{/recommends/__${trackRecommendsAsList.get(counter).recommendNo}__}" th:text="${trackRecommendsAsList.get(counter).recommendTitle}"></span>
                             <span class="like" th:if="${trackRecommendsAsList.get(counter).countLikes == null}">♥ 0</span>
                             <span class="like" th:unless="${trackRecommendsAsList.get(counter).countLikes == null}" th:text="'♥ ' + ${trackRecommendsAsList.get(counter).countLikes}"></span>
                         </div>
@@ -97,7 +97,7 @@
 
                     <div class="post-info">
                         <div class="post-info-top">
-                            <span class="post-title" th:text="${trackRecommendsAsList.get(counter+1).recommendTitle}"></span>
+                            <span class="post-title" th:href="@{/recommends/__${trackRecommendsAsList.get(counter).recommendNo}__}" th:text="${trackRecommendsAsList.get(counter+1).recommendTitle}"></span>
                             <span class="like" th:if="${trackRecommendsAsList.get(counter+1).countLikes == null}">♥ 0</span>
                             <span class="like" th:unless="${trackRecommendsAsList.get(counter+1).countLikes == null}" th:text="'♥ ' + ${trackRecommendsAsList.get(counter+1).countLikes}"></span>
                         </div>
@@ -126,7 +126,7 @@
 
                     <div class="post-info">
                         <div class="post-info-top">
-                            <span class="post-title" th:text="${trackRecommendsAsList.get(counter+2).recommendTitle}"></span>
+                            <span class="post-title" th:href="@{/recommends/__${trackRecommendsAsList.get(counter).recommendNo}__}" th:text="${trackRecommendsAsList.get(counter+2).recommendTitle}"></span>
                             <span class="like" th:if="${trackRecommendsAsList.get(counter+2).countLikes == null}">♥ 0</span>
                             <span class="like" th:unless="${trackRecommendsAsList.get(counter+2).countLikes == null}" th:text="'♥ ' + ${trackRecommendsAsList.get(counter+2).countLikes}"></span>
                         </div>

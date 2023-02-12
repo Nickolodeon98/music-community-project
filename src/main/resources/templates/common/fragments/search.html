@@ -26,7 +26,7 @@
             <option value="유저">유저</option>
           </select>
           <form class="search-form" id="search-form" th:object="${keywordDto}"
-                th:action="@{/search/test/all}"
+                th:action="@{/search/all}"
                 th:method="get">
             <input class="search-input" type="text" th:field="*{keyword}">
 
@@ -58,19 +58,19 @@
         "categories").selectedIndex].value;
 
     if (current === "전체") {
-      const allAction = /*[[@{/search/test/all}]]*/ '/search/test/all';
+      const allAction = /*[[@{/search/all}]]*/ '/search/all';
       document.querySelector("#search-form").setAttribute("action", allAction);
     }
     if (current === "음원") {
-      const trackAction = /*[[@{/search/test/tracks}]]*/ '/search/test/tracks';
+      const trackAction = /*[[@{/search/tracks}]]*/ '/search/tracks';
       document.querySelector("#search-form").setAttribute("action", trackAction);
     }
     if (current === "추천글") {
-      const recommendAction = /*[[@{/search/test/recommends}]]*/ '/search/test/recommends';
+      const recommendAction = /*[[@{/search/recommends}]]*/ '/search/recommends';
       document.querySelector("#search-form").setAttribute("action", recommendAction);
     }
     if (current === "유저") {
-      const memberAction = /*[[@{/search/test/members}]]*/ '/search/test/members';
+      const memberAction = /*[[@{/search/members}]]*/ '/search/members';
       document.querySelector("#search-form").setAttribute("action", memberAction);
     }
   }
