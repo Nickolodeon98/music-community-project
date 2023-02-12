@@ -19,43 +19,8 @@
 <body>
 <div class="container-myFeed">
 
-    <div th:replace="/common/fragments/header"/>
-  <!--  실제 배포할때는 위의 replace 사용-->
-  <!-- local에서 쉽게 테스트 하기 위한 헤더 시작-->
-<!--  <body>-->
-<!--  <div class="header">-->
-<!--    <div class="header-nav">-->
-<!--            <span id="logo">-->
-<!--                <a href="">내미콘</a>-->
-<!--            </span>-->
+  <div th:replace="~{common/fragments/header::header}"></div>
 
-<!--      <span id="menu-recommend" class="menu">-->
-<!--                <a href="">추천글</a>-->
-<!--            </span>-->
-
-<!--      <span id="menu-chart" class="menu">-->
-<!--                <a href="">차트</a>-->
-<!--            </span>-->
-
-<!--      <span id="menu-inquiry" class="menu">-->
-<!--                <a href="">문의</a>-->
-<!--            </span>-->
-
-<!--      <span id="menu-search" class="menu">-->
-<!--                <a href="">검색</a>-->
-<!--            </span>-->
-
-<!--      <span id="menu-login" class="menu-user">-->
-<!--                <a href="">로그인</a>-->
-<!--            </span>-->
-
-<!--      <span id="menu-join" class="menu-user">-->
-<!--                <a href="">회원가입</a>-->
-<!--            </span>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  </body>-->
-  <!--  헤더 끝-->
 
   <!--  마이피드 상단 시작-->
   <div class="contents-myFeed">
@@ -125,114 +90,6 @@
           <span class="selected-post-nav"><a>팔로우</a></span>
         </div>
       </div>
-
-<!--      <div class="follow-card">-->
-<!--        <div class="contents-follow-img">-->
-<!--          <img class="img-follow" src="../../../static/img/event-horizon.jpg">-->
-<!--        </div>-->
-<!--        <div class="contents-follow-name">-->
-<!--          <span>다나</span>-->
-<!--        </div>-->
-<!--        <div class="contents-follow-button">-->
-<!--          <span class="not-selected-post-nav"><a>팔로우 취소</a></span>-->
-<!--        </div>-->
-<!--      </div>-->
-
-<!--      <div class="follow-card">-->
-<!--        <div class="contents-follow-img">-->
-<!--          <img class="img-follow" src="../../../static/img/event-horizon.jpg">-->
-<!--        </div>-->
-<!--        <div class="contents-follow-name">-->
-<!--          <span>다나</span>-->
-<!--        </div>-->
-<!--        <div class="contents-follow-button">-->
-<!--          <span class="not-selected-post-nav"><a>팔로우 취소</a></span>-->
-<!--        </div>-->
-<!--      </div>-->
-
-<!--      <div class="follow-card">-->
-<!--        <div class="contents-follow-img">-->
-<!--          <img class="img-follow" src="../../../static/img/event-horizon.jpg">-->
-<!--        </div>-->
-<!--        <div class="contents-follow-name">-->
-<!--          <span>다나</span>-->
-<!--        </div>-->
-<!--        <div class="contents-follow-button">-->
-<!--          <span class="not-selected-post-nav"><a>팔로우 취소</a></span>-->
-<!--        </div>-->
-<!--      </div>-->
-
-<!--      <div class="follow-card">-->
-<!--        <div class="contents-follow-img">-->
-<!--          <img class="img-follow" src="../../../static/img/event-horizon.jpg">-->
-<!--        </div>-->
-<!--        <div class="contents-follow-name">-->
-<!--          <span>다나</span>-->
-<!--        </div>-->
-<!--        <div class="contents-follow-button">-->
-<!--          <span class="not-selected-post-nav"><a>팔로우 취소</a></span>-->
-<!--        </div>-->
-<!--      </div>-->
-
-<!--      <div class="follow-card">-->
-<!--        <div class="contents-follow-img">-->
-<!--          <img class="img-follow" src="../../../static/img/event-horizon.jpg">-->
-<!--        </div>-->
-<!--        <div class="contents-follow-name">-->
-<!--          <span>다나</span>-->
-<!--        </div>-->
-<!--        <div class="contents-follow-button">-->
-<!--          <span class="not-selected-post-nav"><a>팔로우 취소</a></span>-->
-<!--        </div>-->
-<!--      </div>-->
-
-<!--      <div class="follow-card">-->
-<!--        <div class="contents-follow-img">-->
-<!--          <img class="img-follow" src="../../../static/img/event-horizon.jpg">-->
-<!--        </div>-->
-<!--        <div class="contents-follow-name">-->
-<!--          <span>다나</span>-->
-<!--        </div>-->
-<!--        <div class="contents-follow-button">-->
-<!--          <span class="not-selected-post-nav"><a>팔로우 취소</a></span>-->
-<!--        </div>-->
-<!--      </div>-->
-
-<!--      <div class="follow-card">-->
-<!--        <div class="contents-follow-img">-->
-<!--          <img class="img-follow" src="../../../static/img/event-horizon.jpg">-->
-<!--        </div>-->
-<!--        <div class="contents-follow-name">-->
-<!--          <span>다나</span>-->
-<!--        </div>-->
-<!--        <div class="contents-follow-button">-->
-<!--          <span class="not-selected-post-nav"><a>팔로우 취소</a></span>-->
-<!--        </div>-->
-<!--      </div>-->
-
-<!--      <div class="follow-card">-->
-<!--        <div class="contents-follow-img">-->
-<!--          <img class="img-follow" src="../../../static/img/event-horizon.jpg">-->
-<!--        </div>-->
-<!--        <div class="contents-follow-name">-->
-<!--          <span>다나</span>-->
-<!--        </div>-->
-<!--        <div class="contents-follow-button">-->
-<!--          <span class="not-selected-post-nav"><a>팔로우 취소</a></span>-->
-<!--        </div>-->
-<!--      </div>-->
-
-<!--      <div class="follow-card">-->
-<!--        <div class="contents-follow-img">-->
-<!--          <img class="img-follow" src="../../../static/img/event-horizon.jpg">-->
-<!--        </div>-->
-<!--        <div class="contents-follow-name">-->
-<!--          <span>다나</span>-->
-<!--        </div>-->
-<!--        <div class="contents-follow-button">-->
-<!--          <span class="not-selected-post-nav"><a>팔로우 취소</a></span>-->
-<!--        </div>-->
-<!--      </div>-->
 
     </div>
   </div>
