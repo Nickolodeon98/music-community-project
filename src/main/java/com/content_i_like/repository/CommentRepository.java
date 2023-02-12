@@ -28,4 +28,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
   Page<Comment> findCommentsByCommentPointGreaterThanAndRecommendRecommendNo(Long point,
       Long recommendNo,
       Pageable pageable);
+
+  Long countByMember(Member member);
 }

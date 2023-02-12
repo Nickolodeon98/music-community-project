@@ -1,6 +1,8 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
+import com.content_i_like.domain.dto.follow.FollowMyFeedResponse;
+import com.content_i_like.domain.dto.follow.FollowResponse;
 import com.content_i_like.domain.dto.member.ChangePwRequest;
 import com.content_i_like.domain.dto.member.MemberCommentResponse;
 import com.content_i_like.domain.dto.member.MemberFindRequest;
@@ -20,6 +22,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.Iterator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -37,6 +41,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -81,7 +86,8 @@ public class MemberController {
 
     //세션 데이터 출력
     session.getAttributeNames().asIterator()
-        .forEachRemaining(name -> log.info("session name={}, value={}", name, session.getAttribute(name)));
+        .forEachRemaining(
+            name -> log.info("session name={}, value={}", name, session.getAttribute(name)));
 
     log.info("sessionId={}", session.getId());
     log.info("getMaxInactiveInterval={}", session.getMaxInactiveInterval());
@@ -141,36 +147,50 @@ public class MemberController {
     return Response.success(url);
   }
 
-  /**
-   * 내가 등록한 recommends를 불러옵니다.
-   *
-   * @return 작성한 recommends 목록
-   */
   @GetMapping("/recommends")
-  public String getMyRecommends() {
+  public String getMyRecommends(HttpServletRequest request, Model model, Pageable pageable) {
+
+    HttpSession session = request.getSession(false);
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+    MemberRecommendResponse recommends = memberService.getMyRecommendsByNickName(
+        loginResponse.getNickName(), pageable);
+
+    model.addAttribute("recommendsResponse", recommends);
+
     return "pages/member/myFeed-recommends";
   }
 
-  /**
-   * 내가 등록한 recommends와 다른 정보를 통합해서 불러옵니다.
-   *
-   * @return 작성 게시글 수, 팔로워 수, 팔로윙 수, 작성한 recommends 목록
-   */
-  @GetMapping("/recommends/integrated")
-  public Response<MemberRecommendResponse> getMyRecommendsIntegrated(Authentication authentication,
-      @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) final Pageable pageable) {
-    return Response.success(
-        memberService.getMyRecommendsIntegrated(authentication.getName(), pageable));
+  @GetMapping("/comments")
+  public String getMyComments(HttpServletRequest request, Model model, Pageable pageable) {
+    HttpSession session = request.getSession(false);
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+    MemberCommentResponse comments = memberService.getMyCommentsByNickName(
+        loginResponse.getNickName(), pageable);
+
+    model.addAttribute("comments", comments);
+
+    return "pages/member/myFeed-comments";
   }
 
-  /**
-   * 내가 등록한 comments와 다른 정보를 통합해서 불러옵니다.
-   *
-   * @return 작성 게시글 수, 팔로워 수, 팔로윙 수, 작성한 comments 목록
-   */
-  @GetMapping("/comments/integrated")
-  public Response<MemberCommentResponse> getMyComments(Authentication authentication,
-      @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) final Pageable pageable) {
-    return Response.success(memberService.getMyComments(authentication.getName(), pageable));
+  @GetMapping("/followers")
+  public String getMyFollowers(HttpServletRequest request, Model model, Pageable pageable) {
+    HttpSession session = request.getSession(false);
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+    FollowMyFeedResponse myFollowersByNickName = memberService.getMyFollowersByNickName(
+        loginResponse.getNickName(), pageable);
+
+    model.addAttribute("followers", myFollowersByNickName);
+    return "pages/member/myFeed-followers";
+  }
+
+  @GetMapping("/followings")
+  public String getMyFollowings(HttpServletRequest request, Model model, Pageable pageable) {
+    HttpSession session = request.getSession(false);
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+    FollowMyFeedResponse myFollowersByNickName = memberService.getMyFollowingsByNickName(
+        loginResponse.getNickName(), pageable);
+
+    model.addAttribute("followers", myFollowersByNickName);
+    return "pages/member/myFeed-followings";
   }
 }
