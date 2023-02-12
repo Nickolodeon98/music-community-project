@@ -2,7 +2,7 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{pages/search/search}">
+      layout:decorate="~{common/fragments/search}">
 
 <head>
   <meta charset="UTF-8">
@@ -17,69 +17,78 @@
 <body>
 
 <div layout:fragment="search-fragment">
-  <div th:replace="~{pages/search/search::search}"></div>
 
   <div class="container">
+    <div th:replace="~{common/fragments/search::search}"></div>
 
     <form class="block-middle" id="paging" th:method="get"
           th:action="@{/search/test/tracks}">
       <input type="hidden" th:name="keyword" th:value="${keyword}">
-    <span class="count-results"
-          th:text="${searchResult} ? ${searchResult.message} : '검색해주세요'"></span>
+      <span class="count-results"
+            th:text="${trackResults} ? ${trackResults.message} : '검색해주세요'"></span>
       <hr>
       <br>
-      <div class="search-results" th:block th:if="${searchResult != null and searchResultAsList != null}">
+      <div class="search-results" th:fragment="track-search" th:block
+           th:if="${trackResults != null and trackResultsAsList != null}">
         <ul class="tracks-list"
-            th:each="counter: ${#numbers.sequence(0, searchResult.pages.getNumberOfElements()-1, 2)}"
-            th:unless="${counter >= searchResult.pages.getNumberOfElements()}">
+            th:each="counter: ${#numbers.sequence(0, trackResults.pages.getNumberOfElements()-1, 2)}"
+            th:unless="${counter >= trackResults.pages.getNumberOfElements()}">
           <li class="tracks-list-elements-left"
-              th:unless="${counter >= searchResult.pages.getNumberOfElements()}">
+              th:unless="${counter >= trackResults.pages.getNumberOfElements()}">
 
             <img class="tracks-list-image"
-                 th:src="${searchResultAsList.get(counter).thumbnailUrl}"/>
+                 th:src="${trackResultsAsList.get(counter).thumbnailUrl}"/>
             <span class="tracks-list-contents">
-              <a href="" class="track-title"
+              <a class="track-title"
+                 th:href="@{/music/test/track(pk=${trackResultsAsList.get(counter).trackNo})}"
                  th:utext=
-                     "${#strings.length(searchResultAsList.get(counter).trackTitle) >= 25} ?
-                     ${#strings.substring(searchResultAsList.get(counter).trackTitle, 0, 25)} + '<br>'
-                      + ${#strings.substring(searchResultAsList.get(counter).trackTitle, 25, searchResultAsList.get(counter).trackTitle.length())}:
-                     ${searchResultAsList.get(counter).trackTitle}"></a>
+                     "${#strings.length(trackResultsAsList.get(counter).trackTitle) >= 25} ?
+                     ${#strings.substring(trackResultsAsList.get(counter).trackTitle, 0, 25)} + '<br>'
+                      + ${#strings.substring(trackResultsAsList.get(counter).trackTitle, 25, trackResultsAsList.get(counter).trackTitle.length())}:
+                     ${trackResultsAsList.get(counter).trackTitle}">
+
+              </a>
               <span class="track-album"
                     th:utext=
-                        "${#strings.length(searchResultAsList.get(counter).trackAlbum) >= 26} ?
-                     ${#strings.substring(searchResultAsList.get(counter).trackAlbum, 0, 26)} + '<br>'
-                      + ${#strings.substring(searchResultAsList.get(counter).trackAlbum, 26, searchResultAsList.get(counter).trackAlbum.length())}:
-                     ${searchResultAsList.get(counter).trackAlbum}"></span>
+                        "${#strings.length(trackResultsAsList.get(counter).trackAlbum) >= 26} ?
+                     ${#strings.substring(trackResultsAsList.get(counter).trackAlbum, 0, 26)} + '<br>'
+                      + ${#strings.substring(trackResultsAsList.get(counter).trackAlbum, 26, trackResultsAsList.get(counter).trackAlbum.length())}:
+                     ${trackResultsAsList.get(counter).trackAlbum}"></span>
               <span class="track-info"
-                    th:utext="${searchResultAsList.get(counter).trackArtist}"></span>
+                    th:utext="${trackResultsAsList.get(counter).trackArtist}"></span>
           </span>
           </li>
           <li class="tracks-list-elements-right"
-              th:unless="${counter+1 >= searchResult.pages.getNumberOfElements()}">
+              th:unless="${counter+1 >= trackResults.pages.getNumberOfElements()}">
 
             <img class="tracks-list-image"
-                 th:src="${searchResultAsList.get(counter+1).thumbnailUrl}"/>
+                 th:src="${trackResultsAsList.get(counter+1).thumbnailUrl}"/>
             <span class="tracks-list-contents">
               <a href="" class="track-title"
+                 th:href="@{/music/test/track(pk=${trackResultsAsList.get(counter+1).trackNo})}"
                  th:utext=
-                     "${#strings.length(searchResultAsList.get(counter+1).trackTitle) >= 25} ?
-                     ${#strings.substring(searchResultAsList.get(counter+1).trackTitle, 0, 25)} + '<br>'
-                      + ${#strings.substring(searchResultAsList.get(counter+1).trackTitle, 25, searchResultAsList.get(counter+1).trackTitle.length())}:
-                     ${searchResultAsList.get(counter+1).trackTitle}"></a>
+                     "${#strings.length(trackResultsAsList.get(counter+1).trackTitle) >= 25} ?
+                     ${#strings.substring(trackResultsAsList.get(counter+1).trackTitle, 0, 25)} + '<br>'
+                      + ${#strings.substring(trackResultsAsList.get(counter+1).trackTitle, 25, trackResultsAsList.get(counter+1).trackTitle.length())}:
+                     ${trackResultsAsList.get(counter+1).trackTitle}"></a>
               <span class="track-album"
                     th:utext=
-                        "${#strings.length(searchResultAsList.get(counter+1).trackAlbum) >= 26} ?
-                     ${#strings.substring(searchResultAsList.get(counter+1).trackAlbum, 0, 26)} + '<br>'
-                      + ${#strings.substring(searchResultAsList.get(counter+1).trackAlbum, 26, searchResultAsList.get(counter+1).trackAlbum.length())}:
-                     ${searchResultAsList.get(counter+1).trackAlbum}"></span>
+                        "${#strings.length(trackResultsAsList.get(counter+1).trackAlbum) >= 26} ?
+                     ${#strings.substring(trackResultsAsList.get(counter+1).trackAlbum, 0, 26)} + '<br>'
+                      + ${#strings.substring(trackResultsAsList.get(counter+1).trackAlbum, 26, trackResultsAsList.get(counter+1).trackAlbum.length())}:
+                     ${trackResultsAsList.get(counter+1).trackAlbum}"></span>
               <span class="track-info"
-                    th:utext="${searchResultAsList.get(counter+1).trackArtist}"></span>
+                    th:utext="${trackResultsAsList.get(counter+1).trackArtist}"></span>
           </span>
           </li>
         </ul>
       </div>
-      <button th:unless="${searchResult.pages.isLast()}" th:name="page" th:value="${pageable.previousOrFirst().pageNumber}">이전</button>
-      <button th:unless="${searchResult.pages.isLast()}" th:name="page" th:value="${pageable.next().pageNumber}">다음</button>
+      <button th:unless="${trackResults.pages.isFirst()}" th:name="page"
+              th:value="${pageable.previousOrFirst().pageNumber}">이전
+      </button>
+      <button th:unless="${trackResults.pages.isLast()}" th:name="page"
+              th:value="${pageable.next().pageNumber}">다음
+      </button>
     </form>
   </div>
 </div>

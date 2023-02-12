@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/fragments/search}">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Search-Tracks</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/tracks-search.css}">
+  <link rel="stylesheet" th:href="@{/css/members-search.css}">
+  <link rel="stylesheet" th:href="@{/css/recommends-search.css}">
+  <link rel="stylesheet" th:href="@{/css/search.css}">
+  <!--  <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/style.css">-->
+  <!--  <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/tracks-search.css">-->
+  <!--  <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/search.css">-->
+</head>
+<body>
+
+<div layout:fragment="search-fragment">
+
+  <div class="container">
+    <div th:replace="~{common/fragments/search::search}"></div>
+
+    <form class="block-middle" id="more-search" th:method="get">
+<!--      <input type="hidden" th:name="keyword" th:value="${keyword}">-->
+      <span class="count-results"
+            th:text="${recommends} ? ${recommends.message} : '검색해주세요.'"></span>
+      <hr>
+      <br>
+      <th:block th:if="${recommends != null}">
+        <ul class="recommend-list" th:each="element, status : ${recommendsAsList}" th:if="${status.index<5}">
+          <li class="recommend-list-elements">
+            <img class="recommend-image" th:src="${element.recommendImageUrl}"
+                 src="https://content-i-like.s3.ap-northeast-2.amazonaws.com/power.jpg"/>
+            <div class="title-and-contents">
+              <div class="recommend-text">
+                <a href="" class="recommend-title" th:style="${'font-weight:bold'}" th:text="${element.recommendTitle}"></a>
+                <span class="recommend-date" th:text="${#temporals.format(element.createdAt, 'yyyy년 MM월 dd일 HH시 mm분')}"></span>
+              </div>
+
+              <div class="separator"></div>
+              <span th:text="${element.summarizedRecommendContent}"></span>
+            </div>
+          </li>
+        </ul>
+        <a class="more-contents" th:href="@{/search/test/recommends(keyword=__${keyword}__)}">더보기</a>
+      </th:block>
+      <span class="count-results"
+            th:text="${tracks} ? ${tracks.message} : '검색해주세요'"></span>
+      <hr>
+      <br>
+      <div class="search-results" th:block
+           th:if="${tracks != null and tracksAsList != null}">
+        <ul class="tracks-list"
+            th:each="counter: ${#numbers.sequence(0, tracks.pages.getNumberOfElements()-1, 2)}"
+            th:unless="${counter >= tracks.pages.getNumberOfElements()}">
+          <li class="tracks-list-elements-left"
+              th:unless="${counter >= tracks.pages.getNumberOfElements()}">
+
+            <img class="tracks-list-image"
+                 th:src="${tracksAsList.get(counter).thumbnailUrl}"/>
+            <span class="tracks-list-contents">
+              <a class="track-title"
+                 th:href="@{/music/test/track(pk=${tracksAsList.get(counter).trackNo})}"
+                 th:utext=
+                     "${#strings.length(tracksAsList.get(counter).trackTitle) >= 25} ?
+                     ${#strings.substring(tracksAsList.get(counter).trackTitle, 0, 25)} + '<br>'
+                      + ${#strings.substring(tracksAsList.get(counter).trackTitle, 25, tracksAsList.get(counter).trackTitle.length())}:
+                     ${tracksAsList.get(counter).trackTitle}">
+
+              </a>
+              <span class="track-album"
+                    th:utext=
+                        "${#strings.length(tracksAsList.get(counter).trackAlbum) >= 26} ?
+                     ${#strings.substring(tracksAsList.get(counter).trackAlbum, 0, 26)} + '<br>'
+                      + ${#strings.substring(tracksAsList.get(counter).trackAlbum, 26, tracksAsList.get(counter).trackAlbum.length())}:
+                     ${tracksAsList.get(counter).trackAlbum}"></span>
+              <span class="track-info"
+                    th:utext="${tracksAsList.get(counter).trackArtist}"></span>
+          </span>
+          </li>
+          <li class="tracks-list-elements-right"
+              th:unless="${counter+1 >= tracks.pages.getNumberOfElements()}">
+
+            <img class="tracks-list-image"
+                 th:src="${tracksAsList.get(counter+1).thumbnailUrl}"/>
+            <span class="tracks-list-contents">
+              <a href="" class="track-title"
+                 th:href="@{/music/test/track(pk=${tracksAsList.get(counter+1).trackNo})}"
+                 th:utext=
+                     "${#strings.length(tracksAsList.get(counter+1).trackTitle) >= 25} ?
+                     ${#strings.substring(tracksAsList.get(counter+1).trackTitle, 0, 25)} + '<br>'
+                      + ${#strings.substring(tracksAsList.get(counter+1).trackTitle, 25, tracksAsList.get(counter+1).trackTitle.length())}:
+                     ${tracksAsList.get(counter+1).trackTitle}"></a>
+              <span class="track-album"
+                    th:utext=
+                        "${#strings.length(tracksAsList.get(counter+1).trackAlbum) >= 26} ?
+                     ${#strings.substring(tracksAsList.get(counter+1).trackAlbum, 0, 26)} + '<br>'
+                      + ${#strings.substring(tracksAsList.get(counter+1).trackAlbum, 26, tracksAsList.get(counter+1).trackAlbum.length())}:
+                     ${tracksAsList.get(counter+1).trackAlbum}"></span>
+              <span class="track-info"
+                    th:utext="${tracksAsList.get(counter+1).trackArtist}"></span>
+          </span>
+          </li>
+        </ul>
+        <a class="more-contents" th:href="@{/search/test/tracks(keyword=__${keyword}__)}">더보기</a>
+      </div>
+      <span class="count-results"
+            th:text="${members} ? ${members.message} : '검색해주세요.'"></span>
+      <hr>
+      <br>
+      <th:block th:if="${members != null and membersAsList != null}">
+        <ul class="members-list"
+            th:each="counter: ${#numbers.sequence(0, members.pages.getNumberOfElements()-1, 5)}"
+            th:unless="${counter >= members.pages.getNumberOfElements()}">
+          <th:block th:unless="${counter >= members.pages.getNumberOfElements()}">
+            <li class="members-list-element">
+              <!--              th:unless="${status.current % 5 != 0}">-->
+              <div class="members-profile-info">
+                <img th:src="${membersAsList.get(counter).profileImgUrl}"
+                     class="members-image"/>
+                <a class="members-name" th:text="${membersAsList.get(counter).nickName}"
+                   href=""></a>
+                <span class="members-date"
+                      th:utext="'가입일자<br>' +
+                        ${#temporals.format(membersAsList.get(counter).createdAt, 'yyyy.MM.dd')}"><br>2023.02.09</span>
+              </div>
+
+            </li>
+          </th:block>
+          <th:block th:unless="${counter + 1 >= members.pages.getNumberOfElements()}">
+            <li class="members-list-element">
+              <!--              th:unless="${status.current % 5 != 0}">-->
+              <div class="members-profile-info">
+                <img th:src="${membersAsList.get(counter+1).profileImgUrl}"
+                     class="members-image"/>
+                <a class="members-name" th:text="${membersAsList.get(counter+1).nickName}"
+                   href=""></a>
+                <span class="members-date"
+                      th:utext="'가입일자<br>' +
+                        ${#temporals.format(membersAsList.get(counter+1).createdAt, 'yyyy.MM.dd')}"><br>2023.02.09</span>
+              </div>
+
+            </li>
+          </th:block>
+          <th:block th:unless="${counter + 2 >= members.pages.getNumberOfElements()}">
+            <li class="members-list-element">
+              <!--              th:unless="${status.current % 5 != 0}">-->
+              <div class="members-profile-info">
+                <img th:src="${membersAsList.get(counter+2).profileImgUrl}"
+                     class="members-image"/>
+                <a class="members-name" th:text="${membersAsList.get(counter+2).nickName}"
+                   href=""></a>
+                <span class="members-date"
+                      th:utext="'가입일자<br>' +
+                        ${#temporals.format(membersAsList.get(counter+2).createdAt, 'yyyy.MM.dd')}"><br>2023.02.09</span>
+              </div>
+
+            </li>
+          </th:block>
+          <th:block th:unless="${counter + 3 >= members.pages.getNumberOfElements()}">
+            <li class="members-list-element">
+              <!--              th:unless="${status.current % 5 != 0}">-->
+              <div class="members-profile-info">
+                <img th:src="${membersAsList.get(counter+3).profileImgUrl}"
+                     class="members-image"/>
+                <a class="members-name" th:text="${membersAsList.get(counter+3).nickName}"
+                   href=""></a>
+                <span class="members-date"
+                      th:utext="'가입일자<br>' +
+                        ${#temporals.format(membersAsList.get(counter+3).createdAt, 'yyyy.MM.dd')}"><br>2023.02.09</span>
+              </div>
+
+            </li>
+          </th:block>
+          <th:block th:unless="${counter + 4 >= members.pages.getNumberOfElements()}">
+            <li class="members-list-element">
+              <!--              th:unless="${status.current % 5 != 0}">-->
+              <div class="members-profile-info">
+                <img th:src="${membersAsList.get(counter+4).profileImgUrl}"
+                     class="members-image"/>
+                <a class="members-name" th:text="${membersAsList.get(counter+4).nickName}"
+                   href=""></a>
+                <span class="members-date"
+                      th:utext="'가입일자<br>' +
+                        ${#temporals.format(membersAsList.get(counter+4).createdAt, 'yyyy.MM.dd')}"><br>2023.02.09</span>
+              </div>
+
+            </li>
+          </th:block>
+
+        </ul>
+        <a class="more-contents" th:href="@{/search/test/members(keyword=__${keyword}__)}">더보기</a>
+      </th:block>
+<!--      <button th:unless="${tracks.pages.isFirst()}" th:name="page"-->
+<!--              th:value="${pageable.previousOrFirst().pageNumber}">이전-->
+<!--      </button>-->
+<!--      <button th:unless="${tracks.pages.isLast()}" th:name="page"-->
+<!--              th:value="${pageable.next().pageNumber}">다음-->
+<!--      </button>-->
+    </form>
+  </div>
+</div>
+<script th:inline="javascript">
+  function OnClickRecommends() {
+    const action = /*[[@{/search/test/recommends}]]*/ '/search/test/recommends';
+    document.querySelector("#more-search").setAttribute("action", action);
+  }
+</script>
+</body>
+</html>

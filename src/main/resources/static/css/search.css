@@ -10,7 +10,6 @@
 
 .default-layout {
     background-color: #1c1406;
-
 }
 
 .block-top {
@@ -20,9 +19,28 @@
     justify-content: center;
     /*background-color: lightblue;*/
     margin: 40px auto 0 auto;
+    align-items: center;
 }
 
 .block-middle {
+    height: 100%;
+    width: 1400px;
+    /*display: flex;*/
+    /*justify-content: flex-start;*/
+    background-color: #1c1406;
+    /*background-color: lightblue;*/
+    opacity:0.78;
+    margin: auto auto 150px auto;
+    /*border-radius: 34px;*/
+    position: relative;
+    font-family: NotoSansKR;
+    font-size: 20px;
+    color: white;
+    border: none;
+    /*font-family: beanpoleM;*/
+}
+
+.block-main {
     height: 1200px;
     width: 1400px;
     /*display: flex;*/
@@ -146,6 +164,6 @@
     margin-bottom: 15px;
     display: inline-block;
     /*font-size: 24px;*/
-    font-style:italic;
+    /*font-style:italic;*/
     font-size: 24px;
 }

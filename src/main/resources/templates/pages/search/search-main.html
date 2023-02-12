@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/fragments/search}">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Search-Tracks</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/tracks-search.css}">
+  <link rel="stylesheet" th:href="@{/css/search.css}">
+  <!--  <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/style.css">-->
+  <!--  <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/tracks-search.css">-->
+  <!--  <link rel="stylesheet" href="../../../../../../../content_i_like/src/main/resources/static/css/search.css">-->
+</head>
+<body>
+
+<div layout:fragment="search-fragment">
+
+  <div class="container">
+    <div th:replace="~{common/fragments/search::search}"></div>
+
+    <div class="block-main" id="paging">
+      <span class="count-results">검색어를 입력해주세요!</span>
+      <hr>
+      <br>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

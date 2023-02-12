@@ -2,7 +2,7 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{pages/search/search}">
+      layout:decorate="~{common/fragments/search}">
 <head>
   <meta charset="UTF-8">
   <title>Search-Recommends</title>
@@ -21,7 +21,7 @@
 <div layout:fragment="search-fragment">
   <div class="container">
 
-    <div th:replace="~{pages/search/search::search}"></div>
+    <div th:replace="~{common/fragments/search::search}"></div>
     <form class="block-middle" th:action="@{/search/test/recommends}" th:method="get">
       <input type="hidden" th:name="keyword" th:value="${keyword}">
       <span class="count-results"

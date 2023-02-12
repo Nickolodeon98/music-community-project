@@ -2,7 +2,7 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{pages/search/search}">
+      layout:decorate="~{common/fragments/search}">
 <head>
   <meta charset="UTF-8">
   <title>Search-Members</title>
@@ -20,9 +20,9 @@
 <body>
 <div layout:fragment="search-fragment">
   <div class="container">
-    <div th:replace="~{pages/search/search::search}"></div>
+    <div th:replace="~{common/fragments/search::search}"></div>
 
-    <form class="block-middle" id="paging" th:object="${pagedContents}" th:method="get"
+    <form class="block-middle" id="paging" th:object="${pageable}" th:method="get"
           th:action="@{/search/test/members}">
       <input type="hidden" th:name="keyword" th:value="${keyword}">
       <span class="count-results"
@@ -111,8 +111,8 @@
 
           </ul>
         </th:block>
-      <button class="paging-button" type="submit" th:unless="${memberNickName.pages.isFirst()}" th:name="page" th:value="${pagedContents.previousOrFirst().pageNumber}">이전</button>
-      <button class="paging-button" type="submit" th:unless="${memberNickName.pages.isLast()}" th:name="page" th:value="${pagedContents.next().pageNumber}">다음</button>
+      <button class="paging-button" type="submit" th:unless="${memberNickName.pages.isFirst()}" th:name="page" th:value="${pageable.previousOrFirst().pageNumber}">이전</button>
+      <button class="paging-button" type="submit" th:unless="${memberNickName.pages.isLast()}" th:name="page" th:value="${pageable.next().pageNumber}">다음</button>
     </form>
   </div>
 </div>

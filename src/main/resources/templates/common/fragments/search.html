@@ -26,6 +26,7 @@
             <option value="유저">유저</option>
           </select>
           <form class="search-form" id="search-form" th:object="${keywordDto}"
+                th:action="@{/search/test/all}"
                 th:method="get">
             <input class="search-input" type="text" th:field="*{keyword}">
 
@@ -33,6 +34,19 @@
               <img th:src="@{/img/search-icon-transparent-images-vector-15 1.png}">
             </button>
           </form>
+          <!-- 라디오 버튼에 따라 다른 정렬 조건이 적용된다. -->
+<!--          <form class="search-filter" id="search-filter" th:object="${sortStrategy}"-->
+<!--                th:action="@{/search/test/all}"-->
+<!--                th:method="get">-->
+<!--            <ul>-->
+<!--              <li th:each="pt : ${allProperties}">-->
+<!--                <input type="radio" th:field="*{property}" th:value="${pt}">-->
+<!--                <label th:for="${#ids.prev('property')}" th:text="#{${'seedstarter.type.' + pt}}"></label>-->
+<!--              </li>-->
+<!--            </ul>-->
+
+<!--            &lt;!&ndash;            <button id="sort-button">버튼</button>&ndash;&gt;-->
+<!--          </form>-->
         </div>
       </div>
     </div>
@@ -43,13 +57,15 @@
     const current = document.getElementById("categories").options[document.getElementById(
         "categories").selectedIndex].value;
 
+    if (current === "전체") {
+      const allAction = /*[[@{/search/test/all}]]*/ '/search/test/all';
+      document.querySelector("#search-form").setAttribute("action", allAction);
+    }
     if (current === "음원") {
-      window.alert(current);
       const trackAction = /*[[@{/search/test/tracks}]]*/ '/search/test/tracks';
       document.querySelector("#search-form").setAttribute("action", trackAction);
     }
     if (current === "추천글") {
-      window.alert(current);
       const recommendAction = /*[[@{/search/test/recommends}]]*/ '/search/test/recommends';
       document.querySelector("#search-form").setAttribute("action", recommendAction);
     }
