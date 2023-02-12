@@ -54,10 +54,7 @@ public class InquiryController {
   }
 
   @GetMapping("/writeForm")
-  public String registerInquiry(
-      @Valid @ModelAttribute("faqCategoryResponse") FaqCategoryResponse faqCategoryResponse,
-      BindingResult bindingResult,
-      Model model) {
+  public String registerInquiry(Model model) {
 
     model.addAttribute("inquiryRequire", new InquiryRequire());
     return "/pages/faq/faq-register-inquiry";
