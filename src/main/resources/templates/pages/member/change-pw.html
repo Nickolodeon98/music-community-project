@@ -24,29 +24,12 @@
         <div class="login-hello">비밀번호 변경</div>
         <div class="login-message">새로운 비밀번호를 입력해주세요</div>
         <div class="login-form">
-          <form th:action="@{/member/login}" method="post" class="login-form" th:object="${request}">
+          <form th:action="@{/member/passwd/change}" method="post" class="login-form" th:object="${request}" onsubmit="return checkPw()">
             <input type="password" id="password" name="newPassword" th:field="*{newPassword}" class="find-by-username" placeholder="  비밀번호"/>
             <input type="password" id="verification" name="verification" th:field="*{verification}" class="find-by-username" placeholder="  비밀번호 확인"/>
-            <input type="submit" value="확인" onclick="checkPw()"/>
+            <input type="submit" value="확인"/>
           </form>
         </div>
-<!--        <div class="login-service">-->
-<!--          <span id="find-pw" class="service"><a href="">비밀번호 찾기</a></span>-->
-<!--          <span id="signup" class="service"><a href="">회원가입</a></span>-->
-<!--        </div>-->
-
-<!--        <div>-->
-<!--          <div class="sns-message">SNS 계정이 있으신가요?</div>-->
-<!--          <div class="sns-box">-->
-<!--            <img src="./img/naver-logo.png" class="sns-logo">-->
-<!--            <div class="sns-box-message"><a href="">네이버로 로그인</a></div>-->
-<!--          </div>-->
-<!--          <div class="sns-box">-->
-<!--            <img src="./img/google-logo.jpg" class="sns-logo">-->
-<!--            <div class="sns-box-message"><a href="">구글로 로그인</a></div>-->
-<!--          </div>-->
-<!--        </div>-->
-
       </div>
     </div>
 
@@ -63,7 +46,7 @@
 </div>
 </div>
 
-<script async src="./js/member.js"></script>
+<script async th:src="@{/js/member.js}"></script>
 </body>
 
 </html>

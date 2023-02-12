@@ -53,7 +53,7 @@ public class MemberController {
   private final MemberService memberService;
 
   @GetMapping("/login")
-  public String joinForm(Model model) {
+  public String loginForm(Model model) {
     model.addAttribute("request", new MemberLoginRequest());
     return "pages/member/login";
   }
@@ -75,28 +75,16 @@ public class MemberController {
     return "redirect:/";
   }
 
-  @GetMapping("/session-info")
-  public String sessionInfo(HttpServletRequest request) {
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "세션이 없습니다.";
-    }
-    // 세션 id와 저장된 객체 정보 출력
-    System.out.println(session.getId() + ", " + session.getAttribute("loginMember"));
+  @GetMapping("/join")
+  public String joinForm(Model model) {
+    model.addAttribute("request", new MemberJoinRequest());
+    return "pages/member/join";
+  }
 
-    //세션 데이터 출력
-    session.getAttributeNames().asIterator()
-        .forEachRemaining(
-            name -> log.info("session name={}, value={}", name, session.getAttribute(name)));
-
-    log.info("sessionId={}", session.getId());
-    log.info("getMaxInactiveInterval={}", session.getMaxInactiveInterval());
-    log.info("creationTime={}", new Date(session.getCreationTime()));
-    log.info("lastAccessedTime={}", new Date(session.getLastAccessedTime()));
-    log.info("isNew={}", session.isNew());
-
-    return "세션 출력";
-
+  @PostMapping("/join")
+  public String join(@Valid @ModelAttribute("memberJoinRequest") MemberJoinRequest request) {
+    MemberJoinResponse response = memberService.join(request);
+    return "redirect:/member/login";
   }
 
   @GetMapping("/passwd/find_pw")
@@ -107,23 +95,33 @@ public class MemberController {
 
   @PostMapping("/passwd/find_pw")
   public String findPw(@Valid @ModelAttribute("memberFindRequest") MemberFindRequest request) {
-    log.info("request정보: {} and {}",request.getName(), request.getEmail());
+    log.info("request정보: {} and {}", request.getName(), request.getEmail());
     String message = memberService.findPwByEmail(request);
     return "redirect:/member/login";
   }
 
-
-  @PostMapping("/join")
-  public Response<MemberJoinResponse> join(@RequestBody @Valid final MemberJoinRequest request) {
-    MemberJoinResponse response = memberService.join(request);
-    return Response.success(response);
+  @GetMapping("/passwd/change")
+  public String changePw(HttpServletRequest httpRequest, Model model) {
+    if (httpRequest.getSession(false) == null) {
+      return "redirect:/member/login";
+    }
+    model.addAttribute("request", new ChangePwRequest());
+    return "pages/member/change-pw";
   }
 
   @PostMapping("/passwd/change")
-  public Response<String> changePw(@RequestBody @Valid final ChangePwRequest request,
-      final Authentication authentication) {
-    return Response.success(memberService.changePw(request, authentication.getName()));
+  public String changePw(HttpServletRequest httpRequest,
+      @Valid @ModelAttribute("changePwRequest") ChangePwRequest request) {
+    HttpSession session = httpRequest.getSession(false);
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+    log.info("세션 정보: {} and {}", loginResponse.getMemberNo(), loginResponse.getNickName());
+    String email = memberService.getEmailByNo(loginResponse);
+    memberService.changePw(request, email);
+    return "redirect:/";
   }
+
+
+
 
   @GetMapping("/my")
   public Response<MemberResponse> getMyInfo(final Authentication authentication) {
@@ -153,6 +151,7 @@ public class MemberController {
     String url = memberService.uploadProfileImg(authentication.getName(), file);
     return Response.success(url);
   }
+
 
   @GetMapping("/recommends")
   public String getMyRecommends(HttpServletRequest request, Model model, Pageable pageable) {
@@ -199,5 +198,29 @@ public class MemberController {
 
     model.addAttribute("followers", myFollowersByNickName);
     return "pages/member/myFeed-followings";
+  }
+
+  @GetMapping("/session-info")
+  public String sessionInfo(HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "세션이 없습니다.";
+    }
+    // 세션 id와 저장된 객체 정보 출력
+    System.out.println(session.getId() + ", " + session.getAttribute("loginMember"));
+
+    //세션 데이터 출력
+    session.getAttributeNames().asIterator()
+        .forEachRemaining(
+            name -> log.info("session name={}, value={}", name, session.getAttribute(name)));
+
+    log.info("sessionId={}", session.getId());
+    log.info("getMaxInactiveInterval={}", session.getMaxInactiveInterval());
+    log.info("creationTime={}", new Date(session.getCreationTime()));
+    log.info("lastAccessedTime={}", new Date(session.getLastAccessedTime()));
+    log.info("isNew={}", session.isNew());
+
+    return "세션 출력";
+
   }
 }
