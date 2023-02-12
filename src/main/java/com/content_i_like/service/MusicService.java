@@ -30,23 +30,25 @@ public class MusicService {
   private final MemberRepository memberRepository;
   private final RecommendRepository recommendRepository;
 
-  public TrackGetResponse getASingleTrackInfo(Long trackNo, Pageable pageable, String memberEmail) {
+  public TrackGetResponse getASingleTrackInfo(Long trackNo, String memberEmail) {
     Member member = validate(memberEmail, new MemberValidation(memberRepository));
 
     Track track = validate(String.valueOf(trackNo), new TrackValidation(trackRepository));
 
-    Page<SearchRecommendsResponse> recommends = getEveryRecommendByTrack(track, pageable);
+    List<SearchRecommendsResponse> recommends = getEveryRecommendByTrack(track);
 
     return TrackGetResponse.of(track, recommends);
   }
 
-  private Page<SearchRecommendsResponse> getEveryRecommendByTrack(Track track, Pageable pageable) {
-    Page<Recommend> recommends = recommendRepository.findAllByTrack(track, pageable)
+  private List<SearchRecommendsResponse> getEveryRecommendByTrack(Track track) {
+    List<Recommend> recommends = recommendRepository.findAllByTrack(track)
         .orElseThrow(()->new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage()));
 
-    return recommends.map(recommend ->
+    return recommends.stream().map(recommend ->
         recommend.getRecommendContent().length() < 50
             ? SearchRecommendsResponse.of(recommend, recommend.getRecommendContent())
-            : SearchRecommendsResponse.of(recommend, recommend.getRecommendContent().substring(0, 50)));
+            : SearchRecommendsResponse.of(recommend, recommend.getRecommendContent().substring(0, 50)))
+        .collect(
+        Collectors.toList());
   }
 }

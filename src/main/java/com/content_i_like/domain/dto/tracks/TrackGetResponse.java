@@ -18,9 +18,9 @@ public class TrackGetResponse {
   private String trackAlbum;
   private String trackArtist;
   private String thumbnailUrl;
-  private Page<SearchRecommendsResponse> recommendsOfTracks;
+  private List<SearchRecommendsResponse> recommendsOfTracks;
 
-  public static TrackGetResponse of(Track track, Page<SearchRecommendsResponse> recommendsOfTracks) {
+  public static TrackGetResponse of(Track track, List<SearchRecommendsResponse> recommendsOfTracks) {
     return TrackGetResponse.builder()
         .trackNo(track.getTrackNo())
         .trackTitle(track.getTrackTitle())

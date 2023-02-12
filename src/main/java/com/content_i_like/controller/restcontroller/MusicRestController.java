@@ -22,9 +22,8 @@ public class MusicRestController {
 
   @GetMapping("/track/{trackNo}")
   public Response<TrackGetResponse> showTrackInfo(final Authentication authentication,
-      @PageableDefault(sort="recommendTitle", direction= Direction.DESC) Pageable pageable,
       @PathVariable final Long trackNo) {
-    TrackGetResponse track = musicService.getASingleTrackInfo(trackNo, pageable, authentication.getName());
+    TrackGetResponse track = musicService.getASingleTrackInfo(trackNo, authentication.getName());
     return Response.success(track);
   }
 

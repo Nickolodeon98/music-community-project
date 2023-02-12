@@ -26,17 +26,14 @@ public class MusicController {
 
   @GetMapping("/test/track")
   public String showTrackInfo(@RequestParam(value="pk", required = false) Long trackPK,
-      @PageableDefault(size=8, sort="", direction= Direction.DESC) Pageable pageable,
       @RequestParam(value="page", required = false) Integer pageNum,
       Model model) {
 
-    TrackGetResponse trackAndRecommends = musicService.getASingleTrackInfo(trackPK, pageable, "sjeon0730@gmail.com");
+    TrackGetResponse trackAndRecommends = musicService.getASingleTrackInfo(trackPK, "sjeon0730@gmail.com");
 
     model.addAttribute("trackInfo", trackAndRecommends);
-
+    model.addAttribute("trackRecommendsAsList", trackAndRecommends.getRecommendsOfTracks());
 
     return "pages/search/tracks-details";
   }
-
-
 }

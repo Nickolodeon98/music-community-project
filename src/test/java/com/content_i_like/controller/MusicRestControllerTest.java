@@ -56,14 +56,14 @@ class MusicRestControllerTest {
     @Test
     @DisplayName("성공")
     void success_specify_a_track() throws Exception {
-      given(musicService.getASingleTrackInfo(TRACK_ID, eq(setPageable("recommendTitle")), any())).willReturn(track);
+      given(musicService.getASingleTrackInfo(TRACK_ID, any())).willReturn(track);
 
       mockMvc.perform(get(BASE_URL + "track/" + TRACK_ID).with(csrf()))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
           .andDo(print());
 
-      verify(musicService).getASingleTrackInfo(TRACK_ID, eq(setPageable("recommendTitle")), any());
+      verify(musicService).getASingleTrackInfo(TRACK_ID, any());
     }
   }
 }
