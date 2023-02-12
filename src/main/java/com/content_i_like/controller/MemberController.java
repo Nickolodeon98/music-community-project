@@ -67,10 +67,10 @@ public class MemberController {
     if (bindingResult.hasErrors()) {
       return "pages/member/login";
     }
-    MemberLoginResponse loginResponse = memberService.login(memberLoginRequest);
+    MemberLoginResponse response = memberService.login(memberLoginRequest);
 
     HttpSession session = request.getSession();   //세션이 있으면 있는 세션 반환, 없으면 신규 세션
-    session.setAttribute("loginUser", loginResponse);
+    session.setAttribute("loginUser", response);
     log.info("로그인 완료");
     return "redirect:/";
   }

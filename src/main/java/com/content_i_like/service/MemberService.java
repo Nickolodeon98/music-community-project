@@ -86,7 +86,7 @@ public class MemberService {
 
     String jwt = jwtService.generateToken(member);
 
-    return new MemberLoginResponse(jwt, member.getNickName());
+    return new MemberLoginResponse(jwt, member.getMemberNo(), member.getNickName());
   }
 
   private Member validateExistingMember(String email) {
@@ -202,7 +202,7 @@ public class MemberService {
     Long[] followerCnt = getFollowCnt(member);
 
     Page<RecommendListResponse> recommendListResponses = recommendRepository.findAllByMember(
-            pageable, member)
+        pageable, member)
         .map(RecommendListResponse::of);
 
     return new MemberRecommendResponse(member, followerCnt, recommendListResponses);

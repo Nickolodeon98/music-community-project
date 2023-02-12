@@ -11,6 +11,7 @@
           crossorigin="anonymous"></script>
   <link rel="stylesheet" th:href="@{/css/style.css}">
   <link rel="stylesheet" th:href="@{/css/recommend-post.css}">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
 </head>
 <body>
 <div class="container">
@@ -69,9 +70,14 @@
         <div class="board-body">
           <span class="board-body-title">유튜브 링크</span>
           <span id="youtube-link">https://youtu.be/</span>
-          <span id="board-input-youtube"><input name="youtube-url"
-                                                th:value="${post.getRecommendYoutubeUrl != null ? post.getRecommendYoutubeUrl().split('/')[3] : ' '}"
-                                                type="text"/></span>
+          <span id="board-input-youtube">
+            <input th:if="${post.getRecommendYoutubeUrl.length() == 17}" name="youtube-url"
+                   th:value="' '"
+                   type="text"/>
+            <input th:unless="${post.getRecommendYoutubeUrl.length() == 17}" name="youtube-url"
+                   th:value="${post.getRecommendYoutubeUrl().split('/')[3]}"
+                   type="text"/>
+          </span>
         </div>
 
         <div class="board-body">
