@@ -37,7 +37,7 @@
     <div class="faq-content-details">
       <form th:action="@{/inquiry/writeForm}" method="get" th:object="${faqCategory}">
       <div class="faq-content-details-title">
-        <span class="font-title-blue" th:text="'['+${faqDetails.getFaqCategory()}+']'">[슈퍼챗]</span>
+        <span class="font-title-blue" th:text="${faqDetails.getFaqCategory()}">[슈퍼챗]</span>
         <span class="font-title" th:text="${faqDetails.getFaqTitle()}">슈퍼챗이 뭔가요?</span>
       </div>
 
