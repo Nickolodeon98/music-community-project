@@ -16,6 +16,7 @@ import com.content_i_like.domain.dto.member.MemberRecommendResponse;
 import com.content_i_like.domain.dto.member.MemberResponse;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
 import com.content_i_like.domain.entity.Member;
+import com.content_i_like.domain.enums.GenderEnum;
 import com.content_i_like.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -51,6 +52,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
   private final MemberService memberService;
+
+  @ModelAttribute("genderEnums")
+  public GenderEnum[] genderEnum() {
+    return GenderEnum.values();
+  }
 
   @GetMapping("/login")
   public String loginForm(Model model) {
@@ -122,14 +128,19 @@ public class MemberController {
     return "redirect:/";
   }
 
-
-
-
   @GetMapping("/my")
-  public Response<MemberResponse> getMyInfo(final Authentication authentication) {
-    MemberResponse memberResponse = memberService.getMyInfo(authentication.getName());
-    return Response.success(memberResponse);
+  public String getMyInfo(HttpServletRequest httpRequest, Model model) {
+    HttpSession session = httpRequest.getSession(false);
+    if (session == null) {
+      return "redirect:/member/login";
+    }
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+
+    String email = memberService.getEmailByNo(loginResponse);
+    model.addAttribute("member", memberService.getMyInfo(email));
+    return "pages/member/my-profile";
   }
+
 
   @GetMapping("/my/point")
   public Response<MemberPointResponse> getMyPoint(final Authentication authentication) {
