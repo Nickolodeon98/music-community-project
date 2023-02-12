@@ -11,6 +11,9 @@ import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,14 +71,6 @@ public class TestController {
     return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
   }
 
-
-  @GetMapping("/page")
-  public String emptyObjectSAending(Model model) {
-    SearchRequest searchKeyword = SearchRequest.builder().build();
-    model.addAttribute("keywordDto", searchKeyword);
-    return "pages/search/tracks-search";
-
-  }
   @GetMapping("/thymeleaf")
   public String testForThymeleafListModel(@ModelAttribute("trackRequestDto") TrackRequest trcKM) {
     log.info("로그입니다");

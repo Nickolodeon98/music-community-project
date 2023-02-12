@@ -24,7 +24,7 @@ public class MusicController {
 
   private final MusicService musicService;
 
-  @GetMapping("/test/track")
+  @GetMapping("/track")
   public String showTrackInfo(@RequestParam(value="pk", required = false) Long trackPK,
       @RequestParam(value="page", required = false) Integer pageNum,
       Model model) {
