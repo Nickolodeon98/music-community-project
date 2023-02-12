@@ -22,10 +22,10 @@ public class AnswerResponse {
 
   private String content;
 
-  public static AnswerResponse of(Answer answer, LocalDateTime createdAt) {
+  public static AnswerResponse of(Answer answer) {
     return AnswerResponse.builder()
         .answerNo(answer.getAnswerNo())
-        .createdAt(createdAt)
+        .createdAt(answer.getCreatedAt())
         .content(answer.getAnswerContent())
         .build();
   }
