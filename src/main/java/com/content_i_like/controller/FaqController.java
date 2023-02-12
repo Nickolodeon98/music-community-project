@@ -18,26 +18,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/faq")
 public class FaqController {
 
   private final FaqService faqService;
 
-  @RequestMapping("faq/test")
-  public String test() {
-    return "test";
-  }
-
-  @RequestMapping("testFaq")
-  public String test1() {
-    return "test";
-  }
-
-
-  @GetMapping("faq")
-  public String getAllFaq(Pageable pageable) {
+  @GetMapping()
+  public String getAllFaq(Pageable pageable, Model model) {
     Page<FaqResponse> allFaq = faqService.getAllFaq(pageable);
 
-    return null;
+    model.addAttribute("faq", allFaq);
+    return "pages/faq/faq";
   }
 
 //  @GetMapping("/{category}")
@@ -52,10 +43,14 @@ public class FaqController {
 //    return Response.success(faqService.getFaqByKeyWord(pageable, keyWord));
 //  }
 //
-//  @GetMapping("/details/{faqNo}")
-//  public Response<FaqDetailsResponse> getFaqDetails(@PathVariable Long faqNo) {
-//    return Response.success(faqService.getFaqDetails(faqNo));
-//  }
+  @GetMapping("/details/{faqNo}")
+  public String getFaqDetails(@PathVariable Long faqNo, Model model) {
+    FaqDetailsResponse faqDetails = faqService.getFaqDetails(faqNo);
+
+    model.addAttribute("details", faqDetails);
+
+    return "/pages/faq/faq-details";
+  }
 //
 //  @PostMapping()
 //  public Response<FaqResponse> addFaq(@RequestBody FaqRequest faqRequest) {

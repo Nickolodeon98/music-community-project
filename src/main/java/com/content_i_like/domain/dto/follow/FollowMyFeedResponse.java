@@ -1,6 +1,6 @@
-package com.content_i_like.domain.dto.member;
+package com.content_i_like.domain.dto.follow;
 
-import com.content_i_like.domain.dto.recommend.RecommendListResponse;
+import com.content_i_like.domain.dto.comment.CommentMyFeedResponse;
 import com.content_i_like.domain.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,11 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
-@NoArgsConstructor
 @AllArgsConstructor
-@Getter
+@NoArgsConstructor
 @Builder
-public class MemberRecommendResponse {
+@Getter
+public class FollowMyFeedResponse {
   private String email;
   private String profileImgUrl;
   private String nickName;
@@ -21,11 +21,10 @@ public class MemberRecommendResponse {
   private Long commentCnt;
   private Long followerCnt;
   private Long followingCnt;
-  private Page<RecommendListResponse> recommendListResponses;
+  private Page<FollowResponse> followResponses;
 
-
-  public MemberRecommendResponse(Member member, Long[] followCnt,
-      Page<RecommendListResponse> recommendListResponses) {
+  public FollowMyFeedResponse(Member member, Long[] followCnt,
+      Page<FollowResponse> followResponses) {
     this.email = member.getEmail();
     this.profileImgUrl = member.getProfileImgUrl();
     this.nickName = member.getNickName();
@@ -34,6 +33,6 @@ public class MemberRecommendResponse {
     this.commentCnt = followCnt[3];
     this.followerCnt = followCnt[1];
     this.followingCnt = followCnt[2];
-    this.recommendListResponses = recommendListResponses;
+    this.followResponses = followResponses;
   }
 }
