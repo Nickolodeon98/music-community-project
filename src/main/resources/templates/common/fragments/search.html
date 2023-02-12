@@ -17,7 +17,7 @@
     <div th:replace="~{common/fragments/header::header}"></div>
     <div class="block-top">
       <div class="search-engine">
-        <div class="logo">내미콘</div>
+        <a class="logo" th:href="@{/}">내미콘</a>
         <div class="search-whole">
           <select class="categories" id="categories" onchange="OnChange();">
             <option value="전체">전체</option>
