@@ -9,6 +9,7 @@
   <link rel="stylesheet" th:href="@{/css/style.css}">
   <link rel="stylesheet" th:href="@{/css/tracks-search.css}">
   <link rel="stylesheet" th:href="@{/css/search.css}">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
 </head>
 <body>
 
@@ -17,7 +18,7 @@
     <div th:replace="~{common/fragments/header::header}"></div>
     <div class="block-top">
       <div class="search-engine">
-        <a class="logo" th:href="@{/}">내미콘</a>
+        <a class="logo" th:href="@{/search}">내미콘</a>
         <div class="search-whole">
           <select class="categories" id="categories" onchange="OnChange();">
             <option value="전체">전체</option>
