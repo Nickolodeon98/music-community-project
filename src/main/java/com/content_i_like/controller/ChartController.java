@@ -20,8 +20,7 @@ public class ChartController {
 
   @GetMapping("/recommend-monthly")
   public String getMonthlyRecommendChart(Model model) throws Exception {
-    List<RecommendChartResponse> charts = chartService.getMonthlyRecommendChart();
-    model.addAttribute("charts", charts);
+    model.addAttribute("charts", chartService.getMonthlyRecommendChart());
     return "/pages/chart/recommend-chart";
 
   }
