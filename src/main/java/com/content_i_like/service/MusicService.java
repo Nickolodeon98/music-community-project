@@ -2,6 +2,7 @@ package com.content_i_like.service;
 
 import static com.content_i_like.service.validchecks.ArbitraryValidationService.validate;
 
+import com.content_i_like.domain.dto.comment.CommentReadResponse;
 import com.content_i_like.domain.dto.recommend.RecommendReadResponse;
 import com.content_i_like.domain.dto.search.SearchRecommendsResponse;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
@@ -10,6 +11,7 @@ import com.content_i_like.domain.entity.Recommend;
 import com.content_i_like.domain.entity.Track;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
+import com.content_i_like.repository.CommentRepository;
 import com.content_i_like.repository.MemberRepository;
 import com.content_i_like.repository.RecommendRepository;
 import com.content_i_like.repository.TrackRepository;
@@ -50,5 +52,19 @@ public class MusicService {
             : SearchRecommendsResponse.of(recommend, recommend.getRecommendContent().substring(0, 50)))
         .collect(
         Collectors.toList());
+  }
+
+  /* 추천글 리스트를 입력받아 해당 추천글 리스트 내 가장 많은 좋아요 수를 가진 댓글 반환*/
+  public CommentReadResponse bestCommentRecommendOfTrack(List<SearchRecommendsResponse> recommends) {
+    CommentReadResponse maxLikedComment = CommentReadResponse.builder().commentPoint(0L).build();
+
+    for (SearchRecommendsResponse recommend : recommends) {
+      CommentReadResponse currentMaxLikedComment = recommend.getComments().stream()
+          .reduce(CommentReadResponse.builder().commentPoint(0L).build(), CommentReadResponse::commentWithMaxPoints);
+
+      maxLikedComment = CommentReadResponse.commentWithMaxPoints(maxLikedComment, currentMaxLikedComment);
+    }
+
+    return maxLikedComment;
   }
 }
