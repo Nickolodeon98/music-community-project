@@ -25,6 +25,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
@@ -58,17 +59,39 @@ public class SearchController {
     return "pages/search/search-main";
   }
 
+  @PostMapping("/tracks")
+  public String searchTracksPage(HttpServletRequest httpRequest, Model model) {
+    HttpSession session = httpRequest.getSession(false);
+
+    if (session == null) {
+      return "redirect:/member/login";
+    }
+
+    SortStrategy sorting = SortStrategy.builder().build();
+    model.addAttribute("sortStrategy", sorting);
+
+    return "redirect:/search/tracks";
+  }
+
   @GetMapping("/tracks")
   public String searchTracksByKeyword(HttpServletRequest httpRequest,
       @ModelAttribute("keywordDto") final SearchRequest trackTitle,
+      @ModelAttribute("sortStrategy") final SortStrategy sortStrategy,
       @PageableDefault(size=8, sort="trackTitle", direction= Direction.DESC) Pageable pageable,
       @RequestParam(value="page", required = false) Integer pageNum,
       Model model) {
 
     HttpSession session = httpRequest.getSession(false);
+
     if (session == null) {
       return "redirect:/member/login";
     }
+
+    String property = "trackTitle";
+    if (sortStrategy != null && sortStrategy.getProperty() != null && !sortStrategy.getProperty().isEmpty())
+      property = sortStrategy.getProperty();
+
+    pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(property));
 
     SearchPageGetResponse<TrackGetResponse> trackResults =
         searchService.findTracksWithKeyword(pageable, trackTitle.getKeyword(), "sjeon0730@gmail.com");
@@ -77,6 +100,9 @@ public class SearchController {
     model.addAttribute("trackResultsAsList", trackResults.getPages().toList());
     model.addAttribute("pageable", pageable);
     model.addAttribute("keyword", trackTitle.getKeyword());
+
+    SortStrategy sorting = SortStrategy.builder().build();
+    model.addAttribute("sortStrategy", sorting);
 
     String newLineChar = System.getProperty("line.separator").toString();
     model.addAttribute("newline", newLineChar);
@@ -133,7 +159,7 @@ public class SearchController {
   @GetMapping("/all")
   public String searchAll(HttpServletRequest httpRequest,
       @ModelAttribute("keywordDto") final SearchRequest searchKeyword,
-//      @ModelAttribute("sortStrategy") final SortStrategy sort,
+      @ModelAttribute("sortStrategy") final SortStrategy sort,
       @PageableDefault(size=2, direction=Direction.DESC) Pageable pageable,
       Model model) {
 
@@ -142,7 +168,7 @@ public class SearchController {
       return "redirect:/member/login";
     }
 
-//    pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sort.getProperty()));
+    pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sort.getProperty()));
 
     SearchPageGetResponse<TrackGetResponse> trackResults =
         searchService.findTracksWithKeyword(pageable, searchKeyword.getKeyword(), "sjeon0730@gmail.com");
