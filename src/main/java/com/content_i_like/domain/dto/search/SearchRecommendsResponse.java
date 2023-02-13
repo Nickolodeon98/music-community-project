@@ -25,6 +25,7 @@ public class SearchRecommendsResponse {
   private Long countLikes;
   private Long accumulatedPoints;
   private LocalDateTime createdAt;
+  private String memberProfileImgUrl;
 
   public static SearchRecommendsResponse of(Recommend recommend, String summarizedContent) throws NullPointerException {
     return SearchRecommendsResponse.builder()
@@ -35,6 +36,7 @@ public class SearchRecommendsResponse {
         .recommendImageUrl(recommend.getRecommendImageUrl())
         .albumImageUrl(recommend.getTrack().getAlbum().getAlbumImageUrl())
         .countLikes((long) recommend.getLikes().size())
+        .memberProfileImgUrl(recommend.getMember().getProfileImgUrl())
 //        .accumulatedPoints(recommend.getComments().stream()
 //            .mapToLong(Comment::getCommentPoint)
 //            .sum() + recommend.getRecommendPoint())
