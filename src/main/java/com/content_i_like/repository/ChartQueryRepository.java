@@ -4,11 +4,13 @@ import static com.content_i_like.domain.entity.QComment.comment;
 import static com.content_i_like.domain.entity.QRecommend.recommend;
 
 
+import com.content_i_like.domain.dto.chart.RecommendChartResponse;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
@@ -29,15 +31,15 @@ public class ChartQueryRepository {
    * @return Tuple 순위, 추천글 제목, 작성자, 포인트, 조회수
    */
 
-  public List<Tuple> getMonthlyRecommendChartTop10() throws Exception {
+  public List<RecommendChartResponse> getMonthlyRecommendChartTop10() throws Exception {
     return getRecommendChart(4, 10);
   }
 
-  public List<Tuple> getWeeklyRecommendChartTop10() throws Exception {
+  public List<RecommendChartResponse> getWeeklyRecommendChartTop10() throws Exception {
     return getRecommendChart(1, 10);
   }
 
-  List<Tuple> getRecommendChart(Integer expirationDateInWeeks, Integer limitSize) throws Exception {
+  List<RecommendChartResponse> getRecommendChart(Integer expirationDateInWeeks, Integer limitSize) throws Exception {
 
     // 추천글 유효기간
     LocalDateTime validUntilThisTime = LocalDateTime.now().minusWeeks(expirationDateInWeeks);
@@ -71,7 +73,20 @@ public class ChartQueryRepository {
         .limit(limitSize)
         .fetch();
 
-    return findChart;
+    List<RecommendChartResponse> responses = new ArrayList<>();
+    for (Tuple tuple : findChart) {
+      Long recommendNo = Long.valueOf(String.valueOf(tuple.get(recommend.recommendNo)));
+      String recommendTitle = String.valueOf(tuple.get(recommend.recommendTitle));
+      String memberNickName = String.valueOf(tuple.get(recommend.member.nickName));
+      Long recommendScore = Long.valueOf(String.valueOf(tuple.get(totalScore)));
+      Long recommendViews = Long.valueOf(String.valueOf(tuple.get(recommend.recommendViews)));
+
+      responses.add(
+          new RecommendChartResponse(recommendNo, recommendTitle, memberNickName, recommendScore,
+              recommendViews));
+    }
+
+    return responses;
   }
 
 }
