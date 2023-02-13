@@ -1,5 +1,6 @@
 package com.content_i_like.service;
 
+import com.content_i_like.domain.dto.chart.ChartResponse;
 import com.content_i_like.repository.ChartQueryRepository;
 import com.querydsl.core.Tuple;
 import java.util.List;
@@ -14,13 +15,13 @@ public class ChartService {
   private final ChartQueryRepository chartQueryRepository;
 
   @Transactional
-  public List<Tuple> getMonthlyRecommendChart() throws Exception {
-    return chartQueryRepository.getMonthlyRecommendChartTop10();
+  public ChartResponse getMonthlyRecommendChart() throws Exception {
+    return new ChartResponse(chartQueryRepository.getMonthlyRecommendChartTop10());
   }
 
   @Transactional
-  public List<Tuple> getWeeklyRecommendChart() throws Exception {
-    return chartQueryRepository.getWeeklyRecommendChartTop10();
+  public ChartResponse getWeeklyRecommendChart() throws Exception {
+    return new ChartResponse(chartQueryRepository.getWeeklyRecommendChartTop10());
   }
 
 }
