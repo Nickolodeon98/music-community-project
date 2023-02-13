@@ -35,16 +35,18 @@
       <div class="contents-myInfo-name">
         <span class="name" th:text="${followers.getNickName()}">이도록</span>
         <span class="gray">팔로워</span>
-        <a href="/member/followers"><span class="number" th:text="${followers.getFollowerCnt()}">189</span></a>
+        <a th:href="@{/member/followers__${url}__}"><span class="number" th:text="${followers.getFollowerCnt()}">189</span></a>
         <span class="gray">팔로잉</span>
-        <a href="/member/followings"><span class="number" th:text="${followers.getFollowingCnt()}">189</span></a>
+        <a th:href="@{/member/followings__${url}__}"><span class="number" th:text="${followers.getFollowingCnt()}">189</span></a>
       </div>
       <!-- 수정하기 -->
       <div class="contents-myInfo-modify">
         <nav id="sort-post">
-          <span class="not-selected-post-nav">
-            <img class="setting-img" th:src="@{/img/setting_top.png}" src="../../../static/img/setting_top.png"><a href="">수정하기</a>
-          </span>
+          <th:block th:if="${url}==''">
+            <span class="not-selected-post-nav">
+              <img class="setting-img" th:src="@{/img/setting_top.png}" src="../../../static/img/setting_top.png"><a href="">수정하기</a>
+            </span>
+          </th:block>
         </nav>
       </div>
       <!-- 이메일 -->
@@ -59,8 +61,8 @@
       <!-- 작성 글, 작성 댓글 네비게이션 -->
       <div class="contents-myInfo-nav">
         <nav id="convert-post">
-          <a href="/member/recommends"><span class="not-selected-post-nav" th:text="|작성 글(${followers.getRecommendCnt()})|">작성 글(32)</span></a>
-          <a href="/member/comments"> <span class="not-selected-post-nav" th:text="|작성 댓글(${followers.getCommentCnt()})|">작성 댓글(48)</span></a>
+          <a th:href="@{/member/recommends__${url}__}"><span class="not-selected-post-nav" th:text="|작성 글(${followers.getRecommendCnt()})|">작성 글(32)</span></a>
+          <a th:href="@{/member/comments__${url}__}"> <span class="not-selected-post-nav" th:text="|작성 댓글(${followers.getCommentCnt()})|">작성 댓글(48)</span></a>
         </nav>
       </div>
       <div class="contents-myInfo-bottom">
@@ -84,7 +86,7 @@
           <img class="img-follow" th:src="${cards.getProfileImg()}" src="../../../static/img/event-horizon.jpg">
         </div>
         <div class="contents-follow-name">
-          <span th:text="${cards.getMemberNickName()}">다나</span>
+          <a th:href="@{/member/recommends/feeds/__${cards.getMemberNo()}__}"><span th:text="${cards.getMemberNickName()}">다나</span></a>
         </div>
         <div class="contents-follow-button">
           <span class="selected-post-nav"><a>팔로우</a></span>

@@ -34,16 +34,18 @@
       <div class="contents-myInfo-name">
         <span class="name" th:text="${recommendsResponse.getNickName()}">이도록</span>
         <span class="gray">팔로워</span>
-        <a href="/member/followers"><span class="number" th:text="${recommendsResponse.getFollowerCnt()}">189</span></a>
+        <a th:href="@{/member/followers__${url}__}"><span class="number" th:text="${recommendsResponse.getFollowerCnt()}">189</span></a>
         <span class="gray">팔로잉</span>
-        <a href="/member/followings"><span class="number" th:text="${recommendsResponse.getFollowingCnt()}">189</span></a>
+        <a th:href="@{/member/followings__${url}__}"><span class="number" th:text="${recommendsResponse.getFollowingCnt()}">189</span></a>
       </div>
       <!-- 수정하기 -->
       <div class="contents-myInfo-modify">
         <nav id="sort-post">
-          <span class="not-selected-post-nav">
-            <img class="setting-img" th:src="@{/img/setting_top.png}" src="../../../static/img/setting_top.png"><a href="">수정하기</a>
-          </span>
+          <th:block th:if="${url}==''">
+            <span class="not-selected-post-nav">
+              <img class="setting-img" th:src="@{/img/setting_top.png}" src="../../../static/img/setting_top.png"><a href="">수정하기</a>
+            </span>
+          </th:block>
         </nav>
       </div>
       <!-- 이메일 -->
@@ -58,8 +60,8 @@
       <!-- 작성 글, 작성 댓글 네비게이션 -->
       <div class="contents-myInfo-nav">
         <nav id="convert-post">
-          <a th:href="@{/member/recommends}"><span class="selected-post-nav" th:text="|작성 글(${recommendsResponse.getRecommendCnt()})|"><a href="">작성 글(32)</a></span></a>
-          <a th:href="@{/member/comments}"> <span class="not-selected-post-nav" th:text="|작성 댓글(${recommendsResponse.getCommentCnt()})|"><a href="">작성 댓글(48)</a></span></a>
+          <a th:href="@{/member/recommends__${url}__}"><span class="selected-post-nav" th:text="|작성 글(${recommendsResponse.getRecommendCnt()})|"><a href="">작성 글(32)</a></span></a>
+          <a th:href="@{/member/comments__${url}__}"><span class="not-selected-post-nav" th:text="|작성 댓글(${recommendsResponse.getCommentCnt()})|"><a href="">작성 댓글(48)</a></span></a>
         </nav>
       </div>
       <div class="contents-myInfo-bottom">
