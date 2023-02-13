@@ -22,7 +22,7 @@
     flex-direction: column;
 }
 
-.img-box img{
+div.img-box>img{
     width: 284px;
     height: 285px;
     margin: 100px 0 0 0;
