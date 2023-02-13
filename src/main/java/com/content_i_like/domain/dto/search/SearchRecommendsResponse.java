@@ -34,7 +34,7 @@ public class SearchRecommendsResponse {
         .memberNickname(recommend.getMember().getNickName())
         .recommendImageUrl(recommend.getRecommendImageUrl())
         .albumImageUrl(recommend.getTrack().getAlbum().getAlbumImageUrl())
-//        .countLikes((long) recommend.getLikes().size())
+        .countLikes((long) recommend.getLikes().size())
 //        .accumulatedPoints(recommend.getComments().stream()
 //            .mapToLong(Comment::getCommentPoint)
 //            .sum() + recommend.getRecommendPoint())
