@@ -52,6 +52,11 @@ public class SecurityConfig {
         .and()
         .authenticationProvider(authenticationProvider)
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        .logout()
+        .logoutSuccessUrl("/")
+        .invalidateHttpSession(true)
+        .deleteCookies("JSESSIONID")
+        .and()
         .oauth2Login()                  // OAuth2 로그인 설정
         //.loginPage("/api/v1/oauth/google")
         //.defaultSuccessUrl("/api/v1/oauth/naver")
