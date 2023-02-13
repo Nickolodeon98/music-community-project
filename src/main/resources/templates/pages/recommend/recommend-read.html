@@ -26,11 +26,13 @@
         <span class="post-read-title" th:text="${post.getRecommendTitle()}"></span>
 
         <span class="post-read-menu">
-          <a th:if="${session.loginUser != null and session.loginUser.getNickName() == post.getMemberNickname()}" th:href="@{/recommends/{recommendNo}/modifyForm (recommendNo=${post.getRecommendNo()})}">수정</a>
+          <a th:if="${session.loginUser != null and session.loginUser.getNickName() == post.getMemberNickname()}"
+             th:href="@{/recommends/{recommendNo}/modifyForm (recommendNo=${post.getRecommendNo()})}">수정</a>
         </span>
 
         <span class="post-read-menu">
-          <a th:if="${session.loginUser != null and session.loginUser.getNickName() == post.getMemberNickname()}" th:href="'javascript:deletePost(\''+${post.getRecommendNo()}+'\')'">삭제</a>
+          <a th:if="${session.loginUser != null and session.loginUser.getNickName() == post.getMemberNickname()}"
+             th:href="'javascript:deletePost(\''+${post.getRecommendNo()}+'\')'">삭제</a>
         </span>
       </div>
       <div class="post-read-hashtag">
@@ -44,7 +46,8 @@
                          th:text="${#temporals.format(post.getRecommendCreatedAt(), 'yyyy/MM/dd HH:mm:ss')}"></div>
                 </span>
         <span class="like-and-point" id="likes">
-          <a th:if="${session.loginUser!=null}" id="like-click" th:text="|♥ ${post.getCountLikes()}|"></a>
+          <a th:if="${session.loginUser!=null}" id="like-click"
+             th:text="|♥ ${post.getCountLikes()}|"></a>
           <a th:if="${session.loginUser==null}" th:text="|♥ ${post.getCountLikes()}|"></a>
         </span>
         <span class="like-and-point" th:text="|글 pt ${post.getRecommendPoint()}|"></span>
@@ -73,14 +76,27 @@
 
       <div class="line"></div>
 
-      <form method="" action="" th:if="${session.loginUser != null}">
+      <form method="" action="" th:if="${session.loginUser != null and checkComment == false}">
         <div class="comment-input">
-                    <span class="comment-user-info">
-                        <div class="comment-user-img"><img th:src="${login.getProfileImgUrl()}"></div>
-                        <div class="comment-user-name" th:text="${login.getMemberNickname()}"></div>
-                    </span>
-          <span class="comment-input-area"><textarea placeholder="댓글을 입력해 주세요."></textarea></span>
-          <span class="button-comment-input"><input type="button" value="등록"></span>
+          <span class="comment-user-info">
+              <div class="comment-user-img"><img th:src="${login.getProfileImgUrl()}"></div>
+              <div class="comment-user-name" th:text="${login.getMemberNickname()}"></div>
+          </span>
+          <span class="comment-input-area">
+            <textarea id="comment-value" placeholder="댓글을 입력해 주세요."></textarea>
+          </span>
+          <span class="point-area">
+            <div id="accumulate-point">
+              <input type="text" id="pay-point">
+              <span class="point-text">/</span>
+              <span id="user-point" th:text="${loginUserPoint}"></span>
+              <span class="point-text">pt</span>
+            </div>
+          </span>
+
+          <span class="button-comment-input">
+            <input id="comment-button" type="button" value="등록">
+          </span>
         </div>
       </form>
 
@@ -105,14 +121,14 @@
                 <img th:src="${comment.getProfileImgUrl()}">
               </div>
               <div class="comment-list-user-name" th:text="${comment.getMemberNickname()}"></div>
-              <div class="comment-list-user-point" th:text="${comment.getCommentPoint()}"></div>
+              <div class="comment-list-user-point" th:if="${comment.getCommentPoint() != null}"
+                   th:text="${comment.getCommentPoint()}"></div>
           </span>
           <span class="comment-list-body-menu">
               <div class="comment-list-body" th:text="${comment.getCommentContent()}"></div>
               <div class="comment-list-menu">
-                <span><a href="">댓글</a></span>
                 <span><a href="">삭제</a></span>
-                <span><a href="">신고</a></span>
+                <!--                <span><a href="">신고</a></span>-->
               </div>
             </span>
           <div class="comment-list-date"
@@ -128,10 +144,6 @@
         <img th:src="${post.getRecommendImageUrl()}">
       </div>
 
-      <div id="accumulate-point-area">
-        <div id="accumulate-point-explain">내가 후원한 포인트는?</div>
-        <div id="accumulate-point"><span id="number">800</span><span id="point">pt</span></div>
-      </div>
     </div>
 
     <div class="footer">
@@ -141,6 +153,7 @@
 </div>
 </body>
 <script>
+  const recommendNo = window.location.href.split("/").pop();
 
   function deletePost(recommendNo) {
     let form = document.createElement('form');
@@ -155,9 +168,90 @@
   }
 
   $(document).ready(function () {
+    $('#comment-button').click(function (event) {
+      // Prevent form submission
+      event.preventDefault();
+
+      const commentContent = $('#comment-value').val();
+      const payPoint = $('#pay-point').val();
+      const userPoint = $('#user-point').text();
+
+      if (payPoint > Number(userPoint)) {
+        alert("보유한 포인트 보다 높은 값을 입력하였습니다.")
+        alert(payPoint);
+        alert(userPoint);
+        return false;
+      }
+
+      const commentRequest = {
+        commentContent: commentContent,
+        commentPoint: payPoint,
+      };
+
+      $.ajax({
+        type: 'POST',
+        url: '/recommends/' + recommendNo + '/comments',
+        data: JSON.stringify(commentRequest),
+        contentType: 'application/json',
+        success: function (data) {
+          // Clear the comment input field
+          $('#comment-value').val('');
+
+          // Render the new comments and append them to the comment list
+          const comments = data.comments;
+          for (let i = 0; i < comments.length; i++) {
+            const comment = comments[i];
+            const commentHtml = `
+          <div class="comment">
+            <span class="comment-list-user-info">
+              <div class="comment-list-user-img">
+                <img src="${comment.profileImgUrl}">
+              </div>
+              <div class="comment-list-user-name">${comment.memberNickname}</div>
+              <div class="comment-list-user-point">${comment.commentPoint > 0 ? comment.commentPoint
+                : ""}</div>
+            </span>
+            <span class="comment-list-body-menu">
+              <div class="comment-list-body">${comment.commentContent}</div>
+              <div class="comment-list-menu">
+                <span><a href="">삭제</a></span>
+              </div>
+            </span>
+            <div class="comment-list-date">${comment.createdAt}</div>
+          </div>
+        `;
+            $('.comment-list').prepend(commentHtml);
+          }
+          $('.comment-input').remove();
+
+          const superchats = data.superchats;
+          if (superchats && superchats.length > 0) {
+            for (let i = 0; i < superchats.length; i++) {
+              const superchat = superchats[i];
+              const superchatHtml = `
+                <div class="super-chat-user">
+                  <span class="super-chat-user-img"><img src="${superchat.profileImgUrl}"></span>
+                  <div>
+                    <div class="super-chat-point">${superchat.commentPoint}pt</div>
+                    <div class="super-chat-user-name">${superchat.memberNickname}</div>
+                  </div>
+                </div>
+              `;
+              $('.super-chat-list').prepend(superchatHtml);
+            }
+          } else {
+            console.log('No superchats available');
+          }
+        },
+        error: function (err) {
+          console.error(err);
+        }
+      });
+    });
+
     $(document).on('click', '#like-click', function (event) {
       event.preventDefault();
-      const recommendNo = window.location.href.split("/").pop();
+
       alert(recommendNo);
       $.ajax({
         type: 'POST',
@@ -172,6 +266,18 @@
       });
     });
   });
+
+  function writeComment(recommendNo) {
+    let form = document.createElement('form');
+
+    if (confirm("정말 삭제하시겠습니까?")) {
+      form.setAttribute('method', 'post');
+      form.setAttribute('action', '/recommends/' + recommendNo + '/delete');
+      document.body.appendChild(form);
+      form.submit();
+      alert("삭제되었습니다.");
+    }
+  }
 
 
 </script>
