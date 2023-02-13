@@ -35,22 +35,25 @@
               <img th:src="@{/img/search-icon-transparent-images-vector-15 1.png}">
             </button>
           </form>
-          <!-- 라디오 버튼에 따라 다른 정렬 조건이 적용된다. -->
-<!--          <form class="search-filter" id="search-filter" th:object="${sortStrategy}"-->
-<!--                th:action="@{/search/test/all}"-->
-<!--                th:method="get">-->
-<!--            <ul>-->
-<!--              <li th:each="pt : ${allProperties}">-->
-<!--                <input type="radio" th:field="*{property}" th:value="${pt}">-->
-<!--                <label th:for="${#ids.prev('property')}" th:text="#{${'seedstarter.type.' + pt}}"></label>-->
-<!--              </li>-->
-<!--            </ul>-->
-
-<!--            &lt;!&ndash;            <button id="sort-button">버튼</button>&ndash;&gt;-->
-<!--          </form>-->
         </div>
       </div>
+
     </div>
+    <!-- 라디오 버튼에 따라 다른 정렬 조건이 적용된다. -->
+    <form class="search-filter" id="search-filter" th:object="${sortStrategy}"
+          th:action="@{/search/test/all}"
+          th:method="get">
+
+      <input type="hidden" th:field="*{property}" th:value="${allProperties.}">
+
+      <!--      <ul>-->
+<!--        <li th:each="pt : ${allProperties}">-->
+<!--          <label th:for="${#ids.prev('property')}" th:text="#{${'seedstarter.type.' + pt}}"></label>-->
+<!--        </li>-->
+<!--      </ul>-->
+
+                  <button id="sort-button">버튼</button>
+    </form>
   </div>
 </div>
 <script th:inline="javascript">

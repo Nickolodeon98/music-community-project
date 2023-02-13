@@ -3,7 +3,7 @@
     flex-direction: row;
     margin-bottom: 60px;
     position: relative;
-    left:-168px;
+    /*left:-168px;*/
 }
 
 .members-list-element {
@@ -15,10 +15,16 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    margin: auto 0 auto 125px;
+    margin: auto 125px auto 0;
 
 }
+.members-profile-info-last {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: auto 0 auto 0;
 
+}
 .members-image {
     margin: auto;
     background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)) no-repeat center;

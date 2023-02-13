@@ -35,5 +35,8 @@ public class CommentReadResponse {
         .build();
   }
 
+  public static CommentReadResponse commentWithMaxPoints(CommentReadResponse a, CommentReadResponse b) {
+    return a.getCommentPoint() >= b.getCommentPoint() ? a : b;
+  }
 
 }

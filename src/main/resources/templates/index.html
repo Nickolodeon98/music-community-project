@@ -57,19 +57,21 @@
                 <a href=""><img class="alarm-img" th:src="@{/img/bell-img.png}" src="../../../static/img/bell-img.png"></a>
             </span>
 
-        <div class="dropdown">
-          <span id="menu-profile" class="menu-img">
-  <!--                <a href="">-->
-            <!--                  <img src="../static/img/event-horizion.jpg" class="profile-img">-->
-            <!--                </a>-->
-            <span th:text="${session.loginUser.nickName}"></span>
-                    <div class="dropdown-content">
-                        <a href="#">profile</a>
-                        <a href="#">피드</a>
-                        <a href="#">로그아웃</a>
-                    </div>
-              </span>
-        </div>
+        <span id="menu-profile" class="menu-img">
+                <div class="dropdown">
+                    <img th:src="${session.loginUser.profileImgUrl}" class="profile-img-preview">
+                        <div class="dropdown-content">
+                            <a href="#" class="profile-preview">
+                                <img th:src="${session.loginUser.profileImgUrl}" class="img-preview">
+                                <div class="name-preview" th:text="${session.loginUser.nickName}"></div>
+                            </a>
+                            <a href="/member/my">내 정보</a>
+                            <a href="/member/recommends">마이피드 보기</a>
+                            <a href="/member/logout">로그아웃</a>
+                        </div>
+                </div>
+            </span>
+
       </th:block>
 
     </div>
