@@ -82,10 +82,10 @@
         </ul>
       </div>
       <button class="page-button-prev" th:unless="${trackResults.pages.isFirst()}" th:name="page"
-              th:value="${pageable.previousOrFirst().pageNumber}">이전
+              th:value="${pageable.previousOrFirst().pageNumber}"><img class="prev-image" th:src="@{/img/next forward.png}">
       </button>
       <button class="page-button-next" th:unless="${trackResults.pages.isLast()}" th:name="page"
-              th:value="${pageable.next().pageNumber}">다음
+              th:value="${pageable.next().pageNumber}"><img class="next-image" th:src="@{/img/next forward.png}">
       </button>
     </form>
   </div>

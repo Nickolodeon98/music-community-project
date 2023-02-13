@@ -91,7 +91,7 @@
             <th:block th:unless="${counter + 4 >= memberNickName.pages.getNumberOfElements()}">
               <li class="members-list-element">
                 <!--              th:unless="${status.current % 5 != 0}">-->
-                <div class="members-profile-info">
+                <div class="members-profile-info-last">
                   <img th:src="${memberNickNameAsList.get(counter+4).profileImgUrl}"
                        class="members-image"/>
                   <a class="members-name" th:text="${memberNickNameAsList.get(counter+4).nickName}"

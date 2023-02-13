@@ -174,7 +174,8 @@
     justify-content: center;
     width:60px;
     float:left;
-    border:solid white;
+    border:none;
+    color: white;
 }
 
 .page-button-next {
@@ -183,7 +184,8 @@
     justify-content: center;
     float:right;
     width:60px;
-    border:solid white;
+    border:none;
+    color: white;
 }
 
 .more-contents {
@@ -193,4 +195,16 @@
     border: 1px solid rgba(255, 255, 255, 0.5);
     width:60px;
     text-align: center;
+}
+
+.prev-image {
+    width:30px;
+    height:30px;
+    transform: scaleX(-1);
+
+}
+
+.next-image {
+    width:30px;
+    height:30px;
 }

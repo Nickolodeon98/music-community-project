@@ -2,7 +2,7 @@
     display:flex;
     flex-direction: column;
     position:relative;
-    left:-43px;
+    /*left:-43px;*/
 }
 
 .recommend-list-elements {
@@ -15,7 +15,7 @@
 .title-and-contents {
     display: flex;
     flex-direction: column;
-    margin: 0 -43px auto 88px;
+    margin: 0 0 auto 88px;
     width:100%;
 }
 
