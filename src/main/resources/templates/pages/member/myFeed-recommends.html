@@ -19,42 +19,7 @@
 <body>
 <div class="container-myFeed">
 
-  <div th:replace="/common/fragments/header"/>
-  <!--  실제 배포할때는 위의 replace 사용-->
-  <!-- local에서 쉽게 테스트 하기 위한 헤더 시작-->
-  <!--  <div class="header">-->
-  <!--    <div class="header-nav">-->
-  <!--            <span id="logo">-->
-  <!--                <a href="">내미콘</a>-->
-  <!--            </span>-->
-
-  <!--      <span id="menu-recommend" class="menu">-->
-  <!--                <a href="">추천글</a>-->
-  <!--            </span>-->
-
-  <!--      <span id="menu-chart" class="menu">-->
-  <!--                <a href="">차트</a>-->
-  <!--            </span>-->
-
-  <!--      <span id="menu-inquiry" class="menu">-->
-  <!--                <a href="">문의</a>-->
-  <!--            </span>-->
-
-  <!--      <span id="menu-search" class="menu">-->
-  <!--                <a href="">검색</a>-->
-  <!--            </span>-->
-
-  <!--      <span id="menu-login" class="menu-user">-->
-  <!--                <a href="">로그인</a>-->
-  <!--            </span>-->
-
-  <!--      <span id="menu-join" class="menu-user">-->
-  <!--                <a href="">회원가입</a>-->
-  <!--            </span>-->
-  <!--    </div>-->
-  <!--  </div>-->
-  <!--  </body>-->
-  <!--  헤더 끝-->
+  <div th:replace="~{common/fragments/header::header}"></div>
 
   <!--  마이피드 상단 시작-->
   <div class="contents-myFeed">
@@ -93,8 +58,8 @@
       <!-- 작성 글, 작성 댓글 네비게이션 -->
       <div class="contents-myInfo-nav">
         <nav id="convert-post">
-          <a href="/member/recommends"><span class="selected-post-nav" th:text="|작성 글(${recommendsResponse.getRecommendCnt()})|"><a href="">작성 글(32)</a></span></a>
-          <a href="/member/comments"> <span class="not-selected-post-nav" th:text="|작성 댓글(${recommendsResponse.getCommentCnt()})|"><a href="">작성 댓글(48)</a></span></a>
+          <a th:href="@{/member/recommends}"><span class="selected-post-nav" th:text="|작성 글(${recommendsResponse.getRecommendCnt()})|"><a href="">작성 글(32)</a></span></a>
+          <a th:href="@{/member/comments}"> <span class="not-selected-post-nav" th:text="|작성 댓글(${recommendsResponse.getCommentCnt()})|"><a href="">작성 댓글(48)</a></span></a>
         </nav>
       </div>
       <div class="contents-myInfo-bottom">
@@ -137,183 +102,6 @@
           </div>
         </a>
       </div>
-
-
-<!--      <div class="card">-->
-<!--        <div class="music-info">-->
-<!--          <span class="music-img"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/> </span>-->
-<!--          <span class="music-info-text">사건의 지평선 - </span>-->
-<!--          <span class="music-info-text">윤하</span>-->
-<!--        </div>-->
-
-<!--        <div class="body"></div>-->
-
-<!--        <div class="post-info">-->
-<!--          <div class="post-info-top">-->
-<!--            <span class="post-title">드디어 찾아냈어요!</span>-->
-<!--            <span class="like">♥ 1128</span>-->
-<!--          </div>-->
-
-<!--          <div class="line"></div>-->
-
-<!--          <div class="post-content">Lorem ipsum dolor sit amet, consectetuer adipi-->
-<!--            scing elit. Aenean commodo ligula eget dolor.-->
-<!--            Aenean massa. Cum sociis natoqueum dolor sit-->
-<!--            amet, consectetuer adipiscing elit.-->
-<!--          </div>-->
-<!--          <div class="post-author">Park Ron</div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="card">-->
-<!--        <div class="music-info">-->
-<!--          <span class="music-img"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/> </span>-->
-<!--          <span class="music-info-text">사건의 지평선 - </span>-->
-<!--          <span class="music-info-text">윤하</span>-->
-<!--        </div>-->
-
-<!--        <div class="body"></div>-->
-
-<!--        <div class="post-info">-->
-<!--          <div class="post-info-top">-->
-<!--            <span class="post-title">드디어 찾아냈어요!</span>-->
-<!--            <span class="like">♥ 1128</span>-->
-<!--          </div>-->
-
-<!--          <div class="line"></div>-->
-
-<!--          <div class="post-content">Lorem ipsum dolor sit amet, consectetuer adipi-->
-<!--            scing elit. Aenean commodo ligula eget dolor.-->
-<!--            Aenean massa. Cum sociis natoqueum dolor sit-->
-<!--            amet, consectetuer adipiscing elit.-->
-<!--          </div>-->
-<!--          <div class="post-author">Park Ron</div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="card">-->
-<!--        <div class="music-info">-->
-<!--          <span class="music-img"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/> </span>-->
-<!--          <span class="music-info-text">사건의 지평선 - </span>-->
-<!--          <span class="music-info-text">윤하</span>-->
-<!--        </div>-->
-
-<!--        <div class="body"></div>-->
-
-<!--        <div class="post-info">-->
-<!--          <div class="post-info-top">-->
-<!--            <span class="post-title">드디어 찾아냈어요!</span>-->
-<!--            <span class="like">♥ 1128</span>-->
-<!--          </div>-->
-
-<!--          <div class="line"></div>-->
-
-<!--          <div class="post-content">Lorem ipsum dolor sit amet, consectetuer adipi-->
-<!--            scing elit. Aenean commodo ligula eget dolor.-->
-<!--            Aenean massa. Cum sociis natoqueum dolor sit-->
-<!--            amet, consectetuer adipiscing elit.-->
-<!--          </div>-->
-<!--          <div class="post-author">Park Ron</div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="card">-->
-<!--        <div class="music-info">-->
-<!--          <span class="music-img"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/> </span>-->
-<!--          <span class="music-info-text">사건의 지평선 - </span>-->
-<!--          <span class="music-info-text">윤하</span>-->
-<!--        </div>-->
-
-<!--        <div class="body"></div>-->
-
-<!--        <div class="post-info">-->
-<!--          <div class="post-info-top">-->
-<!--            <span class="post-title">드디어 찾아냈어요!</span>-->
-<!--            <span class="like">♥ 1128</span>-->
-<!--          </div>-->
-
-<!--          <div class="line"></div>-->
-
-<!--          <div class="post-content">Lorem ipsum dolor sit amet, consectetuer adipi-->
-<!--            scing elit. Aenean commodo ligula eget dolor.-->
-<!--            Aenean massa. Cum sociis natoqueum dolor sit-->
-<!--            amet, consectetuer adipiscing elit.-->
-<!--          </div>-->
-<!--          <div class="post-author">Park Ron</div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="card">-->
-<!--        <div class="music-info">-->
-<!--          <span class="music-img"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/> </span>-->
-<!--          <span class="music-info-text">사건의 지평선 - </span>-->
-<!--          <span class="music-info-text">윤하</span>-->
-<!--        </div>-->
-
-<!--        <div class="body"></div>-->
-
-<!--        <div class="post-info">-->
-<!--          <div class="post-info-top">-->
-<!--            <span class="post-title">드디어 찾아냈어요!</span>-->
-<!--            <span class="like">♥ 1128</span>-->
-<!--          </div>-->
-
-<!--          <div class="line"></div>-->
-
-<!--          <div class="post-content">Lorem ipsum dolor sit amet, consectetuer adipi-->
-<!--            scing elit. Aenean commodo ligula eget dolor.-->
-<!--            Aenean massa. Cum sociis natoqueum dolor sit-->
-<!--            amet, consectetuer adipiscing elit.-->
-<!--          </div>-->
-<!--          <div class="post-author">Park Ron</div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="card">-->
-<!--        <div class="music-info">-->
-<!--          <span class="music-img"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/> </span>-->
-<!--          <span class="music-info-text">사건의 지평선 - </span>-->
-<!--          <span class="music-info-text">윤하</span>-->
-<!--        </div>-->
-
-<!--        <div class="body"></div>-->
-
-<!--        <div class="post-info">-->
-<!--          <div class="post-info-top">-->
-<!--            <span class="post-title">드디어 찾아냈어요!</span>-->
-<!--            <span class="like">♥ 1128</span>-->
-<!--          </div>-->
-
-<!--          <div class="line"></div>-->
-
-<!--          <div class="post-content">Lorem ipsum dolor sit amet, consectetuer adipi-->
-<!--            scing elit. Aenean commodo ligula eget dolor.-->
-<!--            Aenean massa. Cum sociis natoqueum dolor sit-->
-<!--            amet, consectetuer adipiscing elit.-->
-<!--          </div>-->
-<!--          <div class="post-author">Park Ron</div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="card">-->
-<!--        <div class="music-info">-->
-<!--          <span class="music-img"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/> </span>-->
-<!--          <span class="music-info-text">사건의 지평선 - </span>-->
-<!--          <span class="music-info-text">윤하</span>-->
-<!--        </div>-->
-
-<!--        <div class="body"></div>-->
-
-<!--        <div class="post-info">-->
-<!--          <div class="post-info-top">-->
-<!--            <span class="post-title">드디어 찾아냈어요!</span>-->
-<!--            <span class="like">♥ 1128</span>-->
-<!--          </div>-->
-
-<!--          <div class="line"></div>-->
-
-<!--          <div class="post-content">Lorem ipsum dolor sit amet, consectetuer adipi-->
-<!--            scing elit. Aenean commodo ligula eget dolor.-->
-<!--            Aenean massa. Cum sociis natoqueum dolor sit-->
-<!--            amet, consectetuer adipiscing elit.-->
-<!--          </div>-->
-<!--          <div class="post-author">Park Ron</div>-->
-<!--        </div>-->
-<!--      </div>-->
 
     </div>
     <!-- 내가 작성한 글 목록 끝 -->

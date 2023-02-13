@@ -11,52 +11,23 @@
           integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
           crossorigin="anonymous"></script>
   <link rel="stylesheet" th:href="@{/css/style.css}" href="../../../static/css/style.css">
-  <link rel="stylesheet" th:href="@{/css/myFeed.css}" href="../../../static/css/faq.css">
+  <link rel="stylesheet" th:href="@{/css/faq.css}" href="../../../static/css/faq.css">
   <!--  <link rel="stylesheet" th:href="@{/css/index.css}" href="../../../static/css/index.css">-->
   <link rel="stylesheet" th:href="@{/css/recommend-post.css}" href="../../../static/css/recommend-post.css">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
 </head>
 
 <body>
 <div class="container-faq">
 
   <!-- 헤더 시작 -->
-  <div class="header">
-    <div class="header-nav">
-            <span id="logo">
-                <a href="">내미콘</a>
-            </span>
-
-      <span id="menu-recommend" class="menu">
-                <a href="">추천글</a>
-            </span>
-
-      <span id="menu-chart" class="menu">
-                <a href="">차트</a>
-            </span>
-
-      <span id="menu-inquiry" class="menu">
-                <a href="">문의</a>
-            </span>
-
-      <span id="menu-search" class="menu">
-                <a href="">검색</a>
-            </span>
-
-      <span id="menu-login" class="menu-user">
-                <a href="">로그인</a>
-            </span>
-
-      <span id="menu-join" class="menu-user">
-                <a href="">회원가입</a>
-            </span>
-    </div>
-  </div>
+  <div th:replace="~{common/fragments/header::header}"></div>
   <!-- 헤더 끝 -->
 
   <div class="container-register-bottom">
     <div class="faq-nav">
-      <span class="selected-faq-nav"><a href="">FAQ</a></span>
-      <span class="not-selected-faq-nav"><a href="">내 문의 내역</a></span>
+      <span class="selected-faq-nav"><a href="/faq">FAQ</a></span>
+      <span class="not-selected-faq-nav"><a href="/inquiry">내 문의 내역</a></span>
 
     </div>
 
@@ -65,20 +36,22 @@
     <div class="faq-content-details">
       <div class="faq-content-register-title">
         <span class="font-title-gray-mrgBtm">문의 유형</span>
-        <span class="font-title">슈퍼챗</span>
+        <span class="font-title">1:1 문의</span>
       </div>
 
       <div class="faq-content-details-list">
-        <div class="faq-register-details-title">
-          <span class="font-title">제목</span>
-        </div>
-        <div class="faq-register-details-content">
-          <span class="font-gray">내용을 입력하세요.</span>
-        </div>
-        <div class="faq-register-btn">
-          <span class="faq-register-not-selected-btn">취소</span>
-          <span class="faq-register-selected-btn">문의하기</span>
-        </div>
+        <form th:action="@{/inquiry/post}" method="post" th:object="${inquiryRequire}" >
+          <div class="faq-register-details-title">
+            <input class="input-title" th:field="*{title}" placeholder="제목"/>
+          </div>
+          <div class="faq-register-details-content">
+            <textarea class="input-content" placeholder="내용을 입력하세요." th:field="*{content}"></textarea>
+          </div>
+          <div class="faq-register-btn">
+            <span class="faq-register-not-selected-btn">취소</span>
+            <input class="faq-register-selected-btn" type="submit" value="문의하기">
+          </div>
+        </form>
       </div>
     </div>
 

@@ -11,10 +11,9 @@
           integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
           crossorigin="anonymous"></script>
   <link rel="stylesheet" th:href="@{/css/style.css}" href="../../../static/css/style.css">
-  <link rel="stylesheet" th:href="@{/css/faq.css}" hr ef="../../../static/css/faq.css">
+  <link rel="stylesheet" th:href="@{/css/faq.css}" href="../../../static/css/faq.css">
   <!--  <link rel="stylesheet" th:href="@{/css/index.css}" href="../../../static/css/index.css">-->
-  <link rel="stylesheet" th:href="@{/css/recommend-post.css}"
-        href="../../../static/css/recommend-post.css">
+  <link rel="stylesheet" th:href="@{/css/recommend-post.css}" href="../../../static/css/recommend-post.css">
   <link rel="stylesheet" th:href="@{/css/profile-style.css}">
 </head>
 
@@ -42,31 +41,21 @@
 
       <div class="inquire-content">
         <div class="inquire-title">
-          <span class="font-inquire-empty"></span>
-          <span class="font-inquire-num">번호</span>
-          <span class="font-inquire-title">제목</span>
-          <span class="font-inquire-date">날짜</span>
-          <span class="font-inquire-status">처리상태</span>
+          <span class="font-inquire-details-empty"></span>
+          <span class="font-inquire-details-title">제목</span>
+          <span class="font-inquire-details-title-content" th:text="${inquiryDetail.getTitle()}">계정이 도용당했습니다.</span>
+          <span class="font-inquire-details-num">번호</span>
+          <span class="font-inquire-details-num-content" th:text="${inquiryAnswer.getAnswerNo()}">1</span>
         </div>
-        <div th:each="lists:${inquiryList}">
-          <div class="inquire-list">
-            <span class="font-inquire-empty"></span>
-            <span class="font-inquire-num" th:text="${lists.getInquiryNo()}">1</span>
-            <a class="font-inquire-title" th:href="@{/inquiry/__${lists.getInquiryNo()}__}"><span
-                class="font-inquire-title"
-                th:text="${lists.getTitle()}"></span></a>
-            <span class="font-inquire-date" th:text="${lists.getCreatedAt()}">2023.01.06</span>
-            <th:block th:if="${lists.getProcessingStatus()=='처리중'}">
-              <span class="font-inquire-status" th:text="${lists.getProcessingStatus()}"></span>
-            </th:block>
-            <th:block th:if="${lists.getProcessingStatus()=='처리완료'}">
-              <a class="font-inquire-status" th:href="@{/inquiry/answer/__${lists.getInquiryNo()}__}"><span
-                  class="font-inquire-status"
-                  th:text="${lists.getProcessingStatus()}"></span></a>
-            </th:block>
+        <div class="inquire-details">
+          <span class="inquire-details-content">답변</span>
+          <span class="inquire-details-content-content" th:text="${inquiryAnswer.getContent()}">
+          <div class="inquire-content-date">
+            <span class="inquire-details-date">날짜</span>
+            <span class="inquire-details-date-date" th:text="${inquiryAnswer.getCreatedAt()}">2023.01.06</span>
           </div>
-        </div>
 
+        </div>
 
       </div>
     </div>

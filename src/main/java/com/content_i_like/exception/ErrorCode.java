@@ -17,11 +17,15 @@ public enum ErrorCode {
   REJECT_PASSWORD(HttpStatus.CONFLICT, "비밀번호는 8~16자입니다."),
   UNKNOWN_ERROR(HttpStatus.BAD_REQUEST, "알 수 없는 에러가 발생했습니다."),
   DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DB에러"),
+  NOT_EXIST_INQUIRY_TITLE(HttpStatus.BAD_REQUEST, "제목이 없습니다."),
+  NOT_EXIST_INQUIRY_CONTENT(HttpStatus.BAD_REQUEST, "내용이 없습니다."),
 
   EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
   INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."),
   INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "사용자가 권한이 없습니다."),
-  NOT_EXIST_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 존재하지 않습니다.");
+  NOT_EXIST_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 존재하지 않습니다.")
+
+  ;
   private HttpStatus status;
   private String message;
 }

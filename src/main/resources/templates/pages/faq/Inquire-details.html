@@ -11,52 +11,23 @@
           integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
           crossorigin="anonymous"></script>
   <link rel="stylesheet" th:href="@{/css/style.css}" href="../../../static/css/style.css">
-  <link rel="stylesheet" th:href="@{/css/myFeed.css}" href="../../../static/css/faq.css">
+  <link rel="stylesheet" th:href="@{/css/faq.css}" href="../../../static/css/faq.css">
   <!--  <link rel="stylesheet" th:href="@{/css/index.css}" href="../../../static/css/index.css">-->
   <link rel="stylesheet" th:href="@{/css/recommend-post.css}" href="../../../static/css/recommend-post.css">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
 </head>
 
 <body>
 <div class="container-faq">
 
   <!-- 헤더 시작 -->
-  <div class="header">
-    <div class="header-nav">
-            <span id="logo">
-                <a href="">내미콘</a>
-            </span>
-
-      <span id="menu-recommend" class="menu">
-                <a href="">추천글</a>
-            </span>
-
-      <span id="menu-chart" class="menu">
-                <a href="">차트</a>
-            </span>
-
-      <span id="menu-inquiry" class="menu">
-                <a href="">문의</a>
-            </span>
-
-      <span id="menu-search" class="menu">
-                <a href="">검색</a>
-            </span>
-
-      <span id="menu-login" class="menu-user">
-                <a href="">로그인</a>
-            </span>
-
-      <span id="menu-join" class="menu-user">
-                <a href="">회원가입</a>
-            </span>
-    </div>
-  </div>
+  <div th:replace="~{common/fragments/header::header}"></div>
   <!-- 헤더 끝 -->
 
   <div class="container-register-bottom">
     <div class="faq-nav">
-      <span class="not-selected-faq-nav"><a href="">FAQ</a></span>
-      <span class="selected-inquire-nav"><a href="">내 문의 내역</a></span>
+      <span class="not-selected-faq-nav"><a href="/faq">FAQ</a></span>
+      <span class="selected-inquire-nav"><a href="/inquiry">내 문의 내역</a></span>
 
     </div>
 
@@ -72,16 +43,16 @@
         <div class="inquire-title">
           <span class="font-inquire-details-empty"></span>
           <span class="font-inquire-details-title">제목</span>
-          <span class="font-inquire-details-title-content">계정이 도용당했습니다.</span>
+          <span class="font-inquire-details-title-content" th:text="${inquiryDetail.getTitle()}">계정이 도용당했습니다.</span>
           <span class="font-inquire-details-num">번호</span>
-          <span class="font-inquire-details-num-content">1</span>
+          <span class="font-inquire-details-num-content" th:text="${inquiryDetail.getInquiryNo()}">1</span>
         </div>
         <div class="inquire-details">
           <span class="inquire-details-content">내용</span>
-          <span class="inquire-details-content-content">안녕하세요. User1 회원님. 회원님의 계정 도용을 확인하여 조치하였습니다.<br>내미콘을 이용해주셔서 감사합니다.</span>
+          <span class="inquire-details-content-content" th:text="${inquiryDetail.getContent()}">안녕하세요. User1 회원님. 회원님의 계정 도용을 확인하여 조치하였습니다.<br>내미콘을 이용해주셔서 감사합니다.</span>
           <div class="inquire-content-date">
             <span class="inquire-details-date">날짜</span>
-            <span class="inquire-details-date-date">2023.01.06</span>
+            <span class="inquire-details-date-date" th:text="${inquiryDetail.getCreatedAt()}">2023.01.06</span>
 
           </div>
 

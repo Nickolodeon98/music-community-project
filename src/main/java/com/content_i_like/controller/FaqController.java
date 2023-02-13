@@ -1,6 +1,7 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
+import com.content_i_like.domain.dto.faq.FaqCategoryResponse;
 import com.content_i_like.domain.dto.faq.FaqDetailsResponse;
 import com.content_i_like.domain.dto.faq.FaqRequest;
 import com.content_i_like.domain.dto.faq.FaqResponse;
@@ -31,24 +32,29 @@ public class FaqController {
     return "pages/faq/faq";
   }
 
-//  @GetMapping("/{category}")
-//  public Response<Page<FaqResponse>> getFaqByCategory(Pageable pageable,
-//      @PathVariable String category, Model model) {
-//    return null;
-//  }
-//
-//  @GetMapping("/searches/{keyWord}")
-//  public Response<Page<FaqResponse>> getFaqByKeyWord(Pageable pageable,
-//      @PathVariable String keyWord) {
-//    return Response.success(faqService.getFaqByKeyWord(pageable, keyWord));
-//  }
-//
+  @GetMapping("/{category}")
+  public String getFaqByCategory(Pageable pageable,
+      @PathVariable String category, Model model) {
+    Page<FaqResponse> faqByCategory = faqService.getFaqByCategory(pageable, category);
+
+    model.addAttribute("faq", faqByCategory);
+    return "pages/faq/faq";
+  }
+
+  @GetMapping("/searches/{keyWord}")
+  public String getFaqByKeyWord(Pageable pageable,
+      @PathVariable String keyWord, Model model) {
+    Page<FaqResponse> faqByKeyWord = faqService.getFaqByKeyWord(pageable, keyWord);
+
+    model.addAttribute("faq", faqByKeyWord);
+    return "pages/faq/faq";
+  }
+
   @GetMapping("/details/{faqNo}")
   public String getFaqDetails(@PathVariable Long faqNo, Model model) {
     FaqDetailsResponse faqDetails = faqService.getFaqDetails(faqNo);
 
-    model.addAttribute("details", faqDetails);
-
+    model.addAttribute("faqDetails", faqDetails);
     return "/pages/faq/faq-details";
   }
 //

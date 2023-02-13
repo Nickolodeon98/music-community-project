@@ -51,16 +51,13 @@ class InquiryRestControllerTest {
   @Test
   @DisplayName("1:1 문의 등록 잘되는지")
   void post_inquiry_success() throws Exception {
-    InquiryRequire inquiryRequire = InquiryRequire.builder()
-        .title("testTitle")
-        .content("testContent")
-        .build();
+    InquiryRequire inquiryRequire = new InquiryRequire("title", "content");
 
     when(inquiryService.postInquiry(any(), any()))
         .thenReturn(InquiryResponse.builder()
             .inquiryNo(1L)
             .title("testTitle")
-            .createdAt(now())
+            .createdAt(now().toLocalDate())
             .processingStatus("처리중")
             .build());
 

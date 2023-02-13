@@ -19,6 +19,7 @@ public class Inquiry extends BaseEntity {
 
   private String inquiryTitle;
   private String inquiryContent;
+  private String processingStatus;
 
   @ManyToOne
   @JoinColumn(name = "member_no")

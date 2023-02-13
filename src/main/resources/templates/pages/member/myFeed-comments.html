@@ -19,43 +19,7 @@
 <body>
 <div class="container-myFeed">
 
-    <div th:replace="/common/fragments/header"/>
-  <!--  실제 배포할때는 위의 replace 사용-->
-  <!-- local에서 쉽게 테스트 하기 위한 헤더 시작-->
-<!--  <body>-->
-<!--  <div class="header">-->
-<!--    <div class="header-nav">-->
-<!--            <span id="logo">-->
-<!--                <a href="">내미콘</a>-->
-<!--            </span>-->
-
-<!--      <span id="menu-recommend" class="menu">-->
-<!--                <a href="">추천글</a>-->
-<!--            </span>-->
-
-<!--      <span id="menu-chart" class="menu">-->
-<!--                <a href="">차트</a>-->
-<!--            </span>-->
-
-<!--      <span id="menu-inquiry" class="menu">-->
-<!--                <a href="">문의</a>-->
-<!--            </span>-->
-
-<!--      <span id="menu-search" class="menu">-->
-<!--                <a href="">검색</a>-->
-<!--            </span>-->
-
-<!--      <span id="menu-login" class="menu-user">-->
-<!--                <a href="">로그인</a>-->
-<!--            </span>-->
-
-<!--      <span id="menu-join" class="menu-user">-->
-<!--                <a href="">회원가입</a>-->
-<!--            </span>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  </body>-->
-  <!--  헤더 끝-->
+  <div th:replace="~{common/fragments/header::header}"></div>
 
   <!--  마이피드 상단 시작-->
   <div class="contents-myFeed">
@@ -128,54 +92,6 @@
         </div>
 
       </a>
-
-<!--      <div class="comment-card">-->
-<!--        <span class="music-img-comments"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/></span>-->
-<!--        <div class="comment-info">-->
-<!--          <div class="comment-border">-->
-<!--            <span class="number">드디어 찾아냈어요!</span>-->
-<!--            <span class="comment-date">2일 전</span>-->
-<!--          </div>-->
-<!--          <span class="comment-content">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque-->
-<!--           penatibus et magnis dis parturient montes,nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium qui-->
-<!--          sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut-->
-<!--          imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus element-->
-<!--          um semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. </span>-->
-<!--          <span class="comment-musicTitle">Mother - Charlie Puth</span>-->
-<!--        </div>-->
-<!--      </div>-->
-
-<!--      <div class="comment-card">-->
-<!--        <span class="music-img-comments"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/></span>-->
-<!--        <div class="comment-info">-->
-<!--          <div class="comment-border">-->
-<!--            <span class="number">드디어 찾아냈어요!</span>-->
-<!--            <span class="comment-date">2일 전</span>-->
-<!--          </div>-->
-<!--          <span class="comment-content">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque-->
-<!--           penatibus et magnis dis parturient montes,nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium qui-->
-<!--          sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut-->
-<!--          imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus element-->
-<!--          um semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. </span>-->
-<!--          <span class="comment-musicTitle">Mother - Charlie Puth</span>-->
-<!--        </div>-->
-<!--      </div>-->
-
-<!--      <div class="comment-card">-->
-<!--        <span class="music-img-comments"><img th:src="@{/img/event-horizon.jpg}" src="../../../static/img/event-horizon.jpg"/></span>-->
-<!--        <div class="comment-info">-->
-<!--          <div class="comment-border">-->
-<!--            <span class="number">드디어 찾아냈어요!</span>-->
-<!--            <span class="comment-date">2일 전</span>-->
-<!--          </div>-->
-<!--          <span class="comment-content">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque-->
-<!--           penatibus et magnis dis parturient montes,nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium qui-->
-<!--          sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut-->
-<!--          imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus element-->
-<!--          um semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. </span>-->
-<!--          <span class="comment-musicTitle">Mother - Charlie Puth</span>-->
-<!--        </div>-->
-<!--      </div>-->
 
     </div>
   </div>
