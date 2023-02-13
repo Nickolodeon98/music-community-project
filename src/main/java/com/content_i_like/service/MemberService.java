@@ -87,7 +87,8 @@ public class MemberService {
 
     String jwt = jwtService.generateToken(member);
 
-    return new MemberLoginResponse(jwt, member.getMemberNo(), member.getNickName(), member.getProfileImgUrl());
+    return new MemberLoginResponse(jwt, member.getMemberNo(), member.getNickName(),
+        member.getProfileImgUrl());
   }
 
   private Member validateExistingMember(String email) {
@@ -153,13 +154,34 @@ public class MemberService {
 
     uploadProfileImg(file, member);
 
-    doubleCheckPasswordAndUpdate(member, memberModifyRequest.getNewPassword(),
-        memberModifyRequest.getVerification());
+//    doubleCheckPasswordAndUpdate(member, memberModifyRequest.getNewPassword(),
+//        memberModifyRequest.getVerification());
     member.update(memberModifyRequest);
 
     MemberResponse memberResponse = MemberResponse
         .responseWithPoint(member, pointService.calculatePoint(member));
     return memberResponse;
+  }
+
+  @Transactional
+  public MemberResponse modifyMyInfoWithFile(MemberModifyRequest request, String memberEmail)
+      throws IOException {
+    Member member = validateExistingMember(memberEmail);
+    String url = getModifyProfileImgURL(request.getProfileImg(), member);
+    member.updateProfile(request, url);
+
+    MemberResponse memberResponse = MemberResponse
+        .responseWithPoint(member, pointService.calculatePoint(member));
+    return memberResponse;
+  }
+
+  private String getModifyProfileImgURL(MultipartFile image, Member member) throws IOException {
+    String url = member.getProfileImgUrl();
+    if (image == null) {
+      return null;
+    }
+    s3FileUploadService.deleteFile(url.split("/")[3]);
+    return s3FileUploadService.uploadFile(image);
   }
 
   private String uploadProfileImg(MultipartFile file, Member member) throws IOException {
@@ -203,7 +225,7 @@ public class MemberService {
     Long[] followerCnt = getFollowCnt(member);
 
     Page<RecommendListResponse> recommendListResponses = recommendRepository.findAllByMember(
-            pageable, member)
+        pageable, member)
         .map(RecommendListResponse::of);
 
     return new MemberRecommendResponse(member, followerCnt, recommendListResponses);
@@ -228,7 +250,7 @@ public class MemberService {
     log.info("member={}", member.getMemberNo());
 
     Page<RecommendListResponse> recommendListResponses = recommendRepository.findAllByMember(
-            pageable, member)
+        pageable, member)
         .map(RecommendListResponse::of);
 
     return new MemberRecommendResponse(member, followerCnt, recommendListResponses);
@@ -258,7 +280,7 @@ public class MemberService {
     Long[] followerCnt = getFollowCnt(member);
 
     Stream<FollowResponse> followResponseStream = followRepository.findAllByMember(
-            member, pageable).stream()
+        member, pageable).stream()
         .map(follow -> new FollowResponse(
             follow.getFromMemberNo(),
             memberRepository.findById(follow.getFromMemberNo()).get().getNickName(),
@@ -274,7 +296,7 @@ public class MemberService {
     Long[] followerCnt = getFollowCnt(member);
 
     Stream<FollowResponse> followResponseStream = followRepository.findAllByFromMemberNo(
-            member.getMemberNo(), pageable).stream()
+        member.getMemberNo(), pageable).stream()
         .map(follow -> new FollowResponse(
             follow.getMember().getMemberNo(),
             memberRepository.findById(follow.getMember().getMemberNo()).get().getNickName(),
