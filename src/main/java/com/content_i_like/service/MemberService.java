@@ -45,7 +45,7 @@ public class MemberService {
   private final PointService pointService;
   private final MailService mailService;
 
-  private final String DEFAULT_PROFILE = "https://s3.amazonaws.com/80c4f0a7-c4e0-44a5-85d6-315dc793fe28-profile.jpg";
+  private final String DEFAULT_PROFILE = "https://content-i-like.s3.ap-northeast-2.amazonaws.com/80c4f0a7-c4e0-44a5-85d6-315dc793fe28-profile.jpg";
 
   @Transactional
   public MemberJoinResponse join(MemberJoinRequest memberJoinRequest) {
@@ -87,7 +87,7 @@ public class MemberService {
 
     String jwt = jwtService.generateToken(member);
 
-    return new MemberLoginResponse(jwt, member.getMemberNo(), member.getNickName());
+    return new MemberLoginResponse(jwt, member.getMemberNo(), member.getNickName(), member.getProfileImgUrl());
   }
 
   private Member validateExistingMember(String email) {

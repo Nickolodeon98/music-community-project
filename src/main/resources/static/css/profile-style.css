@@ -14,7 +14,6 @@
 .menu-img{
     width: 30px;
     height: 30px;
-    /* margin: 4px 10px 30px 10px; */
     margin-top: 50%;
     margin-right: 10%;
     font-family: NotoSansKR;
@@ -29,9 +28,8 @@
 #menu-post{
     width: 100px;
     font-size: 18px;
-    margin: 14px 20px 14px 100px;
-    /*margin-left: 150px;*/
-    padding: 10px 40px 10px 39px;
+    margin: 14px 20px 14px 300px;
+    padding: 5px 40px 5px 39px;
     text-align: center;
     border-radius: 24px;
     border: solid 1px white;
@@ -45,14 +43,15 @@
 
 #menu-alarm{
     margin: 18px 30px;
-    padding: 11px 10px 10px 10px;
+    padding: 8px;
     border: solid 1.5px white;
     border-radius: 50%;
     display: flex;
+    justify-content: center;
 }
 
 #menu-profile{
-    margin: 18px 16px 9px 0;
+    margin: 10px 16px 9px 0;
     padding: 11px 11px 11px 0;
     border-radius: 50%;
 }
@@ -63,17 +62,19 @@
 }
 
 .alarm-img{
+    display: flex;
+    justify-content: center;
+    align-self: center;
     width: 22px;
     height: 20px;
 }
 
-.profile-img{
+.profile-img-preview{
     width: 48px;
     height: 48px;
     border-radius: 50%;
     margin-right: 0%;
     display:flex;
-
 }
 
 #post-box{
@@ -111,16 +112,19 @@
     color : white;
     font-size: 12px;
     padding : 12px 5px;
+    text-align: center;
   }
 
 .dropdown-content a:hover{
     background-color : black;
     right:0;
+    text-align: center;
 }
 
 .dropdown:hover .dropdown-content {
     display: block;
     right:0;
+    text-align: center;
 }
 .dropbtn{
     border : 1px solid rgb(37, 37, 37);
@@ -130,26 +134,21 @@
     color : white;
     padding : 12px;
     width :200px;
-    text-align: right;
+    text-align: left;
     cursor : pointer;
     font-size : 12px;
   }
 
-*{
-    margin:0;
-    padding:0;
-    list-style:none;
-}
-
 .profile-preview{
     width: 230px;
     height: 150px;
+    margin: auto;
 }
 
 .img-preview{
     width: 81px;
     height: 81px;
-    margin: 0px 50px 10px 50px;
+    margin: auto;
     border-radius: 50%;
 }
 

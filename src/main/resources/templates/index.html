@@ -59,15 +59,15 @@
 
         <span id="menu-profile" class="menu-img">
                 <div class="dropdown">
-                    <img src="./img/event-horizon.jpg" class="profile-img">
+                    <img th:src="${session.loginUser.profileImgUrl}" class="profile-img-preview">
                         <div class="dropdown-content">
                             <a href="#" class="profile-preview">
-                                <img th:src="@{/img/event-horizon.jpg}" class="img-preview">
-                                <div class="name-preview">이도록</div>
+                                <img th:src="${session.loginUser.profileImgUrl}" class="img-preview">
+                                <div class="name-preview" th:text="${session.loginUser.nickName}"></div>
                             </a>
-                            <a href="#">내 정보</a>
-                            <a href="#">마이피드 보기</a>
-                            <a href="#">로그아웃</a>
+                            <a href="/member/my">내 정보</a>
+                            <a href="/member/recommends">마이피드 보기</a>
+                            <a href="/member/logout">로그아웃</a>
                         </div>
                 </div>
             </span>
