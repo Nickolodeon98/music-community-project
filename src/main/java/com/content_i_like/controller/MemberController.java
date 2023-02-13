@@ -151,21 +151,38 @@ public class MemberController {
     return "pages/member/my-profile";
   }
 
+  @GetMapping("/my/update")
+  public String modifyMyInfo(HttpServletRequest request, Model model) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/member/login";
+    }
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+
+    String email = memberService.getEmailByNo(loginResponse);
+    model.addAttribute("member", memberService.getMyInfo(email));
+    model.addAttribute("request",new MemberModifyRequest());
+    return "pages/member/modify-profile";
+  }
+
+  @PostMapping("/my/update")
+  public String modifyMyInfo(
+      @ModelAttribute("request") @Valid final MemberModifyRequest request,
+      HttpServletRequest servletRequest) throws IOException {
+    HttpSession session = servletRequest.getSession(false);
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+    String memberEmail = memberService.getEmailByNo(loginResponse);
+
+    MemberResponse memberResponse = memberService
+        .modifyMyInfoWithFile(request, memberEmail);
+    return "redirect:/member/my";
+  }
+
 
   @GetMapping("/my/point")
   public Response<MemberPointResponse> getMyPoint(final Authentication authentication) {
     MemberPointResponse memberPointResponse = memberService.getMyPoint(authentication.getName());
     return Response.success(memberPointResponse);
-  }
-
-  @PutMapping("/my")
-  public Response<MemberResponse> modifyMyInfo(
-      @RequestPart(value = "dto") @Valid final MemberModifyRequest request,
-      @RequestPart(value = "file", required = false) MultipartFile file,
-      final Authentication authentication) throws IOException {
-    MemberResponse memberResponse = memberService
-        .modifyMyInfo(request, file, authentication.getName());
-    return Response.success(memberResponse);
   }
 
   @PutMapping("/my/profileImg")
