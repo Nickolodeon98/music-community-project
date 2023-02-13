@@ -40,6 +40,7 @@ public class SearchController {
 
   @GetMapping()
   public String searchMainPage(HttpServletRequest httpRequest, Model model) {
+
     HttpSession session = httpRequest.getSession(false);
     if (session == null) {
       return "redirect:/member/login";
@@ -58,11 +59,16 @@ public class SearchController {
   }
 
   @GetMapping("/tracks")
-  public String searchTracksByKeyword(
+  public String searchTracksByKeyword(HttpServletRequest httpRequest,
       @ModelAttribute("keywordDto") final SearchRequest trackTitle,
       @PageableDefault(size=8, sort="trackTitle", direction= Direction.DESC) Pageable pageable,
       @RequestParam(value="page", required = false) Integer pageNum,
       Model model) {
+
+    HttpSession session = httpRequest.getSession(false);
+    if (session == null) {
+      return "redirect:/member/login";
+    }
 
     SearchPageGetResponse<TrackGetResponse> trackResults =
         searchService.findTracksWithKeyword(pageable, trackTitle.getKeyword(), "sjeon0730@gmail.com");
@@ -79,11 +85,16 @@ public class SearchController {
   }
 
   @GetMapping("/members")
-  public String searchMembersByKeyword(
+  public String searchMembersByKeyword(HttpServletRequest httpRequest,
       @ModelAttribute("keywordDto") final SearchRequest nickName,
       @PageableDefault(sort="createdAt", direction= Direction.DESC) Pageable pageable,
       @RequestParam(value="page", required = false) Integer pageNum,
       Model model) {
+
+    HttpSession session = httpRequest.getSession(false);
+    if (session == null) {
+      return "redirect:/member/login";
+    }
 
     SearchPageGetResponse<SearchMembersResponse> searchedMembers =
         searchService.findMembersWithKeyword(pageable, nickName.getKeyword(), "sjeon0730@gmail.com");
@@ -97,11 +108,16 @@ public class SearchController {
   }
 
   @GetMapping("/recommends")
-  public String searchRecommendsByKeyword(
+  public String searchRecommendsByKeyword(HttpServletRequest httpRequest,
       @ModelAttribute("keywordDto") final SearchRequest recommendTitle,
       @RequestParam(value="page", required = false) Integer pageNum,
       @PageableDefault(size=5, sort="createdAt", direction = Direction.DESC) Pageable pageable,
       Model model) {
+
+    HttpSession session = httpRequest.getSession(false);
+    if (session == null) {
+      return "redirect:/member/login";
+    }
 
     SearchPageGetResponse<SearchRecommendsResponse> pagedResponseRecommends =
         searchService.findRecommendsWithKeyword(pageable, recommendTitle.getKeyword(), "sjeon0730@gmail.com");
@@ -115,10 +131,16 @@ public class SearchController {
   }
 
   @GetMapping("/all")
-  public String searchAll(@ModelAttribute("keywordDto") final SearchRequest searchKeyword,
+  public String searchAll(HttpServletRequest httpRequest,
+      @ModelAttribute("keywordDto") final SearchRequest searchKeyword,
 //      @ModelAttribute("sortStrategy") final SortStrategy sort,
       @PageableDefault(size=2, direction=Direction.DESC) Pageable pageable,
       Model model) {
+
+    HttpSession session = httpRequest.getSession(false);
+    if (session == null) {
+      return "redirect:/member/login";
+    }
 
 //    pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sort.getProperty()));
 

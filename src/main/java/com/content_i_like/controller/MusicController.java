@@ -4,6 +4,8 @@ import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackInfoWithPrimaryKey;
 import com.content_i_like.service.MusicService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -25,9 +27,15 @@ public class MusicController {
   private final MusicService musicService;
 
   @GetMapping("/track")
-  public String showTrackInfo(@RequestParam(value="pk", required = false) Long trackPK,
+  public String showTrackInfo(HttpServletRequest httpRequest,
+      @RequestParam(value="pk", required = false) Long trackPK,
       @RequestParam(value="page", required = false) Integer pageNum,
       Model model) {
+
+    HttpSession session = httpRequest.getSession(false);
+    if (session == null) {
+      return "redirect:/member/login";
+    }
 
     TrackGetResponse trackAndRecommends = musicService.getASingleTrackInfo(trackPK, "sjeon0730@gmail.com");
 
