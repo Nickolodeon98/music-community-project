@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -109,10 +110,14 @@ public class RecommendController {
       Model model,
       @PathVariable("recommendNo") Long recommendNo) {
 
+
     Recommend post = recommendService.findPostById(recommendNo);
     String hashtags = recommendService.getHashtagsToString(recommendNo);
 
-    System.out.println(hashtags);
+    if (!Objects.equals(loginMember.getMemberNo(), post.getMember().getMemberNo())) {
+      return "error";
+    }
+
     model.addAttribute("request", new RecommendModifyRequest());
     model.addAttribute("post", post);
     model.addAttribute("hashtags", hashtags);
