@@ -40,12 +40,16 @@ public class LikesController {
   public Long changeLikesStatus(@PathVariable final Long recommendNo,
       HttpServletRequest servletRequest) {
     HttpSession session = servletRequest.getSession(false);
-    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
-    String memberEmail = validateService.validateMemberByMemberNo(loginResponse.getMemberNo()).getEmail();
+    String memberEmail = getLoginInfo(session);
     likesService.changeLikesStatus(memberEmail, recommendNo);
 
     System.out.println(likesService.countNumberLikes(recommendNo));
     return likesService.countNumberLikes(recommendNo);
+  }
+
+  private String getLoginInfo(HttpSession session) {
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+    return validateService.validateMemberByMemberNo(loginResponse.getMemberNo()).getEmail();
   }
 
   /**

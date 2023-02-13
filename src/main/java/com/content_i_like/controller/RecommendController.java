@@ -3,6 +3,8 @@ package com.content_i_like.controller;
 import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.comment.CommentReadResponse;
 import com.content_i_like.domain.dto.comment.SuperChatReadResponse;
+import com.content_i_like.domain.dto.member.LoginUserResponse;
+import com.content_i_like.domain.dto.member.MemberLoginResponse;
 import com.content_i_like.domain.dto.recommend.RecommendDeleteResponse;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
 import com.content_i_like.domain.dto.recommend.RecommendModifyRequest;
@@ -12,7 +14,11 @@ import com.content_i_like.domain.dto.recommend.RecommendPostResponse;
 import com.content_i_like.domain.dto.recommend.RecommendReadResponse;
 import com.content_i_like.domain.entity.Recommend;
 import com.content_i_like.service.CommentService;
+import com.content_i_like.service.MemberService;
 import com.content_i_like.service.RecommendService;
+import com.content_i_like.service.ValidateService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +37,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Controller
 @RequestMapping("/recommends")
@@ -40,15 +47,14 @@ public class RecommendController {
 
   private final RecommendService recommendService;
   private final CommentService commentService;
+  private final MemberService memberService;
+  private final ValidateService validateService;
 
 
   @GetMapping("/writeForm")
   public String recommendWriteForm(
+      @SessionAttribute(name = "loginUser", required = true) MemberLoginResponse loginMember,
       Model model) {
-//    HttpSession session = servletRequest.getSession(false);
-//    MemberLoginResponse loginUser = (MemberLoginResponse) session.getAttribute("loginUser");
-//    System.out.println(loginUser.getMemberNo());
-
     model.addAttribute("request", new RecommendPostRequest());
     return "pages/recommend/recommend-post";
   }
@@ -61,12 +67,24 @@ public class RecommendController {
    */
   @GetMapping("/{recommendNo}")
   public String ReadRecommendPost(@PathVariable final Long recommendNo,
+      HttpServletRequest servletRequest,
       Model model) {
     log.info("recommend_no = {}", recommendNo);
     Pageable pageable = PageRequest.of(0, 20, Sort.by("createdAt").ascending());
     RecommendReadResponse response = recommendService.readPost(recommendNo);
     Page<CommentReadResponse> comments = commentService.getReadAllComment(pageable, recommendNo);
     Page<SuperChatReadResponse> superChats = commentService.gerSuperChatUser(pageable, recommendNo);
+
+    HttpSession session = servletRequest.getSession(false);
+
+    if (session.getAttribute("loginUser") != null) {
+      MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+      LoginUserResponse loginUserResponse = LoginUserResponse.of(
+          validateService.validateMemberByMemberNo(
+              loginResponse.getMemberNo()));
+      model.addAttribute("login", loginUserResponse);
+    }
+
     model.addAttribute("post", response);
     model.addAttribute("comments", comments);
     model.addAttribute("superchats", superChats);
@@ -76,17 +94,19 @@ public class RecommendController {
 
   @PostMapping()
   public String uploadRecommendPost(/*final HttpSession session,*/
-      @ModelAttribute("request") @Valid final RecommendPostRequest request) throws IOException {
-//    String userEmail = (String) session.getAttribute("member");
-    String userEmail = "test@naver.com";
-
-    RecommendPostResponse response = recommendService.uploadPost(userEmail, request);
+      @ModelAttribute("request") @Valid final RecommendPostRequest request,
+      HttpServletRequest servletRequest) throws IOException {
+    HttpSession session = servletRequest.getSession(false);
+    String memberEmail = getLoginInfo(session);
+    RecommendPostResponse response = recommendService.uploadPost(memberEmail, request);
     return "redirect:/";
   }
 
 
   @GetMapping("/{recommendNo}/modifyForm")
-  public String recommendModifyForm(Model model,
+  public String recommendModifyForm(
+      @SessionAttribute(name = "loginUser", required = true) MemberLoginResponse loginMember,
+      Model model,
       @PathVariable("recommendNo") Long recommendNo) {
 
     Recommend post = recommendService.findPostById(recommendNo);
@@ -101,28 +121,33 @@ public class RecommendController {
 
 
   @PostMapping("/{recommendNo}/update")
-  public String modifyRecommendPost(/*final HttpSession session,*/
+  public String modifyRecommendPost(
       @ModelAttribute("request") @Valid final RecommendModifyRequest request,
-      @PathVariable final Long recommendNo) throws IOException {
-//    String userEmail = authentication.getName();
-//    log.info("user_email = {}, recommend_modify_request = {}", userEmail, request);
+      @PathVariable final Long recommendNo,
+      HttpServletRequest servletRequest) throws IOException {
+    HttpSession session = servletRequest.getSession(false);
+    String memberEmail = getLoginInfo(session);
 
-    String userEmail = "test@naver.com";
-    System.out.println(request.getHashtag());
-
-    RecommendModifyResponse response = recommendService.modifyPost(userEmail, recommendNo, request);
+    RecommendModifyResponse response = recommendService.modifyPost(memberEmail, recommendNo,
+        request);
     return "redirect:/recommends/" + recommendNo;
   }
 
   @PostMapping("/{recommendNo}/delete")
   public String deleteRecommendPost(
-      @PathVariable final Long recommendNo) {
-    //String userEmail = authentication.getName();
-    String userEmail = "test@naver.com";
-    log.info("user email = {}, recommend_no = {}", userEmail, recommendNo);
+      @PathVariable final Long recommendNo,
+      HttpServletRequest servletRequest) {
+    HttpSession session = servletRequest.getSession(false);
+    String memberEmail = getLoginInfo(session);
+    log.info("memberEmail = {}, recommend_no = {}", memberEmail, recommendNo);
 
-    recommendService.deletePost(userEmail, recommendNo);
+    recommendService.deletePost(memberEmail, recommendNo);
     return "redirect:/";
+  }
+
+  private String getLoginInfo(HttpSession session) {
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+    return validateService.validateMemberByMemberNo(loginResponse.getMemberNo()).getEmail();
   }
 
   //////////// REST Controller //////////
