@@ -111,13 +111,33 @@
   border-radius: 24px;
   border: white solid 1px;
   align-items: center;
-  justify-content: center
+  justify-content: center;
+}
+
+.selected-category-btn {
+  width: 214px;
+  height: 55px;
+  margin-right: 47px;
+  display: flex;
+  flex-direction: row;
+  border-radius: 24px;
+  border: white solid 1px;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
 }
 
 .not-selected-category-btn a {
   font-family: NotoSansKR;
   font-size: 18px;
   color: white;
+  text-align: center;
+}
+
+.selected-category-btn a {
+  font-family: NotoSansKR;
+  font-size: 18px;
+  color: black;
   text-align: center;
 }
 
