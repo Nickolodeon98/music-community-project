@@ -19,6 +19,7 @@ import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.enums.GenderEnum;
 import com.content_i_like.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -32,6 +33,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -78,6 +81,13 @@ public class MemberController {
     HttpSession session = request.getSession();   //세션이 있으면 있는 세션 반환, 없으면 신규 세션
     session.setAttribute("loginUser", response);
     log.info("로그인 완료");
+    return "redirect:/";
+  }
+
+  @GetMapping("/logout")
+  public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
+    new SecurityContextLogoutHandler()
+        .logout(request, response, SecurityContextHolder.getContext().getAuthentication());
     return "redirect:/";
   }
 
@@ -175,6 +185,7 @@ public class MemberController {
         loginResponse.getNickName(), pageable);
 
     model.addAttribute("recommendsResponse", recommends);
+    model.addAttribute("url", "");
 
     return "pages/member/myFeed-recommends";
   }
@@ -187,6 +198,7 @@ public class MemberController {
         loginResponse.getNickName(), pageable);
 
     model.addAttribute("comments", comments);
+    model.addAttribute("url", "");
 
     return "pages/member/myFeed-comments";
   }
@@ -199,6 +211,8 @@ public class MemberController {
         loginResponse.getNickName(), pageable);
 
     model.addAttribute("followers", myFollowersByNickName);
+    model.addAttribute("url", "");
+
     return "pages/member/myFeed-followers";
   }
 
@@ -210,8 +224,11 @@ public class MemberController {
         loginResponse.getNickName(), pageable);
 
     model.addAttribute("followers", myFollowersByNickName);
+    model.addAttribute("url", "");
+
     return "pages/member/myFeed-followings";
   }
+
 
   @GetMapping("/session-info")
   public String sessionInfo(HttpServletRequest request) {
@@ -220,7 +237,7 @@ public class MemberController {
       return "세션이 없습니다.";
     }
     // 세션 id와 저장된 객체 정보 출력
-    System.out.println(session.getId() + ", " + session.getAttribute("loginMember"));
+    System.out.println(session.getId() + ", " + session.getAttribute("loginUser"));
 
     //세션 데이터 출력
     session.getAttributeNames().asIterator()
