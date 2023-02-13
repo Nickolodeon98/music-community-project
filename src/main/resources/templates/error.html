@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-3.6.3.js"
+          integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+          crossorigin="anonymous"></script>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/error.css}">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
+</head>
+<body>
+<div class="container">
+  <div th:replace="~{common/fragments/header::header}"></div>
+
+  <div class="contents">
+    <div class="board">
+      잘못된 요청이 들어왔습니다.
+      <a th:href="@{/}">
+        <span class="return-button">
+          메인 화면으로 돌아가기
+        </span>
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+  $(".button-exit").on("click", function () {
+    location.href = "../";
+  });
+  
+
+  $("#btn-submit").on("click", function () {
+    console.log("click");
+    let recommendTitle = $('#board-input-title [name = recommendTitle]').val();
+    let recommendContent = $('#board-input-content [name = recommendContent]').val();
+    let trackNo = $('#board-input-search [name=trackNo]').val();
+
+    if (recommendTitle === "" || recommendTitle == null) {
+      alert("제목을 입력해주세요.");
+      return false;
+    }
+
+    if (recommendContent === "" || recommendContent == null) {
+      alert("내용을 입력해주세요.");
+      return false;
+    }
+
+    if (trackNo === "" || trackNo == null) {
+      alert("음악을 선택해주세요.");
+      //return false;
+    }
+
+    return true;
+  });
+
+  const fileDOM = document.querySelector('#img-file');
+  const preview = document.querySelector('#preview-img');
+
+  fileDOM.addEventListener('change', () => {
+    const file = fileDOM.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    let maxSize = 3 * 1024 * 1024;
+    let fileSize = file.size;
+
+    if (!file.type.match("image.*")) {
+      alert("이미지 파일만 선택 가능합니다.");
+      return false;
+    }
+
+    if (fileSize > maxSize) {
+      alert("첨부파일 사이즈는 3MB 이내로 등록 가능합니다.");
+      $(fileDOM).val('');
+      return false;
+    }
+
+    const reader = new FileReader();
+    reader.onload = ({target}) => {
+      preview.src = target.result;
+    };
+    preview.src = URL.createObjectURL(file);
+  });
+
+
+</script>
+
+
+</html>

@@ -26,11 +26,11 @@
         <span class="post-read-title" th:text="${post.getRecommendTitle()}"></span>
 
         <span class="post-read-menu">
-          <a th:href="@{/recommends/{recommendNo}/modifyForm (recommendNo=${post.getRecommendNo()})}">수정</a>
+          <a th:if="${session.loginUser != null and session.loginUser.getNickName() == post.getMemberNickname()}" th:href="@{/recommends/{recommendNo}/modifyForm (recommendNo=${post.getRecommendNo()})}">수정</a>
         </span>
 
         <span class="post-read-menu">
-          <a th:href="'javascript:deletePost(\''+${post.getRecommendNo()}+'\')'">삭제</a>
+          <a th:if="${session.loginUser != null and session.loginUser.getNickName() == post.getMemberNickname()}" th:href="'javascript:deletePost(\''+${post.getRecommendNo()}+'\')'">삭제</a>
         </span>
       </div>
       <div class="post-read-hashtag">
@@ -73,12 +73,11 @@
 
       <div class="line"></div>
 
-      <form method="" action="">
+      <form method="" action="" th:if="${session.loginUser != null}">
         <div class="comment-input">
-
                     <span class="comment-user-info">
-                        <div class="comment-user-img"><img src="img/younha.jpg"></div>
-                        <div class="comment-user-name">댓글 작성자 이름</div>
+                        <div class="comment-user-img"><img th:src="${login.getProfileImgUrl()}"></div>
+                        <div class="comment-user-name" th:text="${login.getMemberNickname()}"></div>
                     </span>
           <span class="comment-input-area"><textarea placeholder="댓글을 입력해 주세요."></textarea></span>
           <span class="button-comment-input"><input type="button" value="등록"></span>
