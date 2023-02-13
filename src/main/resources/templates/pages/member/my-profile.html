@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/html"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-3.6.3.js"
+          integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+          crossorigin="anonymous"></script>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
+  <link rel="stylesheet" th:href="@{/css/member-profile.css}">
+</head>
+<body>
+<div class="container">
+  <div th:replace="~{common/fragments/header::header}"></div>
+
+  <div class="profile">
+    <div class="img-box">
+      <img th:src="@{/img/event-horizon.jpg}">
+    </div>
+
+    <div class="profile-box">
+      <div class="profile-title">
+        <span id="profile-name" th:text="${member.nickName}">얄리얄리얄라숑</span>
+        <span><input type="button" value="수정하기" class="modify-profile" onClick="location.href=''"/></span>
+      </div>
+      <div class="show-point" th:text="'보유 Pt - '+${member.point}"></div>
+      <div class="introduction" th:text="${member.introduction}"></div>
+
+      <div class="profile-info">기본 정보</div>
+
+      <div class="info">
+        <span class="info-title">이메일</span>
+        <span class="info-box" th:text="${member.email}"></span>
+      </div>
+      <div class="info">
+        <span class="info-title">이름</span>
+        <span class="info-box" th:text="${member.name}"></span>
+      </div>
+      <div class="info">
+        <span class="info-title">태어난 해</span>
+        <span class="info-box" th:text="${member.birth}"></span>
+      </div>
+      <div class="info">
+        <span class="info-title">성별</span>
+        <span class="info-box" th:text="${member.gender}"></span>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<div class="footer">
+
+</div>
+</div>
+
+</body>
+
+</html>
