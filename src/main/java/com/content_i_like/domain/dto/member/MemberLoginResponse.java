@@ -11,4 +11,5 @@ public class MemberLoginResponse {
   private String jwt;
   private Long memberNo;
   private String nickName;
+  private String profileImgUrl;
 }
