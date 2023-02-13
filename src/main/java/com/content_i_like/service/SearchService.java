@@ -48,7 +48,8 @@ public class SearchService {
 
     String message = searchTool.buildMessage();
 
-    return pagedItems.isEmpty() ? SearchPageGetResponse.of("검색 결과가 없습니다.", pagedItems)
+    return pagedItems.isEmpty() ?
+        SearchPageGetResponse.of(message.substring(0,message.length()-1) + " 검색 결과가 없습니다.", pagedItems)
         : SearchPageGetResponse.of(
             String.format("'%s' 으로 총 %s개의 %s 찾았습니다.",
                 searchKey,
