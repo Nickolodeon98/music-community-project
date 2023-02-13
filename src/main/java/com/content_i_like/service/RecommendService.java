@@ -361,9 +361,17 @@ public class RecommendService {
    * @return 댓글 포인트와 게시물 포인트의 합 반환
    */
   private long getAccumulatedPoints(List<Comment> comments, Recommend post) {
-    return comments.stream()
-        .mapToLong(Comment::getCommentPoint)
-        .sum() + post.getRecommendPoint();
+    long accumulatedPoints = 0;
+    if (comments != null) {
+      accumulatedPoints = comments.stream()
+          .filter(comment -> comment != null && comment.getCommentPoint() != null)
+          .mapToLong(Comment::getCommentPoint)
+          .sum();
+    }
+    if (post != null) {
+      accumulatedPoints += post.getRecommendPoint();
+    }
+    return accumulatedPoints;
   }
 
   /**

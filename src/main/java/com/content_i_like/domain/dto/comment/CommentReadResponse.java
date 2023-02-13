@@ -25,17 +25,24 @@ public class CommentReadResponse {
   private LocalDateTime createdAt;
 
   public static CommentReadResponse of(Comment comment) {
+    Long commentPoint;
+    if (comment.getCommentPoint() == null || comment.getCommentPoint() == 0) {
+      commentPoint = null;
+    }else{
+      commentPoint = comment.getCommentPoint();
+    }
     return CommentReadResponse.builder()
         .commentNo(comment.getCommentNo())
         .memberNickname(comment.getMember().getNickName())
         .profileImgUrl(comment.getMember().getProfileImgUrl())
         .commentContent(comment.getCommentContent())
-        .commentPoint(comment.getCommentPoint())
+        .commentPoint(commentPoint)
         .createdAt(comment.getCreatedAt())
         .build();
   }
 
-  public static CommentReadResponse commentWithMaxPoints(CommentReadResponse a, CommentReadResponse b) {
+  public static CommentReadResponse commentWithMaxPoints(CommentReadResponse a,
+      CommentReadResponse b) {
     return a.getCommentPoint() >= b.getCommentPoint() ? a : b;
   }
 
