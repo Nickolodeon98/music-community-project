@@ -57,7 +57,7 @@ public class InquiryController {
   public String registerInquiry(Model model) {
 
     model.addAttribute("inquiryRequire", new InquiryRequire());
-    return "/pages/faq/faq-register-inquiry";
+    return "pages/faq/faq-register-inquiry";
   }
 
   @GetMapping()
