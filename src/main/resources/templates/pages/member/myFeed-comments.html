@@ -38,12 +38,29 @@
         <span class="gray">팔로잉</span>
         <a th:href="@{/member/followings__${url}__}"><span class="number" th:text="${comments.getFollowingCnt()}">189</span></a>
       </div>
+      <script th:inline="javascript">
+        /*<![CDATA[*/
+        function follow() {
+          const page = /*[[${comments.getNickName()}]]*/;
+          var form = document.createElement('form');
+          form.setAttribute('method', 'post');
+          form.setAttribute('action', '/follow/follow/'+page);
+          document.body.appendChild(form);
+          form.submit();
+        }
+        /*]]>*/
+      </script>
       <!-- 수정하기 -->
       <div class="contents-myInfo-modify">
         <nav id="sort-post">
           <th:block th:if="${url}==''">
             <span class="not-selected-post-nav">
               <img class="setting-img" th:src="@{/img/setting_top.png}" src="../../../static/img/setting_top.png"><a href="">수정하기</a>
+            </span>
+          </th:block>
+          <th:block th:if="${url}!=''">
+            <span class="selected-post-nav">
+              <a onclick="follow()">팔로우</a>
             </span>
           </th:block>
         </nav>
