@@ -1,0 +1,241 @@
+.profile{
+    width: 1521px;
+    height: 800px;
+    margin: 40px;
+    border-radius: 50px;
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+}
+
+
+.img-box{
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-self: right;
+}
+
+.profile-box{
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+}
+
+.img-box img{
+    width: 284px;
+    height: 285px;
+    margin: 100px 0 0 0;
+    border-radius: 50%;
+    display:flex;
+    align-self: end;
+  }
+
+.profile-img{
+  width: 284px;
+  height: 285px;
+  /* margin: 500px 0 0 0; */
+  margin: 0;
+  border-radius: 50%;
+  display: flex;
+  /* flex-direction: row-reverse; */
+  /* justify-content: flex-end; */
+}
+
+#profile-name{
+  width: 480px;
+  height: 42px;
+  margin: 100px 70px 10px 84px;
+  font-family: NotoSansKR;
+  font-size: 42px;
+  text-align: left;
+  color: #000;
+  border: black;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+}
+
+.profile-title{
+    display: flex;
+    flex-direction: row;
+}
+
+.modify-profile{
+    width: 154px;
+    height: 55px;
+    font-family: NotoSansKR;
+    font-size: 18px;
+    margin: 102px 0 6px 200px;
+    padding: 14px 26px 16px 26px;
+    border-radius: 24px;
+    background-color: #191919;
+    color: white;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.show-point{
+    width: 200px;
+    height: 22px;
+    margin: 6px 674px 20px 85px;
+    opacity: 0.65;
+    font-family: NotoSansKR;
+    font-size: 22px;
+    text-align: left;
+    color: rgba(25, 25, 25, 0.65);
+}
+
+.introduction{
+    width: 900px;
+    height: 79px;
+    margin: 20px 19px 40px 83px;
+    opacity: 0.65;
+    font-family: NotoSansKR;
+    font-size: 20px;
+    line-height: 1.5;
+    text-align: left;
+    color: rgba(25, 25, 25, 0.65);
+}
+
+.introduction-box{
+    width: 900px;
+    height: 79px;
+    margin: 20px 19px 40px 83px;
+    padding: 10px 0;
+    opacity: 0.65;
+    line-height: 1.5;
+    border: solid 1px #c5c5c5;
+}
+
+.profile-info{
+    width: 100px;
+    height: 18px;
+    margin: 30px 22px 0 83px;
+    padding: 0 800px 15px 0;
+    font-family: NotoSansKR;
+    font-size: 18px;
+    text-align: center;
+    color: #c5c5c5;
+    border-bottom: solid 1px #c5c5c5;
+}
+
+.info{
+    margin: 3px 0 2px 83px;
+    display: flex;
+    justify-content:start;
+    align-items: center;
+}
+
+.info-title{
+    width: 180px;
+    height: 18px;
+    margin: 20px 7px 41px 2px;
+    font-family: NotoSansKR;
+    font-size: 18px;
+    text-align: left;
+    color: #191919;
+}
+
+.info-box{
+    border-radius: 20px;
+    border: 2px #c5c5c5 solid;
+    width: 400px;
+    height: 20px;
+    padding: 15px;
+    font-family: NotoSansKR;
+    font-size: 16px;
+    text-align: left;
+    display: flex;
+    background-color: #c5c5c5;
+    color: rgba(25, 25, 25, 0.45);
+}
+
+#input-year{
+    border-radius: 20px;
+    border: 2px #c5c5c5 solid;
+    width: 400px;
+    height: 20px;
+    padding: 15px;
+    font-family: NotoSansKR;
+    font-size: 16px;
+    text-align: left;
+    display: flex;
+    background-color: white;
+    color: rgba(25, 25, 25, 0.45);
+}
+
+textarea{
+    width: 97%;
+    height: 50px;
+    margin: 0 0 0 0;
+    padding: 20px 19px 30px 19px;
+    border-radius: 16px;
+    border: solid 1px #c5c5c5;
+    resize: none;
+}
+
+#cnt{
+    width: 100px;
+    height: 29px;
+    margin: 0;
+    padding: 0 0 0 10px;
+    font-family: NotoSansKR;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.intro-message{
+    width: 50px;
+    height: 18px;
+    font-size: 18px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+input[type=radio]{
+  width: 0;
+  height: 0;
+  padding: 0 5px;
+  position: absolute;
+  left: -9999px;
+}
+
+input[type=radio] + label{
+  margin: 0;
+  padding: .75em 1.5em;
+  box-sizing: border-box;
+  position: relative;
+  display: inline-block;
+  border-radius: 20px;
+  border: 2px #c5c5c5 solid;
+  background-color: #FFF;
+  line-height: 140%;
+  text-align: center;
+  transition: border-color .15s ease-out,  color .25s ease-out,  background-color .15s ease-out, box-shadow .15s ease-out;
+  cursor: pointer;
+}
+
+input[type=radio]:checked + label{
+  background-color: #c5c5c5;
+  color: #FFF;
+  z-index: 1;
+}
+
+/* .select input {
+    border-radius: 20px;
+    border: 2px #c5c5c5 solid;
+    width: 400px;
+    height: 30px;
+    padding: 10px;
+    font-family: NotoSansKR;
+    font-size: 16px;
+    text-align: left;
+    display: flex;
+} */

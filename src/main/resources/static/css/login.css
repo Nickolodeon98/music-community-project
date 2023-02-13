@@ -173,3 +173,15 @@ div.sns-box-message>a{
   border-radius: 16px;
   border: solid 1px #c5c5c5;
 }
+
+.pw-form{
+  width: 396px;
+  height: 250px;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.change-pw{
+  height:50px;
+}
