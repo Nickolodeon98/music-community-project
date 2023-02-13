@@ -58,4 +58,16 @@ public class PointService {
     // 웰컴 포인트 이벤트 발생시킵니다.
     applicationEventPublisher.publishEvent(PointWelcomeNotificationEvent.of(point));
   }
+
+  @Transactional
+  public void spendPoint(Member member, Long commentPoint) {
+    Point point = Point.builder()
+        .pointType(PointTypeEnum.COMMENTS)
+        .member(member)
+        .pointIncome(0L)
+        .pointExpense(commentPoint)
+        .build();
+
+    pointRepository.save(point);
+  }
 }

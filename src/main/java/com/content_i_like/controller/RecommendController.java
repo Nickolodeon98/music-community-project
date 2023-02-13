@@ -15,6 +15,7 @@ import com.content_i_like.domain.dto.recommend.RecommendReadResponse;
 import com.content_i_like.domain.entity.Recommend;
 import com.content_i_like.service.CommentService;
 import com.content_i_like.service.MemberService;
+import com.content_i_like.service.PointService;
 import com.content_i_like.service.RecommendService;
 import com.content_i_like.service.ValidateService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -50,6 +52,7 @@ public class RecommendController {
   private final CommentService commentService;
   private final MemberService memberService;
   private final ValidateService validateService;
+  private final PointService pointService;
 
 
   @GetMapping("/writeForm")
@@ -71,19 +74,27 @@ public class RecommendController {
       HttpServletRequest servletRequest,
       Model model) {
     log.info("recommend_no = {}", recommendNo);
-    Pageable pageable = PageRequest.of(0, 20, Sort.by("createdAt").ascending());
+    Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
     RecommendReadResponse response = recommendService.readPost(recommendNo);
     Page<CommentReadResponse> comments = commentService.getReadAllComment(pageable, recommendNo);
     Page<SuperChatReadResponse> superChats = commentService.gerSuperChatUser(pageable, recommendNo);
-
+    if (superChats != null && superChats.getContent().size() > 5) {
+      superChats = new PageImpl<>(superChats.getContent().subList(0, 5), superChats.getPageable(), 5);
+    }
     HttpSession session = servletRequest.getSession(false);
 
-    if (session.getAttribute("loginUser") != null) {
+    if (session != null && session.getAttribute("loginUser") != null) {
       MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
       LoginUserResponse loginUserResponse = LoginUserResponse.of(
           validateService.validateMemberByMemberNo(
               loginResponse.getMemberNo()));
+      Long loginUserPoint = pointService.calculatePoint(validateService.validateMemberByMemberNo(
+          loginResponse.getMemberNo()));
+      boolean checkComment = commentService.checkWriteComment(loginResponse.getMemberNo(), recommendNo);
+      log.info("댓글 달았니? = {}", checkComment);
       model.addAttribute("login", loginUserResponse);
+      model.addAttribute("loginUserPoint", loginUserPoint);
+      model.addAttribute("checkComment", checkComment);
     }
 
     model.addAttribute("post", response);
