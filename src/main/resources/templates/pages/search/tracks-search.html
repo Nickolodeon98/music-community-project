@@ -83,10 +83,10 @@
           </li>
         </ul>
       </div>
-      <button th:unless="${trackResults.pages.isFirst()}" th:name="page"
+      <button class="page-button-prev" th:unless="${trackResults.pages.isFirst()}" th:name="page"
               th:value="${pageable.previousOrFirst().pageNumber}">이전
       </button>
-      <button th:unless="${trackResults.pages.isLast()}" th:name="page"
+      <button class="page-button-next" th:unless="${trackResults.pages.isLast()}" th:name="page"
               th:value="${pageable.next().pageNumber}">다음
       </button>
     </form>

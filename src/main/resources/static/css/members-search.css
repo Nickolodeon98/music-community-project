@@ -43,12 +43,3 @@
     margin: auto;
     text-align: center;
 }
-
-.paging-button {
-    height: 30px;
-    width: 130px;
-    margin: auto;
-    display: flex;
-    justify-content: center;
-    background-color: lightblue;
-}

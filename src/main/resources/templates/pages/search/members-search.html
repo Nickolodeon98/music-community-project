@@ -111,8 +111,8 @@
 
           </ul>
         </th:block>
-      <button class="paging-button" type="submit" th:unless="${memberNickName.pages.isFirst()}" th:name="page" th:value="${pageable.previousOrFirst().pageNumber}">이전</button>
-      <button class="paging-button" type="submit" th:unless="${memberNickName.pages.isLast()}" th:name="page" th:value="${pageable.next().pageNumber}">다음</button>
+      <button class="page-button-prev" type="submit" th:unless="${memberNickName.pages.isFirst()}" th:name="page" th:value="${pageable.previousOrFirst().pageNumber}">이전</button>
+      <button class="page-button-next" type="submit" th:unless="${memberNickName.pages.isLast()}" th:name="page" th:value="${pageable.next().pageNumber}">다음</button>
     </form>
   </div>
 </div>

@@ -50,11 +50,3 @@ span.recommend-date {
     border-bottom: white solid 1px;
 }
 
-.more-contents {
-    display: flex;
-    margin: auto 0 auto auto;
-    justify-content: center;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    width:60px;
-    text-align: center;
-}

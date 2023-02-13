@@ -45,8 +45,8 @@
           </li>
         </ul>
       </th:block>
-      <button th:unless="${recommendsList.pages.isFirst()}" th:name="page" th:value="${pageable.previousOrFirst().pageNumber}">이전</button>
-      <button th:unless="${recommendsList.pages.isLast()}" th:name="page" th:value="${pageable.next().pageNumber}">다음</button>
+      <button class="page-button-prev" th:unless="${recommendsList.pages.isFirst()}" th:name="page" th:value="${pageable.previousOrFirst().pageNumber}">이전</button>
+      <button class="page-button-next" th:unless="${recommendsList.pages.isLast()}" th:name="page" th:value="${pageable.next().pageNumber}">다음</button>
     </form>
   </div>
 </div>
