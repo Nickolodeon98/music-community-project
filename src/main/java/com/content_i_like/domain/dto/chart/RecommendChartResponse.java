@@ -13,6 +13,7 @@ public class RecommendChartResponse {
 
   private Long recommendNo;
   private String recommendTitle;
+  private Long memberNo;
   private String memberNickName;
   private Long recommendScore;
   private Long recommendViews;

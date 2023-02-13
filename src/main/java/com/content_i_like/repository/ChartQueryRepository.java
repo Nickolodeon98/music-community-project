@@ -58,6 +58,7 @@ public class ChartQueryRepository {
         .select(
             recommend.recommendNo,
             recommend.recommendTitle,
+            recommend.member.memberNo,
             recommend.member.nickName,
             (recommend.recommendPoint.coalesce(0L).add(recommend.likes.size())
                 .add(recommend.comments.size()).add(comment.commentPoint.coalesce(0L).sum())).as(
@@ -77,12 +78,13 @@ public class ChartQueryRepository {
     for (Tuple tuple : findChart) {
       Long recommendNo = Long.valueOf(String.valueOf(tuple.get(recommend.recommendNo)));
       String recommendTitle = String.valueOf(tuple.get(recommend.recommendTitle));
+      Long memberNo = Long.valueOf(String.valueOf(tuple.get(recommend.member.memberNo)));
       String memberNickName = String.valueOf(tuple.get(recommend.member.nickName));
       Long recommendScore = Long.valueOf(String.valueOf(tuple.get(totalScore)));
       Long recommendViews = Long.valueOf(String.valueOf(tuple.get(recommend.recommendViews)));
 
       responses.add(
-          new RecommendChartResponse(recommendNo, recommendTitle, memberNickName, recommendScore,
+          new RecommendChartResponse(recommendNo, recommendTitle, memberNo, memberNickName, recommendScore,
               recommendViews));
     }
 
