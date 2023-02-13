@@ -1,17 +1,12 @@
 package com.content_i_like.controller.restcontroller;
 
 import com.content_i_like.domain.Response;
-import com.content_i_like.domain.dto.chart.ChartResponse;
-import com.content_i_like.domain.dto.comment.CommentReadResponse;
-import com.content_i_like.repository.ChartQueryRepository;
+import com.content_i_like.domain.dto.chart.RecommendChartResponse;
 import com.content_i_like.service.ChartService;
-import com.querydsl.core.Tuple;
 import java.util.List;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,12 +19,15 @@ public class ChartRestController {
   private final ChartService chartService;
 
   @GetMapping("/recommend-monthly")
-  public ChartResponse getMonthlyRecommendChart() throws Exception {
-    return chartService.getMonthlyRecommendChart();
+  public Response<List<RecommendChartResponse>> getMonthlyRecommendChart() throws Exception {
+    List<RecommendChartResponse> findChart = chartService.getMonthlyRecommendChart();
+
+    log.info("chart = {}", findChart);
+    return Response.success(findChart);
   }
 
   @GetMapping("/recommend-weekly")
-  public ChartResponse getWeeklyRecommendChart() throws Exception {
-    return chartService.getWeeklyRecommendChart();
+  public Response<List<RecommendChartResponse>> getWeeklyRecommendChart() throws Exception {
+    return Response.success(chartService.getWeeklyRecommendChart());
   }
 }
