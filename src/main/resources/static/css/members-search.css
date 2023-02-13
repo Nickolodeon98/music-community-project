@@ -1,0 +1,45 @@
+.members-list {
+    display:flex;
+    flex-direction: row;
+    margin-bottom: 60px;
+    position: relative;
+    left:-168px;
+}
+
+.members-list-element {
+    display: flex;
+    flex-direction: column;
+}
+
+.members-profile-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: auto 0 auto 125px;
+
+}
+
+.members-image {
+    margin: auto;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)) no-repeat center;
+    width: 180px;
+    height: 180px;
+    border-radius: 100%;
+    display: block;
+
+}
+
+.members-name {
+    padding-top:0.5em;
+    font-size: 27px;
+    margin: auto;
+}
+
+.members-date {
+    padding-top:0.4em;
+    font-size: 15px;
+    /*opacity:0.7%;*/
+    color: rgba(255, 255, 255, 0.7);
+    margin: auto;
+    text-align: center;
+}

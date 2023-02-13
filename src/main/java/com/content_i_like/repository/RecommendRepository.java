@@ -2,10 +2,13 @@ package com.content_i_like.repository;
 
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Recommend;
+import com.content_i_like.domain.entity.Track;
 import com.content_i_like.repository.custom.CustomRecommendRepository;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -78,4 +81,6 @@ public interface RecommendRepository extends JpaRepository<Recommend, Long>,
           + "LEFT JOIN Artist ar ON al.artist = ar "
           + "LEFT JOIN Likes l ON rec.recommendNo = l.recommend.recommendNo")
   Page<Object[]> findAllWithAccumulatedPoints(Pageable pageable);
+
+  Optional<List<Recommend>> findAllByTrack(Track track);
 }
