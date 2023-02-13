@@ -40,20 +40,20 @@
 
     </div>
     <!-- 라디오 버튼에 따라 다른 정렬 조건이 적용된다. -->
-    <form class="search-filter" id="search-filter" th:object="${sortStrategy}"
-          th:action="@{/search/test/all}"
-          th:method="get">
+<!--    <form class="search-filter" id="search-filter" th:object="${sortStrategy}"-->
+<!--          th:action="@{/search/all}"-->
+<!--          th:method="get">-->
 
-      <input type="hidden" th:field="*{property}" th:value="${allProperties.}">
+<!--      <input id="sort-property" type="hidden" th:field="*{property}">-->
 
-      <!--      <ul>-->
-<!--        <li th:each="pt : ${allProperties}">-->
-<!--          <label th:for="${#ids.prev('property')}" th:text="#{${'seedstarter.type.' + pt}}"></label>-->
-<!--        </li>-->
-<!--      </ul>-->
+<!--      &lt;!&ndash;      <ul>&ndash;&gt;-->
+<!--&lt;!&ndash;        <li th:each="pt : ${allProperties}">&ndash;&gt;-->
+<!--&lt;!&ndash;          <label th:for="${#ids.prev('property')}" th:text="#{${'seedstarter.type.' + pt}}"></label>&ndash;&gt;-->
+<!--&lt;!&ndash;        </li>&ndash;&gt;-->
+<!--&lt;!&ndash;      </ul>&ndash;&gt;-->
 
-                  <button id="sort-button">버튼</button>
-    </form>
+<!--      <button id="sort-button" onclick="OnClick();">버튼</button>-->
+<!--    </form>-->
   </div>
 </div>
 <script th:inline="javascript">
@@ -77,6 +77,10 @@
       const memberAction = /*[[@{/search/members}]]*/ '/search/members';
       document.querySelector("#search-form").setAttribute("action", memberAction);
     }
+  }
+
+  function OnClick() {
+    document.getElementById("sort-property").value = "createdAt";
   }
 </script>
 </body>
