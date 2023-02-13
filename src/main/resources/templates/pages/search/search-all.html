@@ -34,7 +34,7 @@
                  src="https://content-i-like.s3.ap-northeast-2.amazonaws.com/power.jpg"/>
             <div class="title-and-contents">
               <div class="recommend-text">
-                <a th:href="@{/recommends/${element.recommendNo}}" class="recommend-title" th:style="${'font-weight:bold'}" th:text="${element.recommendTitle}"></a>
+                <a th:href="@{/recommends/__${element.recommendNo}__}" class="recommend-title" th:style="${'font-weight:bold'}" th:text="${element.recommendTitle}"></a>
                 <span class="recommend-date" th:text="${#temporals.format(element.createdAt, 'yyyy년 MM월 dd일 HH시 mm분')}"></span>
               </div>
 
