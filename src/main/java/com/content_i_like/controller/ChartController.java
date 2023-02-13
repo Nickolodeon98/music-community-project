@@ -1,5 +1,6 @@
 package com.content_i_like.controller;
 
+import com.content_i_like.domain.dto.chart.ChartResponse;
 import com.content_i_like.service.ChartService;
 import com.querydsl.core.Tuple;
 import java.util.List;
@@ -18,12 +19,12 @@ public class ChartController {
   private final ChartService chartService;
 
   @GetMapping("/recommend-monthly")
-  public List<Tuple> getMonthlyRecommendChart() throws Exception {
+  public ChartResponse getMonthlyRecommendChart() throws Exception {
     return chartService.getMonthlyRecommendChart();
   }
 
   @GetMapping("/recommend-weekly")
-  public List<Tuple> getWeeklyRecommendChart() throws Exception {
+  public ChartResponse getWeeklyRecommendChart() throws Exception {
     return chartService.getWeeklyRecommendChart();
   }
 }

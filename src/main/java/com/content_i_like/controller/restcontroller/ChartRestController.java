@@ -1,6 +1,7 @@
 package com.content_i_like.controller.restcontroller;
 
 import com.content_i_like.domain.Response;
+import com.content_i_like.domain.dto.chart.ChartResponse;
 import com.content_i_like.domain.dto.comment.CommentReadResponse;
 import com.content_i_like.repository.ChartQueryRepository;
 import com.content_i_like.service.ChartService;
@@ -23,12 +24,12 @@ public class ChartRestController {
   private final ChartService chartService;
 
   @GetMapping("/recommend-monthly")
-  public List<Tuple> getMonthlyRecommendChart() throws Exception {
+  public ChartResponse getMonthlyRecommendChart() throws Exception {
     return chartService.getMonthlyRecommendChart();
   }
 
   @GetMapping("/recommend-weekly")
-  public List<Tuple> getWeeklyRecommendChart() throws Exception {
+  public ChartResponse getWeeklyRecommendChart() throws Exception {
     return chartService.getWeeklyRecommendChart();
   }
 }
