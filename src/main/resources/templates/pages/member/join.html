@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/html"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-3.6.3.js"
+          integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+          crossorigin="anonymous"></script>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/join.css}">
+</head>
+<body>
+<div class="container">
+  <div th:replace="~{common/fragments/header::header}"></div>
+
+  <div class="join">
+    <form th:action="@{/member/join}" method="post" th:object="${request}" th:onsubmit="return checkJoinForm()">
+      <div class="join-top">
+        <span class="join-title">환영합니다</span>
+      </div>
+
+      <div class="box">
+        <div class="join-box">
+          <div class="join-message">간단한 정보 입력으로 쉽게 가입하실 수 있어요</div>
+          <div>
+            <div class="join-body">
+              <span class="join-body-title">이메일*</span>
+              <span> <input type="email" id="email" name="email" th:field="*{email}" placeholder="이메일" /></span>
+            </div>
+
+            <div class="join-body">
+              <span class="join-body-title">비밀번호*</span>
+              <span><input type="password" id="password" name="password" th:field="*{password}" placeholder="비밀번호" /></span>
+            </div>
+
+            <div class="join-body">
+              <span class="join-body-title">비밀번호 확인*</span>
+              <span> <input type="password" id="doubleCheckPw" placeholder="비밀번호를 한 번 더 입력해주세요"></textarea></span>
+            </div>
+
+            <div class="join-body">
+              <span class="join-body-title">닉네임*</span>
+              <span><input name="nickName" id="nickName" th:field="*{nickName}" placeholder="닉네임" /></span>
+              <button onclick="" id="button-check-nickname"> 중복확인 </button>
+            </div>
+
+            <div class="join-body">
+              <span class="join-body-title">이름*</span>
+              <span><input name="name" id="name" th:field="*{name}" placeholder="이름" /></span>
+            </div>
+
+            <div class="join-body">
+              <span class="join-body-title">태어난 해 / 성별</span>
+              <span class="input-year"><input type="number" name="birth" th:field="*{birth}" placeholder="년(YYYY)" class="join-input-year" /></span>
+              <div class="select" th:each="type : ${genderEnums}">
+                <input type="radio" th:field="*{gender}" th:value="${type.name()}" /><label th:for="${#ids.prev('gender')}" th:text="${type.description}"></label>
+<!--                <input type="radio" th:field="*{gender}" th:value="${type.name()}"><label th:for="${#ids.prev('genderEnum')}">여</label>-->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="join-box2">
+          <div class="join-message">다음 내용에 동의가 필요해요</div>
+
+          <div class="all-check-box">
+            <div class="all-agree"><input type="checkbox" id="all" name="all" th:onclick="checkAll();">전체 동의</div>
+          </div>
+          <div class="each-agree"><input type="checkbox" id="agreement1" name="agreement" value="true">내미콘 서비스 이용약관 동의</div>
+          <div class="each-agree"><input type="checkbox" id="agreement2" name="agreement" value="true">개인정보 수집 및 이용 동의</div>
+          <div class="each-agree"><input type="checkbox" id="agreement3" name="agreement" value="true">프로모션 정보 수신 동의 (선택)</div>
+
+          <input type="submit" class="join-button" value="가입하기">
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="footer">
+
+  </div>
+</div>
+
+<script type="text/javascript" th:src="@{/js/member.js}"></script>
+</body>
+
+</html>

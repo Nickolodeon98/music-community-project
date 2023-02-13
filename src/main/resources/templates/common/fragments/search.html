@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Search-Tracks</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/tracks-search.css}">
+  <link rel="stylesheet" th:href="@{/css/search.css}">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
+</head>
+<body>
+
+<div layout:fragment="search-fragment">
+  <div th:fragment="search" class="default-layout">
+    <div th:replace="~{common/fragments/header::header}"></div>
+    <div class="block-top">
+      <div class="search-engine">
+        <a class="logo" th:href="@{/search}">내미콘</a>
+        <div class="search-whole">
+          <select class="categories" id="categories" onchange="OnChange();">
+            <option value="전체">전체</option>
+            <option value="추천글"><b>추천글</b></option>
+            <option value="음원">음원</option>
+            <option value="유저">유저</option>
+          </select>
+          <form class="search-form" id="search-form" th:object="${keywordDto}"
+                th:action="@{/search/all}"
+                th:method="get">
+            <input class="search-input" type="text" th:field="*{keyword}">
+
+            <button class="search-button" type="submit" onclick="">
+              <img th:src="@{/img/search-icon-transparent-images-vector-15 1.png}">
+            </button>
+          </form>
+          <!-- 라디오 버튼에 따라 다른 정렬 조건이 적용된다. -->
+<!--          <form class="search-filter" id="search-filter" th:object="${sortStrategy}"-->
+<!--                th:action="@{/search/test/all}"-->
+<!--                th:method="get">-->
+<!--            <ul>-->
+<!--              <li th:each="pt : ${allProperties}">-->
+<!--                <input type="radio" th:field="*{property}" th:value="${pt}">-->
+<!--                <label th:for="${#ids.prev('property')}" th:text="#{${'seedstarter.type.' + pt}}"></label>-->
+<!--              </li>-->
+<!--            </ul>-->
+
+<!--            &lt;!&ndash;            <button id="sort-button">버튼</button>&ndash;&gt;-->
+<!--          </form>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:inline="javascript">
+  function OnChange() {
+    const current = document.getElementById("categories").options[document.getElementById(
+        "categories").selectedIndex].value;
+
+    if (current === "전체") {
+      const allAction = /*[[@{/search/all}]]*/ '/search/all';
+      document.querySelector("#search-form").setAttribute("action", allAction);
+    }
+    if (current === "음원") {
+      const trackAction = /*[[@{/search/tracks}]]*/ '/search/tracks';
+      document.querySelector("#search-form").setAttribute("action", trackAction);
+    }
+    if (current === "추천글") {
+      const recommendAction = /*[[@{/search/recommends}]]*/ '/search/recommends';
+      document.querySelector("#search-form").setAttribute("action", recommendAction);
+    }
+    if (current === "유저") {
+      const memberAction = /*[[@{/search/members}]]*/ '/search/members';
+      document.querySelector("#search-form").setAttribute("action", memberAction);
+    }
+  }
+</script>
+</body>
+</html>

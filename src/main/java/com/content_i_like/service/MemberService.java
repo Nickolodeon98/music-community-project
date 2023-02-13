@@ -16,6 +16,7 @@ import com.content_i_like.repository.FollowRepository;
 import com.content_i_like.repository.MemberRepository;
 import com.content_i_like.repository.RecommendRepository;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -227,7 +228,7 @@ public class MemberService {
     log.info("member={}", member.getMemberNo());
 
     Page<RecommendListResponse> recommendListResponses = recommendRepository.findAllByMember(
-            pageable, member)
+        pageable, member)
         .map(RecommendListResponse::of);
 
     return new MemberRecommendResponse(member, followerCnt, recommendListResponses);
@@ -257,7 +258,7 @@ public class MemberService {
     Long[] followerCnt = getFollowCnt(member);
 
     Stream<FollowResponse> followResponseStream = followRepository.findAllByMember(
-            member, pageable).stream()
+        member, pageable).stream()
         .map(follow -> new FollowResponse(
             memberRepository.findById(follow.getFromMemberNo()).get().getNickName(),
             memberRepository.findById(follow.getFromMemberNo()).get().getProfileImgUrl()));
@@ -272,12 +273,17 @@ public class MemberService {
     Long[] followerCnt = getFollowCnt(member);
 
     Stream<FollowResponse> followResponseStream = followRepository.findAllByFromMemberNo(
-            member.getMemberNo(), pageable).stream()
+        member.getMemberNo(), pageable).stream()
         .map(follow -> new FollowResponse(
             memberRepository.findById(follow.getMember().getMemberNo()).get().getNickName(),
             memberRepository.findById(follow.getMember().getMemberNo()).get().getProfileImgUrl()));
 
     List<FollowResponse> followResponses = followResponseStream.toList();
     return new FollowMyFeedResponse(member, followerCnt, new PageImpl<>(followResponses));
+  }
+
+  public String getEmailByNo(MemberLoginResponse response) {
+    Optional<Member> member = memberRepository.findById(response.getMemberNo());
+    return member.get().getEmail();
   }
 }

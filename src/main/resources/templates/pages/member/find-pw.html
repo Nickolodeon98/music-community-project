@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/html"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-3.6.3.js"
+          integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+          crossorigin="anonymous"></script>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/login.css}">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
+</head>
+<body>
+<div class="container">
+  <div th:replace="~{common/fragments/header::header}"></div>
+
+  <div class="login">
+    <div class="login-box">
+      <div class="message-box">
+        <div class="login-hello">비밀번호 찾기</div>
+        <div class="login-message">도움이 필요하신가요? 아래 정보를 입력해주세요</div>
+        <div class="login-form">
+          <form th:action="@{/member/passwd/find_pw}" method="post" class="login-form" th:object="${request}">
+            <input type="text" name="name" th:field="*{name}" class="find-by-username" placeholder="  이름"/>
+            <input type="email" name="email" th:field="*{email}" placeholder="  이메일"/>
+            <input type="submit" value="확인" onclick="alert('올바른 정보 입력 시 메일로 임시비밀번호를 발송됩니다. 다음 화면이 뜰 때까지 기다려주세요.')"/>
+          </form>
+        </div>
+        <div class="login-service">
+          <span id="find-pw" class="service"><a href="@{/member/passwd/find_pw}"><strong>비밀번호 찾기</strong></a></span>
+          <span id="signup" class="service"><a href="@{/member/join}">회원가입</a></span>
+        </div>
+
+        <div>
+          <div class="sns-message">SNS 계정이 있으신가요?</div>
+          <div class="sns-box">
+            <img th:src="@{/img/naver-logo.png}" src="../../../static/img/naver-logo.png" class="sns-logo">
+            <div class="sns-box-message"><a href="">네이버로 로그인</a></div>
+          </div>
+          <div class="sns-box">
+            <img th:src="@{/img/google-logo.jpg}" src="../../../static/img/google-logo.jpg" class="sns-logo">
+            <div class="sns-box-message"><a href="">구글로 로그인</a></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="login-img-box">
+      <img id="login-img" th:src="@{/img/index-img.jpg}" src="../../../static/img/index-img.jpg">
+    </div>
+  </div>
+
+
+</div>
+
+<div class="footer">
+
+</div>
+</div>
+
+</body>
+
+</html>

@@ -26,4 +26,9 @@ public class TracksSearchTool implements ItemSearch<TrackGetResponse> {
         .map(trackPage -> trackPage.map(TrackGetResponse::of))
         .orElseGet(() -> new PageImpl<>(Collections.emptyList()));
   }
+
+  @Override
+  public String buildMessage() {
+    return "음원을";
+  }
 }
