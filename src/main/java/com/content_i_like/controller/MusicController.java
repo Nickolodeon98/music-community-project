@@ -1,6 +1,7 @@
 package com.content_i_like.controller;
 
 import com.content_i_like.domain.Response;
+import com.content_i_like.domain.dto.comment.CommentReadResponse;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.dto.tracks.TrackInfoWithPrimaryKey;
 import com.content_i_like.service.MusicService;
@@ -41,6 +42,10 @@ public class MusicController {
 
     model.addAttribute("trackInfo", trackAndRecommends);
     model.addAttribute("trackRecommendsAsList", trackAndRecommends.getRecommendsOfTracks());
+
+    CommentReadResponse bestComment = musicService.bestCommentRecommendOfTrack(trackAndRecommends.getRecommendsOfTracks());
+
+    model.addAttribute("bestComment", bestComment);
 
     return "pages/search/tracks-details";
   }
