@@ -203,7 +203,7 @@ public class MemberService {
     Long[] followerCnt = getFollowCnt(member);
 
     Page<RecommendListResponse> recommendListResponses = recommendRepository.findAllByMember(
-        pageable, member)
+            pageable, member)
         .map(RecommendListResponse::of);
 
     return new MemberRecommendResponse(member, followerCnt, recommendListResponses);
@@ -228,7 +228,7 @@ public class MemberService {
     log.info("member={}", member.getMemberNo());
 
     Page<RecommendListResponse> recommendListResponses = recommendRepository.findAllByMember(
-        pageable, member)
+            pageable, member)
         .map(RecommendListResponse::of);
 
     return new MemberRecommendResponse(member, followerCnt, recommendListResponses);
@@ -258,8 +258,9 @@ public class MemberService {
     Long[] followerCnt = getFollowCnt(member);
 
     Stream<FollowResponse> followResponseStream = followRepository.findAllByMember(
-        member, pageable).stream()
+            member, pageable).stream()
         .map(follow -> new FollowResponse(
+            follow.getFromMemberNo(),
             memberRepository.findById(follow.getFromMemberNo()).get().getNickName(),
             memberRepository.findById(follow.getFromMemberNo()).get().getProfileImgUrl()));
 
@@ -273,13 +274,21 @@ public class MemberService {
     Long[] followerCnt = getFollowCnt(member);
 
     Stream<FollowResponse> followResponseStream = followRepository.findAllByFromMemberNo(
-        member.getMemberNo(), pageable).stream()
+            member.getMemberNo(), pageable).stream()
         .map(follow -> new FollowResponse(
+            follow.getMember().getMemberNo(),
             memberRepository.findById(follow.getMember().getMemberNo()).get().getNickName(),
             memberRepository.findById(follow.getMember().getMemberNo()).get().getProfileImgUrl()));
 
     List<FollowResponse> followResponses = followResponseStream.toList();
     return new FollowMyFeedResponse(member, followerCnt, new PageImpl<>(followResponses));
+  }
+
+  public String getNickNameByNo(Long memberNo) {
+    Member member = memberRepository.findById(memberNo)
+        .orElseThrow(() -> new ContentILikeAppException(ErrorCode.MEMBER_NOT_FOUND,
+            ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+    return member.getNickName();
   }
 
   public String getEmailByNo(MemberLoginResponse response) {

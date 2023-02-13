@@ -175,6 +175,7 @@ public class MemberController {
         loginResponse.getNickName(), pageable);
 
     model.addAttribute("recommendsResponse", recommends);
+    model.addAttribute("url", "");
 
     return "pages/member/myFeed-recommends";
   }
@@ -187,6 +188,7 @@ public class MemberController {
         loginResponse.getNickName(), pageable);
 
     model.addAttribute("comments", comments);
+    model.addAttribute("url", "");
 
     return "pages/member/myFeed-comments";
   }
@@ -199,6 +201,8 @@ public class MemberController {
         loginResponse.getNickName(), pageable);
 
     model.addAttribute("followers", myFollowersByNickName);
+    model.addAttribute("url", "");
+
     return "pages/member/myFeed-followers";
   }
 
@@ -210,8 +214,11 @@ public class MemberController {
         loginResponse.getNickName(), pageable);
 
     model.addAttribute("followers", myFollowersByNickName);
+    model.addAttribute("url", "");
+
     return "pages/member/myFeed-followings";
   }
+
 
   @GetMapping("/session-info")
   public String sessionInfo(HttpServletRequest request) {

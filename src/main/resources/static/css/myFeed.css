@@ -396,6 +396,12 @@
   font-size: 22px;
   margin: auto;
 }
+.contents-follow-name a {
+  color: white;
+  font-size: 22px;
+  margin: auto;
+}
+
 
 .contents-follow-button {
   width: 100%;
