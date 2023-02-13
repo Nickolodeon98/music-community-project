@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/fragments/search}">
+<head>
+  <meta charset="UTF-8">
+  <title>Search-Recommends</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/recommends-search.css}">
+  <link rel="stylesheet" th:href="@{/css/search.css}">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
+
+</head>
+<body>
+<div layout:fragment="search-fragment">
+  <div class="container">
+
+    <div th:replace="~{common/fragments/search::search}"></div>
+    <form class="block-middle" th:action="@{/search/recommends}" th:method="get">
+      <input type="hidden" th:name="keyword" th:value="${keyword}">
+      <span class="count-results"
+            th:text="${recommendsList} ? ${recommendsList.message} : '검색해주세요.'"></span>
+      <hr>
+      <br>
+      <th:block th:if="${recommendsList != null}">
+        <ul class="recommend-list" th:each="element, status : ${recommendsListAsList}" th:if="${status.index<5}">
+          <li class="recommend-list-elements">
+            <img class="recommend-image" th:src="${element.recommendImageUrl}"
+                 src="https://content-i-like.s3.ap-northeast-2.amazonaws.com/power.jpg"/>
+            <div class="title-and-contents">
+              <div class="recommend-text">
+                <a th:href="@{/recommends/__${element.recommendNo}__}" class="recommend-title" th:style="${'font-weight:bold'}" th:text="${element.recommendTitle}"></a>
+                <span class="recommend-date" th:text="${#temporals.format(element.createdAt, 'yyyy년 MM월 dd일 HH시 mm분')}"></span>
+              </div>
+
+              <div class="separator"></div>
+              <span th:text="${element.summarizedRecommendContent}"></span>
+            </div>
+          </li>
+        </ul>
+      </th:block>
+      <button class="page-button-prev" th:unless="${recommendsList.pages.isFirst()}" th:name="page" th:value="${pageable.previousOrFirst().pageNumber}">이전</button>
+      <button class="page-button-next" th:unless="${recommendsList.pages.isLast()}" th:name="page" th:value="${pageable.next().pageNumber}">다음</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>

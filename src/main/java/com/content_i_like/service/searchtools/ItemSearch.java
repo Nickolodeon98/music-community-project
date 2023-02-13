@@ -8,4 +8,6 @@ public interface ItemSearch<T> {
   Page<T> searchAll(Pageable pageable);
 
   Page<T> search(String keyword, Pageable pageable);
+
+  String buildMessage();
 }
