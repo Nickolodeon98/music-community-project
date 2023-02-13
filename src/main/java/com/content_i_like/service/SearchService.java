@@ -34,8 +34,10 @@ public class SearchService {
     Member member = validate(memberEmail, new MemberValidation(memberRepository));
     Page<T> pagedItems = searchTool.searchAll(pageable);
 
+    String message = searchTool.buildMessage();
+
     return SearchPageGetResponse.of(
-        String.format("총 %s개의 검색결과를 찾았습니다.", pagedItems.getTotalElements()), pagedItems);
+        String.format("총 %s개의 %s 찾았습니다.", pagedItems.getTotalElements(), message), pagedItems);
   }
 
   public <T> SearchPageGetResponse<T> findWithKeyword(Pageable pageable, String searchKey,
@@ -44,11 +46,14 @@ public class SearchService {
 
     Page<T> pagedItems = searchTool.search(searchKey, pageable);
 
-    return pagedItems.isEmpty() ? SearchPageGetResponse.of("검색 결과가 없습니다.", pagedItems)
+    String message = searchTool.buildMessage();
+
+    return pagedItems.isEmpty() ?
+        SearchPageGetResponse.of(message.substring(0,message.length()-1) + " 검색 결과가 없습니다.", pagedItems)
         : SearchPageGetResponse.of(
-            String.format("'%s'로 총 %s개의 검색결과를 찾았습니다.",
+            String.format("'%s' 으로 총 %s개의 %s 찾았습니다.",
                 searchKey,
-                pagedItems.getTotalElements()), pagedItems);
+                pagedItems.getTotalElements(), message), pagedItems);
   }
 
   public SearchPageGetResponse<TrackGetResponse> getEveryTrack(Pageable pageable,

@@ -97,7 +97,7 @@ class SearchRestControllerTest {
             Fixture.getAlbumFixture(
                 Fixture.getArtistFixture())));
 
-    searchedRecommends = SearchRecommendsResponse.of(recommend);
+    searchedRecommends = SearchRecommendsResponse.of(recommend, recommend.getRecommendContent());
 
     pagedRecommends =
         SearchPageGetResponse.of("총 1개의 검색결과를 찾았습니다.", new PageImpl<>(List.of(searchedRecommends)));
