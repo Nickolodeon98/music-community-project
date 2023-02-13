@@ -49,7 +49,7 @@
 
       <th:block th:if="${session.loginUser!=null}">
         <span id="menu-post" class="menu-userinfo">
-                <a href=""><img class="pen-img" th:src="@{/img/pen.png}" src="../../../static/img/pen.png"> 글 작성하기</a>
+                <a th:href="@{/recommends/writeForm}"><img class="pen-img" th:src="@{/img/pen.png}" src="../../../static/img/pen.png"> 글 작성하기</a>
         </span>
 
 
