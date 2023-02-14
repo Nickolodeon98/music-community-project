@@ -18,12 +18,12 @@
 <div class="container">
   <div th:replace="~{common/fragments/header::header}"></div>
 
-  <form th:action="@{/member/my/update}" method="post" th:object="${request}">
+  <form th:action="@{/member/my/update}" method="post" th:object="${request}" enctype="multipart/form-data">
     <div class="profile">
 
         <div class="img-box">
           <img id="preview" class="profile-img" th:src="${member.profileImgUrl}">
-          <input type="file" accept="image/*" onchange="readURL(this)"/>
+          <input type="file" name="profileImg" accept="image/*" onchange="readURL(this)"/>
         </div>
 
         <div class="profile-box">
@@ -98,7 +98,7 @@
 	  };
 	  reader.readAsDataURL(input.files[0]);
 	} else {
-	  document.getElementById('preview').src = "";
+	  document.getElementById('preview').src = "https://content-i-like.s3.ap-northeast-2.amazonaws.com/80c4f0a7-c4e0-44a5-85d6-315dc793fe28-profile.jpg";
 	}
   }
 </script>

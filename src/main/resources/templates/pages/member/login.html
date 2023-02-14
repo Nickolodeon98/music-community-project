@@ -23,9 +23,10 @@
         <div class="login-hello">안녕하세요</div>
         <div class="login-message">오늘 들려주실 여러분만의 음악은 무엇인가요?</div>
         <div class="login-form">
-          <form th:action="@{/member/login}" method="post" class="login-form" th:object="${request}">
-            <input type="email" name="email" th:field="*{email}" placeholder="이메일"/>
-            <input type="password" name="password" th:field="*{password}" placeholder="비밀번호"/>
+          <form th:action="@{/member/login}" method="post" class="login-form" th:object="${request}" onsubmit="return checkLoginForm();">
+            <input type="email" id="email" name="email" th:field="*{email}" placeholder="이메일"/>
+            <input type="password" id="password" name="password" th:field="*{password}" placeholder="비밀번호"/>
+            <input type="hidden" name="redirect" th:value="${referrer}" />
             <input type="submit" value="로그인"/>
           </form>
         </div>
@@ -60,7 +61,53 @@
 
 </div>
 </div>
+<script th:inline="javascript">
+function checkLoginForm(){
+  var email = document.getElementById("email");
+  var password = document.getElementById("password");
 
+  if(email.value==""){
+    alert("이메일을 입력해주세요.");
+    email.focus();
+    return false;
+  }
+   if(password.value==""){
+    alert("비밀번호를 입력해주세요.");
+    password.focus();
+    return false;
+  }
+
+<!--  if(!fn_checkLogin()){-->
+<!--    alert("아이디, 비밀번호가 틀립니다.");-->
+<!--    return false;-->
+<!--  }-->
+  return true;
+}
+
+function fn_checkLogin(){
+  var params = {
+      email: $('#email').val(),
+      password: $('#password').val()
+  }
+
+  $.ajax({
+    url: "/member/loginCheck",
+    type: "POST",
+    dataType: "json",
+    data: params,
+
+    success: function(result){
+      var loginChk = result.result
+        if(loginChk == false){
+          return false;
+        }
+       if (loginChk == true){
+        return true;
+       }
+    }
+  })
+}
+</script>
 </body>
 
 </html>
