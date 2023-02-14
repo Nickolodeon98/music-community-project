@@ -195,7 +195,7 @@
   padding: 20px;
   border: 1px solid #888;
   width: 461px;
-  height: 719px;
+  height: 765px;
   display: flex;
   flex-direction: column;
 }
@@ -241,6 +241,19 @@
   flex-direction: column;
   justify-content: start;
 }
+
+.pagination{
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination button {
+  margin: 0px 5px;
+  font-size: 24px;
+}
+
+
 .modal-search-track{
   margin: 20px 50px;
   display: flex;
