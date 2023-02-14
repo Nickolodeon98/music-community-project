@@ -269,25 +269,6 @@ public class SearchController {
     return "pages/search/search-all";
   }
 
-//  @GetMapping("/tracks/modal")
-//  public void searchTracksByKeywordFromModal(
-//      @ModelAttribute("keywordDto") final SearchRequest trackTitle,
-//      Pageable pageable,
-//      @RequestParam(value = "page", required = false) Integer pageNum,
-//      Model model) {
-//
-//    pageable = PageRequest.of(pageable.getPageNumber(), 8, Sort.by("track_title").ascending());
-//
-//    SearchPageGetResponse<TrackGetResponse> trackResults =
-//        searchService.findTracksWithKeyword(pageable, trackTitle.getKeyword(),
-//            "sjeon0730@gmail.com");
-//
-//    model.addAttribute("trackResults", trackResults);
-//    model.addAttribute("trackResultsAsList", trackResults.getPages().toList());
-//    model.addAttribute("pageable", pageable);
-//    model.addAttribute("keyword", trackTitle.getKeyword());
-//  }
-
   @GetMapping("/tracks/modal")
   @ResponseBody // indicates that the response should be serialized as JSON
   public SearchPageGetResponse<TrackGetResponse> searchTracksByKeywordFromModal(
@@ -295,7 +276,7 @@ public class SearchController {
       Pageable pageable,
       @RequestParam(value = "page", required = false) Integer pageNum) {
 
-    pageable = PageRequest.of(pageable.getPageNumber(), 5, Sort.by("trackTitle").ascending());
+    pageable = PageRequest.of(pageNum != null ? pageNum : 0, 5, Sort.by("trackTitle").ascending());
 
 
     SearchPageGetResponse<TrackGetResponse> trackResults =

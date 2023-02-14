@@ -107,15 +107,10 @@
       <div id="modal-search-button">검색</div>
     </div>
     <div class="modal-search-result">
-      <div class="modal-search-track">
-        <div class="modal-search-img"><img th:src="@{/img/event-horizon.jpg}"></div>
-        <div class="modal-search-info">
-          <div class="modal-track-title">제목</div>
-          <div class="modal-track-artist">가수</div>
-          <input id="modal-track-no" type="hidden" name="trackNo"/>
-        </div>
-      </div>
-      <div class="modal-line"></div>
+    </div>
+    <div class="pagination">
+      <button id="prev-page-btn" disabled>&lt;</button>
+      <button id="next-page-btn" disabled>&gt;</button>
     </div>
   </div>
 </div>
@@ -195,14 +190,18 @@
 
   document.getElementById("modal-search-button").addEventListener("click", function () {
     var trackSearchInput = document.getElementById("track-search-input").value;
-    var url = "/search/tracks/modal?keyword=" + trackSearchInput;
+    var currentPage = 0;
+    var url = "/search/tracks/modal?keyword=" + trackSearchInput + "&page=" + currentPage;
     var xhr = new XMLHttpRequest();
+
+    var modalSearchResult = document.querySelector(".modal-search-result");
+    var prevPageBtn = document.getElementById("prev-page-btn");
+    var nextPageBtn = document.getElementById("next-page-btn");
 
     xhr.onreadystatechange = function () {
       if (xhr.readyState === XMLHttpRequest.DONE) {
         if (xhr.status === 200) {
           var trackResults = JSON.parse(xhr.responseText);
-          var modalSearchResult = document.querySelector(".modal-search-result");
           console.log('trackResults:', trackResults.pages);
 
           // clear the existing search results
@@ -243,6 +242,19 @@
 
             modalSearchResult.appendChild(modalSearchTrack);
           });
+
+          // enable/disable paging buttons
+          if (trackResults.pages.first) {
+            prevPageBtn.disabled = true;
+          } else {
+            prevPageBtn.disabled = false;
+          }
+
+          if (trackResults.pages.last) {
+            nextPageBtn.disabled = true;
+          } else {
+            nextPageBtn.disabled = false;
+          }
         } else {
           console.log("Error: " + xhr.status);
         }
@@ -251,7 +263,24 @@
 
     xhr.open("GET", url, true);
     xhr.send();
+
+    // set up event listeners for paging buttons
+    prevPageBtn.addEventListener("click", function() {
+      currentPage--;
+      url = "/search/tracks/modal?keyword=" + trackSearchInput + "&page=" + currentPage;
+      xhr.open("GET", url, true);
+      xhr.send();
+    });
+
+    nextPageBtn.addEventListener("click", function() {
+      currentPage++;
+      url = "/search/tracks/modal?keyword=" + trackSearchInput + "&page=" + currentPage;
+      xhr.open("GET", url, true);
+      xhr.send();
+    });
   });
+
+
 
   document.querySelector(".modal-search-result").addEventListener("click", function (event) {
     if (event.target.classList.contains("modal-search-track") ||
