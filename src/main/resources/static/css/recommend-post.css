@@ -184,6 +184,11 @@
   font-size: 20px;
 }
 
+#myModal {
+  display: none;
+}
+
+
 .modal-content {
   background-color: #fefefe;
   margin: 10% auto;

@@ -58,8 +58,7 @@ public class RecommendService {
   public RecommendPostResponse uploadPost(final String userEmail,
       final RecommendPostRequest request) throws IOException {
     Member member = validateGetMemberInfoByUserEmail(userEmail);
-//    Track track = validateGetTrackByTrackNo(request.getTrackNo());
-    Track track = validateGetTrackByTrackNo(1L);
+    Track track = validateGetTrackByTrackNo(request.getTrackNo());
     String url = getUploadImageURL(request.getImage());
     Recommend post = saveRecommend(request, member, track, url);
     saveHashTags(request, post);

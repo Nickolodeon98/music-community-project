@@ -32,12 +32,13 @@
                                                placeholder="제목을 입력해주세요(100자 이내)"/></span>
         </div>
 
-        <div class="board-body">
+        <div class="board-body" id="music-select">
           <span class="board-body-title">추천 음악</span>
           <span id="board-input-search">
-            <input name="trackTitle" readonly
+            <input id="music-select-title" name="trackTitle" readonly
                    placeholder="검색 버튼을 눌러 음악을 검색해주세요"/>
-            <input type="hidden" name="trackNo" th:field="*{trackNo}" readonly/>
+            <input id="music-select-no" type="hidden" name="trackNo" th:field="*{trackNo}"
+                   readonly/>
           </span>
           <span id="button-search" class="button"> 검색 </span>
         </div>
@@ -109,9 +110,9 @@
       <div class="modal-search-track">
         <div class="modal-search-img"><img th:src="@{/img/event-horizon.jpg}"></div>
         <div class="modal-search-info">
-          <div class="modal-track-title" >제목</div>
+          <div class="modal-track-title">제목</div>
           <div class="modal-track-artist">가수</div>
-          <input type="hidden" name="trackNo"/>
+          <input id="modal-track-no" type="hidden" name="trackNo"/>
         </div>
       </div>
       <div class="modal-line"></div>
@@ -122,6 +123,7 @@
 
 </body>
 <script>
+
   $(".button-exit").on("click", function () {
     location.href = "../";
   });
@@ -191,6 +193,80 @@
     document.getElementById("myModal").style.display = "none";
   }
 
+  document.getElementById("modal-search-button").addEventListener("click", function () {
+    var trackSearchInput = document.getElementById("track-search-input").value;
+    var url = "/search/tracks/modal?keyword=" + trackSearchInput;
+    var xhr = new XMLHttpRequest();
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          var trackResults = JSON.parse(xhr.responseText);
+          var modalSearchResult = document.querySelector(".modal-search-result");
+          console.log('trackResults:', trackResults.pages);
+
+          // clear the existing search results
+          modalSearchResult.innerHTML = "";
+
+          // loop through the search results and append them to the modal
+          trackResults.pages.content.forEach(function (track) {
+            var modalSearchTrack = document.createElement("div");
+            modalSearchTrack.classList.add("modal-search-track");
+
+            var modalSearchImg = document.createElement("div");
+            modalSearchImg.classList.add("modal-search-img");
+            modalSearchImg.innerHTML = '<img src="' + track.thumbnailUrl + '">';
+
+            var modalSearchInfo = document.createElement("div");
+            modalSearchInfo.classList.add("modal-search-info");
+
+            var modalTrackTitle = document.createElement("div");
+            modalTrackTitle.classList.add("modal-track-title");
+            modalTrackTitle.innerHTML = track.trackTitle;
+
+            var modalTrackArtist = document.createElement("div");
+            modalTrackArtist.classList.add("modal-track-artist");
+            modalTrackArtist.innerHTML = track.trackArtist;
+
+            var trackNo = document.createElement("input");
+            trackNo.setAttribute("type", "hidden");
+            trackNo.setAttribute("name", "trackNo");
+            trackNo.setAttribute("value", track.trackNo);
+            trackNo.setAttribute("id", "modal-track-no"); // add id attribute
+
+            modalSearchInfo.appendChild(modalTrackTitle);
+            modalSearchInfo.appendChild(modalTrackArtist);
+            modalSearchInfo.appendChild(trackNo);
+
+            modalSearchTrack.appendChild(modalSearchImg);
+            modalSearchTrack.appendChild(modalSearchInfo);
+
+            modalSearchResult.appendChild(modalSearchTrack);
+          });
+        } else {
+          console.log("Error: " + xhr.status);
+        }
+      }
+    };
+
+    xhr.open("GET", url, true);
+    xhr.send();
+  });
+
+  document.querySelector(".modal-search-result").addEventListener("click", function (event) {
+    if (event.target.classList.contains("modal-search-track") ||
+        event.target.classList.contains("modal-search-img") ||
+        event.target.classList.contains("modal-track-title") ||
+        event.target.classList.contains("modal-track-artist")) {
+
+      document.querySelector("#music-select-title").value = event.target.closest(
+          ".modal-search-track").querySelector(".modal-track-title").textContent;
+      document.querySelector("#music-select-no").value = event.target.closest(
+          ".modal-search-track").querySelector("#modal-track-no").value;
+      
+      closeModal();
+    }
+  });
 </script>
 
 
