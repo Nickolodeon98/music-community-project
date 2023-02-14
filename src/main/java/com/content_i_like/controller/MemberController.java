@@ -84,9 +84,12 @@ public class MemberController {
     }
     try {
       MemberLoginResponse response = memberService.login(memberLoginRequest);
+      List<NotificationThymeleafResponse> notificationsResponses = notificationService.getNotificationsThymeleafResponses(
+          response.getNickName(), pageable);
 
       HttpSession session = request.getSession();   //세션이 있으면 있는 세션 반환, 없으면 신규 세션
       session.setAttribute("loginUser", response);
+      session.setAttribute("notification", notificationsResponses);
       log.info("로그인 완료");
     } catch (ContentILikeAppException e) {
       log.info("에러 발생");
