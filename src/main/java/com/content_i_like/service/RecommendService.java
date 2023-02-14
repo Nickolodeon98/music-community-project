@@ -2,6 +2,7 @@ package com.content_i_like.service;
 
 import com.content_i_like.domain.dto.recommend.*;
 import com.content_i_like.domain.entity.*;
+import com.content_i_like.domain.enums.PointTypeEnum;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.*;
@@ -29,6 +30,8 @@ public class RecommendService {
   private final HashtagRepository hashtagRepository;
   private final PostHashtagRepository postHashtagRepository;
   private final LikesRepository likesRepository;
+  private final PointService pointService;
+
 
 
   /**
@@ -58,10 +61,10 @@ public class RecommendService {
   public RecommendPostResponse uploadPost(final String userEmail,
       final RecommendPostRequest request) throws IOException {
     Member member = validateGetMemberInfoByUserEmail(userEmail);
-//    Track track = validateGetTrackByTrackNo(request.getTrackNo());
-    Track track = validateGetTrackByTrackNo(1L);
+    Track track = validateGetTrackByTrackNo(request.getTrackNo());
     String url = getUploadImageURL(request.getImage());
     Recommend post = saveRecommend(request, member, track, url);
+    pointService.usePoint(member, request.getRecommendPoint(), PointTypeEnum.RECOMMEND_POSTS);
     saveHashTags(request, post);
     return RecommendPostResponse.fromEntity(post);
   }
@@ -361,9 +364,17 @@ public class RecommendService {
    * @return 댓글 포인트와 게시물 포인트의 합 반환
    */
   private long getAccumulatedPoints(List<Comment> comments, Recommend post) {
-    return comments.stream()
-        .mapToLong(Comment::getCommentPoint)
-        .sum() + post.getRecommendPoint();
+    long accumulatedPoints = 0;
+    if (comments != null) {
+      accumulatedPoints = comments.stream()
+          .filter(comment -> comment != null && comment.getCommentPoint() != null)
+          .mapToLong(Comment::getCommentPoint)
+          .sum();
+    }
+    if (post != null) {
+      accumulatedPoints += post.getRecommendPoint();
+    }
+    return accumulatedPoints;
   }
 
   /**

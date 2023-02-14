@@ -63,6 +63,13 @@ public class Member extends BaseEntity implements UserDetails {
     this.profileImgUrl = url;
   }
 
+  public void updateProfile(MemberModifyRequest request, String url) {
+    this.introduction = request.getIntroduction();
+    this.gender = request.getGender();
+    this.birth = request.getBirth();
+    this.profileImgUrl = url;
+  }
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return null;

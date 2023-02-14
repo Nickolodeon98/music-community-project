@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/html"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-3.6.3.js"
+          integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+          crossorigin="anonymous"></script>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
+  <link rel="stylesheet" th:href="@{/css/member-profile.css}">
+</head>
+<body>
+<div class="container">
+  <div th:replace="~{common/fragments/header::header}"></div>
+
+  <form th:action="@{/member/my/update}" method="post" th:object="${request}">
+    <div class="profile">
+
+        <div class="img-box">
+          <img id="preview" class="profile-img" th:src="${member.profileImgUrl}">
+          <input type="file" accept="image/*" onchange="readURL(this)"/>
+        </div>
+
+        <div class="profile-box">
+          <div class="profile-title">
+            <span id="profile-name" th:text="${member.nickName}"></span>
+              <span><input type="button" value="비밀번호 변경" class="modify-profile" onClick="location.href='/member/passwd/change'"/></span>
+              <span><input type="submit" value="수정완료" class="modify-profile"/></span>
+          </div>
+
+            <div class="introduction">
+              <span id="cnt" class="intro-message">(0 / 200)</span>
+              <textarea id="intro-contents" maxlength="200" placeholder="당신을 소개해주세요:) 최대200자" name="introduction" th:text="${member.introduction}"></textarea>
+            </div>
+            <div class="empty-block"></div>
+            <div class="profile-info">기본 정보</div>
+
+
+            <div class="info">
+              <span class="info-title">이메일</span>
+              <span class="info-box" th:text="${member.email}"></span>
+            </div>
+          <div class="info">
+            <span class="info-title">이름</span>
+            <span class="info-box" th:text="${member.name}"></span>
+          </div>
+
+            <div class="info">
+              <span class="info-title">태어난 해</span>
+              <span><input type="number" placeholder="년(YYYY)" id="input-year" name="birth" th:value="${member.birth}"/></span>
+            </div>
+            <div class="info">
+              <span class="info-title">성별</span>
+              <div class="select" th:each="type : ${genderEnums}">
+                <input type="radio" th:field="*{gender}" th:value="${type.name()}" /><label th:for="${#ids.prev('gender')}" th:text="${type.description}"></label>
+                <!--                <input type="radio" th:field="*{gender}" th:value="${type.name()}"><label th:for="${#ids.prev('genderEnum')}">여</label>-->
+              </div>
+            </div>
+        </div>
+
+    </div>
+  </form>
+  </div>
+
+
+</div>
+
+<div class="footer">
+
+</div>
+</div>
+
+<script>
+
+    $(document).ready(function() {
+        $('#intro-contents').on('keyup', function() {
+            $('#cnt').html("("+$(this).val().length+" / 200)");
+
+            if($(this).val().length > 200) {
+                $(this).val($(this).val().substring(0, 200));
+                $('#cnt').html("(200 / 200)");
+            }
+        });
+    });
+
+    </script>
+<script th:inline="javascript">
+  function readURL(input) {
+	if (input.files && input.files[0]) {
+	  var reader = new FileReader();
+	  reader.onload = function(e) {
+		document.getElementById('preview').src = e.target.result;
+	  };
+	  reader.readAsDataURL(input.files[0]);
+	} else {
+	  document.getElementById('preview').src = "";
+	}
+  }
+</script>
+<!--<script async src="./js/member.js"></script>-->
+</body>
+
+</html>

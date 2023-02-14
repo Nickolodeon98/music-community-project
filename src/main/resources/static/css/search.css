@@ -208,3 +208,18 @@
     width:30px;
     height:30px;
 }
+
+.sort-results {
+    width: 1400px;
+    height: 130px;
+    /*background-color: white;*/
+    margin-bottom: 50px;
+    border: solid white;
+    /*border-radius: 38px;*/
+    color: white;
+    font-size: 50px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    vertical-align: center;
+}

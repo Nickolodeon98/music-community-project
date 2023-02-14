@@ -92,7 +92,7 @@ input.join-input-gender{
     flex-direction: column;
  }
 
-#button-check-nickname{
+.button-check-nickname{
     width: 10%;
     height: 50px;
     margin-left: 20px;
