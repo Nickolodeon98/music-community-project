@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-3.6.3.js"
+          integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+          crossorigin="anonymous"></script>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
+  <link rel="stylesheet" th:href="@{/css/point.css}">
+</head>
+<body>
+<div class="container">
+  <div th:replace="~{common/fragments/header::header}"></div>
+
+  <div class="contents">
+    <div class="chart-menu">
+      <span class="point-title">포인트 내역</span>
+      <span class="total-point">보유 Pt - 1000</span>
+    </div>
+
+    <div class="line"></div>
+
+    <div class="chart">
+      <table class="chart-table">
+        <tr class="chart-top">
+          <td class="chart-top-title">날짜</td>
+          <td class="chart-top-title">내용</td>
+          <td class="chart-top-title"></td>
+          <td class="chart-top-title">포인트</td>
+        </tr>
+
+        <tr class="point-chart" th:>
+          <td class="recommend-chart-no" >1</td>
+          <td class="recommend-chart-title"><a href="">새벽 4시 감성 바이브 대표곡</a></td>
+          <td id="recommend-chart-author"><a href="">검정치맛살</a></td>
+          <td class="recommend-point">35,000</td>
+        </tr>
+      </table>
+
+    </div>
+
+  </div>
+</div>
+</body>
+<script>
+
+
+</script>
+</html>
