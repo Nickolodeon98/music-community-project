@@ -317,4 +317,30 @@ public class MemberService {
     Optional<Member> member = memberRepository.findById(response.getMemberNo());
     return member.get().getEmail();
   }
+
+  public boolean checkMemberNickName(String nickName) {
+    boolean result = false;
+    try {
+      String chkNickName = memberRepository.findByNickName(nickName).get().getNickName();
+      if (chkNickName.equals(nickName)) {
+        result = false;
+      }
+    } catch (Exception e) {
+      result = true;
+    }
+    return result;
+  }
+
+  public boolean checkMemberEmail(String email) {
+    boolean result = false;
+    try {
+      String chkEmail = memberRepository.findByEmail(email).get().getNickName();
+      if (chkEmail.equals(email)) {
+        result = false;
+      }
+    } catch (Exception e) {
+      result = true;
+    }
+    return result;
+  }
 }
