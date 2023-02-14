@@ -16,12 +16,25 @@
 
 <div layout:fragment="search-fragment">
 
+
+
   <div class="container">
     <div th:replace="~{common/fragments/search::search}"></div>
+    <div class="sort-results">
+      <form th:object="${sortStrategy}" th:action="@{/search/tracks}" th:method="get">
+        <input type="hidden" th:name="keyword" th:value="${keyword}">
 
+        번호순<input type="radio" th:field="*{property}" value="trackNo">
+        알파벳순<input type="radio" th:field="*{property}" value="trackTitle">
+        알파벳순<input type="radio" th:field="*{property}" value="trackTitle">
+
+        <button type="submit">적용</button>
+      </form>
+    </div>
     <form class="block-middle" id="paging" th:method="get"
           th:action="@{/search/tracks}">
       <input type="hidden" th:name="keyword" th:value="${keyword}">
+
       <span class="count-results"
             th:text="${trackResults} ? ${trackResults.message} : '검색해주세요'"></span>
       <hr>
