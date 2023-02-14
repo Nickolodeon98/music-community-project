@@ -22,7 +22,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -146,7 +148,8 @@ public class MemberService {
 
   public MemberPointResponse getMyPoint(String memberEmail, Pageable pageable) {
     Member member = validateExistingMember(memberEmail);
-    List<PointResponse> points = pointService.pointList(member);
+    pageable = PageRequest.of(pageable.getPageNumber(), 20, Sort.by("createdAt").descending());
+    List<PointResponse> points = pointService.pointList(member, pageable);
     return new MemberPointResponse(pointService.calculatePoint(member), new PageImpl<>(points));
   }
 
@@ -360,9 +363,5 @@ public class MemberService {
       result = false;
     }
     return result;
-  }
-
-  public String changeHeaderProfileImg(MemberResponse memberResponse) {
-    return memberResponse.getProfileImgUrl();
   }
 }

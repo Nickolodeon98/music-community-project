@@ -63,6 +63,7 @@ public class MemberController {
 
   private final MemberService memberService;
   private final NotificationService notificationService;
+
   @ModelAttribute("genderEnums")
   public GenderEnum[] genderEnum() {
     return GenderEnum.values();
@@ -70,6 +71,9 @@ public class MemberController {
 
   @GetMapping("/login")
   public String loginForm(HttpServletRequest request, Model model) {
+    if (request.getSession(false) != null) {
+      return "redirect:/";
+    }
     String referrer = request.getHeader("Referer");
 
     model.addAttribute("request", new MemberLoginRequest());
@@ -89,8 +93,9 @@ public class MemberController {
     }
     try {
       MemberLoginResponse response = memberService.login(memberLoginRequest);
-      List<NotificationThymeleafResponse> notificationsResponses = notificationService.getNotificationsThymeleafResponses(
-          response.getNickName(), pageable);
+      List<NotificationThymeleafResponse> notificationsResponses = notificationService
+          .getNotificationsThymeleafResponses(
+              response.getNickName(), pageable);
 
       HttpSession session = request.getSession();   //세션이 있으면 있는 세션 반환, 없으면 신규 세션
       session.setAttribute("loginUser", response);
@@ -200,15 +205,10 @@ public class MemberController {
         .modifyMyInfoWithFile(request, memberEmail);
 
     MemberLoginResponse updateLoginResponse = new MemberLoginResponse(loginResponse.getJwt(),
-        loginResponse.getMemberNo(), loginResponse.getNickName(), memberResponse.getProfileImgUrl());
-    session.setAttribute("loginUser",updateLoginResponse);
+        loginResponse.getMemberNo(), loginResponse.getNickName(),
+        memberResponse.getProfileImgUrl());
+    session.setAttribute("loginUser", updateLoginResponse);
     return "redirect:/member/my";
-  }
-
-
-  @GetMapping("/my/point/sample")
-  public String getMyPoint() {
-    return "pages/member/point-history";
   }
 
   @GetMapping("/my/point")
@@ -317,7 +317,7 @@ public class MemberController {
     String memberPw = request.getParameter("password");
     MemberLoginRequest memberLoginRequest = new MemberLoginRequest(memberEmail, memberPw);
     boolean result = memberService.checkLogin(memberLoginRequest);
-    System.out.println("result: "+result);
+    System.out.println("result: " + result);
     JSONObject jso = new JSONObject();
     jso.put("result", result);
     response.setContentType("text/html;charset=utf-8");

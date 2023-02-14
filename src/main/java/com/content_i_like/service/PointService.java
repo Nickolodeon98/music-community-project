@@ -1,12 +1,15 @@
 package com.content_i_like.service;
 
 import com.content_i_like.domain.dto.member.PointResponse;
+import com.content_i_like.domain.entity.Comment;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Point;
 import com.content_i_like.domain.enums.PointTypeEnum;
 import com.content_i_like.observer.events.notification.CommentNotificationEvent;
 import com.content_i_like.observer.events.notification.PointWelcomeNotificationEvent;
+import com.content_i_like.repository.CommentRepository;
 import com.content_i_like.repository.PointRepository;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Iterator;
@@ -23,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PointService {
 
   private final PointRepository pointRepository;
+  private final CommentRepository commentRepository;
   private final ApplicationEventPublisher applicationEventPublisher;
 
   /* 주의: income과 expense는 null이어서는 안된다 */
@@ -42,8 +46,8 @@ public class PointService {
   }
 
   //포인트 내역
-  public List<PointResponse> pointList(Member member) {
-    List<Point> points = pointRepository.findByMember(member);
+  public List<PointResponse> pointList(Member member, Pageable pageable) {
+    List<Point> points = pointRepository.findByMember(member, pageable);
     return points.stream().map(point -> point.toResponse()).collect(Collectors.toList());
   }
 
@@ -106,7 +110,7 @@ public class PointService {
           .member(member)
           .pointIncome(0L)
           .targetCommentNo(targetNo)
-          .targetRecommendNo(0l)
+          .targetRecommendNo(findRecommendByCommentNo(targetNo))
           .pointExpense(commentPoint)
           .build();
     } else {
@@ -121,5 +125,10 @@ public class PointService {
     }
 
     pointRepository.save(point);
+  }
+
+  public Long findRecommendByCommentNo(Long targetCommentNo) {
+    Comment comment = commentRepository.findById(targetCommentNo).get();
+    return comment.getRecommend().getRecommendNo();
   }
 }
