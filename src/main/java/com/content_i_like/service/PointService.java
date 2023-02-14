@@ -51,6 +51,8 @@ public class PointService {
         .member(member)
         .pointExpense(0l)
         .pointIncome(1000l)
+        .targetCommentNo(0l)
+        .targetRecommendNo(0l)
         .build();
 
     pointRepository.save(point);
@@ -60,13 +62,27 @@ public class PointService {
   }
 
   @Transactional
-  public void spendPoint(Member member, Long commentPoint) {
-    Point point = Point.builder()
-        .pointType(PointTypeEnum.COMMENTS)
-        .member(member)
-        .pointIncome(0L)
-        .pointExpense(commentPoint)
-        .build();
+  public void usePoint(Member member, Long commentPoint, PointTypeEnum pointTypeEnum, Long targetNo) {
+    Point point;
+    if (pointTypeEnum.equals(PointTypeEnum.WELCOME_POINT)) {
+      point = Point.builder()
+          .pointType(pointTypeEnum)
+          .member(member)
+          .pointIncome(0L)
+          .targetCommentNo(targetNo)
+          .targetRecommendNo(0l)
+          .pointExpense(commentPoint)
+          .build();
+    }else{
+      point = Point.builder()
+          .pointType(pointTypeEnum)
+          .member(member)
+          .pointIncome(0L)
+          .targetCommentNo(0L)
+          .targetRecommendNo(targetNo)
+          .pointExpense(commentPoint)
+          .build();
+    }
 
     pointRepository.save(point);
   }

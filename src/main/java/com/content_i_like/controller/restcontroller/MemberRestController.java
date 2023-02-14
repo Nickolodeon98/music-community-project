@@ -54,8 +54,8 @@ public class MemberRestController {
   }
 
   @GetMapping("/my/point")
-  public Response<MemberPointResponse> getMyPoint(final Authentication authentication) {
-    MemberPointResponse memberPointResponse = memberService.getMyPoint(authentication.getName());
+  public Response<MemberPointResponse> getMyPoint(final Authentication authentication, Pageable pageable) {
+    MemberPointResponse memberPointResponse = memberService.getMyPoint(authentication.getName(), pageable);
     return Response.success(memberPointResponse);
   }
 

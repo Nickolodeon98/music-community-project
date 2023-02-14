@@ -10,6 +10,7 @@ import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Point;
 import com.content_i_like.domain.entity.Recommend;
 import com.content_i_like.domain.enums.MemberStatusEnum;
+import com.content_i_like.domain.enums.PointTypeEnum;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.observer.events.notification.CommentNotificationEvent;
@@ -62,7 +63,7 @@ public class CommentService {
 
     // 댓글 알림 이벤트를 발생시킵니다.
 //    applicationEventPublisher.publishEvent(CommentNotificationEvent.of(post, comment));
-    pointService.spendPoint(member, request.getCommentPoint());
+    pointService.usePoint(member, request.getCommentPoint(), PointTypeEnum.COMMENTS, comment.getCommentNo());
     return new CommentResponse(comment.getCommentNo(), post.getRecommendNo(),
         comment.getCommentContent(), comment.getCommentPoint());
   }

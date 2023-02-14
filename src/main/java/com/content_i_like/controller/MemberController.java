@@ -18,6 +18,7 @@ import com.content_i_like.domain.dto.notification.NotificationThymeleafResponse;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.enums.GenderEnum;
+import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.service.MemberService;
 import com.content_i_like.service.NotificationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,12 +26,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -77,16 +80,18 @@ public class MemberController {
       HttpServletRequest request, Model model, Pageable pageable) {
 
     if (bindingResult.hasErrors()) {
-      return "pages/member/login";
+      return "redirect:/member/login";
     }
-    MemberLoginResponse response = memberService.login(memberLoginRequest);
-    List<NotificationThymeleafResponse> notificationsResponses = notificationService.getNotificationsThymeleafResponses(
-        response.getNickName(), pageable);
+    try {
+      MemberLoginResponse response = memberService.login(memberLoginRequest);
 
-    HttpSession session = request.getSession();   //세션이 있으면 있는 세션 반환, 없으면 신규 세션
-    session.setAttribute("loginUser", response);
-    session.setAttribute("notification", notificationsResponses);
-    log.info("로그인 완료");
+      HttpSession session = request.getSession();   //세션이 있으면 있는 세션 반환, 없으면 신규 세션
+      session.setAttribute("loginUser", response);
+      log.info("로그인 완료");
+    } catch (ContentILikeAppException e) {
+      log.info("에러 발생");
+      return "redirect:/member/login";
+    }
     return "redirect:/";
   }
 
@@ -157,28 +162,51 @@ public class MemberController {
     return "pages/member/my-profile";
   }
 
+  @GetMapping("/my/update")
+  public String modifyMyInfo(HttpServletRequest request, Model model) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/member/login";
+    }
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+
+    String email = memberService.getEmailByNo(loginResponse);
+    model.addAttribute("member", memberService.getMyInfo(email));
+    model.addAttribute("request", new MemberModifyRequest());
+    return "pages/member/modify-profile";
+  }
+
+  @PostMapping("/my/update")
+  public String modifyMyInfo(
+      @ModelAttribute("request") @Valid final MemberModifyRequest request,
+      HttpServletRequest servletRequest) throws IOException {
+    HttpSession session = servletRequest.getSession(false);
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+    String memberEmail = memberService.getEmailByNo(loginResponse);
+
+    MemberResponse memberResponse = memberService
+        .modifyMyInfoWithFile(request, memberEmail);
+    return "redirect:/member/my";
+  }
+
+
+  @GetMapping("/my/point/sample")
+  public String getMyPoint() {
+    return "pages/member/point-history";
+  }
 
   @GetMapping("/my/point")
-  public Response<MemberPointResponse> getMyPoint(final Authentication authentication) {
-    MemberPointResponse memberPointResponse = memberService.getMyPoint(authentication.getName());
-    return Response.success(memberPointResponse);
-  }
+  public String getMyPoint(HttpServletRequest request, Model model, Pageable pageable) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/member/login";
+    }
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+    String memberEmail = memberService.getEmailByNo(loginResponse);
 
-  @PutMapping("/my")
-  public Response<MemberResponse> modifyMyInfo(
-      @RequestPart(value = "dto") @Valid final MemberModifyRequest request,
-      @RequestPart(value = "file", required = false) MultipartFile file,
-      final Authentication authentication) throws IOException {
-    MemberResponse memberResponse = memberService
-        .modifyMyInfo(request, file, authentication.getName());
-    return Response.success(memberResponse);
-  }
-
-  @PutMapping("/my/profileImg")
-  public Response<String> updateProfileImg(@RequestPart(value = "file") MultipartFile file,
-      Authentication authentication) throws IOException {
-    String url = memberService.uploadProfileImg(authentication.getName(), file);
-    return Response.success(url);
+    MemberPointResponse memberPointResponse = memberService.getMyPoint(memberEmail, pageable);
+    model.addAttribute("response", memberPointResponse);
+    return "pages/member/point-history";
   }
 
 
@@ -235,28 +263,50 @@ public class MemberController {
     return "pages/member/myFeed-followings";
   }
 
+  //ajax 중복체크
+  @PostMapping("/nickNameChk")
+  public void memberChk(HttpServletRequest request, HttpServletResponse response, Model model)
+      throws IOException {
+    System.out.println("/member/nickNameChk");
+    String memberNickName = request.getParameter("nickName");
+    boolean result = memberService.checkMemberNickName(memberNickName);
+    JSONObject jso = new JSONObject();
+    jso.put("result", result);
 
-  @GetMapping("/session-info")
-  public String sessionInfo(HttpServletRequest request) {
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "세션이 없습니다.";
-    }
-    // 세션 id와 저장된 객체 정보 출력
-    System.out.println(session.getId() + ", " + session.getAttribute("loginUser"));
+    response.setContentType("text/html;charset=utf-8");
+    PrintWriter out = response.getWriter();
+    out.print(jso.toString());
+  }
 
-    //세션 데이터 출력
-    session.getAttributeNames().asIterator()
-        .forEachRemaining(
-            name -> log.info("session name={}, value={}", name, session.getAttribute(name)));
+  @PostMapping("/emailChk")
+  public void emailChk(HttpServletRequest request, HttpServletResponse response, Model model)
+      throws IOException {
+    System.out.println("/member/emailChk");
+    String memberEmail = request.getParameter("email");
+    boolean result = memberService.checkMemberEmail(memberEmail);
+    JSONObject jso = new JSONObject();
+    jso.put("result", result);
 
-    log.info("sessionId={}", session.getId());
-    log.info("getMaxInactiveInterval={}", session.getMaxInactiveInterval());
-    log.info("creationTime={}", new Date(session.getCreationTime()));
-    log.info("lastAccessedTime={}", new Date(session.getLastAccessedTime()));
-    log.info("isNew={}", session.isNew());
+    response.setContentType("text/html;charset=utf-8");
+    PrintWriter out = response.getWriter();
+    out.print(jso.toString());
+  }
 
-    return "세션 출력";
+  //ajax 로그인 체크
+  @PostMapping("/loginCheck")
+  public void loginCheck(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    System.out.println("/member/loginChk");
+    String memberEmail = request.getParameter("email");
+    String memberPw = request.getParameter("password");
+    MemberLoginRequest memberLoginRequest = new MemberLoginRequest(memberEmail, memberPw);
+    boolean result = memberService.checkLogin(memberLoginRequest);
+    System.out.println("result: "+result);
+    JSONObject jso = new JSONObject();
+    jso.put("result", result);
+    response.setContentType("text/html;charset=utf-8");
+    PrintWriter out = response.getWriter();
+    out.print(jso.toString());
 
   }
 }

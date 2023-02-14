@@ -30,6 +30,7 @@
             <div class="join-body">
               <span class="join-body-title">이메일*</span>
               <span> <input type="email" id="email" name="email" th:field="*{email}" placeholder="이메일" /></span>
+              <button type="button" onclick="fn_emailChk();" id="emailChk" class="button-check-nickname" value="N"> 가입확인 </button>
             </div>
 
             <div class="join-body">
@@ -45,7 +46,7 @@
             <div class="join-body">
               <span class="join-body-title">닉네임*</span>
               <span><input name="nickName" id="nickName" th:field="*{nickName}" placeholder="닉네임" /></span>
-              <button onclick="" id="button-check-nickname"> 중복확인 </button>
+              <button type="button" onclick="fn_nickNameChk();" id="nickNameChk" class="button-check-nickname" value="N"> 중복확인 </button>
             </div>
 
             <div class="join-body">
@@ -85,7 +86,7 @@
 
   </div>
 </div>
-
+<script type="text/javascript" th:src="@{/js/member.js}"></script>
 <script th:inline="javascript">
   function checkJoinForm(){
   var email = document.getElementById("email");
@@ -94,42 +95,54 @@
   var nickName = document.getElementById("nickName");
   var name = document.getElementById("name");
 
-  if(!checkExistData(email,"이메일"){
+  if(email.value==""){
      alert("이메일을 입력해주세요");
      email.focus();
     return false;
   }
-  if(!checkExistData(password,"비밀번호")){
+  if(password.value==""){
      alert("비밀번호을 입력해주세요");
      password.focus();
     return false;
   }
-  if(!checkExistData(doubleCheckPw,"비밀번호 확인")){
+  if(doubleCheckPw.value==""){
      alert("비밀번호를 한 번 더 입력해주세요");
      doubleCheckPw.focus();
     return false;
   }
-  if(!checkExistData(nickName,"닉네임")){
+  if(nickName.value==""){
      alert("닉네임을 입력해주세요");
      nickName.focus();
     return false;
   }
-  if(!checkExistData(name,"이름")){
+  if(name.value==""){
      alert("이름을 입력해주세요");
      name.focus();
     return false;
   }
+
+  if(!checkPw()){
+    password.focus();
+    return false;
+  }
+
   if(!checkAccept()){
     return false;
   }
-  alert("가입되었습니다.")
-  return true;
-}
 
-function checkExistData(value){
-  if(value==""){
+  if($("#emailChk").val() == "N"){
+    email.focus();
+    alert("이메일 가입 여부를 확인해주세요");
     return false;
   }
+
+  if($("#nickNameChk").val() == "N"){
+    nickName.focus();
+    alert("닉네임 중복 확인이 필요합니다.");
+    return false;
+  }
+
+  alert("가입되었습니다.");
   return true;
 }
 
@@ -141,6 +154,105 @@ function checkAccept(){
     return false;
   }
 }
+
+function checkAll(){
+    if(document.getElementById("all").checked==true){  //id 를 사용하여 하나의 객체만을 호출
+          for(var i=0;i<3;i++) document.getElementsByName("agreement")[i].checked=true;   //name 을 사용하여 배열 형태로 담아 호출
+       }
+       if(document.getElementById("all").checked==false){
+          for(var i=0;i<3;i++) document.getElementsByName("agreement")[i].checked=false;
+       }
+ }
+
+function checkPw() {
+
+	var p1 = document.getElementById('password').value;
+	var num = p1.search(/[0-9]/g);
+	var eng = p1.search(/[a-z]/ig);
+	var spe = p1.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+	var p2 = document.getElementById('doubleCheckPw').value;
+
+	if(p1.length < 8 || p1.length > 20) {
+			alert('비밀번호는 8~20글자여야합니다.');
+			return false;
+		}
+	if(p1.search(/\s/)!=-1){
+		alert('비밀번호는 공백없이 입력해주세요.');
+		return false;
+	}
+	if(num < 0 || eng < 0 || spe < 0 ){
+		alert("영문,숫자, 특수문자를 혼합한 8~20글자를 입력해주세요.");
+		return false;
+	}
+		if( p1 != p2 ) {
+			alert("비밀번호가 일치하지 않습니다.");
+			return false;
+		  }
+	return true;
+
+}
+
+function fn_nickNameChk(){
+
+                var params = {
+                nickName : $("#nickName").val()
+                }
+
+                $.ajax({
+                    url : "/member/nickNameChk",
+                    type : "post",
+                    dataType : 'json',
+                    data : params,
+
+
+                    success : function(result){
+
+                    var nickNameChk = result.result
+                        if(nickNameChk == false){
+                            $("#nickNameChk").attr("value", "N");
+                            alert("중복된 닉네임입니다.");
+
+                        }else if(nickNameChk == true){
+                            $("#nickNameChk").attr("value", "Y");
+                            alert("사용가능한 닉네임입니다.");
+
+                        }else if(nickNameChk == ""){
+                            alert("닉네임이 확인되지 않았습니다. 다시 시도해주세요");
+                        }
+                    }
+                })
+            }
+
+function fn_emailChk(){
+
+                var params = {
+                email : $("#email").val()
+                }
+
+                $.ajax({
+                    url : "/member/emailChk",
+                    type : "post",
+                    dataType : 'json',
+                    data : params,
+
+
+                    success : function(result){
+
+                    var emailChk = result.result
+                        if(emailChk == false){
+                            $("#emailChk").attr("value", "N");
+                            alert("이미 가입된 이메일입니다.");
+
+                        }else if(emailChk == true){
+                            $("#emailChk").attr("value", "Y");
+                            alert("가입 가능한 이메일입니다.");
+
+                        }else if(emailChk == ""){
+                            alert("이메일이 확인되지 않았습니다. 다시 시도해주세요");
+                        }
+                    }
+                })
+            }
 </script>
 </body>
 
