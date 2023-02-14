@@ -87,7 +87,8 @@ public class MemberService {
 
     String jwt = jwtService.generateToken(member);
 
-    return new MemberLoginResponse(jwt, member.getMemberNo(), member.getNickName(), member.getProfileImgUrl());
+    return new MemberLoginResponse(jwt, member.getMemberNo(), member.getNickName(),
+        member.getProfileImgUrl());
   }
 
   private Member validateExistingMember(String email) {
@@ -140,10 +141,10 @@ public class MemberService {
     return memberResponse;
   }
 
-  public MemberPointResponse getMyPoint(String memeberEmail) {
+  public MemberPointResponse getMyPoint(String memeberEmail, Pageable pageable) {
     Member member = validateExistingMember(memeberEmail);
     List<PointResponse> points = pointService.pointList(member);
-    return new MemberPointResponse(pointService.calculatePoint(member), points);
+    return new MemberPointResponse(pointService.calculatePoint(member), new PageImpl<>(points));
   }
 
   @Transactional
@@ -153,13 +154,34 @@ public class MemberService {
 
     uploadProfileImg(file, member);
 
-    doubleCheckPasswordAndUpdate(member, memberModifyRequest.getNewPassword(),
-        memberModifyRequest.getVerification());
+//    doubleCheckPasswordAndUpdate(member, memberModifyRequest.getNewPassword(),
+//        memberModifyRequest.getVerification());
     member.update(memberModifyRequest);
 
     MemberResponse memberResponse = MemberResponse
         .responseWithPoint(member, pointService.calculatePoint(member));
     return memberResponse;
+  }
+
+  @Transactional
+  public MemberResponse modifyMyInfoWithFile(MemberModifyRequest request, String memberEmail)
+      throws IOException {
+    Member member = validateExistingMember(memberEmail);
+    String url = getModifyProfileImgURL(request.getProfileImg(), member);
+    member.updateProfile(request, url);
+
+    MemberResponse memberResponse = MemberResponse
+        .responseWithPoint(member, pointService.calculatePoint(member));
+    return memberResponse;
+  }
+
+  private String getModifyProfileImgURL(MultipartFile image, Member member) throws IOException {
+    String url = member.getProfileImgUrl();
+    if (image == null) {
+      return null;
+    }
+    s3FileUploadService.deleteFile(url.split("/")[3]);
+    return s3FileUploadService.uploadFile(image);
   }
 
   private String uploadProfileImg(MultipartFile file, Member member) throws IOException {
@@ -203,7 +225,7 @@ public class MemberService {
     Long[] followerCnt = getFollowCnt(member);
 
     Page<RecommendListResponse> recommendListResponses = recommendRepository.findAllByMember(
-            pageable, member)
+        pageable, member)
         .map(RecommendListResponse::of);
 
     return new MemberRecommendResponse(member, followerCnt, recommendListResponses);
@@ -228,7 +250,7 @@ public class MemberService {
     log.info("member={}", member.getMemberNo());
 
     Page<RecommendListResponse> recommendListResponses = recommendRepository.findAllByMember(
-            pageable, member)
+        pageable, member)
         .map(RecommendListResponse::of);
 
     return new MemberRecommendResponse(member, followerCnt, recommendListResponses);
@@ -258,7 +280,7 @@ public class MemberService {
     Long[] followerCnt = getFollowCnt(member);
 
     Stream<FollowResponse> followResponseStream = followRepository.findAllByMember(
-            member, pageable).stream()
+        member, pageable).stream()
         .map(follow -> new FollowResponse(
             follow.getFromMemberNo(),
             memberRepository.findById(follow.getFromMemberNo()).get().getNickName(),
@@ -274,7 +296,7 @@ public class MemberService {
     Long[] followerCnt = getFollowCnt(member);
 
     Stream<FollowResponse> followResponseStream = followRepository.findAllByFromMemberNo(
-            member.getMemberNo(), pageable).stream()
+        member.getMemberNo(), pageable).stream()
         .map(follow -> new FollowResponse(
             follow.getMember().getMemberNo(),
             memberRepository.findById(follow.getMember().getMemberNo()).get().getNickName(),
@@ -294,5 +316,46 @@ public class MemberService {
   public String getEmailByNo(MemberLoginResponse response) {
     Optional<Member> member = memberRepository.findById(response.getMemberNo());
     return member.get().getEmail();
+  }
+
+  public boolean checkMemberNickName(String nickName) {
+    boolean result = false;
+    try {
+      String chkNickName = memberRepository.findByNickName(nickName).get().getNickName();
+      if (chkNickName.equals(nickName)) {
+        result = false;
+      }
+    } catch (Exception e) {
+      result = true;
+    }
+    return result;
+  }
+
+  public boolean checkMemberEmail(String email) {
+    boolean result = false;
+    try {
+      String chkEmail = memberRepository.findByEmail(email).get().getNickName();
+      if (chkEmail.equals(email)) {
+        result = false;
+      }
+    } catch (Exception e) {
+      result = true;
+    }
+    return result;
+  }
+
+  public boolean checkLogin(MemberLoginRequest memberLoginRequest) {
+    boolean result = false;
+    try {
+      Member member = memberRepository.findByEmail(memberLoginRequest.getEmail()).get();
+      if (passwordEncoder.matches(memberLoginRequest.getPassword(), member.getPassword())) {
+        result = true;
+      } else {
+        result = false;
+      }
+    } catch (Exception e) {
+        result = false;
+    }
+    return result;
   }
 }

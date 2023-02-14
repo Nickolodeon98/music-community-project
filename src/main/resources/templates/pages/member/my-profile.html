@@ -25,8 +25,8 @@
 
     <div class="profile-box">
       <div class="profile-title">
-        <span id="profile-name" th:text="${member.nickName}">얄리얄리얄라숑</span>
-        <span><input type="button" value="수정하기" class="modify-profile" onClick="location.href=''"/></span>
+        <span id="profile-name" th:text="${member.nickName}"></span>
+        <span><input type="button" value="수정하기" class="modify-profile" onClick="location.href='/member/my/update'"/></span>
       </div>
       <div class="show-point" th:text="'보유 Pt - '+${member.point}"></div>
       <div class="introduction" th:text="${member.introduction}"></div>
