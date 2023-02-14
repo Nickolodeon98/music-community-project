@@ -68,13 +68,4 @@
 /*    align-self: flex-end;*/
 /*}*/
 
-.sort-results {
-  width: 1400px;
-  height: 130px;
-  /*background-color: white;*/
-  margin-bottom: 50px;
-  border: solid white;
-  /*border-radius: 38px;*/
-  color: white;
-  font-size: 50px;
-}
+
