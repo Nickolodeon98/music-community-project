@@ -64,7 +64,7 @@ public class RecommendService {
     Track track = validateGetTrackByTrackNo(request.getTrackNo());
     String url = getUploadImageURL(request.getImage());
     Recommend post = saveRecommend(request, member, track, url);
-    pointService.usePoint(member, request.getRecommendPoint(), PointTypeEnum.RECOMMEND_POSTS);
+    pointService.usePoint(member, request.getRecommendPoint(), PointTypeEnum.RECOMMEND_POSTS, post.getRecommendNo());
     saveHashTags(request, post);
     return RecommendPostResponse.fromEntity(post);
   }
