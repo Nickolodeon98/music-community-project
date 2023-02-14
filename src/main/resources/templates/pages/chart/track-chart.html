@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document</title>
-  <script src="https://code.jquery.com/jquery-3.6.3.js"
-          integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
-          crossorigin="anonymous"></script>
-  <link rel="stylesheet" th:href="@{/css/style.css}">
-  <link rel="stylesheet" th:href="@{/css/track-chart.css}">
-  <link rel="stylesheet" th:href="@{/css/profile-style.css}">
-
+  <script
+      src="https://code.jquery.com/jquery-3.6.3.js"
+      integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+      crossorigin="anonymous"
+  ></script>
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/track-chart.css}" />
+  <link rel="stylesheet" th:href="@{/css/profile-style.css}" />
 </head>
 <body>
 <div class="container">
@@ -43,20 +43,21 @@
         </tr>
         <tr class="track-chart" th:each="chart : ${charts}">
           <td class="track-chart-no" th:text="${chartStat.count}">1</td>
-          <td class="track-chart-img"><img th:src="${chart.albumImageUrl}"></td>
-          <td id="track-title"><a th:href="@{/music/track/{trackNo}(trackNo = ${chart.trackNo})}" th:text="${chart.trackTitle}">My Hair</a></td>
+          <td class="track-chart-track" colspan="2">
+            <div>
+              <img th:src="${chart.albumImageUrl}" />
+              <span id="track-title">
+                    <a th:href="@{/music/track/{trackNo}(trackNo = ${chart.trackNo})}" th:text="${chart.trackTitle}">My Hair</a>
+                  </span>
+            </div>
+          </td>
           <td class="track-chart-artist-name" th:text="${chart.artistName}">Ariana Grande</td>
           <td class="track-chart-point" th:text="${chart.trackScore}">1600</td>
         </tr>
       </table>
-
     </div>
-
   </div>
 </div>
 </body>
-<script>
-
-
-</script>
+<script></script>
 </html>
