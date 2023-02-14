@@ -40,9 +40,8 @@ public class SearchService {
         String.format("총 %s개의 %s 찾았습니다.", pagedItems.getTotalElements(), message), pagedItems);
   }
 
-  public <T> SearchPageGetResponse<T> findWithKeyword(Pageable pageable, String searchKey,
-      String memberEmail, ItemSearch<T> searchTool) {
-    Member member = validate(memberEmail, new MemberValidation(memberRepository));
+  public <T> SearchPageGetResponse<T> findWithKeyword(Pageable pageable, String searchKey, ItemSearch<T> searchTool) {
+//    Member member = validate(memberEmail, new MemberValidation(memberRepository));
 
     Page<T> pagedItems = searchTool.search(searchKey, pageable);
 
@@ -67,22 +66,22 @@ public class SearchService {
   }
 
   public SearchPageGetResponse<TrackGetResponse> findTracksWithKeyword(Pageable pageable,
-      String searchKey, String memberEmail) {
-    return findWithKeyword(pageable, searchKey, memberEmail, new TracksSearchTool(trackRepository));
+      String searchKey) {
+    return findWithKeyword(pageable, searchKey, new TracksSearchTool(trackRepository));
   }
 
   public SearchPageGetResponse<SearchMembersResponse> findMembersWithKeyword(Pageable pageable,
-      String searchKey, String memberEmail) {
-    return findWithKeyword(pageable, searchKey, memberEmail, new MembersSearchTool(memberRepository));
+      String searchKey) {
+    return findWithKeyword(pageable, searchKey, new MembersSearchTool(memberRepository));
   }
 
   public SearchPageGetResponse<SearchRecommendsResponse> findRecommendsWithKeyword(Pageable pageable,
-      String searchKey, String memberEmail) {
-    return findWithKeyword(pageable, searchKey, memberEmail, new RecommendsSearchTool(recommendRepository));
+      String searchKey) {
+    return findWithKeyword(pageable, searchKey, new RecommendsSearchTool(recommendRepository));
   }
 
   public SearchPageGetResponse<SearchRecommendsResponse> findRecommendsWithMemberInfo(Pageable pageable,
-      String searchKey, String memberEmail) {
-    return findWithKeyword(pageable, searchKey, memberEmail, new RecommendsByMembersSearchTool(recommendRepository));
+      String searchKey) {
+    return findWithKeyword(pageable, searchKey, new RecommendsByMembersSearchTool(recommendRepository));
   }
 }
