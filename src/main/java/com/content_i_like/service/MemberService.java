@@ -86,7 +86,10 @@ public class MemberService {
     }
 
     String jwt = jwtService.generateToken(member);
-
+    boolean getPoint = pointService.getAttendancePoint(member);
+    if (!getPoint) {
+      pointService.giveAttendancePoint(member);
+    }
     return new MemberLoginResponse(jwt, member.getMemberNo(), member.getNickName(),
         member.getProfileImgUrl());
   }
@@ -354,7 +357,7 @@ public class MemberService {
         result = false;
       }
     } catch (Exception e) {
-        result = false;
+      result = false;
     }
     return result;
   }
