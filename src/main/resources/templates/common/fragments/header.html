@@ -50,9 +50,20 @@
 
 
       <span id="menu-alarm" class="menu-img">
-                <a href=""><img class="alarm-img" th:src="@{/img/bell-img.png}" src="../../../static/img/bell-img.png"></a>
-            </span>
-
+        <div class="dropdown">
+                <img class="alarm-img" th:src="@{/img/bell-img.png}"
+                                src="../../../static/img/bell-img.png">
+                  <div class="dropdown-content">
+                            <a href="#" class="profile-preview">
+                                <img th:src="${session.loginUser.profileImgUrl}" class="img-preview">
+                                <div class="name-preview" th:text="${session.loginUser.nickName}"></div>
+                            </a>
+                            <a href="/member/my">내 정보</a>
+                            <a href="/member/recommends">마이피드 보기</a>
+                            <a href="/member/logout">로그아웃</a>
+                        </div>
+            </div></span>
+<span>
                 <div class="dropdown">
                     <img th:src="${session.loginUser.profileImgUrl}" class="profile-img-preview">
                         <div class="dropdown-content">
