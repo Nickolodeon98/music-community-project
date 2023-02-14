@@ -144,8 +144,8 @@ public class MemberService {
     return memberResponse;
   }
 
-  public MemberPointResponse getMyPoint(String memeberEmail, Pageable pageable) {
-    Member member = validateExistingMember(memeberEmail);
+  public MemberPointResponse getMyPoint(String memberEmail, Pageable pageable) {
+    Member member = validateExistingMember(memberEmail);
     List<PointResponse> points = pointService.pointList(member);
     return new MemberPointResponse(pointService.calculatePoint(member), new PageImpl<>(points));
   }
@@ -181,7 +181,7 @@ public class MemberService {
   private String getModifyProfileImgURL(MultipartFile image, Member member) throws IOException {
     String url = member.getProfileImgUrl();
     if (image == null) {
-      return null;
+      return url;
     }
     s3FileUploadService.deleteFile(url.split("/")[3]);
     return s3FileUploadService.uploadFile(image);
@@ -360,5 +360,9 @@ public class MemberService {
       result = false;
     }
     return result;
+  }
+
+  public String changeHeaderProfileImg(MemberResponse memberResponse) {
+    return memberResponse.getProfileImgUrl();
   }
 }
