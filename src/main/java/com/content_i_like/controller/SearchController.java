@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Controller
@@ -79,7 +80,7 @@ public class SearchController {
       @ModelAttribute("keywordDto") final SearchRequest trackTitle,
       @ModelAttribute("sortStrategy") final SortStrategy sortStrategy,
       Pageable pageable,
-      @RequestParam(value="page", required = false) Integer pageNum,
+      @RequestParam(value = "page", required = false) Integer pageNum,
       Model model) {
 
     HttpSession session = httpRequest.getSession(false);
@@ -91,16 +92,20 @@ public class SearchController {
     Direction direction = SortEnum.TRACKS_SORT_DEFAULT.getDirection();
 
     if (sortStrategy != null) {
-      if (sortStrategy.getProperty() != null && !sortStrategy.getProperty().isEmpty())
+      if (sortStrategy.getProperty() != null && !sortStrategy.getProperty().isEmpty()) {
         property = sortStrategy.getProperty();
-      if (sortStrategy.getDirection() != null)
+      }
+      if (sortStrategy.getDirection() != null) {
         direction = sortStrategy.getDirection();
+      }
     }
 
-    pageable = PageRequest.of(pageable.getPageNumber(), SortEnum.TRACKS_SORT_DEFAULT.getScale(), Sort.by(direction, property));
+    pageable = PageRequest.of(pageable.getPageNumber(), SortEnum.TRACKS_SORT_DEFAULT.getScale(),
+        Sort.by(direction, property));
 
     SearchPageGetResponse<TrackGetResponse> trackResults =
-        searchService.findTracksWithKeyword(pageable, trackTitle.getKeyword(), "sjeon0730@gmail.com");
+        searchService.findTracksWithKeyword(pageable, trackTitle.getKeyword(),
+            "sjeon0730@gmail.com");
 
     model.addAttribute("trackResults", trackResults);
     model.addAttribute("trackResultsAsList", trackResults.getPages().toList());
@@ -135,7 +140,7 @@ public class SearchController {
       @ModelAttribute("keywordDto") final SearchRequest nickName,
       @ModelAttribute("sortStrategy") final SortStrategy sorting,
       Pageable pageable,
-      @RequestParam(value="page", required = false) Integer pageNum,
+      @RequestParam(value = "page", required = false) Integer pageNum,
       Model model) {
 
     HttpSession session = httpRequest.getSession(false);
@@ -147,16 +152,20 @@ public class SearchController {
     Direction direction = SortEnum.MEMBERS_SORT_DEFAULT.getDirection();
 
     if (sorting != null) {
-     if (sorting.getProperty() != null && !sorting.getProperty().isEmpty())
-       property = sorting.getProperty();
-     if (sorting.getDirection() != null)
-       direction = sorting.getDirection();
+      if (sorting.getProperty() != null && !sorting.getProperty().isEmpty()) {
+        property = sorting.getProperty();
+      }
+      if (sorting.getDirection() != null) {
+        direction = sorting.getDirection();
+      }
     }
 
-    pageable = PageRequest.of(pageable.getPageNumber(), SortEnum.MEMBERS_SORT_DEFAULT.getScale(), Sort.by(direction, property));
+    pageable = PageRequest.of(pageable.getPageNumber(), SortEnum.MEMBERS_SORT_DEFAULT.getScale(),
+        Sort.by(direction, property));
 
     SearchPageGetResponse<SearchMembersResponse> searchedMembers =
-        searchService.findMembersWithKeyword(pageable, nickName.getKeyword(), "sjeon0730@gmail.com");
+        searchService.findMembersWithKeyword(pageable, nickName.getKeyword(),
+            "sjeon0730@gmail.com");
 
     model.addAttribute("keyword", nickName.getKeyword());
     model.addAttribute("memberNickName", searchedMembers);
@@ -184,7 +193,7 @@ public class SearchController {
   public String searchRecommendsByKeyword(HttpServletRequest httpRequest,
       @ModelAttribute("keywordDto") final SearchRequest recommendTitle,
       @ModelAttribute("sortStrategy") final SortStrategy sortStrategy,
-      @RequestParam(value="page", required = false) Integer pageNum,
+      @RequestParam(value = "page", required = false) Integer pageNum,
       Pageable pageable,
       Model model) {
 
@@ -194,13 +203,16 @@ public class SearchController {
     if (sortStrategy == null) {
       log.info("null 값입니다.");
     } else {
-      if (sortStrategy.getProperty() != null && !sortStrategy.getProperty().isEmpty())
+      if (sortStrategy.getProperty() != null && !sortStrategy.getProperty().isEmpty()) {
         property = sortStrategy.getProperty();
-      if (sortStrategy.getDirection() != null)
+      }
+      if (sortStrategy.getDirection() != null) {
         direction = sortStrategy.getDirection();
+      }
     }
 
-    pageable = PageRequest.of(pageable.getPageNumber(), SortEnum.RECOMMENDS_SORT_DEFAULT.getScale(), Sort.by(direction, property));
+    pageable = PageRequest.of(pageable.getPageNumber(), SortEnum.RECOMMENDS_SORT_DEFAULT.getScale(),
+        Sort.by(direction, property));
 
     HttpSession session = httpRequest.getSession(false);
     if (session == null) {
@@ -208,7 +220,8 @@ public class SearchController {
     }
 
     SearchPageGetResponse<SearchRecommendsResponse> pagedResponseRecommends =
-        searchService.findRecommendsWithKeyword(pageable, recommendTitle.getKeyword(), "sjeon0730@gmail.com");
+        searchService.findRecommendsWithKeyword(pageable, recommendTitle.getKeyword(),
+            "sjeon0730@gmail.com");
 
     model.addAttribute("recommendsList", pagedResponseRecommends);
     model.addAttribute("recommendsListAsList", pagedResponseRecommends.getPages().toList());
@@ -222,7 +235,7 @@ public class SearchController {
   public String searchAll(HttpServletRequest httpRequest,
       @ModelAttribute("keywordDto") final SearchRequest searchKeyword,
       @ModelAttribute("sortStrategy") final SortStrategy sort,
-      @PageableDefault(size=2, direction=Direction.DESC) Pageable pageable,
+      @PageableDefault(size = 2, direction = Direction.DESC) Pageable pageable,
       Model model) {
 
     HttpSession session = httpRequest.getSession(false);
@@ -230,16 +243,20 @@ public class SearchController {
       return "redirect:/member/login";
     }
 
-    pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sort.getProperty()));
+    pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+        Sort.by(sort.getProperty()));
 
     SearchPageGetResponse<TrackGetResponse> trackResults =
-        searchService.findTracksWithKeyword(pageable, searchKeyword.getKeyword(), "sjeon0730@gmail.com");
+        searchService.findTracksWithKeyword(pageable, searchKeyword.getKeyword(),
+            "sjeon0730@gmail.com");
 
     SearchPageGetResponse<SearchMembersResponse> searchedMembers =
-        searchService.findMembersWithKeyword(pageable, searchKeyword.getKeyword(), "sjeon0730@gmail.com");
+        searchService.findMembersWithKeyword(pageable, searchKeyword.getKeyword(),
+            "sjeon0730@gmail.com");
 
     SearchPageGetResponse<SearchRecommendsResponse> pagedResponseRecommends =
-        searchService.findRecommendsWithKeyword(pageable, searchKeyword.getKeyword(), "sjeon0730@gmail.com");
+        searchService.findRecommendsWithKeyword(pageable, searchKeyword.getKeyword(),
+            "sjeon0730@gmail.com");
 
     model.addAttribute("tracks", trackResults);
     model.addAttribute("tracksAsList", trackResults.getPages().toList());
@@ -250,5 +267,41 @@ public class SearchController {
     model.addAttribute("recommendsAsList", pagedResponseRecommends.getPages().toList());
 
     return "pages/search/search-all";
+  }
+
+//  @GetMapping("/tracks/modal")
+//  public void searchTracksByKeywordFromModal(
+//      @ModelAttribute("keywordDto") final SearchRequest trackTitle,
+//      Pageable pageable,
+//      @RequestParam(value = "page", required = false) Integer pageNum,
+//      Model model) {
+//
+//    pageable = PageRequest.of(pageable.getPageNumber(), 8, Sort.by("track_title").ascending());
+//
+//    SearchPageGetResponse<TrackGetResponse> trackResults =
+//        searchService.findTracksWithKeyword(pageable, trackTitle.getKeyword(),
+//            "sjeon0730@gmail.com");
+//
+//    model.addAttribute("trackResults", trackResults);
+//    model.addAttribute("trackResultsAsList", trackResults.getPages().toList());
+//    model.addAttribute("pageable", pageable);
+//    model.addAttribute("keyword", trackTitle.getKeyword());
+//  }
+
+  @GetMapping("/tracks/modal")
+  @ResponseBody // indicates that the response should be serialized as JSON
+  public SearchPageGetResponse<TrackGetResponse> searchTracksByKeywordFromModal(
+      @RequestParam(name = "keyword") String keyword,
+      Pageable pageable,
+      @RequestParam(value = "page", required = false) Integer pageNum) {
+
+    pageable = PageRequest.of(pageable.getPageNumber(), 5, Sort.by("trackTitle").ascending());
+
+
+    SearchPageGetResponse<TrackGetResponse> trackResults =
+        searchService.findTracksWithKeyword(pageable, keyword,
+            "sjeon0730@gmail.com");
+
+    return trackResults;
   }
 }
