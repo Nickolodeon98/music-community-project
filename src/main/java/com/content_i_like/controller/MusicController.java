@@ -28,15 +28,9 @@ public class MusicController {
   private final MusicService musicService;
 
   @GetMapping("/track")
-  public String showTrackInfo(HttpServletRequest httpRequest,
-      @RequestParam(value="pk", required = false) Long trackPK,
+  public String showTrackInfo(@RequestParam(value="pk", required = false) Long trackPK,
       @RequestParam(value="page", required = false) Integer pageNum,
       Model model) {
-
-    HttpSession session = httpRequest.getSession(false);
-    if (session == null) {
-      return "redirect:/member/login";
-    }
 
     TrackGetResponse trackAndRecommends = musicService.getASingleTrackInfo(trackPK, "sjeon0730@gmail.com");
 
