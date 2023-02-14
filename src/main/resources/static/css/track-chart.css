@@ -42,9 +42,9 @@ a{
 }
 .left-menu {
   width: 200px;
-  height: 50px;
+  height: 90px;
   margin: 143px 0 32px 0;
-  border-radius: 45px 0px 0px 45px;
+  border-radius: 20px 0px 0px 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,9 +52,9 @@ a{
 
 .right-menu {
   width: 200px;
-  height: 50px;
+  height: 90px;
   margin: 143px 15px 32px 0;
-  border-radius: 0 45px 45px 0;
+  border-radius: 0 20px 20px 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -97,7 +97,19 @@ a{
   color: white;
 }
 
-.track-chart-img img {
+.track-chart-track {
+  height: 185px;
+  text-align: left;
+  padding-left: 50px;
+}
+
+.track-chart-track > div {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.track-chart-track img {
   width: 185px;
   height: 185px;
   border-radius: 25px;
@@ -108,7 +120,8 @@ a{
 }
 
 .track-chart-img {
-  text-align: right;
+  text-align: left;
+  width: 185px;
 }
 
 .track-chart-img img {
@@ -124,15 +137,14 @@ a{
 }
 
 #track-title {
-  margin-bottom: 25px;
   font-size: 28px;
   color: white;
-  vertical-align: top;
+  vertical-align: center;
   text-align: left;
 }
 
 .track-chart {
-  height: 100px;
+  height: 250px;
   font-size: 24px;
   color: white;
 }
