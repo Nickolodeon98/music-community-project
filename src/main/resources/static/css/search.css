@@ -170,6 +170,16 @@
   font-size: 24px;
 }
 
+.page-button {
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  width: 60px;
+  float: left;
+  border: none;
+  /*color: white;*/
+}
+
 .page-button-prev {
   margin: auto;
   display: flex;
