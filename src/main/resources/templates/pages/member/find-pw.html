@@ -24,10 +24,10 @@
         <div class="login-hello">비밀번호 찾기</div>
         <div class="login-message">도움이 필요하신가요? 아래 정보를 입력해주세요</div>
         <div class="login-form">
-          <form th:action="@{/member/passwd/find_pw}" method="post" class="login-form" th:object="${request}">
+          <form th:action="@{/member/passwd/find_pw}" method="post" class="login-form" th:object="${request}" onsubmit="return findPwForm();">
             <input type="text" name="name" th:field="*{name}" class="find-by-username" placeholder="  이름"/>
             <input type="email" name="email" th:field="*{email}" placeholder="  이메일"/>
-            <input type="submit" value="확인" onclick="alert('올바른 정보 입력 시 메일로 임시비밀번호를 발송됩니다. 다음 화면이 뜰 때까지 기다려주세요.')"/>
+            <input type="submit" value="확인" />
           </form>
         </div>
         <div class="login-service">
@@ -62,7 +62,26 @@
 
 </div>
 </div>
+<script th:inline="javascript">
+  function findPwForm(){
+  var name = document.getElementById("name");
+  var email = document.getElementById("email");
+   if(name.value==""){
+    alert("이름을 입력해주세요.");
+    password.focus();
+    return false;
+  }
 
+  if(email.value==""){
+    alert("이메일을 입력해주세요.");
+    email.focus();
+    return false;
+  }
+
+  alert("올바른 정보 입력 시 메일로 임시비밀번호를 발송됩니다. 다음 화면이 뜰 때까지 기다려주세요.");
+  return true;
+}
+</script>
 </body>
 
 </html>
