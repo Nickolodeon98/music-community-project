@@ -2,6 +2,7 @@ package com.content_i_like.service;
 
 import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.chart.RecommendChartResponse;
+import com.content_i_like.domain.dto.chart.TrackChartResponse;
 import com.content_i_like.repository.ChartQueryRepository;
 import com.querydsl.core.Tuple;
 import java.util.List;
@@ -25,4 +26,13 @@ public class ChartService {
     return chartQueryRepository.getWeeklyRecommendChartTop10();
   }
 
+  @Transactional
+  public List<TrackChartResponse> getMonthlyTrackChart() throws Exception {
+    return chartQueryRepository.getMonthlyTrackChartTop10();
+  }
+
+  @Transactional
+  public List<TrackChartResponse> getWeeklyTrackChart() throws Exception {
+    return chartQueryRepository.getWeeklyTrackChartTop10();
+  }
 }

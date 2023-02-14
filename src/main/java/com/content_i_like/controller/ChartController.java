@@ -22,7 +22,6 @@ public class ChartController {
   public String getMonthlyRecommendChart(Model model) throws Exception {
     model.addAttribute("charts", chartService.getMonthlyRecommendChart());
     return "/pages/chart/recommend-chart";
-
   }
 
   @GetMapping("/recommend-weekly")
@@ -30,4 +29,16 @@ public class ChartController {
     model.addAttribute("charts", chartService.getWeeklyRecommendChart());
     return "/pages/chart/recommend-chart";
   }
+
+  @GetMapping("/track-monthly")
+  public String getMonthlyTrackChart(Model model) throws Exception {
+    model.addAttribute("charts", chartService.getMonthlyTrackChart());
+    return "/pages/chart/track-chart";
+  }
+  @GetMapping("/track-weekly")
+  public String getWeeklyTrackChart(Model model) throws Exception {
+    model.addAttribute("charts", chartService.getWeeklyTrackChart());
+    return "/pages/chart/track-chart";
+  }
+
 }

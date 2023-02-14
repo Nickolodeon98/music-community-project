@@ -2,6 +2,7 @@ package com.content_i_like.controller.restcontroller;
 
 import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.chart.RecommendChartResponse;
+import com.content_i_like.domain.dto.chart.TrackChartResponse;
 import com.content_i_like.service.ChartService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,5 +30,21 @@ public class ChartRestController {
   @GetMapping("/recommend-weekly")
   public Response<List<RecommendChartResponse>> getWeeklyRecommendChart() throws Exception {
     return Response.success(chartService.getWeeklyRecommendChart());
+  }
+
+  @GetMapping("/track-monthly")
+  public Response<List<TrackChartResponse>> getMonthlyTrackChart() throws Exception {
+    List<TrackChartResponse> findChart = chartService.getMonthlyTrackChart();
+
+    log.info("chart = {}", findChart);
+    return Response.success(findChart);
+  }
+
+  @GetMapping("/track-weekly")
+  public Response<List<TrackChartResponse>> getWeeklyTrackChart() throws Exception {
+    List<TrackChartResponse> findChart = chartService.getWeeklyTrackChart();
+
+    log.info("chart = {}", findChart);
+    return Response.success(findChart);
   }
 }
