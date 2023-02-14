@@ -30,6 +30,7 @@
             <div class="join-body">
               <span class="join-body-title">이메일*</span>
               <span> <input type="email" id="email" name="email" th:field="*{email}" placeholder="이메일" /></span>
+              <button type="button" onclick="fn_emailChk();" id="emailChk" class="button-check-nickname" value="N"> 가입확인 </button>
             </div>
 
             <div class="join-body">
@@ -45,7 +46,7 @@
             <div class="join-body">
               <span class="join-body-title">닉네임*</span>
               <span><input name="nickName" id="nickName" th:field="*{nickName}" placeholder="닉네임" /></span>
-              <button onclick="" id="button-check-nickname"> 중복확인 </button>
+              <button type="button" onclick="fn_nickNameChk();" id="nickNameChk" class="button-check-nickname" value="N"> 중복확인 </button>
             </div>
 
             <div class="join-body">
@@ -129,6 +130,18 @@
     return false;
   }
 
+  if($("#emailChk").val() == "N"){
+    email.focus();
+    alert("이메일 가입 여부를 확인해주세요");
+    return false;
+  }
+
+  if($("#nickNameChk").val() == "N"){
+    nickName.focus();
+    alert("닉네임 중복 확인이 필요합니다.");
+    return false;
+  }
+
   alert("가입되었습니다.");
   return true;
 }
@@ -178,6 +191,68 @@ function checkPw() {
 	return true;
 
 }
+
+function fn_nickNameChk(){
+
+                var params = {
+                nickName : $("#nickName").val()
+                }
+
+                $.ajax({
+                    url : "/member/nickNameChk",
+                    type : "post",
+                    dataType : 'json',
+                    data : params,
+
+
+                    success : function(result){
+
+                    var nickNameChk = result.result
+                        if(nickNameChk == false){
+                            $("#nickNameChk").attr("value", "N");
+                            alert("중복된 닉네임입니다.");
+
+                        }else if(nickNameChk == true){
+                            $("#nickNameChk").attr("value", "Y");
+                            alert("사용가능한 닉네임입니다.");
+
+                        }else if(nickNameChk == ""){
+                            alert("닉네임이 확인되지 않았습니다. 다시 시도해주세요");
+                        }
+                    }
+                })
+            }
+
+function fn_emailChk(){
+
+                var params = {
+                email : $("#email").val()
+                }
+
+                $.ajax({
+                    url : "/member/emailChk",
+                    type : "post",
+                    dataType : 'json',
+                    data : params,
+
+
+                    success : function(result){
+
+                    var emailChk = result.result
+                        if(emailChk == false){
+                            $("#emailChk").attr("value", "N");
+                            alert("이미 가입된 이메일입니다.");
+
+                        }else if(emailChk == true){
+                            $("#emailChk").attr("value", "Y");
+                            alert("가입 가능한 이메일입니다.");
+
+                        }else if(emailChk == ""){
+                            alert("이메일이 확인되지 않았습니다. 다시 시도해주세요");
+                        }
+                    }
+                })
+            }
 </script>
 </body>
 
