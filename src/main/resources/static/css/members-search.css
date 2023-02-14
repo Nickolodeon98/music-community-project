@@ -49,3 +49,26 @@
     margin: auto;
     text-align: center;
 }
+
+#member-nickName:checked:checked ~ .member-nickName,
+#member-createdAt:checked:checked ~ .member-createdAt {
+    border-color: white;
+    border-style: double;
+    background: #1c1406;
+}
+
+#member-nickName:checked:checked ~ .member-nickName .circle,
+#member-createdAt:checked:checked ~ .member-createdAt .circle {
+    background: #fff;
+}
+
+#member-nickName:checked:checked ~ .member-nickName .circle::before,
+#member-createdAt:checked:checked ~ .member-createdAt .circle::before {
+    opacity: 1;
+    transform: scale(1);
+}
+
+#member-nickName:checked:checked ~ .member-nickName span,
+#member-createdAt:checked:checked ~ .member-createdAt span {
+    color: #fff;
+}

@@ -51,7 +51,7 @@ public class SearchRestController {
     Pageable pageable = PageRequest.of(0, 20, Sort.by(sort).descending());
 
     SearchPageGetResponse<TrackGetResponse> searchResults =
-        searchService.findTracksWithKeyword(pageable, trackTitle, authentication.getName());
+        searchService.findTracksWithKeyword(pageable, trackTitle);
 
     return Response.success(searchResults);
   }
@@ -78,7 +78,7 @@ public class SearchRestController {
     Pageable pageable = PageRequest.of(0, 20, Sort.by(sort).descending());
 
     SearchPageGetResponse<SearchMembersResponse> searchedMembers =
-        searchService.findMembersWithKeyword(pageable, nickName, authentication.getName());
+        searchService.findMembersWithKeyword(pageable, nickName);
 
     return Response.success(searchedMembers);
   }
@@ -92,7 +92,7 @@ public class SearchRestController {
     Pageable pageable = PageRequest.of(0, 20, Sort.by(sort).descending());
 
     SearchPageGetResponse<SearchRecommendsResponse> pagedResponseRecommends =
-        searchService.findRecommendsWithKeyword(pageable, recommendTitle, authentication.getName());
+        searchService.findRecommendsWithKeyword(pageable, recommendTitle);
 
     return Response.success(pagedResponseRecommends);
   }
@@ -106,7 +106,7 @@ public class SearchRestController {
     Pageable pageable = PageRequest.of(0, 20, Sort.by(sort).descending());
 
     SearchPageGetResponse<SearchRecommendsResponse> pagedResponseRecommends =
-        searchService.findRecommendsWithMemberInfo(pageable, memberNickName, authentication.getName());
+        searchService.findRecommendsWithMemberInfo(pageable, memberNickName);
 
     return Response.success(pagedResponseRecommends);
   }

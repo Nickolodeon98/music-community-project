@@ -67,3 +67,50 @@ span.recommend-date {
 
 
 }
+
+#recommend-views:checked:checked ~ .recommend-views,
+#recommend-points:checked:checked ~ .recommend-points,
+#recommend-title:checked:checked ~ .recommend-title,
+#recommend-date:checked:checked ~ .recommend-date {
+  border-color: white;
+  border-style: double;
+  background: #1c1406;
+}
+
+#recommend-views:checked:checked ~ .recommend-views .circle,
+#recommend-points:checked:checked ~ .recommend-points .circle
+#recommend-title:checked:checked ~ .recommend-title .circle,
+#recommend-date:checked:checked ~ .recommend-date .circle {
+  background: #fff;
+}
+
+#recommend-views:checked:checked ~ .recommend-views .circle::before,
+#recommend-points:checked:checked ~ .recommend-points .circle::before,
+#recommend-title:checked:checked ~ .recommend-title .circle::before,
+#recommend-date:checked:checked ~ .recommend-date .circle::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+#recommend-views:checked:checked ~ .recommend-views span,
+#recommend-points:checked:checked ~ .recommend-points span,
+#recommend-points:checked:checked ~ .recommend-points .circle::before,
+#recommend-title:checked:checked ~ .recommend-title span,
+#recommend-date:checked:checked ~ .recommend-date span {
+  color: #fff;
+}
+
+.filtering-sort-properties {
+  width: 650px;
+  height: 50px;
+  display: inline-flex;
+  background: #1c1406;
+  justify-content: space-evenly;
+  align-items: center;
+  border-radius: 5px;
+  padding: 20px 15px;
+  box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.2);
+  margin: auto;
+  align-self: center;
+
+}

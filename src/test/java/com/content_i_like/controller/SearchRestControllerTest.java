@@ -134,8 +134,7 @@ class SearchRestControllerTest {
     @DisplayName("성공")
     void success_search_by_keyword() throws Exception {
       String searchKey = "Horizon";
-      given(searchService.findTracksWithKeyword(eq(setPageable("trackNo")), eq(searchKey),
-          any())).willReturn(pagedTracksWithMessage);
+      given(searchService.findTracksWithKeyword(eq(setPageable("trackNo")), eq(searchKey))).willReturn(pagedTracksWithMessage);
 
       mockMvc.perform(get(BASE_URL + "tracks/" + searchKey).with(csrf()))
           .andExpect(status().isOk())
@@ -146,7 +145,7 @@ class SearchRestControllerTest {
               .value("YOUNHA 6th Album Repackage 'END THEORY : Final Edition'"))
           .andDo(print());
 
-      verify(searchService).findTracksWithKeyword(eq(setPageable("trackNo")), eq(searchKey), any());
+      verify(searchService).findTracksWithKeyword(eq(setPageable("trackNo")), eq(searchKey));
     }
   }
 
@@ -177,16 +176,14 @@ class SearchRestControllerTest {
     @Test
     @DisplayName("성공")
     void success_search_by_keyword() throws Exception {
-      given(searchService.findMembersWithKeyword(eq(setPageable("createdAt")), eq(nickName),
-          any())).willReturn(membersPage);
+      given(searchService.findMembersWithKeyword(eq(setPageable("createdAt")), eq(nickName))).willReturn(membersPage);
 
       mockMvc.perform(get(BASE_URL + "members/" + nickName).with(csrf()))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.result.message").value("총 1명의 사용자를 찾았습니다."))
           .andDo(print());
 
-      verify(searchService).findMembersWithKeyword(eq(setPageable("createdAt")), eq(nickName),
-          any());
+      verify(searchService).findMembersWithKeyword(eq(setPageable("createdAt")), eq(nickName));
     }
   }
 
@@ -197,7 +194,7 @@ class SearchRestControllerTest {
     @Test
     @DisplayName("성공")
     void success_search_recommends_by_keyword() throws Exception {
-      given(searchService.findRecommendsWithKeyword(eq(setPageable("recommendNo")),eq(recommendTitle), any()))
+      given(searchService.findRecommendsWithKeyword(eq(setPageable("recommendNo")),eq(recommendTitle)))
           .willReturn(pagedRecommends);
 
       mockMvc.perform(get(BASE_URL + "/recommends/" + recommendTitle).with(csrf()))
@@ -205,13 +202,13 @@ class SearchRestControllerTest {
           .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
           .andDo(print());
 
-      verify(searchService).findRecommendsWithKeyword(eq(setPageable("recommendNo")),eq(recommendTitle), any());
+      verify(searchService).findRecommendsWithKeyword(eq(setPageable("recommendNo")),eq(recommendTitle));
     }
 
     @Test
     @DisplayName("성공 - 사용자 이름으로 검색")
     void success_search_recommends_by_nickname() throws Exception {
-      given(searchService.findRecommendsWithMemberInfo(eq(setPageable("recommendNo")), eq(nickName), any()))
+      given(searchService.findRecommendsWithMemberInfo(eq(setPageable("recommendNo")), eq(nickName)))
           .willReturn(pagedRecommends);
 
       mockMvc.perform(get(BASE_URL + "recommends/" + nickName).with(csrf()))
@@ -220,7 +217,7 @@ class SearchRestControllerTest {
           .andExpect(jsonPath("$.result.content").exists())
           .andDo(print());
 
-      verify(searchService).findRecommendsWithMemberInfo(eq(setPageable("recommendsNo")), eq(nickName), any());
+      verify(searchService).findRecommendsWithMemberInfo(eq(setPageable("recommendsNo")), eq(nickName));
     }
   }
 }
