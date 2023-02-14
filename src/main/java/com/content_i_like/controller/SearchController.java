@@ -7,6 +7,7 @@ import com.content_i_like.domain.dto.search.SearchPageGetResponse;
 import com.content_i_like.domain.dto.search.SearchRecommendsResponse;
 import com.content_i_like.domain.dto.search.SearchRequest;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
+import com.content_i_like.domain.enums.SortEnum;
 import com.content_i_like.service.CacheService;
 import com.content_i_like.service.SearchService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -77,7 +78,7 @@ public class SearchController {
   public String searchTracksByKeyword(HttpServletRequest httpRequest,
       @ModelAttribute("keywordDto") final SearchRequest trackTitle,
       @ModelAttribute("sortStrategy") final SortStrategy sortStrategy,
-      @PageableDefault(size=8, sort="trackTitle", direction= Direction.DESC) Pageable pageable,
+      Pageable pageable,
       @RequestParam(value="page", required = false) Integer pageNum,
       Model model) {
 
@@ -86,12 +87,17 @@ public class SearchController {
     if (session == null) {
       return "redirect:/member/login";
     }
+    String property = SortEnum.TRACKS_SORT_DEFAULT.getSortBy();
+    Direction direction = SortEnum.TRACKS_SORT_DEFAULT.getDirection();
 
-    String property = "trackTitle";
-    if (sortStrategy != null && sortStrategy.getProperty() != null && !sortStrategy.getProperty().isEmpty())
-      property = sortStrategy.getProperty();
+    if (sortStrategy != null) {
+      if (sortStrategy.getProperty() != null && !sortStrategy.getProperty().isEmpty())
+        property = sortStrategy.getProperty();
+      if (sortStrategy.getDirection() != null)
+        direction = sortStrategy.getDirection();
+    }
 
-    pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(property));
+    pageable = PageRequest.of(pageable.getPageNumber(), SortEnum.TRACKS_SORT_DEFAULT.getScale(), Sort.by(direction, property));
 
     SearchPageGetResponse<TrackGetResponse> trackResults =
         searchService.findTracksWithKeyword(pageable, trackTitle.getKeyword(), "sjeon0730@gmail.com");
@@ -110,10 +116,25 @@ public class SearchController {
     return "pages/search/tracks-search";
   }
 
+  @PostMapping("/members")
+  public String searchMembersPage(HttpServletRequest httpRequest, Model model) {
+    HttpSession session = httpRequest.getSession(false);
+
+    if (session == null) {
+      return "redirect:/member/login";
+    }
+
+    SortStrategy sorting = SortStrategy.builder().build();
+    model.addAttribute("sortStrategy", sorting);
+
+    return "redirect:/search/members";
+  }
+
   @GetMapping("/members")
   public String searchMembersByKeyword(HttpServletRequest httpRequest,
       @ModelAttribute("keywordDto") final SearchRequest nickName,
-      @PageableDefault(sort="createdAt", direction= Direction.DESC) Pageable pageable,
+      @ModelAttribute("sortStrategy") final SortStrategy sorting,
+      Pageable pageable,
       @RequestParam(value="page", required = false) Integer pageNum,
       Model model) {
 
@@ -121,6 +142,18 @@ public class SearchController {
     if (session == null) {
       return "redirect:/member/login";
     }
+
+    String property = SortEnum.MEMBERS_SORT_DEFAULT.getSortBy();
+    Direction direction = SortEnum.MEMBERS_SORT_DEFAULT.getDirection();
+
+    if (sorting != null) {
+     if (sorting.getProperty() != null && !sorting.getProperty().isEmpty())
+       property = sorting.getProperty();
+     if (sorting.getDirection() != null)
+       direction = sorting.getDirection();
+    }
+
+    pageable = PageRequest.of(pageable.getPageNumber(), SortEnum.MEMBERS_SORT_DEFAULT.getScale(), Sort.by(direction, property));
 
     SearchPageGetResponse<SearchMembersResponse> searchedMembers =
         searchService.findMembersWithKeyword(pageable, nickName.getKeyword(), "sjeon0730@gmail.com");
@@ -133,12 +166,41 @@ public class SearchController {
     return "pages/search/members-search";
   }
 
+  @PostMapping("/recommends")
+  public String searchRecommendsPage(HttpServletRequest httpRequest, Model model) {
+    HttpSession session = httpRequest.getSession(false);
+
+    if (session == null) {
+      return "redirect:/member/login";
+    }
+
+    SortStrategy sorting = SortStrategy.builder().build();
+    model.addAttribute("sortStrategy", sorting);
+
+    return "redirect:/search/recommends";
+  }
+
   @GetMapping("/recommends")
   public String searchRecommendsByKeyword(HttpServletRequest httpRequest,
       @ModelAttribute("keywordDto") final SearchRequest recommendTitle,
+      @ModelAttribute("sortStrategy") final SortStrategy sortStrategy,
       @RequestParam(value="page", required = false) Integer pageNum,
-      @PageableDefault(size=5, sort="createdAt", direction = Direction.DESC) Pageable pageable,
+      Pageable pageable,
       Model model) {
+
+    String property = SortEnum.RECOMMENDS_SORT_DEFAULT.getSortBy();
+    Direction direction = SortEnum.RECOMMENDS_SORT_DEFAULT.getDirection();
+
+    if (sortStrategy == null) {
+      log.info("null 값입니다.");
+    } else {
+      if (sortStrategy.getProperty() != null && !sortStrategy.getProperty().isEmpty())
+        property = sortStrategy.getProperty();
+      if (sortStrategy.getDirection() != null)
+        direction = sortStrategy.getDirection();
+    }
+
+    pageable = PageRequest.of(pageable.getPageNumber(), SortEnum.RECOMMENDS_SORT_DEFAULT.getScale(), Sort.by(direction, property));
 
     HttpSession session = httpRequest.getSession(false);
     if (session == null) {
