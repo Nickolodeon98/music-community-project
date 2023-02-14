@@ -47,7 +47,7 @@
             <div>
               <img th:src="${chart.albumImageUrl}" />
               <span id="track-title">
-                    <a th:href="@{/music/track/{trackNo}(trackNo = ${chart.trackNo})}" th:text="${chart.trackTitle}">My Hair</a>
+                    <a th:href="@{/music/track(pk=${trackNo})}" th:text="${chart.trackTitle}">My Hair</a>
                   </span>
             </div>
           </td>
