@@ -94,27 +94,37 @@
 </div>
 
 <!-- 위치 재설정 모달 -->
-<div id="modal-search-music" role="dialog" tabindex="-1" data-bs-backdrop="static"
-     data-bs-keyboard="false">
-  <div class="" role="document">
-    <div class="modal-content">
-      <div class="modal-header" style="border-bottom-color: rgb(255,255,255);">
-        <input type="text" placeholder="찾으시는 음악을 입력해 주세요">
-        <span></span>
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="close" onclick="closeModal()">&times;</div>
+    </div>
+    <div class="modal-search">
+      <div>
+        <input id="track-search-input" type="text" placeholder="찾으시는 음악을 입력해주세요">
       </div>
-
-      <div class="modal-body">
-
+      <div id="modal-search-button">검색</div>
+    </div>
+    <div class="modal-search-result">
+      <div class="modal-search-track">
+        <div class="modal-search-img"><img th:src="@{/img/event-horizon.jpg}"></div>
+        <div class="modal-search-info">
+          <div class="modal-track-title" >제목</div>
+          <div class="modal-track-artist">가수</div>
+          <input type="hidden" name="trackNo"/>
+        </div>
       </div>
+      <div class="modal-line"></div>
     </div>
   </div>
 </div>
+
+
 </body>
 <script>
   $(".button-exit").on("click", function () {
     location.href = "../";
   });
-  
 
   $("#btn-submit").on("click", function () {
     console.log("click");
@@ -171,6 +181,15 @@
     preview.src = URL.createObjectURL(file);
   });
 
+  function openModal() {
+    document.getElementById("myModal").style.display = "block";
+  }
+
+  document.getElementById("button-search").addEventListener("click", openModal);
+
+  function closeModal() {
+    document.getElementById("myModal").style.display = "none";
+  }
 
 </script>
 

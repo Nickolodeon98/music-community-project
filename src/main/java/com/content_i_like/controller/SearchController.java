@@ -251,4 +251,46 @@ public class SearchController {
 
     return "pages/search/search-all";
   }
+
+  @GetMapping("/tracks")
+  public String searchTracksByKeywordFromModal(HttpServletRequest httpRequest,
+      @ModelAttribute("keywordDto") final SearchRequest trackTitle,
+      @ModelAttribute("sortStrategy") final SortStrategy sortStrategy,
+      Pageable pageable,
+      @RequestParam(value="page", required = false) Integer pageNum,
+      Model model) {
+
+    HttpSession session = httpRequest.getSession(false);
+
+    if (session == null) {
+      return "redirect:/member/login";
+    }
+    String property = SortEnum.TRACKS_SORT_DEFAULT.getSortBy();
+    Direction direction = SortEnum.TRACKS_SORT_DEFAULT.getDirection();
+
+    if (sortStrategy != null) {
+      if (sortStrategy.getProperty() != null && !sortStrategy.getProperty().isEmpty())
+        property = sortStrategy.getProperty();
+      if (sortStrategy.getDirection() != null)
+        direction = sortStrategy.getDirection();
+    }
+
+    pageable = PageRequest.of(pageable.getPageNumber(), SortEnum.TRACKS_SORT_DEFAULT.getScale(), Sort.by(direction, property));
+
+    SearchPageGetResponse<TrackGetResponse> trackResults =
+        searchService.findTracksWithKeyword(pageable, trackTitle.getKeyword(), "sjeon0730@gmail.com");
+
+    model.addAttribute("trackResults", trackResults);
+    model.addAttribute("trackResultsAsList", trackResults.getPages().toList());
+    model.addAttribute("pageable", pageable);
+    model.addAttribute("keyword", trackTitle.getKeyword());
+
+    SortStrategy sorting = SortStrategy.builder().build();
+    model.addAttribute("sortStrategy", sorting);
+
+    String newLineChar = System.getProperty("line.separator").toString();
+    model.addAttribute("newline", newLineChar);
+
+    return "pages/search/tracks-search";
+  }
 }
