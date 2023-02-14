@@ -51,6 +51,8 @@ public class PointService {
         .member(member)
         .pointExpense(0l)
         .pointIncome(1000l)
+        .targetCommentNo(0l)
+        .targetRecommendNo(0l)
         .build();
 
     pointRepository.save(point);
