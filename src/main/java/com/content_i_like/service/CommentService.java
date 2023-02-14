@@ -63,7 +63,7 @@ public class CommentService {
 
     // 댓글 알림 이벤트를 발생시킵니다.
 //    applicationEventPublisher.publishEvent(CommentNotificationEvent.of(post, comment));
-    pointService.usePoint(member, request.getCommentPoint(), PointTypeEnum.COMMENTS);
+    pointService.usePoint(member, request.getCommentPoint(), PointTypeEnum.COMMENTS, comment.getCommentNo());
     return new CommentResponse(comment.getCommentNo(), post.getRecommendNo(),
         comment.getCommentContent(), comment.getCommentPoint());
   }
