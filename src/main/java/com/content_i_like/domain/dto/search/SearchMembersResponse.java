@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 public class SearchMembersResponse {
 
+  private Long memberNo;
   private String nickName;
   private String profileImgUrl;
   private LocalDateTime createdAt;
@@ -19,6 +20,7 @@ public class SearchMembersResponse {
   public static SearchMembersResponse of(Member member) {
     return SearchMembersResponse
         .builder()
+        .memberNo(member.getMemberNo())
         .nickName(member.getNickName())
         .profileImgUrl(member.getProfileImgUrl())
         .createdAt(member.getCreatedAt())

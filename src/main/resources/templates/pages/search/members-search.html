@@ -78,7 +78,7 @@
                 <img th:src="${memberNickNameAsList.get(counter).profileImgUrl}"
                      class="members-image"/>
                 <a class="members-name" th:text="${memberNickNameAsList.get(counter).nickName}"
-                   href=""></a>
+                   th:href="@{/member/recommends/feeds/__${memberNickNameAsList.get(counter).memberNo}__}"></a>
                 <span class="members-date"
                       th:utext="'가입일자<br>' +
                         ${#temporals.format(memberNickNameAsList.get(counter).createdAt, 'yyyy.MM.dd')}"><br>2023.02.09</span>
