@@ -14,11 +14,13 @@ import com.content_i_like.domain.dto.member.MemberModifyRequest;
 import com.content_i_like.domain.dto.member.MemberPointResponse;
 import com.content_i_like.domain.dto.member.MemberRecommendResponse;
 import com.content_i_like.domain.dto.member.MemberResponse;
+import com.content_i_like.domain.dto.notification.NotificationThymeleafResponse;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.enums.GenderEnum;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.service.MemberService;
+import com.content_i_like.service.NotificationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -28,6 +30,7 @@ import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -58,7 +61,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
   private final MemberService memberService;
-
+  private final NotificationService notificationService;
   @ModelAttribute("genderEnums")
   public GenderEnum[] genderEnum() {
     return GenderEnum.values();
@@ -74,7 +77,7 @@ public class MemberController {
   public String login(
       @Valid @ModelAttribute("memberLoginRequest") MemberLoginRequest memberLoginRequest,
       BindingResult bindingResult,
-      HttpServletRequest request, Model model) {
+      HttpServletRequest request, Model model, Pageable pageable) {
 
     if (bindingResult.hasErrors()) {
       return "redirect:/member/login";

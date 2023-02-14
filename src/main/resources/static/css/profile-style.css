@@ -209,22 +209,22 @@
 .notification-info {
     display: flex;
     flex-direction: column;
-    margin-left: 17px;
+    width: 370px;
+    margin-left: 14px;
 }
 
 .notification-info-top {
-    display: flex;
     font-family: NotoSansKR;
     font-size: 14px;
 }
 
 .notification-type {
-    margin-right: auto;
+    float: left;
     color: rgba(255, 255, 255, 0.65);
 }
 
 .notification-time {
-    margin-left: auto;
+    float: right;
     color: rgba(255, 255, 255, 0.45);
 }
 
@@ -232,6 +232,7 @@
     margin-top: 14px;
     font-size: 16px;
     color: white;
+    margin-right: auto;
 }
 
 .notification-recommendTitle {
@@ -251,7 +252,6 @@
 .img-preview{
     width: 81px;
     height: 81px;
-    margin: auto;
     border-radius: 50%;
 }
 
