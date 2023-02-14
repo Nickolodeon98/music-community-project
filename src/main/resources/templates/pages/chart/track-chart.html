@@ -44,8 +44,8 @@
         <tr class="track-chart" th:each="chart : ${charts}">
           <td class="track-chart-no" th:text="${chartStat.count}">1</td>
           <td class="track-chart-img"><img th:src="${chart.albumImageUrl}"></td>
-          <td class="track-chart-artist-name" th:text="${chart.artistName}">Ariana Grande</td>
           <td id="track-title"><a th:href="@{/music/track/{trackNo}(trackNo = ${chart.trackNo})}" th:text="${chart.trackTitle}">My Hair</a></td>
+          <td class="track-chart-artist-name" th:text="${chart.artistName}">Ariana Grande</td>
           <td class="track-chart-point" th:text="${chart.trackScore}">1600</td>
         </tr>
       </table>
