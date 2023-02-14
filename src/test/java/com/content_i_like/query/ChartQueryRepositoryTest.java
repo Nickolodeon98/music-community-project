@@ -15,10 +15,12 @@ import com.content_i_like.domain.entity.Track;
 import com.content_i_like.fixture.Fixture;
 import com.content_i_like.repository.RecommendRepository;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
@@ -151,19 +153,81 @@ class ChartQueryRepositoryTest {
      * 정렬 기준: 1. score 총합 2. 트랙 제목 이름순 3. 트랙 제목 이름순 4. 트랙 번호순 (오름차순)
      */
 
+    /*
+    SELECT (
+        sum(SELECT (sum(comment.point) + recommendation.point)
+            FROM recommendation
+            LEFT JOIN comment ON recommendation.recommendation_id = comment.recommendation_id
+            GROUP BY recommendation_id WHERE recommendation_id = R.recommendation_id)
+        as score_sum) AS track_score
+    FROM recommendation R LEFT JOIN track ON recommendation.track_id = track.track_id
+    GROUP BY track_id
+
+                (qRecommend.recommendPoint.coalesce(0L).add(qRecommend.likes.size())
+                .add(qRecommend.comments.size()).add(qComment.commentPoint.coalesce(0L).sum())).as(
+                "totalScore"),
+            qRecommend.recommendViews)
+    */
+    QRecommend subRecommend = new QRecommend("subRecommend");
+    QComment subComment = new QComment("subComment");
+    QTrack subTrack = new QTrack("subTrack");
+
     List<Tuple> findChart = queryFactory
         .select(
-            qTrack.trackNo,
-            qTrack.trackTitle,
-            qTrack.artist.artistName,
-            qRecommend.recommendPoint.coalesce(0L).add((qComment.commentPoint).coalesce(0L).sum())
+            subRecommend.track.trackNo,
+            subRecommend.track.trackTitle,
+            subRecommend.track.album.albumImageUrl,
+            subRecommend.track.artist.artistNo,
+            subRecommend.track.artist.artistName,
+            (subRecommend.recommendPoint.coalesce(0L)
+                .add(subComment.commentPoint.coalesce(0L).sum())
+                .add(subRecommend.comments.size())
+                .add(subRecommend.likes.size())).as("totalScore")
         )
-        .from(qRecommend)
-        .leftJoin(qRecommend.comments, qComment)
-        .on(qRecommend.recommendNo.eq(qComment.recommend.recommendNo))
-        .leftJoin(qRecommend.track, qTrack).on(qRecommend.track.trackNo.eq(qTrack.trackNo))
-        .limit(limitSize)
+        .from(subRecommend)
+        .leftJoin(subRecommend.comments, subComment)
+        .groupBy(subRecommend.track.trackNo)
+        .orderBy(totalScore.desc())
         .fetch();
+
+
+
+
+//    List<Tuple> findChart = queryFactory
+//        .select(
+//            qTrack.trackNo,
+//            qTrack.trackTitle,
+//            qTrack.artist.artistNo,
+//            qTrack.artist.artistName,
+//            ExpressionUtils.as(
+//                JPAExpressions
+//                    .select(subRecommend.recommendPoint.coalesce(0L).sum())
+//                    .leftJoin(subRecommend.track, subTrack)
+//                    .on(subRecommend.track.trackNo.eq(subTrack.trackNo))
+//                    .groupBy(subTrack)
+//                    .from(subRecommend)
+//                ,("totalScore")
+//            )
+//
+////            (JPAExpressions
+////                .select((subRecommend.recommendPoint.coalesce(0L).add(subRecommend.likes.size())
+////                    .add(subRecommend.comments.size()).add(subComment.commentPoint.coalesce(0L).sum())).as(
+////                    "totalScore"))
+//
+////                .distinct()
+////                .from(subRecommend)
+////                .leftJoin(subRecommend.comments, subComment)
+////                .on(subRecommend.recommendNo.eq(subComment.recommend.recommendNo))
+////                .where(subRecommend.createdAt.after(validUntilThisTime))
+////                .groupBy(subRecommend.recommendNo)
+////            )
+//        )
+//        .from(qRecommend)
+////        .leftJoin(qRecommend.track, qTrack)
+////        .on(qRecommend.track.trackNo.eq(qTrack.trackNo))
+////        .groupBy(qTrack.trackNo)
+//        .limit(limitSize)
+//        .fetch();
 
 //    List<Tuple> findChart = queryFactory
 //        .select(
