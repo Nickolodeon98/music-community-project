@@ -23,11 +23,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -161,7 +163,7 @@ public class MemberController {
 
     String email = memberService.getEmailByNo(loginResponse);
     model.addAttribute("member", memberService.getMyInfo(email));
-    model.addAttribute("request",new MemberModifyRequest());
+    model.addAttribute("request", new MemberModifyRequest());
     return "pages/member/modify-profile";
   }
 
@@ -246,28 +248,31 @@ public class MemberController {
     return "pages/member/myFeed-followings";
   }
 
+  @PostMapping("/nickNameChk")
+  public void memberChk(HttpServletRequest request, HttpServletResponse response, Model model)
+      throws IOException {
+    System.out.println("/member/nickNameChk");
+    String memberNickName = request.getParameter("nickName");
+    boolean result = memberService.checkMemberNickName(memberNickName);
+    JSONObject jso = new JSONObject();
+    jso.put("result", result);
 
-  @GetMapping("/session-info")
-  public String sessionInfo(HttpServletRequest request) {
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "세션이 없습니다.";
-    }
-    // 세션 id와 저장된 객체 정보 출력
-    System.out.println(session.getId() + ", " + session.getAttribute("loginUser"));
+    response.setContentType("text/html;charset=utf-8");
+    PrintWriter out = response.getWriter();
+    out.print(jso.toString());
+  }
 
-    //세션 데이터 출력
-    session.getAttributeNames().asIterator()
-        .forEachRemaining(
-            name -> log.info("session name={}, value={}", name, session.getAttribute(name)));
+  @PostMapping("/emailChk")
+  public void emailChk(HttpServletRequest request, HttpServletResponse response, Model model)
+      throws IOException {
+    System.out.println("/member/emailChk");
+    String memberEmail = request.getParameter("email");
+    boolean result = memberService.checkMemberEmail(memberEmail);
+    JSONObject jso = new JSONObject();
+    jso.put("result", result);
 
-    log.info("sessionId={}", session.getId());
-    log.info("getMaxInactiveInterval={}", session.getMaxInactiveInterval());
-    log.info("creationTime={}", new Date(session.getCreationTime()));
-    log.info("lastAccessedTime={}", new Date(session.getLastAccessedTime()));
-    log.info("isNew={}", session.isNew());
-
-    return "세션 출력";
-
+    response.setContentType("text/html;charset=utf-8");
+    PrintWriter out = response.getWriter();
+    out.print(jso.toString());
   }
 }
