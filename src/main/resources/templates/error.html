@@ -19,23 +19,17 @@
 
   <div class="contents">
     <div class="board">
-      잘못된 요청이 들어왔습니다.
-      <span class="return-button">
-        <button th:if="${prevPage != null}" onclick="goBack()">이전 페이지</button>
-      </span>
+      잘못된 접근입니다.
+      <a th:href="@{/__${referer}__}" >
+          <span class="return-button">
+            <button id="before-page-btn">내미콘 홈</button>
+          </span>
+      </a>
     </div>
   </div>
 </div>
+
 </body>
 <script>
-  function goBack() {
-    let prevPage = /*[[${prevPage}]]*/ null;
-    if (prevPage != null) {
-      window.location.href = prevPage;
-    }
-  }
-
 </script>
-
-
 </html>
