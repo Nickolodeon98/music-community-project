@@ -54,7 +54,53 @@
 
 
         <span id="menu-alarm" class="menu-img">
-                <a href=""><img class="alarm-img" th:src="@{/img/bell-img.png}" src="../../../static/img/bell-img.png"></a>
+                <div class="dropdown">
+                <img class="alarm-img" th:src="@{/img/bell-img.png}"
+                     src="../../../static/img/bell-img.png">
+                  <div class="dropdown-content-notification">
+                    <div class="notification-title-div">
+                      <span class="notification-title">
+                        알림
+                      </span>
+                    </div>
+
+                    <div class="notification-cards">
+                      <img  th:src="${session.loginUser.profileImgUrl}" class="img-preview">
+                      <div class="notification-info">
+                        <div class="notification-info-top">
+                          <span class="notification-type">알렉스님이 댓글을 남겼습니다.</span>
+                          <span class="notification-time">1시간전</span>
+                        </div>
+                        <span class="notification-content">어제 처음 들었는데 온종일 이 노래만 듣고 있어요</span>
+                        <span class="notification-recommendTitle">이 노래 못 잊어요...</span>
+                      </div>
+                    </div>
+
+                                        <div class="notification-cards">
+                      <img  th:src="${session.loginUser.profileImgUrl}" class="img-preview">
+                      <div class="notification-info">
+                        <div class="notification-info-top">
+                          <span class="notification-type">알렉스님이 댓글을 남겼습니다.</span>
+                          <span class="notification-time">1시간전</span>
+                        </div>
+                        <span class="notification-content">어제 처음 들었는데 온종일 이 노래만 듣고 있어요</span>
+                        <span class="notification-recommendTitle">이 노래 못 잊어요...</span>
+                      </div>
+                    </div>
+
+                                        <div class="notification-cards">
+                      <img  th:src="${session.loginUser.profileImgUrl}" class="img-preview">
+                      <div class="notification-info">
+                        <div class="notification-info-top">
+                          <span class="notification-type">알렉스님이 댓글을 남겼습니다.</span>
+                          <span class="notification-time">1시간전</span>
+                        </div>
+                        <span class="notification-content">어제 처음 들었는데 온종일 이 노래만 듣고 있어요</span>
+                        <span class="notification-recommendTitle">이 노래 못 잊어요...</span>
+                      </div>
+                    </div>
+                  </div>
+            </div>
             </span>
 
         <span id="menu-profile" class="menu-img">

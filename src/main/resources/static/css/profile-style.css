@@ -105,6 +105,36 @@
     right:0;
   }
 
+.dropdown-content-notification {
+    display : none;
+    position : absolute;
+    z-index : 1; /*다른 요소들보다 앞에 배치*/
+    font-weight: 400;
+    background-color:  #1c1406;
+    color: white;
+    min-width : 190px;
+    right:0;
+    padding: 32px 25px 32px 25px;
+}
+
+.dropdown-content-notification a{
+    font-family: NotoSansKR;
+    display : block;
+    text-decoration : none;
+    color : white;
+    font-size: 12px;
+    padding : 12px 5px;
+    text-align: center;
+}
+
+.dropdown-content-notification a:hover{
+    background-color : black;
+    right:0;
+    text-align: center;
+}
+
+
+
 .dropdown-content a{
     font-family: NotoSansKR;
     display : block;
@@ -117,6 +147,12 @@
 
 .dropdown-content a:hover{
     background-color : black;
+    right:0;
+    text-align: center;
+}
+
+.dropdown:hover .dropdown-content-notification {
+    display: block;
     right:0;
     text-align: center;
 }
@@ -141,6 +177,73 @@
 
 .profile-preview{
     width: 230px;
+    height: 150px;
+    margin: auto;
+}
+
+.notification-title-div {
+    width: 447px;
+    height: 36px;
+    font-size: 18px;
+    color: white;
+    border-bottom: solid 2px #544E42;
+    display: flex;
+    justify-content: left;
+}
+
+.notification-title {
+    font-size: 18px;
+    color: white;
+
+}
+
+.notification-cards {
+    border-bottom: solid 1px #544E42;
+    width: 451px;
+    margin-top: 18px;
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 19px;
+}
+
+.notification-info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 17px;
+}
+
+.notification-info-top {
+    display: flex;
+    font-family: NotoSansKR;
+    font-size: 14px;
+}
+
+.notification-type {
+    margin-right: auto;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.notification-time {
+    margin-left: auto;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.notification-content {
+    margin-top: 14px;
+    font-size: 16px;
+    color: white;
+}
+
+.notification-recommendTitle {
+    font-family: NotoSansKR;
+    font-size: 14px;
+    margin-right: auto;
+    margin-top: 15px;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.notification-preview {
+    width: 447px;
     height: 150px;
     margin: auto;
 }
