@@ -9,7 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ChartResponse {
+public class RecommendChartResponse {
 
-  private List<Tuple> chart;
+  private Long recommendNo;
+  private String recommendTitle;
+  private Long memberNo;
+  private String memberNickName;
+  private Long recommendScore;
+  private Long recommendViews;
+
 }

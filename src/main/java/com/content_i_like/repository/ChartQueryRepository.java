@@ -4,11 +4,14 @@ import static com.content_i_like.domain.entity.QComment.comment;
 import static com.content_i_like.domain.entity.QRecommend.recommend;
 
 
+import com.content_i_like.domain.dto.chart.RecommendChartResponse;
+import com.content_i_like.domain.dto.chart.TrackChartResponse;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
@@ -29,15 +32,23 @@ public class ChartQueryRepository {
    * @return Tuple 순위, 추천글 제목, 작성자, 포인트, 조회수
    */
 
-  public List<Tuple> getMonthlyRecommendChartTop10() throws Exception {
+  public List<RecommendChartResponse> getMonthlyRecommendChartTop10() throws Exception {
     return getRecommendChart(4, 10);
   }
 
-  public List<Tuple> getWeeklyRecommendChartTop10() throws Exception {
+  public List<RecommendChartResponse> getWeeklyRecommendChartTop10() throws Exception {
     return getRecommendChart(1, 10);
   }
 
-  List<Tuple> getRecommendChart(Integer expirationDateInWeeks, Integer limitSize) throws Exception {
+  public List<TrackChartResponse> getMonthlyTrackChartTop10() throws Exception {
+    return getTrackChart(4, 10);
+  }
+
+  public List<TrackChartResponse> getWeeklyTrackChartTop10() throws Exception {
+    return getTrackChart(1, 10);
+  }
+  List<RecommendChartResponse> getRecommendChart(Integer expirationDateInWeeks, Integer limitSize)
+      throws Exception {
 
     // 추천글 유효기간
     LocalDateTime validUntilThisTime = LocalDateTime.now().minusWeeks(expirationDateInWeeks);
@@ -56,6 +67,7 @@ public class ChartQueryRepository {
         .select(
             recommend.recommendNo,
             recommend.recommendTitle,
+            recommend.member.memberNo,
             recommend.member.nickName,
             (recommend.recommendPoint.coalesce(0L).add(recommend.likes.size())
                 .add(recommend.comments.size()).add(comment.commentPoint.coalesce(0L).sum())).as(
@@ -71,7 +83,70 @@ public class ChartQueryRepository {
         .limit(limitSize)
         .fetch();
 
-    return findChart;
+    // response 로 변환
+    List<RecommendChartResponse> responses = new ArrayList<>();
+    for (Tuple tuple : findChart) {
+      Long recommendNo = Long.valueOf(String.valueOf(tuple.get(recommend.recommendNo)));
+      String recommendTitle = String.valueOf(tuple.get(recommend.recommendTitle));
+      Long memberNo = Long.valueOf(String.valueOf(tuple.get(recommend.member.memberNo)));
+      String memberNickName = String.valueOf(tuple.get(recommend.member.nickName));
+      Long recommendScore = Long.valueOf(String.valueOf(tuple.get(totalScore)));
+      Long recommendViews = Long.valueOf(String.valueOf(tuple.get(recommend.recommendViews)));
+
+      responses.add(
+          new RecommendChartResponse(recommendNo, recommendTitle, memberNo, memberNickName,
+              recommendScore,
+              recommendViews));
+    }
+
+    return responses;
+  }
+
+  List<TrackChartResponse> getTrackChart(Integer expirationDateInWeeks, Integer limitSize)
+      throws Exception {
+    // 추천글 유효기간
+    LocalDateTime validUntilThisTime = LocalDateTime.now().minusWeeks(expirationDateInWeeks);
+
+    // 별칭 지정
+    StringPath totalScore = Expressions.stringPath("totalScore");
+
+    List<Tuple> findChart = queryFactory
+        .select(
+            recommend.track.trackNo,
+            recommend.track.trackTitle,
+            recommend.track.album.albumNo,
+            recommend.track.album.albumImageUrl,
+            recommend.track.artist.artistNo,
+            recommend.track.artist.artistName,
+            (recommend.recommendPoint.coalesce(0L)
+                .add(comment.commentPoint.coalesce(0L).sum())
+                .add(recommend.comments.size())
+                .add(recommend.likes.size())).as("totalScore")
+        )
+        .from(recommend)
+        .leftJoin(recommend.comments, comment)
+        .where(recommend.createdAt.after(validUntilThisTime))
+        .groupBy(recommend.track.trackNo)
+        .orderBy(totalScore.desc(), recommend.track.trackTitle.asc(),
+            recommend.track.artist.artistName.asc())
+        .fetch();
+
+    // response 로 변환
+    List<TrackChartResponse> responses = new ArrayList<>();
+    for (Tuple tuple : findChart) {
+      Long trackNo = Long.valueOf(String.valueOf(tuple.get(recommend.track.trackNo)));
+      String trackTitle = String.valueOf(tuple.get(recommend.track.trackTitle));
+      Long albumNo = Long.valueOf(String.valueOf(tuple.get(recommend.track.album.albumNo)));
+      String albumImageUrl = String.valueOf(tuple.get(recommend.track.album.albumImageUrl));
+      Long artistNo = Long.valueOf(String.valueOf(tuple.get(recommend.track.artist.artistNo)));
+      String artistName = String.valueOf(tuple.get(recommend.track.artist.artistName));
+      Long trackScore = Long.valueOf(String.valueOf(tuple.get(totalScore)));
+
+      responses.add(new TrackChartResponse(trackNo, trackTitle, albumNo, albumImageUrl, artistNo, artistName,
+          trackScore));
+    }
+
+    return responses;
   }
 
 }

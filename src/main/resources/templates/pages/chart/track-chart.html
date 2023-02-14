@@ -21,13 +21,13 @@
   <div class="contents">
     <div class="chart-menu">
       <div class="menu-button">
-        <div class="active-chart-menu left-menu">음원 차트</div>
-        <div class="disabled-chart-menu right-menu">게시물 차트</div>
+        <div class="active-chart-menu left-menu"><a th:href="@{/chart/track-monthly}">음원 차트</a></div>
+        <div class="disabled-chart-menu right-menu"><a th:href="@{/chart/recommend-monthly}">게시물 차트</a></div>
       </div>
       <div class="sort">
-        <div class="sort-name active-sort"><a href="">Weekly</a></div>
+        <div class="sort-name active-sort"><a th:href="@{/chart/track-weekly}">Weekly</a></div>
         <div class="sort-name">|</div>
-        <div class="sort-name disabled-sort"><a href="">Monthly</a></div>
+        <div class="sort-name disabled-sort"><a th:href="@{/chart/track-monthly}">Monthly</a></div>
       </div>
     </div>
 
@@ -39,19 +39,14 @@
           <td class="chart-top-title">순위</td>
           <td class="chart-top-title" colspan="2">곡 정보</td>
           <td class="chart-top-title">아티스트</td>
-          <td class="chart-top-title">대표 추천인</td>
           <td class="chart-top-title">포인트 종합</td>
         </tr>
-        <tr class="track-chart">
-          <td class="track-chart-no" rowspan="2">1</td>
-          <td class="track-chart-img" rowspan="2"><img th:src="@{/img/younha.jpg}"></td>
-          <td id="track-year">2019</td>
-          <td class="track-chart-artist-name" rowspan="2">Ariana Grande</td>
-          <td class="track-chart-recommend-author" rowspan="2">봄봄</td>
-          <td class="track-chart-point" rowspan="2">1600</td>
-        </tr>
-        <tr class="track-chart">
-          <td id="track-title">My Hair</td>
+        <tr class="track-chart" th:each="chart : ${charts}">
+          <td class="track-chart-no" th:text="${chartStat.count}">1</td>
+          <td class="track-chart-img"><img th:src="${chart.albumImageUrl}"></td>
+          <td id="track-title"><a th:href="@{/music/track/{trackNo}(trackNo = ${chart.trackNo})}" th:text="${chart.trackTitle}">My Hair</a></td>
+          <td class="track-chart-artist-name" th:text="${chart.artistName}">Ariana Grande</td>
+          <td class="track-chart-point" th:text="${chart.trackScore}">1600</td>
         </tr>
       </table>
 

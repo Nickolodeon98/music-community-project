@@ -1,12 +1,12 @@
 package com.content_i_like.controller;
 
-import com.content_i_like.domain.dto.chart.ChartResponse;
+import com.content_i_like.domain.dto.chart.RecommendChartResponse;
 import com.content_i_like.service.ChartService;
-import com.querydsl.core.Tuple;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -19,12 +19,26 @@ public class ChartController {
   private final ChartService chartService;
 
   @GetMapping("/recommend-monthly")
-  public ChartResponse getMonthlyRecommendChart() throws Exception {
-    return chartService.getMonthlyRecommendChart();
+  public String getMonthlyRecommendChart(Model model) throws Exception {
+    model.addAttribute("charts", chartService.getMonthlyRecommendChart());
+    return "/pages/chart/recommend-chart";
   }
 
   @GetMapping("/recommend-weekly")
-  public ChartResponse getWeeklyRecommendChart() throws Exception {
-    return chartService.getWeeklyRecommendChart();
+  public String getWeeklyRecommendChart(Model model) throws Exception {
+    model.addAttribute("charts", chartService.getWeeklyRecommendChart());
+    return "/pages/chart/recommend-chart";
   }
+
+  @GetMapping("/track-monthly")
+  public String getMonthlyTrackChart(Model model) throws Exception {
+    model.addAttribute("charts", chartService.getMonthlyTrackChart());
+    return "/pages/chart/track-chart";
+  }
+  @GetMapping("/track-weekly")
+  public String getWeeklyTrackChart(Model model) throws Exception {
+    model.addAttribute("charts", chartService.getWeeklyTrackChart());
+    return "/pages/chart/track-chart";
+  }
+
 }
