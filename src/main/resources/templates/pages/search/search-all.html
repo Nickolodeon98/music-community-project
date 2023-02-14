@@ -45,64 +45,64 @@
         </ul>
         <a class="more-contents" th:href="@{/search/recommends(keyword=${keyword})}">더보기</a>
       </th:block>
-<!--      <span class="count-results"-->
-<!--            th:text="${tracks} ? ${tracks.message} : '검색해주세요'"></span>-->
-<!--      <hr>-->
-<!--      <br>-->
-<!--      <div class="search-results" th:block-->
-<!--           th:if="${tracks != null and tracksAsList != null}">-->
-<!--        <ul class="tracks-list"-->
-<!--            th:each="counter: ${#numbers.sequence(0, tracks.pages.getNumberOfElements()-1, 2)}"-->
-<!--            th:unless="${counter >= tracks.pages.getNumberOfElements()}">-->
-<!--          <li class="tracks-list-elements-left"-->
-<!--              th:unless="${counter >= tracks.pages.getNumberOfElements()}">-->
+      <span class="count-results"
+            th:text="${tracks} ? ${tracks.message} : '검색해주세요'"></span>
+      <hr>
+      <br>
+      <div class="search-results" th:block
+           th:if="${tracks != null and tracksAsList != null}">
+        <ul class="tracks-list"
+            th:each="counter: ${#numbers.sequence(0, tracks.pages.getNumberOfElements()-1, 2)}"
+            th:unless="${counter >= tracks.pages.getNumberOfElements()}">
+          <li class="tracks-list-elements-left"
+              th:unless="${counter >= tracks.pages.getNumberOfElements()}">
 
-<!--            <img class="tracks-list-image"-->
-<!--                 th:src="${tracksAsList.get(counter).thumbnailUrl}"/>-->
-<!--            <span class="tracks-list-contents">-->
-<!--              <a class="track-title"-->
-<!--                 th:href="@{/music/track(pk=${tracksAsList.get(counter).trackNo})}"-->
-<!--                 th:utext=-->
-<!--                     "${#strings.length(tracksAsList.get(counter).trackTitle) >= 25} ?-->
-<!--                     ${#strings.substring(tracksAsList.get(counter).trackTitle, 0, 25)} + '<br>'-->
-<!--                      + ${#strings.substring(tracksAsList.get(counter).trackTitle, 25, tracksAsList.get(counter).trackTitle.length())}:-->
-<!--                     ${tracksAsList.get(counter).trackTitle}">-->
+            <img class="tracks-list-image"
+                 th:src="${tracksAsList.get(counter).thumbnailUrl}"/>
+            <span class="tracks-list-contents">
+              <a class="track-title"
+                 th:href="@{/music/track(pk=${tracksAsList.get(counter).trackNo})}"
+                 th:utext=
+                     "${#strings.length(tracksAsList.get(counter).trackTitle) >= 25} ?
+                     ${#strings.substring(tracksAsList.get(counter).trackTitle, 0, 25)} + '<br>'
+                      + ${#strings.substring(tracksAsList.get(counter).trackTitle, 25, tracksAsList.get(counter).trackTitle.length())}:
+                     ${tracksAsList.get(counter).trackTitle}">
 
-<!--              </a>-->
-<!--              <span class="track-album"-->
-<!--                    th:utext=-->
-<!--                        "${#strings.length(tracksAsList.get(counter).trackAlbum) >= 26} ?-->
-<!--                     ${#strings.substring(tracksAsList.get(counter).trackAlbum, 0, 26)} + '<br>'-->
-<!--                      + ${#strings.substring(tracksAsList.get(counter).trackAlbum, 26, tracksAsList.get(counter).trackAlbum.length())}:-->
-<!--                     ${tracksAsList.get(counter).trackAlbum}"></span>-->
-<!--              <span class="track-info"-->
-<!--                    th:utext="${tracksAsList.get(counter).trackArtist}"></span>-->
-<!--          </span>-->
-<!--          </li>-->
-<!--          <li class="tracks-list-elements-right"-->
-<!--              th:unless="${counter+1 >= tracks.pages.getNumberOfElements()}">-->
+              </a>
+              <span class="track-album"
+                    th:utext=
+                        "${#strings.length(tracksAsList.get(counter).trackAlbum) >= 26} ?
+                     ${#strings.substring(tracksAsList.get(counter).trackAlbum, 0, 26)} + '<br>'
+                      + ${#strings.substring(tracksAsList.get(counter).trackAlbum, 26, tracksAsList.get(counter).trackAlbum.length())}:
+                     ${tracksAsList.get(counter).trackAlbum}"></span>
+              <span class="track-info"
+                    th:utext="${tracksAsList.get(counter).trackArtist}"></span>
+          </span>
+          </li>
+          <li class="tracks-list-elements-right"
+              th:unless="${counter+1 >= tracks.pages.getNumberOfElements()}">
 
-<!--            <img class="tracks-list-image"-->
-<!--                 th:src="${tracksAsList.get(counter+1).thumbnailUrl}"/>-->
-<!--            <span class="tracks-list-contents">-->
-<!--              <a href="" class="track-title"-->
-<!--                 th:href="@{/music/track(pk=${tracksAsList.get(counter+1).trackNo})}"-->
-<!--                 th:utext=-->
-<!--                     "${#strings.length(tracksAsList.get(counter+1).trackTitle) >= 25} ?-->
-<!--                     ${#strings.substring(tracksAsList.get(counter+1).trackTitle, 0, 25)} + '<br>'-->
-<!--                      + ${#strings.substring(tracksAsList.get(counter+1).trackTitle, 25, tracksAsList.get(counter+1).trackTitle.length())}:-->
-<!--                     ${tracksAsList.get(counter+1).trackTitle}"></a>-->
-<!--              <span class="track-album"-->
-<!--                    th:utext=-->
-<!--                        "${#strings.length(tracksAsList.get(counter+1).trackAlbum) >= 26} ?-->
-<!--                     ${#strings.substring(tracksAsList.get(counter+1).trackAlbum, 0, 26)} + '<br>'-->
-<!--                      + ${#strings.substring(tracksAsList.get(counter+1).trackAlbum, 26, tracksAsList.get(counter+1).trackAlbum.length())}:-->
-<!--                     ${tracksAsList.get(counter+1).trackAlbum}"></span>-->
-<!--              <span class="track-info"-->
-<!--                    th:utext="${tracksAsList.get(counter+1).trackArtist}"></span>-->
-<!--          </span>-->
-<!--          </li>-->
-<!--        </ul>-->
+            <img class="tracks-list-image"
+                 th:src="${tracksAsList.get(counter+1).thumbnailUrl}"/>
+            <span class="tracks-list-contents">
+              <a href="" class="track-title"
+                 th:href="@{/music/track(pk=${tracksAsList.get(counter+1).trackNo})}"
+                 th:utext=
+                     "${#strings.length(tracksAsList.get(counter+1).trackTitle) >= 25} ?
+                     ${#strings.substring(tracksAsList.get(counter+1).trackTitle, 0, 25)} + '<br>'
+                      + ${#strings.substring(tracksAsList.get(counter+1).trackTitle, 25, tracksAsList.get(counter+1).trackTitle.length())}:
+                     ${tracksAsList.get(counter+1).trackTitle}"></a>
+              <span class="track-album"
+                    th:utext=
+                        "${#strings.length(tracksAsList.get(counter+1).trackAlbum) >= 26} ?
+                     ${#strings.substring(tracksAsList.get(counter+1).trackAlbum, 0, 26)} + '<br>'
+                      + ${#strings.substring(tracksAsList.get(counter+1).trackAlbum, 26, tracksAsList.get(counter+1).trackAlbum.length())}:
+                     ${tracksAsList.get(counter+1).trackAlbum}"></span>
+              <span class="track-info"
+                    th:utext="${tracksAsList.get(counter+1).trackArtist}"></span>
+          </span>
+          </li>
+        </ul>
         <a class="more-contents" th:href="@{/search/tracks(keyword=${keyword})}">더보기</a>
       </div>
       <span class="count-results"
