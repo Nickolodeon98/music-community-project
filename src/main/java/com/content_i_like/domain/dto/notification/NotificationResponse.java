@@ -26,6 +26,7 @@ public class NotificationResponse {
         .notificationType(notification.getNotificationType())
         .fromMemberNo(notification.getFromMemberNo())
         .commentNo(notification.getCommentNo())
+        .recommendNo(notification.getRecommendNo())
         .build();
   }
 }
