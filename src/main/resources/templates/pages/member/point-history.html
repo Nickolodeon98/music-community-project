@@ -20,7 +20,7 @@
   <div class="contents">
     <div class="chart-menu">
       <span class="point-title">포인트 내역</span>
-      <span class="total-point">보유 Pt - 1000</span>
+      <span class="total-point" th:text="'보유 Pt  '+${response.totalPoint}"></span>
     </div>
 
     <div class="line"></div>
@@ -30,15 +30,17 @@
         <tr class="chart-top">
           <td class="chart-top-title">날짜</td>
           <td class="chart-top-title">내용</td>
-          <td class="chart-top-title"></td>
+          <td class="chart-top-title">위치</td>
           <td class="chart-top-title">포인트</td>
         </tr>
 
-        <tr class="point-chart" th:>
-          <td class="recommend-chart-no" >1</td>
-          <td class="recommend-chart-title"><a href="">새벽 4시 감성 바이브 대표곡</a></td>
-          <td id="recommend-chart-author"><a href="">검정치맛살</a></td>
-          <td class="recommend-point">35,000</td>
+        <tr class="point-chart" th:each="pt: ${response.pointResponse}">
+          <td id="recommend-chart-no" th:text="${pt.date}">1</td>
+          <td id="recommend-chart-title" th:text="${pt.message}"><a href=""></a></td>
+          <td id="recommend-chart-author"
+              th:if="${pt.target}!=0l"
+              th:text="${pt.target}"><a href=""></a></td>
+          <td id="recommend-point" th:text="${pt.point}"></td>
         </tr>
       </table>
 

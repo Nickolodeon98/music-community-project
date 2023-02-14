@@ -17,6 +17,7 @@ import com.content_i_like.domain.dto.member.MemberResponse;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.enums.GenderEnum;
+import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -76,13 +77,18 @@ public class MemberController {
       HttpServletRequest request, Model model) {
 
     if (bindingResult.hasErrors()) {
-      return "pages/member/login";
+      return "redirect:/member/login";
     }
-    MemberLoginResponse response = memberService.login(memberLoginRequest);
+    try {
+      MemberLoginResponse response = memberService.login(memberLoginRequest);
 
-    HttpSession session = request.getSession();   //세션이 있으면 있는 세션 반환, 없으면 신규 세션
-    session.setAttribute("loginUser", response);
-    log.info("로그인 완료");
+      HttpSession session = request.getSession();   //세션이 있으면 있는 세션 반환, 없으면 신규 세션
+      session.setAttribute("loginUser", response);
+      log.info("로그인 완료");
+    } catch (ContentILikeAppException e) {
+      log.info("에러 발생");
+      return "redirect:/member/login";
+    }
     return "redirect:/";
   }
 
@@ -181,17 +187,23 @@ public class MemberController {
   }
 
 
-  @GetMapping("/my/point")
-  public Response<MemberPointResponse> getMyPoint(final Authentication authentication) {
-    MemberPointResponse memberPointResponse = memberService.getMyPoint(authentication.getName());
-    return Response.success(memberPointResponse);
+  @GetMapping("/my/point/sample")
+  public String getMyPoint() {
+    return "pages/member/point-history";
   }
 
-  @PutMapping("/my/profileImg")
-  public Response<String> updateProfileImg(@RequestPart(value = "file") MultipartFile file,
-      Authentication authentication) throws IOException {
-    String url = memberService.uploadProfileImg(authentication.getName(), file);
-    return Response.success(url);
+  @GetMapping("/my/point")
+  public String getMyPoint(HttpServletRequest request, Model model, Pageable pageable) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/member/login";
+    }
+    MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
+    String memberEmail = memberService.getEmailByNo(loginResponse);
+
+    MemberPointResponse memberPointResponse = memberService.getMyPoint(memberEmail, pageable);
+    model.addAttribute("response", memberPointResponse);
+    return "pages/member/point-history";
   }
 
 
@@ -248,6 +260,7 @@ public class MemberController {
     return "pages/member/myFeed-followings";
   }
 
+  //ajax 중복체크
   @PostMapping("/nickNameChk")
   public void memberChk(HttpServletRequest request, HttpServletResponse response, Model model)
       throws IOException {
@@ -274,5 +287,23 @@ public class MemberController {
     response.setContentType("text/html;charset=utf-8");
     PrintWriter out = response.getWriter();
     out.print(jso.toString());
+  }
+
+  //ajax 로그인 체크
+  @PostMapping("/loginCheck")
+  public void loginCheck(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    System.out.println("/member/loginChk");
+    String memberEmail = request.getParameter("email");
+    String memberPw = request.getParameter("password");
+    MemberLoginRequest memberLoginRequest = new MemberLoginRequest(memberEmail, memberPw);
+    boolean result = memberService.checkLogin(memberLoginRequest);
+    System.out.println("result: "+result);
+    JSONObject jso = new JSONObject();
+    jso.put("result", result);
+    response.setContentType("text/html;charset=utf-8");
+    PrintWriter out = response.getWriter();
+    out.print(jso.toString());
+
   }
 }

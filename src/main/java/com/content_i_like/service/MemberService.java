@@ -141,10 +141,10 @@ public class MemberService {
     return memberResponse;
   }
 
-  public MemberPointResponse getMyPoint(String memeberEmail) {
+  public MemberPointResponse getMyPoint(String memeberEmail, Pageable pageable) {
     Member member = validateExistingMember(memeberEmail);
     List<PointResponse> points = pointService.pointList(member);
-    return new MemberPointResponse(pointService.calculatePoint(member), points);
+    return new MemberPointResponse(pointService.calculatePoint(member), new PageImpl<>(points));
   }
 
   @Transactional
@@ -340,6 +340,21 @@ public class MemberService {
       }
     } catch (Exception e) {
       result = true;
+    }
+    return result;
+  }
+
+  public boolean checkLogin(MemberLoginRequest memberLoginRequest) {
+    boolean result = false;
+    try {
+      Member member = memberRepository.findByEmail(memberLoginRequest.getEmail()).get();
+      if (passwordEncoder.matches(memberLoginRequest.getPassword(), member.getPassword())) {
+        result = true;
+      } else {
+        result = false;
+      }
+    } catch (Exception e) {
+        result = false;
     }
     return result;
   }
