@@ -20,76 +20,20 @@
   <div class="contents">
     <div class="board">
       잘못된 요청이 들어왔습니다.
-      <a th:href="@{/}">
-        <span class="return-button">
-          메인 화면으로 돌아가기
-        </span>
-      </a>
+      <span class="return-button">
+        <button th:if="${prevPage != null}" onclick="goBack()">이전 페이지</button>
+      </span>
     </div>
   </div>
 </div>
 </body>
 <script>
-  $(".button-exit").on("click", function () {
-    location.href = "../";
-  });
-  
-
-  $("#btn-submit").on("click", function () {
-    console.log("click");
-    let recommendTitle = $('#board-input-title [name = recommendTitle]').val();
-    let recommendContent = $('#board-input-content [name = recommendContent]').val();
-    let trackNo = $('#board-input-search [name=trackNo]').val();
-
-    if (recommendTitle === "" || recommendTitle == null) {
-      alert("제목을 입력해주세요.");
-      return false;
+  function goBack() {
+    let prevPage = /*[[${prevPage}]]*/ null;
+    if (prevPage != null) {
+      window.location.href = prevPage;
     }
-
-    if (recommendContent === "" || recommendContent == null) {
-      alert("내용을 입력해주세요.");
-      return false;
-    }
-
-    if (trackNo === "" || trackNo == null) {
-      alert("음악을 선택해주세요.");
-      //return false;
-    }
-
-    return true;
-  });
-
-  const fileDOM = document.querySelector('#img-file');
-  const preview = document.querySelector('#preview-img');
-
-  fileDOM.addEventListener('change', () => {
-    const file = fileDOM.files[0];
-
-    if (!file) {
-      return;
-    }
-
-    let maxSize = 3 * 1024 * 1024;
-    let fileSize = file.size;
-
-    if (!file.type.match("image.*")) {
-      alert("이미지 파일만 선택 가능합니다.");
-      return false;
-    }
-
-    if (fileSize > maxSize) {
-      alert("첨부파일 사이즈는 3MB 이내로 등록 가능합니다.");
-      $(fileDOM).val('');
-      return false;
-    }
-
-    const reader = new FileReader();
-    reader.onload = ({target}) => {
-      preview.src = target.result;
-    };
-    preview.src = URL.createObjectURL(file);
-  });
-
+  }
 
 </script>
 
