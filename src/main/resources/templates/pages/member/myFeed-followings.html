@@ -47,8 +47,25 @@
               <img class="setting-img" th:src="@{/img/setting_top.png}" src="../../../static/img/setting_top.png"><a href="">수정하기</a>
             </span>
           </th:block>
+          <th:block th:if="${url}!=''">
+            <span class="selected-post-nav">
+              <a onclick="follow()">팔로우</a>
+            </span>
+          </th:block>
         </nav>
       </div>
+      <script th:inline="javascript">
+        /*<![CDATA[*/
+        function follow() {
+          const page = /*[[${followers.getNickName()}]]*/;
+          var form = document.createElement('form');
+          form.setAttribute('method', 'post');
+          form.setAttribute('action', '/follow/follow/'+page);
+          document.body.appendChild(form);
+          form.submit();
+        }
+        /*]]>*/
+      </script>
       <!-- 이메일 -->
       <div class="contents-myInfo-email">
         <span class="email" th:text="${followers.getEmail()}">broch2up@naemicon.com</span>
@@ -75,26 +92,43 @@
 
   <!-- 팔로우 목록 시작 -->
   <div class="contents">
-    <div class="list-recommend" th:each="cards:${followers.getFollowResponses()}">
+    <div class="list-recommend">
       <div class="contents-follow">
         <span th:text="|팔로잉 ${followers.getFollowingCnt()}|">팔로워 187</span>
       </div>
+        <div class="follow-card" th:each="cards:${followers.getFollowResponses()}">
+          <div class="contents-follow-img">
+            <img class="img-follow" th:src="${cards.getProfileImg()}" src="../../../static/img/event-horizon.jpg">
+          </div>
+          <div class="contents-follow-name">
+            <a th:href="@{/member/recommends/feeds/__${cards.getMemberNo()}__}"><span id="nickName" th:text="${cards.getMemberNickName()}">다나</span></a>
+          </div>
+          <div class="contents-follow-button">
+            <th:block th:if="${url}==''">
+            <span class="not-selected-post-nav">
+              <a onclick="followCancel()">팔로우 취소</a>
+            </span>
+              <!-- 팔로우 목록 끝 -->
+              <script th:inline="javascript">
+                /*<![CDATA[*/
+                function followCancel() {
+                  const page = /*[[${cards.getMemberNickName()}]]*/;
+                  var form = document.createElement('form');
+                  form.setAttribute('method', 'post');
+                  form.setAttribute('action', '/follow/followCancel/'+page);
+                  document.body.appendChild(form);
+                  form.submit();
+                }
+                /*]]>*/
+              </script>
+            </th:block>
+          </div>
+        </div>
 
-      <div class="follow-card">
-        <div class="contents-follow-img">
-          <img class="img-follow" th:src="${cards.getProfileImg()}" src="../../../static/img/event-horizon.jpg">
-        </div>
-        <div class="contents-follow-name">
-          <a th:href="@{/member/recommends/feeds/__${cards.getMemberNo()}__}"><span th:text="${cards.getMemberNickName()}">다나</span></a>
-        </div>
-        <div class="contents-follow-button">
-          <span class="not-selected-post-nav"><a>팔로우 취소</a></span>
-        </div>
-      </div>
 
     </div>
   </div>
-  <!-- 팔로우 목록 끝 -->
+
 
   <div class="footer">
   </div>

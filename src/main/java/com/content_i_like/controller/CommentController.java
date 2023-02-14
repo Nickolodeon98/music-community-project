@@ -6,16 +6,31 @@ import com.content_i_like.domain.dto.comment.CommentModifyRequest;
 import com.content_i_like.domain.dto.comment.CommentReadResponse;
 import com.content_i_like.domain.dto.comment.CommentRequest;
 import com.content_i_like.domain.dto.comment.CommentResponse;
+import com.content_i_like.domain.dto.comment.SuperChatReadResponse;
+import com.content_i_like.domain.dto.member.MemberLoginResponse;
 import com.content_i_like.service.CommentService;
+import com.content_i_like.service.ValidateService;
+import com.content_i_like.utils.GsonUtils;
+import com.google.gson.Gson;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +38,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Controller
 @RequestMapping("/recommends")
@@ -31,25 +48,40 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CommentController {
 
   private final CommentService commentService;
+  private final ValidateService validateService;
 
   /**
    * 추천글에 댓글을 작성합니다.
    *
-   * @param authentication header의 token.
    * @param request        작성하는 댓글 정보
    * @param recommendNo    댓글을 작성할 추천글의 고유 번호
    * @return 작성된 댓글 내용
    */
   @PostMapping("/{recommendNo}/comments")
-  public Response<CommentResponse> writeRecommendComment(final Authentication authentication,
+  @ResponseBody
+  public Map<String, Object> writeRecommendComment(@SessionAttribute(name = "loginUser", required = true) MemberLoginResponse loginMember,
       @RequestBody @Valid final CommentRequest request,
       @PathVariable final Long recommendNo) {
-    String userEmail = authentication.getName();
-    log.info("user_email = {}, request = {}, recommend_no = {}", authentication,
+    Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
+
+    String userEmail = validateService.validateMemberByMemberNo(loginMember.getMemberNo()).getEmail();
+    log.info("user_email = {}, request = {}, recommend_no = {}", userEmail,
         request.getCommentContent(), recommendNo);
 
     CommentResponse response = commentService.writeComment(userEmail, request, recommendNo);
-    return Response.success(response);
+
+    Page<SuperChatReadResponse> superChats = commentService.gerSuperChatUser(pageable, recommendNo);
+    if (superChats != null && superChats.getContent().size() > 5) {
+      superChats = new PageImpl<>(superChats.getContent().subList(0, 5), superChats.getPageable(), 5);
+    }
+
+    log.info("superchat = {}", superChats.getContent().get(0).getMemberNickname());
+    List<CommentReadResponse> commentList = commentService.getReadAllComment(recommendNo);
+
+    Map<String, Object> map = new HashMap<>();
+    map.put("comments", commentList);
+    map.put("superchats", superChats.getContent());
+    return map;
   }
 
   /**
@@ -110,18 +142,12 @@ public class CommentController {
     return Response.success(response);
   }
 
-  /**
-   * 추천글에 작성된 모든 댓글 정보를 불러옵니다.
-   *
-   * @param pageable    페이징 정보
-   * @param recommendNo 댓글을 가져올 추천글 고유번호
-   * @return 해당 추천글의 모든 댓글 정보
-   */
+
   @GetMapping("/{recommendNo}/comments")
-  public Response<Page<CommentReadResponse>> getRecommendAllComment(
-      @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) final Pageable pageable,
-      @PathVariable final Long recommendNo) {
-    log.info("pageable = {}, recommendsNo = {}", pageable, recommendNo);
-    return Response.success(commentService.getReadAllComment(pageable, recommendNo));
+  @ResponseBody
+  public String getRecommendComments(Model model, @PathVariable final Long recommendNo) {
+    List<CommentReadResponse> commentList = commentService.getReadAllComment(recommendNo);
+    model.addAttribute("comments", commentList);
+    return "pages/recommend/comment-list";
   }
 }

@@ -1,62 +1,62 @@
 .tracks-list {
-    display:inline-flex;
-    flex-direction: row;
-    margin-bottom: 250px;
-    position: relative;
-    /*left:-43px;*/
-    /*justify-content: space-between;*/
+  display: inline-flex;
+  flex-direction: row;
+  margin-bottom: 250px;
+  position: relative;
+  /*left:-43px;*/
+  /*justify-content: space-between;*/
 }
 
 .tracks-list-elements-left {
-    display: flex;
-    flex-direction: row;
-    /*align-self: flex-start;*/
-    position: absolute;
-    /*margin: auto auto auto auto;*/
-    margin: auto 255px auto 0;
+  display: flex;
+  flex-direction: row;
+  /*align-self: flex-start;*/
+  position: absolute;
+  /*margin: auto auto auto auto;*/
+  margin: auto 255px auto 0;
 }
 
 
 .tracks-list-elements-right {
-    display: flex;
-    flex-direction: row;
-    /*align-self: flex-end;*/
-    position: absolute;
-    /*margin: auto;*/
-    margin: auto auto auto 50%;
+  display: flex;
+  flex-direction: row;
+  /*align-self: flex-end;*/
+  position: absolute;
+  /*margin: auto;*/
+  margin: auto auto auto 50%;
 }
 
 .tracks-list-image {
-    margin: auto;
-    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)) no-repeat center;
-    width: 180px;
-    height: 180px;
-    border-radius: 44px;
-    display: flex;
+  margin: auto;
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)) no-repeat center;
+  width: 180px;
+  height: 180px;
+  border-radius: 44px;
+  display: flex;
 }
 
 .tracks-list-contents {
-    /*padding-top:0.5em;*/
-    padding: 0.4em 0 0 0.7em;
-    /*color: rgba(255, 255, 255, 0.7);*/
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  /*padding-top:0.5em;*/
+  padding: 0.4em 0 0 0.7em;
+  /*color: rgba(255, 255, 255, 0.7);*/
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .track-title {
-    font-size: 24px;
+  font-size: 24px;
 }
 
 .track-album {
-    font-size:21px;
-    color: rgba(255, 255, 255, 0.9);
+  font-size: 21px;
+  color: rgba(255, 255, 255, 0.9);
 
 }
 
 .track-info {
-    padding-bottom:2em;
-    color: rgba(255, 255, 255, 0.8);
+  padding-bottom: 2em;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 /*div.block-middle>ul>li>span {*/
@@ -67,3 +67,5 @@
 /*    text-align: left;*/
 /*    align-self: flex-end;*/
 /*}*/
+
+

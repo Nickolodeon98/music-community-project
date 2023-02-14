@@ -47,8 +47,25 @@
               <img class="setting-img" th:src="@{/img/setting_top.png}" src="../../../static/img/setting_top.png"><a href="">수정하기</a>
             </span>
           </th:block>
+          <th:block th:if="${url}!=''">
+            <span class="selected-post-nav">
+              <a onclick="follow()">팔로우</a>
+            </span>
+          </th:block>
         </nav>
       </div>
+      <script th:inline="javascript">
+        /*<![CDATA[*/
+        function follow() {
+          const page = /*[[${followers.getNickName()}]]*/;
+          var form = document.createElement('form');
+          form.setAttribute('method', 'post');
+          form.setAttribute('action', '/follow/follow/'+page);
+          document.body.appendChild(form);
+          form.submit();
+        }
+        /*]]>*/
+      </script>
       <!-- 이메일 -->
       <div class="contents-myInfo-email">
         <span class="email" th:text="${followers.getEmail()}">broch2up@naemicon.com</span>
@@ -89,8 +106,27 @@
           <a th:href="@{/member/recommends/feeds/__${cards.getMemberNo()}__}"><span th:text="${cards.getMemberNickName()}">다나</span></a>
         </div>
         <div class="contents-follow-button">
-          <span class="selected-post-nav"><a>팔로우</a></span>
+<!--          <th:block th:if="${url}==''">-->
+<!--            <th:block th:if="${cards.isFollowBack()}">-->
+<!--              <span class="not-selected-post-nav"><a onclick="follow()">팔로우 취소</a></span>-->
+<!--            </th:block>-->
+<!--            <th:block th:if="${cards.isFollowBack()==false}">-->
+<!--              <span class="selected-post-nav"><a onclick="follow()">팔로우</a></span>-->
+<!--            </th:block>-->
+<!--          </th:block>-->
         </div>
+        <script th:inline="javascript">
+          /*<![CDATA[*/
+          function follow() {
+            const page = /*[[${cards.getMemberNickName()}]]*/;
+            var form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', '/follow/follow/'+page);
+            document.body.appendChild(form);
+            form.submit();
+          }
+          /*]]>*/
+        </script>
       </div>
 
     </div>

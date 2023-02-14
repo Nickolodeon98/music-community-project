@@ -37,6 +37,7 @@ public class FaqController {
       @PathVariable String category, Model model) {
     Page<FaqResponse> faqByCategory = faqService.getFaqByCategory(pageable, category);
 
+    model.addAttribute("categoryInfo", category);
     model.addAttribute("faq", faqByCategory);
     return "pages/faq/faq";
   }
