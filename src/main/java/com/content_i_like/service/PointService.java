@@ -62,14 +62,13 @@ public class PointService {
   }
 
   @Transactional
-  public void spendPoint(Member member, Long commentPoint) {
+  public void usePoint(Member member, Long commentPoint, PointTypeEnum pointTypeEnum) {
     Point point = Point.builder()
-        .pointType(PointTypeEnum.COMMENTS)
+        .pointType(pointTypeEnum)
         .member(member)
         .pointIncome(0L)
         .pointExpense(commentPoint)
         .build();
-
     pointRepository.save(point);
   }
 }
