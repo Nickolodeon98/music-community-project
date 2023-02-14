@@ -38,9 +38,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/recommends")
@@ -79,7 +81,8 @@ public class RecommendController {
     Page<CommentReadResponse> comments = commentService.getReadAllComment(pageable, recommendNo);
     Page<SuperChatReadResponse> superChats = commentService.gerSuperChatUser(pageable, recommendNo);
     if (superChats != null && superChats.getContent().size() > 5) {
-      superChats = new PageImpl<>(superChats.getContent().subList(0, 5), superChats.getPageable(), 5);
+      superChats = new PageImpl<>(superChats.getContent().subList(0, 5), superChats.getPageable(),
+          5);
     }
     HttpSession session = servletRequest.getSession(false);
 
@@ -90,7 +93,8 @@ public class RecommendController {
               loginResponse.getMemberNo()));
       Long loginUserPoint = pointService.calculatePoint(validateService.validateMemberByMemberNo(
           loginResponse.getMemberNo()));
-      boolean checkComment = commentService.checkWriteComment(loginResponse.getMemberNo(), recommendNo);
+      boolean checkComment = commentService.checkWriteComment(loginResponse.getMemberNo(),
+          recommendNo);
       log.info("댓글 달았니? = {}", checkComment);
       model.addAttribute("login", loginUserResponse);
       model.addAttribute("loginUserPoint", loginUserPoint);
@@ -118,15 +122,15 @@ public class RecommendController {
   @GetMapping("/{recommendNo}/modifyForm")
   public String recommendModifyForm(
       @SessionAttribute(name = "loginUser", required = true) MemberLoginResponse loginMember,
+      HttpServletRequest request,
       Model model,
       @PathVariable("recommendNo") Long recommendNo) {
-
 
     Recommend post = recommendService.findPostById(recommendNo);
     String hashtags = recommendService.getHashtagsToString(recommendNo);
 
     if (!Objects.equals(loginMember.getMemberNo(), post.getMember().getMemberNo())) {
-      return "error";
+      return "redirect:/error";
     }
 
     model.addAttribute("request", new RecommendModifyRequest());
