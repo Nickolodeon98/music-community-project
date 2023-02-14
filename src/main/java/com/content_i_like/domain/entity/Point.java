@@ -40,14 +40,19 @@ public class Point extends BaseEntity {
 
   public PointResponse toResponse() {
     Long pointValue;
+    Long target = 0l;
     if (this.pointExpense != 0l) {
       pointValue = this.pointExpense * (-1);
+      if(this.targetCommentNo != 0l){ //댓글은 안 쓰고 추천글에서만 사용한 포인트
+        target = this.targetCommentNo;
+      }
     } else {
       pointValue = this.pointIncome;
     }
     return PointResponse.builder()
         .date(this.getCreatedAt())
         .point(pointValue)
+        .target(target)
         .message(this.getPointType().getMessage())
         .build();
   }
