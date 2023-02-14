@@ -104,8 +104,7 @@ public class SearchController {
         Sort.by(direction, property));
 
     SearchPageGetResponse<TrackGetResponse> trackResults =
-        searchService.findTracksWithKeyword(pageable, trackTitle.getKeyword(),
-            "sjeon0730@gmail.com");
+        searchService.findTracksWithKeyword(pageable, trackTitle.getKeyword());
 
     model.addAttribute("trackResults", trackResults);
     model.addAttribute("trackResultsAsList", trackResults.getPages().toList());
@@ -164,8 +163,7 @@ public class SearchController {
         Sort.by(direction, property));
 
     SearchPageGetResponse<SearchMembersResponse> searchedMembers =
-        searchService.findMembersWithKeyword(pageable, nickName.getKeyword(),
-            "sjeon0730@gmail.com");
+        searchService.findMembersWithKeyword(pageable, nickName.getKeyword());
 
     model.addAttribute("keyword", nickName.getKeyword());
     model.addAttribute("memberNickName", searchedMembers);
@@ -220,8 +218,7 @@ public class SearchController {
     }
 
     SearchPageGetResponse<SearchRecommendsResponse> pagedResponseRecommends =
-        searchService.findRecommendsWithKeyword(pageable, recommendTitle.getKeyword(),
-            "sjeon0730@gmail.com");
+        searchService.findRecommendsWithKeyword(pageable, recommendTitle.getKeyword());
 
     model.addAttribute("recommendsList", pagedResponseRecommends);
     model.addAttribute("recommendsListAsList", pagedResponseRecommends.getPages().toList());
@@ -247,16 +244,13 @@ public class SearchController {
         Sort.by(sort.getProperty()));
 
     SearchPageGetResponse<TrackGetResponse> trackResults =
-        searchService.findTracksWithKeyword(pageable, searchKeyword.getKeyword(),
-            "sjeon0730@gmail.com");
+        searchService.findTracksWithKeyword(pageable, searchKeyword.getKeyword());
 
     SearchPageGetResponse<SearchMembersResponse> searchedMembers =
-        searchService.findMembersWithKeyword(pageable, searchKeyword.getKeyword(),
-            "sjeon0730@gmail.com");
+        searchService.findMembersWithKeyword(pageable, searchKeyword.getKeyword());
 
     SearchPageGetResponse<SearchRecommendsResponse> pagedResponseRecommends =
-        searchService.findRecommendsWithKeyword(pageable, searchKeyword.getKeyword(),
-            "sjeon0730@gmail.com");
+        searchService.findRecommendsWithKeyword(pageable, searchKeyword.getKeyword());
 
     model.addAttribute("tracks", trackResults);
     model.addAttribute("tracksAsList", trackResults.getPages().toList());
@@ -279,9 +273,7 @@ public class SearchController {
     pageable = PageRequest.of(pageNum != null ? pageNum : 0, 5, Sort.by("trackTitle").ascending());
 
 
-    SearchPageGetResponse<TrackGetResponse> trackResults =
-        searchService.findTracksWithKeyword(pageable, keyword,
-            "sjeon0730@gmail.com");
+    SearchPageGetResponse<TrackGetResponse> trackResults = searchService.findTracksWithKeyword(pageable, keyword);
 
     return trackResults;
   }
