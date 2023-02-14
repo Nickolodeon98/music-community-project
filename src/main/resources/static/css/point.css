@@ -172,3 +172,8 @@ a{
     font-size: 24px;
     color: white;
   }
+
+   .recommend-link{
+      padding: 10px;
+      border: solid 1px white;
+   }
