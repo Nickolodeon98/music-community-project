@@ -170,7 +170,7 @@
 .block-end {
   display: flex;
   /*background-color: lightblue;*/
-  height: 1000px;
+  height: 100%;
   width: 1400px;
   opacity: 0.78;
   margin: auto auto 150px auto;
