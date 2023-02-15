@@ -21,9 +21,13 @@ public class SearchMembersResponse {
     return SearchMembersResponse
         .builder()
         .memberNo(member.getMemberNo())
-        .nickName(member.getNickName())
+        .nickName(summarize(member.getNickName(), 8))
         .profileImgUrl(member.getProfileImgUrl())
         .createdAt(member.getCreatedAt())
         .build();
+  }
+
+  public static String summarize(String text, int length) {
+    return text.length() > length ? String.format("%s...", text.substring(0, length)) : text;
   }
 }

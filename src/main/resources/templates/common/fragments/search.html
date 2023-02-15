@@ -40,20 +40,20 @@
 
     </div>
     <!-- 라디오 버튼에 따라 다른 정렬 조건이 적용된다. -->
-<!--    <form class="search-filter" id="search-filter" th:object="${sortStrategy}"-->
-<!--          th:action="@{/search/all}"-->
-<!--          th:method="get">-->
+    <!--    <form class="search-filter" id="search-filter" th:object="${sortStrategy}"-->
+    <!--          th:action="@{/search/all}"-->
+    <!--          th:method="get">-->
 
-<!--      <input id="sort-property" type="hidden" th:field="*{property}">-->
+    <!--      <input id="sort-property" type="hidden" th:field="*{property}">-->
 
-<!--      &lt;!&ndash;      <ul>&ndash;&gt;-->
-<!--&lt;!&ndash;        <li th:each="pt : ${allProperties}">&ndash;&gt;-->
-<!--&lt;!&ndash;          <label th:for="${#ids.prev('property')}" th:text="#{${'seedstarter.type.' + pt}}"></label>&ndash;&gt;-->
-<!--&lt;!&ndash;        </li>&ndash;&gt;-->
-<!--&lt;!&ndash;      </ul>&ndash;&gt;-->
+    <!--      &lt;!&ndash;      <ul>&ndash;&gt;-->
+    <!--&lt;!&ndash;        <li th:each="pt : ${allProperties}">&ndash;&gt;-->
+    <!--&lt;!&ndash;          <label th:for="${#ids.prev('property')}" th:text="#{${'seedstarter.type.' + pt}}"></label>&ndash;&gt;-->
+    <!--&lt;!&ndash;        </li>&ndash;&gt;-->
+    <!--&lt;!&ndash;      </ul>&ndash;&gt;-->
 
-<!--      <button id="sort-button" onclick="OnClick();">버튼</button>-->
-<!--    </form>-->
+    <!--      <button id="sort-button" onclick="OnClick();">버튼</button>-->
+    <!--    </form>-->
   </div>
 </div>
 <script th:inline="javascript">
@@ -61,21 +61,54 @@
     const current = document.getElementById("categories").options[document.getElementById(
         "categories").selectedIndex].value;
 
+
     if (current === "전체") {
       const allAction = /*[[@{/search/all}]]*/ '/search/all';
       document.querySelector("#search-form").setAttribute("action", allAction);
+
+      const switchSelected = (e) => {
+        const $select = document.querySelector("#categories");
+        const $options = Array.from($select.options);
+        const selectedForAll = $options.find(item => item.text === "전체");
+        selectedForAll.selected = true;
+      };
+
+      document.querySelector('.search-button').addEventListener('click', switchSelected);
     }
     if (current === "음원") {
       const trackAction = /*[[@{/search/tracks}]]*/ '/search/tracks';
       document.querySelector("#search-form").setAttribute("action", trackAction);
+
+      const switchSelected = (e) => {
+        const $select = document.querySelector("#categories");
+        const $options = Array.from($select.options);
+        const selectedForAll = $options.find(item => item.text === "음원");
+        selectedForAll.selected = true;
+      };
+
+      document.querySelector('.search-button').addEventListener('click', switchSelected);
     }
     if (current === "추천글") {
       const recommendAction = /*[[@{/search/recommends}]]*/ '/search/recommends';
       document.querySelector("#search-form").setAttribute("action", recommendAction);
+
+      const switchSelected = (e) => {
+        const $select = document.querySelector("#categories");
+        const $options = Array.from($select.options);
+        const selectedForAll = $options.find(item => item.text === "추천글");
+        selectedForAll.selected = true;
+      };
     }
     if (current === "유저") {
       const memberAction = /*[[@{/search/members}]]*/ '/search/members';
       document.querySelector("#search-form").setAttribute("action", memberAction);
+
+      const switchSelected = (e) => {
+        const $select = document.querySelector("#categories");
+        const $options = Array.from($select.options);
+        const selectedForAll = $options.find(item => item.text === "유저");
+        selectedForAll.selected = true;
+      };
     }
   }
 

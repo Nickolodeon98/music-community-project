@@ -5,9 +5,9 @@ import org.springframework.data.domain.Sort.Direction;
 
 @Getter
 public enum SortEnum {
-  TRACKS_SORT_DEFAULT("trackTitle", 8, Direction.ASC),
-  RECOMMENDS_SORT_DEFAULT("createdAt", 5, Direction.DESC),
-  MEMBERS_SORT_DEFAULT("createdAt", 10, Direction.DESC);
+  TRACKS_SORT_DEFAULT("trackNo", 8, Direction.ASC),
+  RECOMMENDS_SORT_DEFAULT("recommendViews", 5, Direction.DESC),
+  MEMBERS_SORT_DEFAULT("memberNo", 10, Direction.ASC);
 
   final String sortBy;
   final int scale;
