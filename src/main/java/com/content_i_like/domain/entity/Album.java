@@ -27,10 +27,16 @@ public class Album {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name="new_album_no")
   private Long albumNo;
 
+  @Column(length = 1000)
   private String albumTitle;
+
+  @Column(length = 1000)
   private String albumImageUrl;
+
+  @Column(length = 5000)
   private String albumSpotifyId;
 
   @Column(length = 5000)
@@ -38,9 +44,10 @@ public class Album {
   private String releaseDate;
   private String totalTracks;
 
+  @Column(length = 1000)
   private String artistName;
 
   @ManyToOne
-  @JoinColumn(referencedColumnName = "artistNo", name = "artist_no")
+  @JoinColumn(referencedColumnName = "new_artist_no", name = "artist_no")
   private Artist artist;
 }

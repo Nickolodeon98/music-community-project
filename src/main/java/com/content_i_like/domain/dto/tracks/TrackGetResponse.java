@@ -17,7 +17,9 @@ public class TrackGetResponse {
   private String trackAlbum;
   private String trackArtist;
   private String thumbnailUrl;
+  private String trackReleaseDate;
   private List<SearchRecommendsResponse> recommendsOfTracks;
+  private String albumTotalTracks;
 
   public static TrackGetResponse of(Track track, List<SearchRecommendsResponse> recommendsOfTracks) {
     return TrackGetResponse.builder()
@@ -27,6 +29,8 @@ public class TrackGetResponse {
         .trackArtist(track.getArtist().getArtistName())
         .thumbnailUrl(track.getAlbum().getAlbumImageUrl())
         .recommendsOfTracks(recommendsOfTracks)
+        .trackReleaseDate(track.getTrackReleaseDate())
+        .albumTotalTracks(track.getAlbumTotalTracks())
         .build();
   }
 
