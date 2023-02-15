@@ -59,7 +59,7 @@
       <div class="album-info">
         <span class="album-img"><img th:src="${post.getAlbumImageUrl()}"></span>
         <span class="song-info">
-                    <span class="song-name" th:text="${post.getTrackTitle()}"></span>
+                    <a class="song-name" th:text="${post.getTrackTitle()}" th:href="@{/music/track(pk=__${post.trackNo}__)}"></a>
                     <span class="artist-name" th:text="${post.getArtistName()}"></span>
                 </span>
 

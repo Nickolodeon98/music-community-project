@@ -47,7 +47,7 @@ public class MemberService {
   private final PointService pointService;
   private final MailService mailService;
 
-  private final String DEFAULT_PROFILE = "https://content-i-like.s3.ap-northeast-2.amazonaws.com/80c4f0a7-c4e0-44a5-85d6-315dc793fe28-profile.jpg";
+  private final String DEFAULT_PROFILE = "https://content-i-like.s3.ap-northeast-2.amazonaws.com/44b9080f-89c6-4a46-8658-5b3ef1e0bf6d-profile.jpg";
 
   @Transactional
   public MemberJoinResponse join(MemberJoinRequest memberJoinRequest) {
@@ -183,11 +183,16 @@ public class MemberService {
 
   private String getModifyProfileImgURL(MultipartFile image, Member member) throws IOException {
     String url = member.getProfileImgUrl();
-    if (image == null) {
+    if (image.isEmpty()) {
+      log.info("null: url: {}", url);
       return url;
     }
-    s3FileUploadService.deleteFile(url.split("/")[3]);
-    return s3FileUploadService.uploadFile(image);
+
+    String newUrl = s3FileUploadService.uploadFile(image);
+    if (!url.equals(DEFAULT_PROFILE)) {
+      s3FileUploadService.deleteFile(url.split("/")[3]);
+    }
+    return newUrl;
   }
 
   private String uploadProfileImg(MultipartFile file, Member member) throws IOException {

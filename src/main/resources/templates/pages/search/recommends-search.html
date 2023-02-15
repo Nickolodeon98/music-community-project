@@ -83,32 +83,43 @@
       <br>
       <th:block th:if="${recommendsList != null}">
         <div>
-        <ul class="recommend-list" th:each="element, status : ${recommendsListAsList}"
-            th:if="${status.index<5}">
-          <li class="recommend-list-elements">
-            <img class="recommend-image" th:src="${element.recommendImageUrl}"
-                 src="https://content-i-like.s3.ap-northeast-2.amazonaws.com/power.jpg"/>
-            <div class="title-and-contents">
-              <div class="recommend-text">
-                <a th:href="@{/recommends/__${element.recommendNo}__}" class="recommend-title"
-                   th:style="${'font-weight:bold'}" th:text="${element.recommendTitle}"></a>
-                <span class="recommend-date"
-                      th:text="${#temporals.format(element.createdAt, 'yyyy년 MM월 dd일 HH시 mm분')}"></span>
-              </div>
+          <ul class="recommend-list" th:each="element, status : ${recommendsListAsList}"
+              th:if="${status.index<5}">
+            <li class="recommend-list-elements">
+              <img class="recommend-image" th:src="${element.recommendImageUrl}"
+                   src="https://content-i-like.s3.ap-northeast-2.amazonaws.com/power.jpg"/>
+              <div class="title-and-contents">
+                <div class="recommend-text">
+                  <a th:href="@{/recommends/__${element.recommendNo}__}" class="recommend-title"
+                     th:style="${'font-weight:bold'}" th:text="${element.recommendTitle}"></a>
+                  <span class="recommend-date"
+                        th:text="${#temporals.format(element.createdAt, 'yyyy년 MM월 dd일 HH시 mm분')}"></span>
+                </div>
 
-              <div class="separator"></div>
-              <span th:text="${element.summarizedRecommendContent}"></span>
-            </div>
-          </li>
-        </ul>
+                <div class="separator"></div>
+                <span th:text="${element.summarizedRecommendContent}"></span>
+              </div>
+            </li>
+          </ul>
         </div>
       </th:block>
-      <button class="page-button-prev" th:unless="${recommendsList.pages.isFirst()}" th:name="page"
-              th:value="${pageable.previousOrFirst().pageNumber}">이전
-      </button>
-      <button class="page-button-next" th:unless="${recommendsList.pages.isLast()}" th:name="page"
-              th:value="${pageable.next().pageNumber}">다음
-      </button>
+
+      <div class="paging-numbers">
+        <!--        <a class="prev-page">&laquo;</a>-->
+        <button th:each="counter : ${#numbers.sequence(1, recommendsList.pages.totalPages, 1)}"
+           class="paging-numbers-themselves" th:unless="${counter > pageable.pageNumber + 5 || counter < pageable.pageNumber - 5 }"
+           th:text="${counter}"
+           th:name="page"
+           th:value="${counter}"></button>
+        <!--        <a class="next-page">&raquo;</a>-->
+      </div>
+
+      <!--      <button class="page-button-prev" th:unless="${recommendsList.pages.isFirst()}" th:name="page"-->
+      <!--              th:value="${pageable.previousOrFirst().pageNumber}">이전-->
+      <!--      </button>-->
+      <!--      <button class="page-button-next" th:unless="${recommendsList.pages.isLast()}" th:name="page"-->
+      <!--              th:value="${pageable.next().pageNumber}">다음-->
+      <!--      </button>-->
     </form>
   </div>
 </div>

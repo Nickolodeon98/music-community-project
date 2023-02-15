@@ -124,12 +124,16 @@ public class TrackService {
 //        collectAllGenres(
 //            "C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\k-genres.csv");
 
-//    List<String> queries = List.of("Korean Mask Singer", "Korean Traditional", "Korean Phantom Singer", "Korean Instrumental");
+    List<String> queries =
+        List.of("J-pop", "J-rock", "J-poprock", "Instrumental", "Dance", "Game", "Bounce", "Latin", "British pop", "Classical");
 
-    List<String> queries = List.of("K-pop", "K-indie", "K-rap", "K-rock", "Classic K-pop", "Korean Soundtrack", "Korean OST",
-        "Korean Pop", "Pop", "Korean Instrumental", "K-jazz", "K-R&B");
+//    List.of("Korean Mask Singer", "Trot", "Pop ballads", "Pop", "Rock", "Acoustic Pop", "Anime", "Hip hop", "Edm", "Soul", "R&b");
 
-//    , "Pop ballads", "Pop", "J-pop", "J-rock", "J-poprock", ""
+
+//    List.of("K-pop", "K-indie", "K-rap", "K-rock", "Classic K-pop", "Korean Soundtrack", "Korean OST",
+//        "Korean Pop", "Pop", "Korean Instrumental", "K-jazz", "K-R&B");
+
+
 
     List<List<String>> collectedIds = new ArrayList<>();
     List<String> ids = new ArrayList<>();
@@ -253,7 +257,7 @@ public class TrackService {
 //        if (album.getArtistName().equals(artist.getArtistName()))
 //          album.setArtist(artist);
 //      }
-      List<Artist> artist = artistRepository.findAllByArtistSpotifyId(album.getArtistName())
+      List<Artist> artist = artistRepository.findAllByArtistSpotifyId(album.getArtistSpotifyId())
           .orElseThrow(
               () -> new ContentILikeAppException(ErrorCode.NOT_FOUND, "앨범의 아티스트가 존재하지 않습니다."));
 
