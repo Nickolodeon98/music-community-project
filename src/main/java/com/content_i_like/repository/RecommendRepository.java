@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -36,20 +35,21 @@ public interface RecommendRepository extends JpaRepository<Recommend, Long>,
   Optional<Page<Recommend>> findAllByMemberNickNameContaining(String keyword, Pageable pageable);
 
   //@Query("SELECT r, COUNT(l) FROM Recommend r LEFT JOIN r.likes l GROUP BY r ORDER BY COUNT(l) DESC")
-  @Query(value = "SELECT rec.recommendNo, rec.recommendTitle, rec.recommendImageUrl, mem.nickName as memberNickname, "
-      + "tr.trackTitle, al.albumImageUrl, ar.artistName, rec.recommendContent, "
-      + "COUNT(l.likesNo) as countLikes, "
-      + "(SELECT SUM(c.commentPoint) + rec.recommendPoint "
-      + "FROM Comment c "
-      + "WHERE c.recommend = rec) as accumulatedPoints "
-      + "FROM Recommend rec "
-      + "LEFT JOIN Member mem ON rec.member = mem "
-      + "LEFT JOIN Track tr ON rec.track = tr "
-      + "LEFT JOIN Album al ON tr.album = al "
-      + "LEFT JOIN Artist ar ON al.artist = ar "
-      + "LEFT JOIN Likes l ON rec.recommendNo = l.recommend.recommendNo "
-      + "GROUP BY rec.recommendNo "
-      + "ORDER BY countLikes DESC",
+  @Query(value =
+      "SELECT rec.recommendNo, rec.recommendTitle, rec.recommendImageUrl, mem.nickName as memberNickname, "
+          + "tr.trackTitle, al.albumImageUrl, ar.artistName, rec.recommendContent, "
+          + "COUNT(l.likesNo) as countLikes, "
+          + "COALESCE((SELECT SUM(c.commentPoint) + rec.recommendPoint "
+          + "FROM Comment c "
+          + "WHERE c.recommend = rec), rec.recommendPoint) as accumulatedPoints "
+          + "FROM Recommend rec "
+          + "LEFT JOIN Member mem ON rec.member = mem "
+          + "LEFT JOIN Track tr ON rec.track = tr "
+          + "LEFT JOIN Album al ON tr.album = al "
+          + "LEFT JOIN Artist ar ON al.artist = ar "
+          + "LEFT JOIN Likes l ON rec.recommendNo = l.recommend.recommendNo "
+          + "GROUP BY rec.recommendNo "
+          + "ORDER BY countLikes DESC",
       countQuery = "SELECT COUNT(rec) "
           + "FROM Recommend rec "
           + "LEFT JOIN Member mem ON rec.member = mem "
@@ -59,20 +59,19 @@ public interface RecommendRepository extends JpaRepository<Recommend, Long>,
           + "LEFT JOIN Likes l ON rec.recommendNo = l.recommend.recommendNo")
   Page<Object[]> findAllWithLikeCount(Pageable pageable);
 
-  @Query(value = "SELECT rec.recommendNo, rec.recommendTitle, rec.recommendImageUrl, mem.nickName as memberNickname, "
-      + "tr.trackTitle, al.albumImageUrl, ar.artistName, rec.recommendContent, "
-      + "COUNT(l.likesNo) as countLikes, "
-      + "(SELECT SUM(c.commentPoint) + rec.recommendPoint "
-      + "FROM Comment c "
-      + "WHERE c.recommend = rec) as accumulatedPoints "
-      + "FROM Recommend rec "
-      + "LEFT JOIN Member mem ON rec.member = mem "
-      + "LEFT JOIN Track tr ON rec.track = tr "
-      + "LEFT JOIN Album al ON tr.album = al "
-      + "LEFT JOIN Artist ar ON al.artist = ar "
-      + "LEFT JOIN Likes l ON rec.recommendNo = l.recommend.recommendNo "
-      + "GROUP BY rec.recommendNo "
-      + "ORDER BY accumulatedPoints DESC",
+  @Query(value =
+      "SELECT rec.recommendNo, rec.recommendTitle, rec.recommendImageUrl, mem.nickName as memberNickname, "
+          + "tr.trackTitle, al.albumImageUrl, ar.artistName, rec.recommendContent, "
+          + "COUNT(l.likesNo) as countLikes, "
+          + "COALESCE((SELECT SUM(c.commentPoint) + rec.recommendPoint FROM Comment c WHERE c.recommend = rec), rec.recommendPoint) as accumulatedPoints "
+          + "FROM Recommend rec "
+          + "LEFT JOIN Member mem ON rec.member = mem "
+          + "LEFT JOIN Track tr ON rec.track = tr "
+          + "LEFT JOIN Album al ON tr.album = al "
+          + "LEFT JOIN Artist ar ON al.artist = ar "
+          + "LEFT JOIN Likes l ON rec.recommendNo = l.recommend.recommendNo "
+          + "GROUP BY rec.recommendNo, rec.recommendPoint "
+          + "ORDER BY accumulatedPoints DESC",
       countQuery = "SELECT COUNT(rec) "
           + "FROM Recommend rec "
           + "LEFT JOIN Member mem ON rec.member = mem "
