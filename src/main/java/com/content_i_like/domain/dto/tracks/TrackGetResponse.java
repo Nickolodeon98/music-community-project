@@ -4,7 +4,6 @@ import com.content_i_like.domain.dto.search.SearchRecommendsResponse;
 import com.content_i_like.domain.entity.Track;
 import java.util.List;
 import lombok.*;
-import org.springframework.data.domain.Page;
 
 @Builder
 @AllArgsConstructor
@@ -18,7 +17,9 @@ public class TrackGetResponse {
   private String trackAlbum;
   private String trackArtist;
   private String thumbnailUrl;
+  private String trackReleaseDate;
   private List<SearchRecommendsResponse> recommendsOfTracks;
+  private String albumTotalTracks;
 
   public static TrackGetResponse of(Track track, List<SearchRecommendsResponse> recommendsOfTracks) {
     return TrackGetResponse.builder()
@@ -28,6 +29,8 @@ public class TrackGetResponse {
         .trackArtist(track.getArtist().getArtistName())
         .thumbnailUrl(track.getAlbum().getAlbumImageUrl())
         .recommendsOfTracks(recommendsOfTracks)
+        .trackReleaseDate(track.getTrackReleaseDate())
+        .albumTotalTracks(track.getAlbumTotalTracks())
         .build();
   }
 
