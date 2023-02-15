@@ -165,8 +165,32 @@
 }
 
 #board-input-point {
-  width: 20%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
   margin-left: 5px;
+}
+
+#use-point{
+  width: 300px;
+  display: flex;
+}
+#user-point{
+  width: 200px;
+  font-family: NotoSansKR;
+  font-size: 22px;
+  color: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-self:center;
+  margin-left: 10px;
+}
+
+#contour{
+  font-size: 22px;
+  color: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-self:center;
+  margin-left: 10px;
 }
 
 .modal {

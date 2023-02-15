@@ -63,6 +63,10 @@ public class RecommendListResponse {
   }
 
   private static String limitStringLength(String str, int length) {
+    if (str == null) {
+      return " ";
+    }
+
     if (str.length() <= length) {
       return str;
     }

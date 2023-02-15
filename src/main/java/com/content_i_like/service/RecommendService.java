@@ -63,6 +63,12 @@ public class RecommendService {
     Member member = validateGetMemberInfoByUserEmail(userEmail);
     Track track = validateGetTrackByTrackNo(request.getTrackNo());
     String url = getUploadImageURL(request.getImage());
+    Long memberPoint = pointService.calculatePoint(member);
+
+    if (request.getRecommendPoint() > memberPoint) {
+      throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+    }
+
     Recommend post = saveRecommend(request, member, track, url);
     pointService.usePoint(member, request.getRecommendPoint(), PointTypeEnum.RECOMMEND_POSTS, post.getRecommendNo());
     saveHashTags(request, post);
