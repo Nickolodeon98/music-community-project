@@ -55,7 +55,7 @@ public class RecommendListResponse {
             .trackTitle(limitStringLength((String) objects[4], 16))
             .albumImageUrl((String) objects[5])
             .artistName(limitStringLength((String) objects[6], 13))
-            .recommendContent(limitStringLength((String) objects[7], 50))
+            .recommendContent(limitStringLength((String) objects[7], 100))
             .countLikes((Long) objects[8])
             .accumulatedPoints(objects[9] == null ? 0L : ((Number) objects[9]).longValue())
             .build())

@@ -74,7 +74,7 @@
             <input th:if="${post.getRecommendYoutubeUrl.length() == 17}" name="youtube-url"
                    th:value="' '"
                    type="text"/>
-            <input th:unless="${post.getRecommendYoutubeUrl.length() == 17}" name="youtube-url"
+            <input th:if="${post.getRecommendYoutubeUrl.length() > 17}" name="youtube-url"
                    th:value="${post.getRecommendYoutubeUrl().split('/')[3]}"
                    type="text"/>
           </span>
