@@ -68,10 +68,12 @@
 
     <div class="name-and-likes">
       <div class="recommender-name">
-            <span th:unless="${bestComment.memberNickname == null}"
-                  th:text="${bestComment.memberNickname}" class="member-recommender"></span>
-        <span th:if="${bestComment.memberNickname == null}"
-              class="member-recommender">익명의 사용자</span>
+            <a th:href="@{/member/recommends/feeds/__${bestComment.memberNo}__}"
+                th:unless="${bestComment.memberNickname == null}"
+                  th:text="${bestComment.memberNickname}" class="member-recommender"></a>
+        <a th:href="@{/member/recommends/feeds/__${bestComment.memberNo}__}"
+                  th:if="${bestComment.memberNickname == null}"
+              class="member-recommender">익명의 사용자</a>
       </div>
       <div class="likes-no">
         <img id="likes-img" th:src="@{/img/like icon_4013753.png}"
