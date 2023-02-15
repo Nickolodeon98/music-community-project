@@ -12,7 +12,7 @@ public class UserProfile {
   private final String oauthId;
   private final String name;
   private final String email;
-  private final String DEFAULT_PROFILE = "https://content-i-like.s3.ap-northeast-2.amazonaws.com/c63fc89a-8b4c-4567-8c3d-801125237977-profile.jpg";
+  private final String DEFAULT_PROFILE = "https://content-i-like.s3.ap-northeast-2.amazonaws.com/44b9080f-89c6-4a46-8658-5b3ef1e0bf6d-profile.jpg";
 
   public Member toMember() {
     return Member.builder()
