@@ -54,9 +54,12 @@
       <div class="contents-myInfo-modify">
         <nav id="sort-post">
           <th:block th:if="${url}==''">
-            <span class="not-selected-post-nav">
-              <img class="setting-img" th:src="@{/img/setting_top.png}" src="../../../static/img/setting_top.png"><a href="">수정하기</a>
-            </span>
+            <a th:href="@{/member/my/update}">
+              <span class="not-selected-post-nav">
+                <img class="setting-img" th:src="@{/img/setting_top.png}" src="../../../static/img/setting_top.png">
+                <span>수정하기</span>
+              </span>
+            </a>
           </th:block>
           <th:block th:if="${url}!=''">
             <span class="selected-post-nav">

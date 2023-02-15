@@ -17,22 +17,18 @@ public class ChartService {
   private final ChartQueryRepository chartQueryRepository;
 
   @Transactional
-  public List<RecommendChartResponse> getMonthlyRecommendChart() throws Exception {
-    return chartQueryRepository.getMonthlyRecommendChartTop10();
-  }
-
-  @Transactional
-  public List<RecommendChartResponse> getWeeklyRecommendChart() throws Exception {
+  public List<RecommendChartResponse> getRecommendChart(String sort) throws Exception {
+    if (sort.equals("monthly")) {
+      return chartQueryRepository.getMonthlyRecommendChartTop10();
+    }
     return chartQueryRepository.getWeeklyRecommendChartTop10();
   }
 
   @Transactional
-  public List<TrackChartResponse> getMonthlyTrackChart() throws Exception {
-    return chartQueryRepository.getMonthlyTrackChartTop10();
-  }
-
-  @Transactional
-  public List<TrackChartResponse> getWeeklyTrackChart() throws Exception {
+  public List<TrackChartResponse> getTrackChart(String sort) throws Exception {
+    if (sort.equals("monthly")) {
+      return chartQueryRepository.getMonthlyTrackChartTop10();
+    }
     return chartQueryRepository.getWeeklyTrackChartTop10();
   }
 }

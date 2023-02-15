@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/chart")
@@ -16,26 +17,17 @@ public class ChartController {
 
   private final ChartService chartService;
 
-  @GetMapping("/recommend-monthly")
-  public String getMonthlyRecommendChart(Model model) throws Exception {
-    model.addAttribute("charts", chartService.getMonthlyRecommendChart());
+  @GetMapping("/recommend")
+  public String getRecommendChart(Model model,
+      @RequestParam(defaultValue = "monthly", name = "sort") String sort) throws Exception {
+    model.addAttribute("charts", chartService.getRecommendChart(sort));
     return "pages/chart/recommend-chart";
   }
 
-  @GetMapping("/recommend-weekly")
-  public String getWeeklyRecommendChart(Model model) throws Exception {
-    model.addAttribute("charts", chartService.getWeeklyRecommendChart());
-    return "pages/chart/recommend-chart";
-  }
-
-  @GetMapping("/track-monthly")
-  public String getMonthlyTrackChart(Model model) throws Exception {
-    model.addAttribute("charts", chartService.getMonthlyTrackChart());
-    return "pages/chart/track-chart";
-  }
-  @GetMapping("/track-weekly")
-  public String getWeeklyTrackChart(Model model) throws Exception {
-    model.addAttribute("charts", chartService.getWeeklyTrackChart());
+  @GetMapping(value = {"", "/track"})
+  public String getTrackChart(Model model,
+      @RequestParam(defaultValue = "monthly", name = "sort") String sort) throws Exception {
+    model.addAttribute("charts", chartService.getTrackChart(sort));
     return "pages/chart/track-chart";
   }
 
