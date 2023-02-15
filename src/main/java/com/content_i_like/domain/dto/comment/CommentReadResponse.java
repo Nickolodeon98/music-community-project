@@ -20,6 +20,7 @@ public class CommentReadResponse {
   private String profileImgUrl;
   private String commentContent;
   private Long commentPoint;
+  private Long memberNo;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
   private LocalDateTime createdAt;
@@ -38,6 +39,7 @@ public class CommentReadResponse {
         .commentContent(comment.getCommentContent())
         .commentPoint(commentPoint)
         .createdAt(comment.getCreatedAt())
+        .memberNo(comment.getMember().getMemberNo())
         .build();
   }
 
