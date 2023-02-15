@@ -126,11 +126,11 @@
           </ul>
         </div>
       </th:block>
-      <div th:each="counter : ${#numbers.sequence(1, trackResults.pages.totalPages, 1)}">
-      <button th:text="${counter}" class="page-button"
-         th:name="page"
-         th:value="${counter}"></button>
-      </div>
+<!--      <div th:each="counter : ${#numbers.sequence(1, trackResults.pages.totalPages, 1)}">-->
+<!--      <button th:text="${counter}" class="page-button"-->
+<!--         th:name="page"-->
+<!--         th:value="${counter}"></button>-->
+<!--      </div>-->
 
       <button class="page-button-prev" th:unless="${trackResults.pages.isFirst()}" th:name="page"
               th:value="${pageable.previousOrFirst().pageNumber}" th:text>
