@@ -70,9 +70,16 @@ public class MemberController {
   }
 
   @GetMapping("/login")
-  public String loginForm(HttpServletRequest request, Model model) {
-    if (request.getSession(false) != null) {
-      return "redirect:/";
+  public String loginForm(HttpServletRequest request, Model model, HttpServletResponse response) {
+    HttpSession session = request.getSession(false);
+    if (session != null) {
+      MemberLoginResponse memberLoginResponse = (MemberLoginResponse) session
+          .getAttribute("loginUser");
+      if (memberLoginResponse != null) {
+        return "redirect:/";
+      }
+      new SecurityContextLogoutHandler()
+          .logout(request, response, SecurityContextHolder.getContext().getAuthentication());
     }
     String referrer = request.getHeader("Referer");
 
@@ -120,9 +127,17 @@ public class MemberController {
   }
 
   @GetMapping("/join")
-  public String joinForm(HttpServletRequest request, Model model) {
-    if (request.getSession(false) != null) {
-      return "redirect:/";
+  public String joinForm(HttpServletRequest request, Model model, HttpServletResponse response) {
+
+    HttpSession session = request.getSession(false);
+    if (session != null) {
+      MemberLoginResponse memberLoginResponse = (MemberLoginResponse) session
+          .getAttribute("loginUser");
+      if (memberLoginResponse != null) {
+        return "redirect:/";
+      }
+      new SecurityContextLogoutHandler()
+          .logout(request, response, SecurityContextHolder.getContext().getAuthentication());
     }
 
     model.addAttribute("request", new MemberJoinRequest());
@@ -136,9 +151,16 @@ public class MemberController {
   }
 
   @GetMapping("/passwd/find_pw")
-  public String findPwForm(HttpServletRequest httpRequest, Model model) {
-    if (httpRequest.getSession(false) != null) {
-      return "redirect:/";
+  public String findPwForm(HttpServletRequest httpRequest, Model model, HttpServletResponse response) {
+    HttpSession session = httpRequest.getSession(false);
+    if (session != null) {
+      MemberLoginResponse memberLoginResponse = (MemberLoginResponse) session
+          .getAttribute("loginUser");
+      if (memberLoginResponse != null) {
+        return "redirect:/";
+      }
+      new SecurityContextLogoutHandler()
+          .logout(httpRequest, response, SecurityContextHolder.getContext().getAuthentication());
     }
     model.addAttribute("request", new MemberFindRequest());
     return "pages/member/find-pw";
@@ -151,9 +173,16 @@ public class MemberController {
   }
 
   @GetMapping("/passwd/change")
-  public String changePw(HttpServletRequest httpRequest, Model model) {
-    if (httpRequest.getSession(false) == null) {
-      return "redirect:/member/login";
+  public String changePw(HttpServletRequest httpRequest, Model model, HttpServletResponse response) {
+    HttpSession session = httpRequest.getSession(false);
+    if (session != null) {
+      MemberLoginResponse memberLoginResponse = (MemberLoginResponse) session
+          .getAttribute("loginUser");
+      if (memberLoginResponse != null) {
+        return "redirect:/";
+      }
+      new SecurityContextLogoutHandler()
+          .logout(httpRequest, response, SecurityContextHolder.getContext().getAuthentication());
     }
     model.addAttribute("request", new ChangePwRequest());
     return "pages/member/change-pw";
