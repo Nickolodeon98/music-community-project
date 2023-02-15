@@ -37,7 +37,7 @@ public class Recommend extends BaseEntity {
   private Long recommendViews;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "track_no")
+  @JoinColumn(name = "new_track_no")
   @JsonIgnore
   private Track track;
 

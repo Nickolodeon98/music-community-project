@@ -390,3 +390,13 @@ input[type="radio"] {
   font-size: 20px;
   color: #808080;
 }
+
+.paging-numbers {
+  display: inline-block;
+}
+
+.paging-numbers-themselves {
+  float:left;
+  color: white;
+  padding: 8px;
+}

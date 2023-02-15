@@ -2,7 +2,6 @@ package com.content_i_like.service;
 
 import static com.content_i_like.service.validchecks.ArbitraryValidationService.validate;
 
-import com.content_i_like.domain.dto.recommend.RecommendReadResponse;
 import com.content_i_like.domain.dto.search.SearchMembersResponse;
 import com.content_i_like.domain.dto.search.SearchPageGetResponse;
 import com.content_i_like.domain.dto.search.SearchRecommendsResponse;

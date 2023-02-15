@@ -2,10 +2,9 @@ package com.content_i_like.service.fetchoptions;
 
 import com.content_i_like.domain.entity.Artist;
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 public class ArtistFetch implements Fetch<Artist> {
@@ -13,10 +12,12 @@ public class ArtistFetch implements Fetch<Artist> {
   @Override
   public String extractData(JsonNode root, int count) {
     StringBuilder artistNames = new StringBuilder();
+    StringBuilder artistIds = new StringBuilder();
     String artistName = "";
     JsonNode artistNode = null;
     String albumName = "";
     String albumImageUrl = "";
+    String artistSpotifyId = "";
 
     int valuesCount = 0;
     try {
@@ -35,24 +36,33 @@ public class ArtistFetch implements Fetch<Artist> {
 
     for (int i = 0; i < valuesCount; i++) {
       artistName = artistNode.get(i).get("name").asText();
+      artistSpotifyId = artistNode.get(i).get("id").asText();
       artistNames.append(artistName);
+      artistIds.append(artistSpotifyId);
       if (i != valuesCount - 1) {
         artistNames.append(", ");
+        artistIds.append(", ");
       }
     }
 
-    return artistNames.toString();
+    return String.format("%s\n%s", artistNames, artistIds);
   }
 
   @Override
-  public List<Artist> parseIntoEntities(List<String> titles) {
-    List<Artist> artists = new ArrayList<>();
+  public Set<Artist> parseIntoEntitiesAllUnique(Set<String> titles) {
+    Set<Artist> artists = new HashSet<>();
+
     for (String title : titles) {
+      String[] artistNameAndId = title.split("\n");
+
+
       Artist artist = Artist.builder()
-          .artistName(title)
+          .artistName(artistNameAndId[0])
+          .artistSpotifyId(artistNameAndId[1])
           .build();
       artists.add(artist);
     }
+
     return artists;
   }
 }
