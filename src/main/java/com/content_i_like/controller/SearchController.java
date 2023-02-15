@@ -199,7 +199,7 @@ public class SearchController {
         searchService.findTracksWithKeyword(pageable, searchKeyword.getKeyword());
 
     SearchPageGetResponse<SearchMembersResponse> searchedMembers =
-        searchService.findMembersWithKeyword(pageable, searchKeyword.getKeyword());
+        searchService.findMembersWithKeyword(PageRequest.of(0, 5), searchKeyword.getKeyword());
 
     SearchPageGetResponse<SearchRecommendsResponse> pagedResponseRecommends =
         searchService.findRecommendsWithKeyword(pageable, searchKeyword.getKeyword());
