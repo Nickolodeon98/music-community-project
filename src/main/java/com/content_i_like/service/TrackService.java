@@ -113,14 +113,14 @@ public class TrackService {
     String searchUri = TrackEnum.BASE_URL.getValue() + "/search";
     int limit = 50;
 
-    List<String> queries =
-        collectAllGenres(
-            "C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\extra.csv");
+//    List<String> queries =
+//        collectAllGenres(
+//            "C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\extra.csv");
 
 //    List<String> queries = List.of("K-rock", "Classic K-pop", "Korean Soundtrack", "Korean Pop",
 //            "Korean Mask Singer", "Korean Traditional", "Korean Phantom Singer", "Korean Instrumental");
 
-//    List<String> queries = List.of("Pop");
+    List<String> queries = List.of("Heavy Metal");
 
     List<List<String>> collectedIds = new ArrayList<>();
     List<String> ids = new ArrayList<>();
