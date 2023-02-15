@@ -21,7 +21,7 @@
             </span>
 
     <span id="menu-chart" class="menu">
-                <a href="">차트</a>
+                <a th:href="@{/chart}">차트</a>
             </span>
 
     <span id="menu-inquiry" class="menu">
@@ -53,7 +53,7 @@
                 <div class="dropdown">
                 <img class="alarm-img" th:src="@{/img/bell-img.png}"
                      src="../../../static/img/bell-img.png">
-                  <div class="dropdown-content-notification">
+                <div class="dropdown-content-notification">
                     <div class="notification-title-div">
                       <span class="notification-title">
                         알림
@@ -61,21 +61,38 @@
                     </div>
 
                     <div class="notification-cards" th:each="cards:${session.notification}">
-                      <img  th:src="${session.loginUser.profileImgUrl}" class="img-preview">
-                      <div class="notification-info">
+                      <img th:src="${session.loginUser.profileImgUrl}" class="img-preview">
+                      <div class="notification-info" onclick="modifyNotification()">
                         <div class="notification-info-top">
-                          <span class="notification-type" th:text="|${cards.getFromMemberNickName()} ${cards.getNotificationType().getText()}|"></span>
-                          <span class="notification-time" th:text="${cards.getFewHoursAgo()}"></span>
+                          <span class="notification-type"
+                                th:text="|${cards.getFromMemberNickName()} ${cards.getNotificationType().getText()}|"></span>
+                          <span class="notification-time"
+                                th:text="${cards.getFewHoursAgo()}"></span>
                         </div>
-                        <span class="notification-content" th:text="${cards.getNotificationContent()}"></span>
-                        <span class="notification-recommendTitle" th:text="${cards.getRecommendTitle()}"></span>
+                        <span class="notification-content"
+                              th:text="${cards.getNotificationContent()}"></span>
+                        <span class="notification-recommendTitle"
+                              th:text="${cards.getRecommendTitle()}"></span>
                       </div>
+                        <script th:inline="javascript">
+                          /*<![CDATA[*/
+                          function modifyNotification() {
+                            const page = /*[[${cards.getNotificationNo()}]]*/;
+                            // const page = 10;
+                            var form = document.createElement('form');
+                            form.setAttribute('method', 'post');
+                            form.setAttribute('action', '/notifications/'+page);
+                            document.body.appendChild(form);
+                            form.submit();
+                          }
+                          /*]]>*/
+                        </script>
                     </div>
+                </div>
+              </div>
+        </span>
 
-                  </div>
-            </div>
-            </span>
-<span>
+      <span id="menu-profile" class="menu-img">
                 <div class="dropdown">
                     <img th:src="${session.loginUser.profileImgUrl}" class="profile-img-preview">
                         <div class="dropdown-content">
@@ -88,7 +105,7 @@
                             <a href="/member/logout">로그아웃</a>
                         </div>
                 </div>
-            </span>
+        </span>
 
     </th:block>
   </div>

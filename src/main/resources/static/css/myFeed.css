@@ -1,6 +1,6 @@
 .contents {
   width: 1844px;
-  height: 50%;
+  height: 3000px;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -36,7 +36,7 @@
 .setting-img{
   width: 30px;
   height: 30px;
-  margin-right: 5px;
+  margin-left: 18px;
 }
 
 .rounded-circle{
@@ -156,6 +156,14 @@
 #convert-post {
   width: 100%;
   display: flex;
+}
+
+.not-selected-post-nav span {
+  font-family: NotoSansKR;
+  color: #ffffff;
+  font-size: 20px;
+  text-align: center;
+
 }
 
 .selected-post-nav a {

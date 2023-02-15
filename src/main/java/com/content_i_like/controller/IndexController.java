@@ -33,15 +33,4 @@ public class IndexController {
     return "index";
   }
 
-  @GetMapping("/chart")
-  public String chart() {
-
-    return "pages/chart/track-chart";
-  }
-
-  @GetMapping("/chart/recommend")
-  public String recommendChart() {
-
-    return "pages/chart/recommend-chart";
-  }
 }

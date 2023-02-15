@@ -23,8 +23,11 @@ public class NotificationThymeleafResponse {
   private String fewHoursAgo;
   private String notificationContent;
   private String recommendTitle;
+  private Long recommendNo;
+  private Long notificationNo;
 
-  public static NotificationThymeleafResponse of(Notification notification, Member fromMember, String recommendTitle, String comments) {
+  public static NotificationThymeleafResponse of(Notification notification, Member fromMember,
+      String recommendTitle, Long recommendNo, String comments) {
     return NotificationThymeleafResponse.builder()
         .notificationType(notification.getNotificationType())
         .fromMemberNickName(fromMember.getNickName())
@@ -33,6 +36,8 @@ public class NotificationThymeleafResponse {
             Duration.between(notification.getCreatedAt(), LocalDateTime.now()).toHours() + "시간전")
         .notificationContent(comments)
         .recommendTitle(recommendTitle)
+        .recommendNo(recommendNo)
+        .notificationNo(notification.getNotificationNo())
         .build();
   }
 }
