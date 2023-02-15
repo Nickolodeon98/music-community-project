@@ -35,7 +35,7 @@
 
     <th:block th:if="${session.loginUser==null}">
         <span id="menu-login" class="menu-user">
-                  <a href="/member/login">로그인</a>
+                  <a th:href="@{/member/login}">로그인</a>
               </span>
 
       <span id="menu-join" class="menu-user">
