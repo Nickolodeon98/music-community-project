@@ -30,6 +30,9 @@ public class NewAlbum {
   private String albumTitle;
   private String albumImageUrl;
   private String albumSpotifyId;
+
+  @Column(length = 5000)
+  private String artistSpotifyId;
   private String releaseDate;
   private String totalTracks;
 

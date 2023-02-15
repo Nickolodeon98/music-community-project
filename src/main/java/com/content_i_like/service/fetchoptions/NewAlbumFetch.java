@@ -16,6 +16,7 @@ public class NewAlbumFetch implements NewFetch<NewAlbum> {
   @Override
   public String extractData(JsonNode root, int count) {
     StringBuilder artistNames = new StringBuilder();
+    StringBuilder artistIds = new StringBuilder();
 
     String albumName = "";
     String albumImageUrl = "";
@@ -23,7 +24,10 @@ public class NewAlbumFetch implements NewFetch<NewAlbum> {
     String albumId = "";
     String albumReleaseDate = "";
     String totalTracks = "";
+    String artistSpotifyId = "";
+
     JsonNode artistNode = null;
+
     int valuesCount = 0;
 
     try {
@@ -50,9 +54,12 @@ public class NewAlbumFetch implements NewFetch<NewAlbum> {
 
     for (int i = 0; i < valuesCount; i++) {
       artistName = artistNode.get(i).get("name").asText();
+      artistSpotifyId = artistNode.get(i).get("id").asText();
       artistNames.append(artistName);
+      artistIds.append(artistSpotifyId);
       if (i != valuesCount - 1) {
         artistNames.append(", ");
+        artistIds.append(", ");
       }
     }
 
@@ -60,8 +67,8 @@ public class NewAlbumFetch implements NewFetch<NewAlbum> {
     || albumReleaseDate.equals("") || totalTracks.equals(""))
       return "";
 
-    return String.format("%s\n%s\n%s\n%s\n%s\n%s",
-        albumName, albumImageUrl, artistNames, albumId, albumReleaseDate, totalTracks);
+    return String.format("%s\n%s\n%s\n%s\n%s\n%s\n%s",
+        albumName, albumImageUrl, artistNames, albumId, albumReleaseDate, totalTracks, artistIds);
   }
 
   @Override
@@ -78,6 +85,7 @@ public class NewAlbumFetch implements NewFetch<NewAlbum> {
           .albumSpotifyId(titleAndUrlAndArtistName[3])
           .releaseDate(titleAndUrlAndArtistName[4])
           .totalTracks(titleAndUrlAndArtistName[5])
+          .artistSpotifyId(titleAndUrlAndArtistName[6])
           .build();
 
       albums.add(album);

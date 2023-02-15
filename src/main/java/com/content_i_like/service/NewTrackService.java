@@ -267,10 +267,14 @@ public class NewTrackService {
 //        if (album.getArtistName().equals(artist.getArtistName()))
 //          album.setArtist(artist);
 //      }
-      NewArtist artist = artistRepository.findByArtistName(album.getArtistName())
+      List<NewArtist> artist = artistRepository.findAllByArtistSpotifyId(album.getArtistName())
           .orElseThrow(
               () -> new ContentILikeAppException(ErrorCode.NOT_FOUND, "앨범의 아티스트가 존재하지 않습니다."));
-      album.setArtist(artist);
+
+      if (!artist.isEmpty()) {
+        album.setArtist(artist.get(0));
+      }
+
       newAlbums.add(album);
     }
 
