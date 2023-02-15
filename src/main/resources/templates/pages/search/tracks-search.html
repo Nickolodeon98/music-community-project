@@ -85,19 +85,19 @@
                  th:href="@{/music/track(pk=${trackResultsAsList.get(counter).trackNo})}"
                  th:utext=
                      "${#strings.length(trackResultsAsList.get(counter).trackTitle) >= 25} ?
-                     ${#strings.substring(trackResultsAsList.get(counter).trackTitle, 0, 25)} + '<br>'
-                      + ${#strings.substring(trackResultsAsList.get(counter).trackTitle, 25, trackResultsAsList.get(counter).trackTitle.length())}:
-                     ${trackResultsAsList.get(counter).trackTitle}">
+                     ${#strings.substring(trackResultsAsList.get(counter).trackTitle, 0, 25)} + '...'
+                     : ${trackResultsAsList.get(counter).trackTitle}">
 
               </a>
               <span class="track-album"
                     th:utext=
                         "${#strings.length(trackResultsAsList.get(counter).trackAlbum) >= 26} ?
-                     ${#strings.substring(trackResultsAsList.get(counter).trackAlbum, 0, 26)} + '<br>'
-                      + ${#strings.substring(trackResultsAsList.get(counter).trackAlbum, 26, trackResultsAsList.get(counter).trackAlbum.length())}:
-                     ${trackResultsAsList.get(counter).trackAlbum}"></span>
+                     ${#strings.substring(trackResultsAsList.get(counter).trackAlbum, 0, 26)} + '...'
+                     : ${trackResultsAsList.get(counter).trackAlbum}"></span>
               <span class="track-info"
-                    th:utext="${trackResultsAsList.get(counter).trackArtist}"></span>
+                    th:utext="${#strings.length(trackResultsAsList.get(counter).trackArtist) >= 26} ?
+                    ${#strings.substring(trackResultsAsList.get(counter).trackArtist, 0, 26)} + '...'
+                     : ${trackResultsAsList.get(counter).trackArtist}"></span>
           </span>
             </li>
             <li class="tracks-list-elements-right"
@@ -110,36 +110,40 @@
                  th:href="@{/music/track(pk=${trackResultsAsList.get(counter+1).trackNo})}"
                  th:utext=
                      "${#strings.length(trackResultsAsList.get(counter+1).trackTitle) >= 25} ?
-                     ${#strings.substring(trackResultsAsList.get(counter+1).trackTitle, 0, 25)} + '<br>'
-                      + ${#strings.substring(trackResultsAsList.get(counter+1).trackTitle, 25, trackResultsAsList.get(counter+1).trackTitle.length())}:
-                     ${trackResultsAsList.get(counter+1).trackTitle}"></a>
+                     ${#strings.substring(trackResultsAsList.get(counter+1).trackTitle, 0, 25)} + '...'
+                     : ${trackResultsAsList.get(counter+1).trackTitle}"></a>
               <span class="track-album"
                     th:utext=
                         "${#strings.length(trackResultsAsList.get(counter+1).trackAlbum) >= 26} ?
-                     ${#strings.substring(trackResultsAsList.get(counter+1).trackAlbum, 0, 26)} + '<br>'
-                      + ${#strings.substring(trackResultsAsList.get(counter+1).trackAlbum, 26, trackResultsAsList.get(counter+1).trackAlbum.length())}:
-                     ${trackResultsAsList.get(counter+1).trackAlbum}"></span>
+                     ${#strings.substring(trackResultsAsList.get(counter+1).trackAlbum, 0, 26)} + '...'
+                     : ${trackResultsAsList.get(counter+1).trackAlbum}"></span>
               <span class="track-info"
-                    th:utext="${trackResultsAsList.get(counter+1).trackArtist}"></span>
+                    th:utext="${#strings.length(trackResultsAsList.get(counter+1).trackArtist) >= 26} ?
+                    ${#strings.substring(trackResultsAsList.get(counter+1).trackArtist, 0, 26)} + '...'
+                     : ${trackResultsAsList.get(counter+1).trackArtist}"></span>
           </span>
             </li>
           </ul>
         </div>
       </th:block>
-      <div class="paging-numbers" th:each="counter : ${#numbers.sequence(1, trackResults.pages.totalPages, 1)}">
-      <a class="paging-numbers-themselves" th:unless="${pageable.pageNumber > 10}"
-              th:text="${counter}" class="page-button"
-         th:name="page"
-         th:value="${counter}"></a>
+
+      <div class="paging-numbers">
+        <!--        <a class="prev-page">&laquo;</a>-->
+        <button th:each="counter : ${#numbers.sequence(1, trackResults.pages.totalPages, 1)}"
+           class="paging-numbers-themselves" th:unless="${counter > pageable.pageNumber + 5 || counter < pageable.pageNumber - 5 }"
+           th:text="${counter}"
+           th:name="page"
+           th:value="${counter}"></button>
+        <!--        <a class="next-page">&raquo;</a>-->
       </div>
 
-      <button class="page-button-prev" th:unless="${trackResults.pages.isFirst()}" th:name="page"
-              th:value="${pageable.previousOrFirst().pageNumber}" th:text>
-      </button>
+      <!--      <button class="page-button-prev" th:unless="${trackResults.pages.isFirst()}" th:name="page"-->
+      <!--              th:value="${pageable.previousOrFirst().pageNumber}" th:text>-->
+      <!--      </button>-->
 
-      <button class="page-button-next" th:unless="${trackResults.pages.isLast()}" th:name="page"
-              th:value="${pageable.next().pageNumber}">다음
-      </button>
+      <!--      <button class="page-button-next" th:unless="${trackResults.pages.isLast()}" th:name="page"-->
+      <!--              th:value="${pageable.next().pageNumber}">다음-->
+      <!--      </button>-->
     </form>
   </div>
 </div>
