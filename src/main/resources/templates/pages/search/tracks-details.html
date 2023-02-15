@@ -90,8 +90,12 @@
           <div class="music-info">
                         <span class="music-img"><img th:src="${trackInfo.thumbnailUrl}"
                                                      src="../../../../../../../content_i_like/src/main/resources/static/img/event-horizon.jpg"/> </span>
-            <span class="music-info-text" th:text="${trackInfo.trackTitle} + ' - '"></span>
-            <span class="music-info-text" th:text="${trackInfo.trackArtist}"></span>
+            <span class="music-info-text" th:text="${#strings.length(trackInfo.trackTitle) > 10} ?
+             ${#strings.substring(trackInfo.trackTitle, 0, 10)}+ '... - '
+             : ${trackInfo.trackTitle} + ' - '"></span>
+            <span class="music-info-text" th:text="${#strings.length(trackInfo.trackArtist) > 10} ?
+             ${#strings.substring(trackInfo.trackArtist, 0, 10)}
+             : ${trackInfo.trackArtist}"></span>
           </div>
 
           <div class="body"></div>
@@ -129,8 +133,12 @@
           <div class="music-info">
                         <span class="music-img"><img th:src="${trackInfo.thumbnailUrl}"
                                                      src="../../../../../../../content_i_like/src/main/resources/static/img/event-horizon.jpg"/> </span>
-            <span class="music-info-text" th:text="${trackInfo.trackTitle} + ' - '"></span>
-            <span class="music-info-text" th:text="${trackInfo.trackArtist}"></span>
+            <span class="music-info-text" th:text="${#strings.length(trackInfo.trackTitle) > 10} ?
+             ${#strings.substring(trackInfo.trackTitle, 0, 10)}+ '... - '
+             : ${trackInfo.trackTitle} + ' - '"></span>
+            <span class="music-info-text" th:text="${#strings.length(trackInfo.trackArtist) > 10} ?
+             ${#strings.substring(trackInfo.trackArtist, 0, 10)}
+             : ${trackInfo.trackArtist}"></span>
           </div>
 
           <div class="body"></div>
@@ -167,8 +175,12 @@
           <div class="music-info">
                         <span class="music-img"><img th:src="${trackInfo.thumbnailUrl}"
                                                      src="../../../../../../../content_i_like/src/main/resources/static/img/event-horizon.jpg"/> </span>
-            <span class="music-info-text" th:text="${trackInfo.trackTitle} + ' - '"></span>
-            <span class="music-info-text" th:text="${trackInfo.trackArtist}"></span>
+            <span class="music-info-text" th:text="${#strings.length(trackInfo.trackTitle) > 10} ?
+             ${#strings.substring(trackInfo.trackTitle, 0, 10)}+ '... - '
+             : ${trackInfo.trackTitle} + ' - '"></span>
+            <span class="music-info-text" th:text="${#strings.length(trackInfo.trackArtist) > 10} ?
+             ${#strings.substring(trackInfo.trackArtist, 0, 10)}
+             : ${trackInfo.trackArtist}"></span>
           </div>
 
           <div class="body"></div>
