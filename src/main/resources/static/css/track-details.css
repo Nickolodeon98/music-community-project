@@ -351,3 +351,12 @@ div.block-end > ul > li > span {
   color: white;
   text-align: center;
 }
+
+.track-header {
+  display: flex;
+  flex-direction: row;
+}
+
+.create-post-button {
+  border: solid white;
+}
