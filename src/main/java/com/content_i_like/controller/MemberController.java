@@ -50,6 +50,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
@@ -62,14 +63,21 @@ public class MemberController {
 
   private final MemberService memberService;
   private final NotificationService notificationService;
+
   @ModelAttribute("genderEnums")
   public GenderEnum[] genderEnum() {
     return GenderEnum.values();
   }
 
   @GetMapping("/login")
-  public String loginForm(Model model) {
+  public String loginForm(HttpServletRequest request, Model model) {
+    if (request.getSession(false) != null) {
+      return "redirect:/";
+    }
+    String referrer = request.getHeader("Referer");
+
     model.addAttribute("request", new MemberLoginRequest());
+    model.addAttribute("referrer", referrer);
     return "pages/member/login";
   }
 
@@ -77,15 +85,17 @@ public class MemberController {
   public String login(
       @Valid @ModelAttribute("memberLoginRequest") MemberLoginRequest memberLoginRequest,
       BindingResult bindingResult,
-      HttpServletRequest request, Model model, Pageable pageable) {
+      HttpServletRequest request, Model model, Pageable pageable,
+      @RequestParam(required = false) String redirect) {
 
     if (bindingResult.hasErrors()) {
       return "redirect:/member/login";
     }
     try {
       MemberLoginResponse response = memberService.login(memberLoginRequest);
-      List<NotificationThymeleafResponse> notificationsResponses = notificationService.getNotificationsThymeleafResponses(
-          response.getNickName(), pageable);
+      List<NotificationThymeleafResponse> notificationsResponses = notificationService
+          .getNotificationsThymeleafResponses(
+              response.getNickName(), pageable);
 
       HttpSession session = request.getSession();   //세션이 있으면 있는 세션 반환, 없으면 신규 세션
       session.setAttribute("loginUser", response);
@@ -95,7 +105,11 @@ public class MemberController {
       log.info("에러 발생");
       return "redirect:/member/login";
     }
-    return "redirect:/";
+    if (redirect == null) {
+      return "redirect:/";
+    } else {
+      return "redirect:" + redirect;
+    }
   }
 
   @GetMapping("/logout")
@@ -189,13 +203,12 @@ public class MemberController {
 
     MemberResponse memberResponse = memberService
         .modifyMyInfoWithFile(request, memberEmail);
+
+    MemberLoginResponse updateLoginResponse = new MemberLoginResponse(loginResponse.getJwt(),
+        loginResponse.getMemberNo(), loginResponse.getNickName(),
+        memberResponse.getProfileImgUrl());
+    session.setAttribute("loginUser", updateLoginResponse);
     return "redirect:/member/my";
-  }
-
-
-  @GetMapping("/my/point/sample")
-  public String getMyPoint() {
-    return "pages/member/point-history";
   }
 
   @GetMapping("/my/point")
@@ -304,7 +317,7 @@ public class MemberController {
     String memberPw = request.getParameter("password");
     MemberLoginRequest memberLoginRequest = new MemberLoginRequest(memberEmail, memberPw);
     boolean result = memberService.checkLogin(memberLoginRequest);
-    System.out.println("result: "+result);
+    System.out.println("result: " + result);
     JSONObject jso = new JSONObject();
     jso.put("result", result);
     response.setContentType("text/html;charset=utf-8");

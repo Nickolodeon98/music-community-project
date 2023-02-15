@@ -13,7 +13,7 @@ import org.hibernate.annotations.Where;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@SQLDelete(sql = "UPDATE comment SET deleted_at = current_timestamp WHERE id = ?")
+@SQLDelete(sql = "UPDATE comment SET deleted_at = current_timestamp WHERE comment_no = ?")
 @Where(clause = "deleted_at is null")
 public class Comment extends BaseEntity {
 

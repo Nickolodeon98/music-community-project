@@ -93,7 +93,7 @@ class CommentControllerTest {
   @DisplayName("댓글 작성")
   void success_write_comment() throws Exception {
     CommentRequest request = new CommentRequest("댓글", 100L);
-    CommentResponse response = new CommentResponse(1L, 1L, "댓글", 100L);
+    CommentResponse response = new CommentResponse(1L, 1L, "댓글", 100L,"이미지","닉네임", LocalDateTime.now());
 
     given(commentService.writeComment(any(), any(), any())).willReturn(response);
 
@@ -119,7 +119,7 @@ class CommentControllerTest {
   @DisplayName("댓글 수정")
   void success_modify_comment() throws Exception {
     CommentModifyRequest request = new CommentModifyRequest("댓글 수정");
-    CommentResponse response = new CommentResponse(1L, 1L, "댓글 수정", 100L);
+    CommentResponse response = new CommentResponse(1L, 1L, "댓글", 100L,"이미지","닉네임", LocalDateTime.now());
 
     given(commentService.modifyComment(any(), any(), any(), any())).willReturn(response);
 

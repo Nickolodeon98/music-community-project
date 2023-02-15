@@ -22,7 +22,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,7 +88,10 @@ public class MemberService {
     }
 
     String jwt = jwtService.generateToken(member);
-
+    boolean getPoint = pointService.getAttendancePoint(member);
+    if (!getPoint) {
+      pointService.giveAttendancePoint(member);
+    }
     return new MemberLoginResponse(jwt, member.getMemberNo(), member.getNickName(),
         member.getProfileImgUrl());
   }
@@ -141,9 +146,10 @@ public class MemberService {
     return memberResponse;
   }
 
-  public MemberPointResponse getMyPoint(String memeberEmail, Pageable pageable) {
-    Member member = validateExistingMember(memeberEmail);
-    List<PointResponse> points = pointService.pointList(member);
+  public MemberPointResponse getMyPoint(String memberEmail, Pageable pageable) {
+    Member member = validateExistingMember(memberEmail);
+    pageable = PageRequest.of(pageable.getPageNumber(), 20, Sort.by("createdAt").descending());
+    List<PointResponse> points = pointService.pointList(member, pageable);
     return new MemberPointResponse(pointService.calculatePoint(member), new PageImpl<>(points));
   }
 
@@ -178,7 +184,7 @@ public class MemberService {
   private String getModifyProfileImgURL(MultipartFile image, Member member) throws IOException {
     String url = member.getProfileImgUrl();
     if (image == null) {
-      return null;
+      return url;
     }
     s3FileUploadService.deleteFile(url.split("/")[3]);
     return s3FileUploadService.uploadFile(image);
@@ -354,7 +360,7 @@ public class MemberService {
         result = false;
       }
     } catch (Exception e) {
-        result = false;
+      result = false;
     }
     return result;
   }

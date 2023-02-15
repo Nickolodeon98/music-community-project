@@ -118,17 +118,19 @@ public class ChartQueryRepository {
             recommend.track.album.albumImageUrl,
             recommend.track.artist.artistNo,
             recommend.track.artist.artistName,
-            (recommend.recommendPoint.coalesce(0L)
+            (recommend.recommendPoint
                 .add(comment.commentPoint.coalesce(0L).sum())
                 .add(recommend.comments.size())
                 .add(recommend.likes.size())).as("totalScore")
         )
         .from(recommend)
         .leftJoin(recommend.comments, comment)
+        .on(recommend.recommendNo.eq(comment.recommend.recommendNo))
         .where(recommend.createdAt.after(validUntilThisTime))
         .groupBy(recommend.track.trackNo)
         .orderBy(totalScore.desc(), recommend.track.trackTitle.asc(),
             recommend.track.artist.artistName.asc())
+        .limit(limitSize)
         .fetch();
 
     // response 로 변환
