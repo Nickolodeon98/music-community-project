@@ -70,7 +70,7 @@
 
       <div class="line"></div>
 
-      <div class="post-content" th:text="${post.getRecommendContent()}">
+      <div class="post-content" id="post-textarea" th:text="${post.getRecommendContent()}">
 
       </div>
 
@@ -308,5 +308,12 @@
   }
 
 
+  const textarea = document.getElementById("post-textarea");
+  const convertedText = convertNewLineToBr(textarea.textContent);
+  textarea.innerHTML = convertedText;
+
+  function convertNewLineToBr(text) {
+    return text.replace(/\r?\n/g, "<br>");
+  }
 </script>
 </html>
