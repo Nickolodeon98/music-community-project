@@ -120,7 +120,11 @@ public class MemberController {
   }
 
   @GetMapping("/join")
-  public String joinForm(Model model) {
+  public String joinForm(HttpServletRequest request, Model model) {
+    if (request.getSession(false) != null) {
+      return "redirect:/";
+    }
+
     model.addAttribute("request", new MemberJoinRequest());
     return "pages/member/join";
   }

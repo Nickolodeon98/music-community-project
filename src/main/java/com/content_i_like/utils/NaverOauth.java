@@ -51,7 +51,7 @@ public class NaverOauth implements SocialOauth {
     params.put("response_type", "code");
     params.put("client_id", NAVER_SNS_CLIENT_ID);
     params.put("state", state);
-    params.put("redirect_uri", "http://localhost:8080/api/v1/oauth/naver/redirect");
+    params.put("redirect_uri", "http://ec2-13-209-70-72.ap-northeast-2.compute.amazonaws.com:8080/api/v1/oauth/naver/redirect");
 
     String parameterString = params.entrySet().stream()
         .map(x -> x.getKey() + "=" + x.getValue())
@@ -67,7 +67,7 @@ public class NaverOauth implements SocialOauth {
     params.put("response_type", "code");
     params.put("client_id", NAVER_SNS_CLIENT_ID);
     params.put("state", "contentilike");
-    params.put("redirect_uri", encodeValue("http://localhost:8080/api/v1/oauth/naver/redirect"));
+    params.put("redirect_uri", encodeValue("http://ec2-13-209-70-72.ap-northeast-2.compute.amazonaws.com:8080/api/v1/oauth/naver/redirect"));
 
     String parameterString = params.entrySet().stream()
         .map(x -> x.getKey() + "=" + x.getValue())

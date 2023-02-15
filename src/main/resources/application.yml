@@ -38,7 +38,7 @@ spring:
           naver:
             client-id: ${NAVER_CLIENT_ID}
             client-secret: ${NAVER_CLIENT_SECRET}
-            redirect-uri: http://localhost:8080/login/oauth2/code/naver
+            redirect-uri: http://ec2-13-209-70-72.ap-northeast-2.compute.amazonaws.com:8080/login/oauth2/code/naver
             authorization-grant-type: authorization_code
             scope: name,email
             client-name: Naver
