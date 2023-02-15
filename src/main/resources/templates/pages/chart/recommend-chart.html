@@ -46,7 +46,7 @@
         <tr class="recommend-chart" th:each="chart : ${charts}">
           <td class="recommend-chart-no" th:text="${chartStat.count}">1</td>
           <td class="recommend-chart-title"><a th:href="@{/recommends/{recommendNo}(recommendNo = ${chart.recommendNo})}" th:text="${chart.recommendTitle}">새벽 4시 감성 바이브 대표곡</a></td>
-          <td id="recommend-chart-author"><a th:href="@{/members/recommends/feeds/{memberNo}(memberNo = ${chart.memberNo})}" th:text="${chart.memberNickName}">검정치맛살</a></td>
+          <td id="recommend-chart-author"><a th:href="@{/member/recommends/feeds/{memberNo}(memberNo = ${chart.memberNo})}" th:text="${chart.memberNickName}">검정치맛살</a></td>
           <td class="recommend-point" th:text="${chart.recommendScore}">35,000</td>
           <td class="recommend-views" th:text="${chart.recommendViews}">000</td>
         </tr>
