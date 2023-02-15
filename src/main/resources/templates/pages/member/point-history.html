@@ -35,11 +35,14 @@
         </tr>
 
         <tr class="point-chart" th:each="pt: ${response.pointResponse}">
-          <td id="recommend-chart-no" th:text="${pt.date}">1</td>
+          <td id="recommend-chart-no" th:text="${#temporals.format((pt.date),'yyyy-MM-dd HH:mm')}"></td>
           <td id="recommend-chart-title" th:text="${pt.message}"><a href=""></a></td>
-          <td id="recommend-chart-author"
-              th:if="${pt.target}!=0l"
-              th:text="${pt.target}"><a href=""></a></td>
+          <th:block th:if="${pt.targetRecommendNo==0l}">
+            <td id="recommend-chart-author1">-</td>
+          </th:block>
+          <th:block th:if="${pt.targetRecommendNo!=0l}">
+            <td id="recommend-chart-author2"><a th:href="@{/recommends/__${pt.targetRecommendNo}__}" class="recommend-link">자세히 보기</a></td>
+          </th:block>
           <td id="recommend-point" th:text="${pt.point}"></td>
         </tr>
       </table>

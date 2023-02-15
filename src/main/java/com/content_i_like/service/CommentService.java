@@ -63,9 +63,9 @@ public class CommentService {
 
     // 댓글 알림 이벤트를 발생시킵니다.
 //    applicationEventPublisher.publishEvent(CommentNotificationEvent.of(post, comment));
-    pointService.usePoint(member, request.getCommentPoint(), PointTypeEnum.COMMENTS, comment.getCommentNo());
-    return new CommentResponse(comment.getCommentNo(), post.getRecommendNo(),
-        comment.getCommentContent(), comment.getCommentPoint());
+    pointService.usePoint(member, request.getCommentPoint(), PointTypeEnum.COMMENTS,
+        comment.getCommentNo());
+    return CommentResponse.of(comment, post, member);
   }
 
   /**
@@ -103,8 +103,7 @@ public class CommentService {
     commentRepository.update(request.getCommentContent(), commentNo);
     comment = validateGetCommentInfoByCommentNo(commentNo);
 
-    return new CommentResponse(comment.getCommentNo(), post.getRecommendNo(),
-        comment.getCommentContent(), comment.getCommentPoint());
+    return CommentResponse.of(comment, post, member);
   }
 
   /**
@@ -174,7 +173,7 @@ public class CommentService {
   }
 
   public Page<SuperChatReadResponse> gerSuperChatUser(Pageable pageable, Long recommendNo) {
-    return commentRepository.findCommentsByCommentPointGreaterThanAndRecommendRecommendNo(1l,
+    return commentRepository.findCommentsByCommentPointGreaterThanAndRecommendRecommendNo(0l,
         recommendNo, pageable).map(SuperChatReadResponse::of);
   }
 
@@ -216,7 +215,7 @@ public class CommentService {
 
     if (check.size() == 0) {
       return false;
-    }else{
+    } else {
       return true;
     }
   }

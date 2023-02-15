@@ -1,5 +1,6 @@
 package com.content_i_like.service;
 
+import com.content_i_like.domain.dto.member.MemberLoginResponse;
 import com.content_i_like.domain.dto.member.UserProfile;
 import com.content_i_like.domain.dto.oauth.GetSocialOauthRes;
 import com.content_i_like.domain.dto.oauth.GoogleOAuthToken;
@@ -9,6 +10,7 @@ import com.content_i_like.domain.enums.OAuthAttributes;
 import com.content_i_like.repository.MemberRepository;
 import com.content_i_like.utils.SocialOauth;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,6 +31,8 @@ import java.util.Optional;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
   private final MemberRepository memberRepository;
+  private final HttpSession httpSession;
+  private final PointService pointService;
 
   @Override
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -51,6 +55,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     Member member = saveOrUpdate(userProfile);                  //DB 저장
 
+    httpSession.setAttribute("loginUser",
+        new MemberLoginResponse("", member.getMemberNo(), member.getNickName(),
+            member.getProfileImgUrl()));
+
     return new DefaultOAuth2User(
         Collections.singleton(new SimpleGrantedAuthority(String.valueOf(member.getStatus()))),
         attributes,
@@ -62,9 +70,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     //.map(m->m.update(userProfile.getName(), userProfile.getEmail()))        //OAuth 서비스 사이트에서 정보 변경이 있을 시 DB에 update
     //.orElse(userProfile.toMember());
     if (member
-        .isEmpty()) {                                                               //회원가입된 적이 없다면
+        .isEmpty()) {//회원가입된 적이 없다면
       Member savedMember = memberRepository.save(userProfile.toMember());             //save
+      pointService.giveWelcomePoint(savedMember);
+      pointService.giveAttendancePoint(savedMember);
       return savedMember;
+    }
+    boolean getPoint = pointService.getAttendancePoint(member.get());
+    if (!getPoint) {
+      pointService.giveAttendancePoint(member.get());
     }
     return member.get();
   }

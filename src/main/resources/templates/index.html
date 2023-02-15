@@ -39,7 +39,7 @@
 
       <th:block th:if="${session.loginUser==null}">
         <span id="menu-login" class="menu-user">
-                  <a href="/member/login">로그인</a>
+                  <a th:href="@{/member/login}">로그인</a>
               </span>
 
         <span id="menu-join" class="menu-user">
@@ -65,17 +65,33 @@
                     </div>
 
                     <div class="notification-cards" th:each="cards:${session.notification}">
-                      <img  th:src="${session.loginUser.profileImgUrl}" class="img-preview">
-                      <div class="notification-info">
+                      <img th:src="${session.loginUser.profileImgUrl}" class="img-preview">
+                        <div class="notification-info" onclick="modifyNotification()">
                         <div class="notification-info-top">
-                          <span class="notification-type" th:text="|${cards.getFromMemberNickName()} ${cards.getNotificationType().getText()}|"></span>
-                          <span class="notification-time" th:text="${cards.getFewHoursAgo()}"></span>
+                          <span class="notification-type"
+                                th:text="|${cards.getFromMemberNickName()} ${cards.getNotificationType().getText()}|"></span>
+                          <span class="notification-time"
+                                th:text="${cards.getFewHoursAgo()}"></span>
                         </div>
-                        <span class="notification-content" th:text="${cards.getNotificationContent()}"></span>
-                        <span class="notification-recommendTitle" th:text="${cards.getRecommendTitle()}"></span>
+                        <span class="notification-content"
+                              th:text="${cards.getNotificationContent()}"></span>
+                        <span class="notification-recommendTitle"
+                              th:text="${cards.getRecommendTitle()}"></span>
                       </div>
+        <script th:inline="javascript">
+          /*<![CDATA[*/
+          function modifyNotification() {
+            const page = /*[[${cards.getNotificationNo()}]]*/;
+            // const page = 10;
+            var form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', '/notifications/'+page);
+            document.body.appendChild(form);
+            form.submit();
+          }
+          /*]]>*/
+        </script>
                     </div>
-
                   </div>
             </div>
             </span>

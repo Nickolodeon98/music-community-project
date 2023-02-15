@@ -1,6 +1,7 @@
 package com.content_i_like.controller.restcontroller;
 
 import com.content_i_like.domain.enums.TrackEnum;
+import com.content_i_like.service.NewTrackService;
 import com.content_i_like.service.TrackService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.net.URI;
 public class TestRestController {
 
   private final TrackService trackService;
+  private final NewTrackService newTrackService;
 
   @Value("${spotify.client.id}")
   private String CLIENT_ID;
@@ -30,6 +32,13 @@ public class TestRestController {
     trackService.createAllThreeTypesDB(token);
 
     return "DB 저장이 완료되었습니다.";
+  }
+
+  @GetMapping("/new/tracks")
+  public String getNewTracks(@RequestParam String token) throws IOException {
+    newTrackService.createAllThreeTypesDBAllUnique(token);
+
+    return "새로운 DB 저장이 완료되었습니다.";
   }
 
   @GetMapping("/token")
@@ -52,7 +61,7 @@ public class TestRestController {
 
     String accessToken = trackService.spotifyAccessTokenGenerator(code);
 
-    String uri = "http://localhost:8080/api/v1/test/tracks?token=" + accessToken;
+    String uri = "http://localhost:8080/api/v1/test/new/tracks?token=" + accessToken;
 
     headers.setLocation(URI.create(uri));
 

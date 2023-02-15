@@ -93,7 +93,7 @@
                 <img th:src="${memberNickNameAsList.get(counter+1).profileImgUrl}"
                      class="members-image"/>
                 <a class="members-name" th:text="${memberNickNameAsList.get(counter+1).nickName}"
-                   href=""></a>
+                   th:href="@{/member/recommends/feeds/__${memberNickNameAsList.get(counter+1).memberNo}__}"></a>
                 <span class="members-date"
                       th:utext="'가입일자<br>' +
                         ${#temporals.format(memberNickNameAsList.get(counter+1).createdAt, 'yyyy.MM.dd')}"><br>2023.02.09</span>
@@ -108,7 +108,7 @@
                 <img th:src="${memberNickNameAsList.get(counter+2).profileImgUrl}"
                      class="members-image"/>
                 <a class="members-name" th:text="${memberNickNameAsList.get(counter+2).nickName}"
-                   href=""></a>
+                   th:href="@{/member/recommends/feeds/__${memberNickNameAsList.get(counter+2).memberNo}__}"></a>
                 <span class="members-date"
                       th:utext="'가입일자<br>' +
                         ${#temporals.format(memberNickNameAsList.get(counter+2).createdAt, 'yyyy.MM.dd')}"><br>2023.02.09</span>
@@ -123,7 +123,7 @@
                 <img th:src="${memberNickNameAsList.get(counter+3).profileImgUrl}"
                      class="members-image"/>
                 <a class="members-name" th:text="${memberNickNameAsList.get(counter+3).nickName}"
-                   href=""></a>
+                   th:href="@{/member/recommends/feeds/__${memberNickNameAsList.get(counter+3).memberNo}__}"></a>
                 <span class="members-date"
                       th:utext="'가입일자<br>' +
                         ${#temporals.format(memberNickNameAsList.get(counter+3).createdAt, 'yyyy.MM.dd')}"><br>2023.02.09</span>
@@ -138,7 +138,7 @@
                 <img th:src="${memberNickNameAsList.get(counter+4).profileImgUrl}"
                      class="members-image"/>
                 <a class="members-name" th:text="${memberNickNameAsList.get(counter+4).nickName}"
-                   href=""></a>
+                   th:href="@{/member/recommends/feeds/__${memberNickNameAsList.get(counter+4).memberNo}__}"></a>
                 <span class="members-date"
                       th:utext="'가입일자<br>' +
                         ${#temporals.format(memberNickNameAsList.get(counter+4).createdAt, 'yyyy.MM.dd')}"><br>2023.02.09</span>
