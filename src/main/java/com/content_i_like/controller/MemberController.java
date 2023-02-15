@@ -71,7 +71,13 @@ public class MemberController {
 
   @GetMapping("/login")
   public String loginForm(HttpServletRequest request, Model model) {
-    if (request.getSession(false) != null) {
+    HttpSession session = request.getSession(false);
+    if (session != null) {
+      MemberLoginResponse memberLoginResponse = (MemberLoginResponse) session
+          .getAttribute("loginUser");
+      if (memberLoginResponse.getMemberNo() == null) {
+        return "pages/member/login";
+      }
       return "redirect:/";
     }
     String referrer = request.getHeader("Referer");
@@ -121,7 +127,14 @@ public class MemberController {
 
   @GetMapping("/join")
   public String joinForm(HttpServletRequest request, Model model) {
-    if (request.getSession(false) != null) {
+
+    HttpSession session = request.getSession(false);
+    if (session != null) {
+      MemberLoginResponse memberLoginResponse = (MemberLoginResponse) session
+          .getAttribute("loginUser");
+      if (memberLoginResponse.getMemberNo() == null) {
+        return "pages/member/join";
+      }
       return "redirect:/";
     }
 
