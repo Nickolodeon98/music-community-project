@@ -21,8 +21,8 @@
   <div class="contents">
     <div class="chart-menu">
       <div class="menu-button">
-        <div class="active-chart-menu left-menu"><a th:href="@{/chart/track}">음원 차트</a></div>
-        <div class="disabled-chart-menu right-menu"><a th:href="@{/chart/recommend}">게시물 차트</a></div>
+        <div class="active-chart-menu left-menu"><a id="black-text" th:href="@{/chart/track}">음원 차트</a></div>
+        <div class="disabled-chart-menu right-menu"><a th:href="@{/chart/recommend}">추천글 차트</a></div>
       </div>
       <div class="sort">
         <div id="weekly-sort" class="sort-name disabled-sort"><a th:href="@{/chart/track?sort=weekly}">Weekly</a></div>
@@ -36,10 +36,10 @@
     <div class="chart">
       <table class="chart-table">
         <tr class="chart-top">
-          <td class="chart-top-title">순위</td>
+          <td class="chart-top-title" nowrap>순위</td>
           <td class="chart-top-title" colspan="2">곡 정보</td>
           <td class="chart-top-title">아티스트</td>
-          <td class="chart-top-title">포인트 종합</td>
+          <td class="chart-top-title" nowrap>포인트 종합</td>
         </tr>
         <tr class="track-chart" th:each="chart : ${charts}">
           <td class="track-chart-no" th:text="${chartStat.count}">1</td>

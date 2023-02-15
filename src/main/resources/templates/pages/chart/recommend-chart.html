@@ -22,7 +22,7 @@
     <div class="chart-menu">
       <div class="menu-button">
         <div class="disabled-chart-menu left-menu"><a th:href="@{/chart/track}">음원 차트</a></div>
-        <div class="active-chart-menu right-menu"><a th:href="@{/chart/recommend}">게시물 차트</a></div>
+        <div class="active-chart-menu right-menu"><a id="black-text" th:href="@{/chart/recommend}">추천글 차트</a></div>
       </div>
       <div class="sort">
         <div id="weekly-sort" class="sort-name disabled-sort"><a th:href="@{/chart/recommend?sort=weekly}">Weekly</a></div>
@@ -37,7 +37,7 @@
       <table class="chart-table">
         <tr class="chart-top">
           <td class="chart-top-title">순위</td>
-          <td class="chart-top-title">게시물 제목</td>
+          <td class="chart-top-title">추천글 제목</td>
           <td class="chart-top-title">작성자</td>
           <td class="chart-top-title">포인트</td>
           <td class="chart-top-title">조회수</td>
@@ -46,7 +46,7 @@
         <tr class="recommend-chart" th:each="chart : ${charts}">
           <td class="recommend-chart-no" th:text="${chartStat.count}">1</td>
           <td class="recommend-chart-title"><a th:href="@{/recommends/{recommendNo}(recommendNo = ${chart.recommendNo})}" th:text="${chart.recommendTitle}">새벽 4시 감성 바이브 대표곡</a></td>
-          <td id="recommend-chart-author"><a th:href="@{/members/recommends/feeds/{memberNo}(memberNo = ${chart.memberNo})}" th:text="${chart.memberNickName}">검정치맛살</a></td>
+          <td id="recommend-chart-author"><a th:href="@{/member/recommends/feeds/{memberNo}(memberNo = ${chart.memberNo})}" th:text="${chart.memberNickName}">검정치맛살</a></td>
           <td class="recommend-point" th:text="${chart.recommendScore}">35,000</td>
           <td class="recommend-views" th:text="${chart.recommendViews}">000</td>
         </tr>
