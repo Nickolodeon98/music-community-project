@@ -126,15 +126,17 @@
           </ul>
         </div>
       </th:block>
-<!--      <div th:each="counter : ${#numbers.sequence(1, trackResults.pages.totalPages, 1)}">-->
-<!--      <button th:text="${counter}" class="page-button"-->
-<!--         th:name="page"-->
-<!--         th:value="${counter}"></button>-->
-<!--      </div>-->
+      <div class="paging-numbers" th:each="counter : ${#numbers.sequence(1, trackResults.pages.totalPages, 1)}">
+      <a class="paging-numbers-themselves" th:unless="${pageable.pageNumber > 10}"
+              th:text="${counter}" class="page-button"
+         th:name="page"
+         th:value="${counter}"></a>
+      </div>
 
       <button class="page-button-prev" th:unless="${trackResults.pages.isFirst()}" th:name="page"
               th:value="${pageable.previousOrFirst().pageNumber}" th:text>
       </button>
+
       <button class="page-button-next" th:unless="${trackResults.pages.isLast()}" th:name="page"
               th:value="${pageable.next().pageNumber}">다음
       </button>
