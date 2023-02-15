@@ -183,11 +183,16 @@ public class MemberService {
 
   private String getModifyProfileImgURL(MultipartFile image, Member member) throws IOException {
     String url = member.getProfileImgUrl();
-    if (image == null) {
+    if (image.isEmpty()) {
+      System.out.println("null: url: " + url);
       return url;
     }
+    System.out.println(image.isEmpty());
+    System.out.println("null아님: url: " + url);
     s3FileUploadService.deleteFile(url.split("/")[3]);
-    return s3FileUploadService.uploadFile(image);
+    String newUrl = s3FileUploadService.uploadFile(image);
+    System.out.println("null아님2: url: " + newUrl);
+    return newUrl;
   }
 
   private String uploadProfileImg(MultipartFile file, Member member) throws IOException {
