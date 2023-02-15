@@ -171,6 +171,16 @@
   margin-left: 5px;
 }
 
+#board-input-point-modify{
+  width: 10%;
+  display: flex;
+  margin-left: 5px;
+}
+
+#board-input-point-modify input{
+  text-align: center;
+}
+
 #use-point{
   width: 300px;
   display: flex;

@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RecommendService {
 
   private final MemberRepository memberRepository;
@@ -32,7 +34,7 @@ public class RecommendService {
   private final LikesRepository likesRepository;
   private final PointService pointService;
 
-
+  private final String defaultImg = "https://content-i-like.s3.ap-northeast-2.amazonaws.com/default-post.jpg";
 
   /**
    * 추천 글을 작성합니다.
@@ -66,7 +68,7 @@ public class RecommendService {
     Long memberPoint = pointService.calculatePoint(member);
 
     if (request.getRecommendPoint() > memberPoint) {
-      throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
+      throw new ContentILikeAppException(ErrorCode.NOT_ENOUGH_POINTS, ErrorCode.NOT_ENOUGH_POINTS.getMessage());
     }
 
     Recommend post = saveRecommend(request, member, track, url);
@@ -124,7 +126,7 @@ public class RecommendService {
     if (!image.isEmpty()) {
       return s3FileUploadService.uploadFile(image);
     }
-    return "https://content-i-like.s3.ap-northeast-2.amazonaws.com/default-recommend.jpg";
+    return defaultImg;
   }
 
   /**
@@ -163,7 +165,9 @@ public class RecommendService {
     Member member = validateGetMemberInfoByUserEmail(userEmail);
     Recommend post = validateGetRecommendInfoByRecommendNo(recommendNo);
     validateMemberMatchInRecommend(member, post);
+    log.info("image = {}", request.getImage());
     String url = getModifyImageURL(request.getImage(), post);
+    log.info("url = {}",url);
     updatePost(recommendNo, request, url);
     post = validateGetRecommendInfoByRecommendNo(recommendNo);
 
@@ -193,9 +197,10 @@ public class RecommendService {
    */
   private void updatePost(Long recommendNo, RecommendModifyRequest request, String url) {
     String youtubeUrl = getYoutubeURL(request);
-
+    log.info("updatePost");
     recommendRepository.update(request.getRecommendTitle(), request.getRecommendContent(),
         url, youtubeUrl, recommendNo);
+    log.info("finish");
   }
 
   private String getYoutubeURL(RecommendModifyRequest request) {
@@ -286,10 +291,13 @@ public class RecommendService {
    */
   private String getModifyImageURL(MultipartFile image, Recommend post) throws IOException {
     String url = post.getRecommendImageUrl();
-    if (image == null) {
+    if (image.isEmpty()) {
       return url;
     }
-    s3FileUploadService.deleteFile(url.split("/")[3]);
+
+    if (!defaultImg.equals(url)) {
+      s3FileUploadService.deleteFile(url.split("/")[3]);
+    }
     return s3FileUploadService.uploadFile(image);
   }
 
