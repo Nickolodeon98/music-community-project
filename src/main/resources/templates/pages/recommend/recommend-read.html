@@ -115,10 +115,11 @@
       </div>
 
       <div class="comment-list">
-        <div class="comment" th:each="comment : ${comments}">
+        <div class="comment" th:each="comment : ${comments}"
+             th:id="'comment-'+${comment.commentNo}">
           <span class="comment-list-user-info">
               <div class="comment-list-user-img">
-                <img th:src="${comment.getProfileImgUrl()}">
+                <img id="comment-list-user-img-img" th:src="${comment.getProfileImgUrl()}">
               </div>
               <div class="comment-list-user-name" th:text="${comment.getMemberNickname()}"></div>
               <div class="comment-list-user-point" th:if="${comment.getCommentPoint() != null}"
@@ -127,7 +128,10 @@
           <span class="comment-list-body-menu">
               <div class="comment-list-body" th:text="${comment.getCommentContent()}"></div>
               <div class="comment-list-menu">
-                <span><a href="">삭제</a></span>
+                <span><a class="comment-list-delete"
+                         th:if="${session.loginUser != null and session.loginUser.getNickName() == comment.getMemberNickname()}"
+                         th:href="'javascript:deleteComment(\''+${comment.getCommentNo()}+'\')'"
+                         th:data-comment-no="${comment.commentNo}">삭제</a></span>
                 <!--                <span><a href="">신고</a></span>-->
               </div>
             </span>
@@ -147,13 +151,14 @@
     </div>
 
     <div class="footer">
-
+      <input type="hidden" id="login-user" th:if="${session.loginUser != null}" th:value="${session.loginUser.getNickName()}"/>
     </div>
   </div>
 </div>
 </body>
 <script>
   const recommendNo = window.location.href.split("/").pop();
+  const loginUser = $('#login-user').val();
 
   function deletePost(recommendNo) {
     let form = document.createElement('form');
@@ -167,13 +172,28 @@
     }
   }
 
+  function deleteComment(commentNo) {
+    alert(commentNo);
+
+    let form = document.createElement('form');
+
+    if (confirm("삭제해도 투자한 포인트는 반환되지 않습니다. 정말 삭제하시겠습니까?")) {
+      form.setAttribute('method', 'post');
+      form.setAttribute('action',
+          '/recommends/' + recommendNo + '/comments/' + commentNo + '/delete');
+      document.body.appendChild(form);
+      form.submit();
+      alert("삭제되었습니다.");
+    }
+  }
+
   $(document).ready(function () {
     $('#comment-button').click(function (event) {
       // Prevent form submission
       event.preventDefault();
 
       const commentContent = $('#comment-value').val();
-      const payPoint = $('#pay-point').val();
+      let payPoint = $('#pay-point').val();
       const userPoint = $('#user-point').text();
 
       if (payPoint > Number(userPoint)) {
@@ -182,6 +202,7 @@
         alert(userPoint);
         return false;
       }
+
 
       const commentRequest = {
         commentContent: commentContent,
@@ -199,13 +220,15 @@
 
           // Render the new comments and append them to the comment list
           const comments = data.comments;
-          for (let i = 0; i < comments.length; i++) {
+          console.log(comments);
+          let commentHtml = '';
+          for (let i = comments.length - 1; i >= 0; i--) {
             const comment = comments[i];
-            const commentHtml = `
+            commentHtml += `
           <div class="comment">
             <span class="comment-list-user-info">
               <div class="comment-list-user-img">
-                <img src="${comment.profileImgUrl}">
+                <img id="comment-list-user-img-img" src="${comment.profileImgUrl}">
               </div>
               <div class="comment-list-user-name">${comment.memberNickname}</div>
               <div class="comment-list-user-point">${comment.commentPoint > 0 ? comment.commentPoint
@@ -213,22 +236,27 @@
             </span>
             <span class="comment-list-body-menu">
               <div class="comment-list-body">${comment.commentContent}</div>
-              <div class="comment-list-menu">
-                <span><a href="">삭제</a></span>
-              </div>
-            </span>
-            <div class="comment-list-date">${comment.createdAt}</div>
-          </div>
-        `;
-            $('.comment-list').prepend(commentHtml);
+              <div class="comment-list-menu">`
+
+
+            if (loginUser === comment.memberNickname) {
+              commentHtml += `<span><a href="javascript:deleteComment('${comment.commentNo}')">삭제</a></span>`;
+            }
+            commentHtml += `</div>
+                </span>
+                <div class="comment-list-date">${comment.createdAt}</div>
+                </div>`;
           }
+          $('.comment-list').html(commentHtml);
           $('.comment-input').remove();
 
           const superchats = data.superchats;
+          console.log(superchats)
+          let superchatHtml = '';
           if (superchats && superchats.length > 0) {
-            for (let i = 0; i < superchats.length; i++) {
+            for (let i = superchats.length - 1; i >= 0; i--) {
               const superchat = superchats[i];
-              const superchatHtml = `
+              superchatHtml += `
                 <div class="super-chat-user">
                   <span class="super-chat-user-img"><img src="${superchat.profileImgUrl}"></span>
                   <div>
@@ -237,8 +265,8 @@
                   </div>
                 </div>
               `;
-              $('.super-chat-list').prepend(superchatHtml);
             }
+            $('.super-chat-list').html(superchatHtml);
           } else {
             console.log('No superchats available');
           }

@@ -101,8 +101,12 @@ public class PointService {
 
 
   @Transactional
-  public void usePoint(Member member, Long commentPoint, PointTypeEnum pointTypeEnum,
+  public void usePoint(Member member, Long usePoint, PointTypeEnum pointTypeEnum,
       Long targetNo) {
+    if (usePoint == null) {
+      usePoint = 0l;
+    }
+
     Point point;
     if (pointTypeEnum.equals(PointTypeEnum.COMMENTS)) {
       point = Point.builder()
@@ -110,8 +114,8 @@ public class PointService {
           .member(member)
           .pointIncome(0L)
           .targetCommentNo(targetNo)
-          .targetRecommendNo(findRecommendByCommentNo(targetNo))
-          .pointExpense(commentPoint)
+          .targetRecommendNo(0l)
+          .pointExpense(usePoint)
           .build();
     } else {
       point = Point.builder()
@@ -120,10 +124,9 @@ public class PointService {
           .pointIncome(0L)
           .targetCommentNo(0L)
           .targetRecommendNo(targetNo)
-          .pointExpense(commentPoint)
+          .pointExpense(usePoint)
           .build();
     }
-
     pointRepository.save(point);
   }
 
