@@ -17,5 +17,6 @@ public class PointResponse {
 
   private String message;
   private Long target;
+  private Long targetRecommendNo;
   private Long point;
 }
