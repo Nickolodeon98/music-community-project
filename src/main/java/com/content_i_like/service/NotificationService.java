@@ -58,13 +58,18 @@ public class NotificationService {
 
     Member nullMember = Member.builder()
         .nickName("")
-        .profileImgUrl("https://content-i-like.s3.ap-northeast-2.amazonaws.com/80c4f0a7-c4e0-44a5-85d6-315dc793fe28-profile.jpg")
+        .profileImgUrl(
+            "https://content-i-like.s3.ap-northeast-2.amazonaws.com/80c4f0a7-c4e0-44a5-85d6-315dc793fe28-profile.jpg")
         .build();
 
     for (Notification notification : notifications) {
-      String commentContent="";
-      String recommendTitle="";
+      String commentContent = "";
+      String recommendTitle = "";
+      Long recommendNo = null;
       Member fromMember = nullMember;
+      if (notification.isRead()) {
+        continue;
+      }
 
       if (notification.getCommentNo() != null) {
         Comment comment = commentRepository.findById(notification.getCommentNo()).orElse(null);
@@ -78,6 +83,7 @@ public class NotificationService {
             .orElse(null);
         if (recommend != null) {
           recommendTitle = recommend.getRecommendTitle();
+          recommendNo = recommend.getRecommendNo();
         }
       }
 
@@ -85,8 +91,9 @@ public class NotificationService {
         fromMember = memberRepository.findById(notification.getFromMemberNo()).orElse(nullMember);
       }
 
-      NotificationThymeleafResponse thymeleafResponse = NotificationThymeleafResponse.of(notification, fromMember,
-          recommendTitle, commentContent);
+      NotificationThymeleafResponse thymeleafResponse = NotificationThymeleafResponse.of(
+          notification, fromMember,
+          recommendTitle, recommendNo, commentContent);
       responseList.add(thymeleafResponse);
     }
     return responseList;
@@ -103,5 +110,17 @@ public class NotificationService {
         .build();
     notificationRepository.save(notification);
     return NotificationResponse.of(notification);
+  }
+
+  public Long modifyNotificationRead(Long notificationNo) {
+    Notification notification = notificationRepository.findById(notificationNo).orElseThrow(
+        () -> new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage()));
+
+    notificationRepository.updateIsRead(true, notificationNo);
+
+    if (notification.getRecommendNo() != null) {
+      return notification.getRecommendNo();
+    }
+    return 0L;
   }
 }
