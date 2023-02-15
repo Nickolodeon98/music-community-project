@@ -94,7 +94,7 @@
              ${#strings.substring(trackInfo.trackTitle, 0, 10)}+ '... - '
              : ${trackInfo.trackTitle} + ' - '"></span>
             <span class="music-info-text" th:text="${#strings.length(trackInfo.trackArtist) > 10} ?
-             ${#strings.substring(trackInfo.trackArtist, 0, 10)}
+             ${#strings.substring(trackInfo.trackArtist, 0, 10)} + '...'
              : ${trackInfo.trackArtist}"></span>
           </div>
 
@@ -137,7 +137,7 @@
              ${#strings.substring(trackInfo.trackTitle, 0, 10)}+ '... - '
              : ${trackInfo.trackTitle} + ' - '"></span>
             <span class="music-info-text" th:text="${#strings.length(trackInfo.trackArtist) > 10} ?
-             ${#strings.substring(trackInfo.trackArtist, 0, 10)}
+             ${#strings.substring(trackInfo.trackArtist, 0, 10)} + '...'
              : ${trackInfo.trackArtist}"></span>
           </div>
 
@@ -179,7 +179,7 @@
              ${#strings.substring(trackInfo.trackTitle, 0, 10)}+ '... - '
              : ${trackInfo.trackTitle} + ' - '"></span>
             <span class="music-info-text" th:text="${#strings.length(trackInfo.trackArtist) > 10} ?
-             ${#strings.substring(trackInfo.trackArtist, 0, 10)}
+             ${#strings.substring(trackInfo.trackArtist, 0, 10)} + '...'
              : ${trackInfo.trackArtist}"></span>
           </div>
 
