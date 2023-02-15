@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,30 +20,19 @@ public class ChartRestController {
 
   private final ChartService chartService;
 
-  @GetMapping("/recommend-monthly")
-  public Response<List<RecommendChartResponse>> getMonthlyRecommendChart() throws Exception {
-    List<RecommendChartResponse> findChart = chartService.getMonthlyRecommendChart();
+  @GetMapping("/recommend")
+  public Response<List<RecommendChartResponse>> getRecommendChart(
+      @RequestParam(required = false, defaultValue = "monthly") String sort) throws Exception {
+    List<RecommendChartResponse> findChart = chartService.getRecommendChart(sort);
 
     log.info("chart = {}", findChart);
     return Response.success(findChart);
   }
 
-  @GetMapping("/recommend-weekly")
-  public Response<List<RecommendChartResponse>> getWeeklyRecommendChart() throws Exception {
-    return Response.success(chartService.getWeeklyRecommendChart());
-  }
-
-  @GetMapping("/track-monthly")
-  public Response<List<TrackChartResponse>> getMonthlyTrackChart() throws Exception {
-    List<TrackChartResponse> findChart = chartService.getMonthlyTrackChart();
-
-    log.info("chart = {}", findChart);
-    return Response.success(findChart);
-  }
-
-  @GetMapping("/track-weekly")
-  public Response<List<TrackChartResponse>> getWeeklyTrackChart() throws Exception {
-    List<TrackChartResponse> findChart = chartService.getWeeklyTrackChart();
+  @GetMapping("/track")
+  public Response<List<TrackChartResponse>> getTrackChart(
+      @RequestParam(required = false, defaultValue = "monthly") String sort) throws Exception {
+    List<TrackChartResponse> findChart = chartService.getTrackChart(sort);
 
     log.info("chart = {}", findChart);
     return Response.success(findChart);
