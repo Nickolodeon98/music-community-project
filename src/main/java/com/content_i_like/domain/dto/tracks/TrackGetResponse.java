@@ -4,7 +4,6 @@ import com.content_i_like.domain.dto.search.SearchRecommendsResponse;
 import com.content_i_like.domain.entity.Track;
 import java.util.List;
 import lombok.*;
-import org.springframework.data.domain.Page;
 
 @Builder
 @AllArgsConstructor

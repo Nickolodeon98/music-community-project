@@ -1,26 +1,12 @@
 package com.content_i_like.query;
 
-import static com.querydsl.core.group.GroupBy.sum;
-
-import com.content_i_like.domain.entity.Album;
-import com.content_i_like.domain.entity.Artist;
-import com.content_i_like.domain.entity.Comment;
-import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.QComment;
-import com.content_i_like.domain.entity.QLikes;
 import com.content_i_like.domain.entity.QRecommend;
 import com.content_i_like.domain.entity.QTrack;
-import com.content_i_like.domain.entity.Recommend;
-import com.content_i_like.domain.entity.Track;
-import com.content_i_like.fixture.Fixture;
 import com.content_i_like.repository.RecommendRepository;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
