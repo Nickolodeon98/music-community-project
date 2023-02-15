@@ -150,7 +150,7 @@ class ChartQueryRepositoryTest {
      * 트랙 left join 추천글
      * 음원 번호, 트랙 제목, 아티스트 이름, 대표 추천인, 해당 트랙의 추천글 포인트(score) 총합
      * score = 추천글 포인트 + 좋아요 갯수 + 댓글 갯수 + 댓글 포인트 총합
-     * 정렬 기준: 1. score 총합 2. 트랙 제목 이름순 3. 트랙 제목 이름순 4. 트랙 번호순 (오름차순)
+     * 정렬 기준: 1. score 총합 2. 트랙 제목 이름순 3. 아티스트 이름순
      */
 
     /*
@@ -174,24 +174,24 @@ class ChartQueryRepositoryTest {
 
     List<Tuple> findChart = queryFactory
         .select(
-            subRecommend.track.trackNo,
-            subRecommend.track.trackTitle,
-            subRecommend.track.album.albumImageUrl,
-            subRecommend.track.artist.artistNo,
-            subRecommend.track.artist.artistName,
-            (subRecommend.recommendPoint.coalesce(0L)
-                .add(subComment.commentPoint.coalesce(0L).sum())
-                .add(subRecommend.comments.size())
-                .add(subRecommend.likes.size())).as("totalScore")
+            qRecommend.track.trackNo,
+            qRecommend.track.trackTitle,
+            qRecommend.track.album.albumNo,
+            qRecommend.track.album.albumImageUrl,
+            qRecommend.track.artist.artistNo,
+            qRecommend.track.artist.artistName,
+            (qRecommend.recommendPoint.add(qComment.commentPoint.coalesce(0L).sum())
+                .add(qRecommend.comments.size()).add(qRecommend.likes.size())).as("totalScore")
         )
-        .from(subRecommend)
-        .leftJoin(subRecommend.comments, subComment)
-        .groupBy(subRecommend.track.trackNo)
-        .orderBy(totalScore.desc())
+        .from(qRecommend)
+        .leftJoin(qRecommend.comments, qComment)
+        .on(qRecommend.recommendNo.eq(qComment.recommend.recommendNo))
+        .where(qRecommend.createdAt.after(validUntilThisTime))
+        .groupBy(qRecommend.track.trackNo)
+        .orderBy(totalScore.desc(), qRecommend.track.trackTitle.asc(),
+            qRecommend.track.artist.artistName.asc())
+        .limit(limitSize)
         .fetch();
-
-
-
 
 //    List<Tuple> findChart = queryFactory
 //        .select(
