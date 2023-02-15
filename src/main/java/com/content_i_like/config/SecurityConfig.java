@@ -60,8 +60,9 @@ public class SecurityConfig {
         .oauth2Login()                  // OAuth2 로그인 설정
         //.loginPage("/api/v1/oauth/google")
         //.defaultSuccessUrl("/api/v1/oauth/naver")
-        .defaultSuccessUrl("/api/v1/oauth/google")
-        .failureUrl("/api/v1/hello")
+        //.defaultSuccessUrl("/api/v1/oauth/google")
+        .defaultSuccessUrl("/")
+        .failureUrl("/")
         .userInfoEndpoint()             // OAuth2 로그인 성공 이후 사용자 정보를 가져올 때 설정
         .userService(customOAuth2UserService);     // OAuth2 로그인 성공 시, 후작업을 진행할 UserService 인터페이스 구현체 등록;
     return http.build();
