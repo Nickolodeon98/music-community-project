@@ -166,8 +166,17 @@ class CommentControllerTest {
   @Test
   @DisplayName("댓글 조회")
   void success_get_comment() throws Exception {
-    CommentReadResponse response = new CommentReadResponse(1L, "chordpli", "image", "body", 100L,
-            LocalDateTime.now());
+//    CommentReadResponse response = new CommentReadResponse(1L, "chordpli", "image", "body", 100L,
+//            LocalDateTime.now());
+
+    CommentReadResponse response = CommentReadResponse.builder()
+        .commentNo(1L)
+        .memberNickname("chordpli")
+        .profileImgUrl("image")
+        .commentContent("body")
+        .commentPoint(100L)
+        .createdAt(LocalDateTime.now())
+        .build();
 
     given(commentService.getReadComment(any(), any())).willReturn(response);
 
@@ -194,12 +203,41 @@ class CommentControllerTest {
   @Test
   @DisplayName("게시글 모든 댓글 조회")
   void success_get_all_comment() throws Exception {
-    CommentReadResponse comment_01 = new CommentReadResponse(1L, "chordpli", "image", "body", 100L,
-            LocalDateTime.now());
-    CommentReadResponse comment_02 = new CommentReadResponse(2l, "chordpli2", "image2", "body2",
-            200L, LocalDateTime.now());
-    CommentReadResponse comment_03 = new CommentReadResponse(3l, "chordpli3", "image3", "body3",
-            300L, LocalDateTime.now());
+//    CommentReadResponse comment_01 = new CommentReadResponse(1L, "chordpli", "image", "body", 100L,
+//            LocalDateTime.now());
+    CommentReadResponse comment_01 = CommentReadResponse.builder()
+        .commentNo(1L)
+        .memberNickname("chordpli")
+        .profileImgUrl("image")
+        .commentContent("body")
+        .commentPoint(100L)
+        .createdAt(LocalDateTime.now())
+        .build();
+
+//    CommentReadResponse comment_02 = new CommentReadResponse(2l, "chordpli2", "image2", "body2",
+//            200L, LocalDateTime.now());
+
+    CommentReadResponse comment_02 = CommentReadResponse.builder()
+        .commentNo(2L)
+        .memberNickname("chordpli2")
+        .profileImgUrl("image2")
+        .commentContent("body2")
+        .commentPoint(200L)
+        .createdAt(LocalDateTime.now())
+        .build();
+
+//    CommentReadResponse comment_03 = new CommentReadResponse(3l, "chordpli3", "image3", "body3",
+//            300L, LocalDateTime.now());
+
+    CommentReadResponse comment_03 = CommentReadResponse.builder()
+        .commentNo(3L)
+        .memberNickname("chordpli3")
+        .profileImgUrl("image3")
+        .commentContent("body3")
+        .commentPoint(300L)
+        .createdAt(LocalDateTime.now())
+        .build();
+
     Page<CommentReadResponse> response = new PageImpl<>(
             List.of(comment_01, comment_02, comment_03));
 
