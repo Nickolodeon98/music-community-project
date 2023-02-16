@@ -2,7 +2,7 @@
 ![1 메인페이지](https://user-images.githubusercontent.com/101695482/219110106-cccef149-0bbf-4a3d-8f50-ebbe1ae6148c.jpg)
 
  ## 프로젝트 소개
-뜨지 못해 아쉬운 음악, 포인트로 홍보하자.
+포인트를 활용한 음원 추천 커뮤니티 및 차트 서비스
 
 ### 팀원 소개
 - 기획 : 석시윤
@@ -21,13 +21,13 @@
 - CLOUD : AWS EC2, AWS RDS, AWS S3
 - CI/CD : Docker, GitLab
 - API: Spority API
-- 
+
 ## 배포
 - [Swagger-ui](http://ec2-13-209-70-72.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui)<br>
 - [front](http://ec2-13-209-70-72.ap-northeast-2.compute.amazonaws.com:8080/)
 
 ## 프로젝트 아키텍처
-![서비스 아키텍처](https://user-images.githubusercontent.com/101695482/219109458-b0199961-faef-4013-ab3c-77bba104bc30.jpg)
+![서비스 아키텍처](https://user-images.githubusercontent.com/101695482/219257204-d34d0c33-648a-45f0-baaf-933fe52687d3.jpg)
 
 ## ERD
 ![my music](https://user-images.githubusercontent.com/101695482/219098041-0edc3203-602a-431f-8355-f656e679c122.jpg)
