@@ -23,8 +23,8 @@
 - API: Spority API
 - 
 ## 배포
-[Swagger-ui](http://ec2-13-209-70-72.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui)<br>
-[front](http://ec2-13-209-70-72.ap-northeast-2.compute.amazonaws.com:8080/)
+- [Swagger-ui](http://ec2-13-209-70-72.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui)<br>
+- [front](http://ec2-13-209-70-72.ap-northeast-2.compute.amazonaws.com:8080/)
 
 ## 프로젝트 아키텍처
 ![서비스 아키텍처](https://user-images.githubusercontent.com/101695482/219109458-b0199961-faef-4013-ab3c-77bba104bc30.jpg)
@@ -36,7 +36,7 @@
 ![브랜치 전략](https://user-images.githubusercontent.com/101695482/219111361-bed62816-d16b-4f5b-a0e4-11a60b37c4c7.jpg)
 
 ## 컨벤션
-[구글 코드 스타일 컨벤션 채택](https://google.github.io/styleguide/javaguide.html)
+[구글 코드 스타일 컨벤션 채택](https://google.github.io/styleguide/javaguide.html)<br>
 [깃 커밋 컨벤션](https://projects-space.notion.site/c8bd2afa00f2467ea8ab50023315f212)
 
 ## 에러
