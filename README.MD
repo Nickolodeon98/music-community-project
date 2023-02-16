@@ -1,6 +1,6 @@
  # Content I Like
+![image](https://user-images.githubusercontent.com/101695482/219257688-77d79b8e-267a-4d92-b0b6-71a2eaa7b470.png)
 ![1 메인페이지](https://user-images.githubusercontent.com/101695482/219110106-cccef149-0bbf-4a3d-8f50-ebbe1ae6148c.jpg)
-
  ## 프로젝트 소개
 포인트를 활용한 음원 추천 커뮤니티 및 차트 서비스
 
