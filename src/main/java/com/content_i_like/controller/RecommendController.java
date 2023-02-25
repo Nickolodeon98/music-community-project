@@ -1,12 +1,9 @@
 package com.content_i_like.controller;
 
-import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.comment.CommentReadResponse;
 import com.content_i_like.domain.dto.comment.SuperChatReadResponse;
 import com.content_i_like.domain.dto.member.LoginUserResponse;
 import com.content_i_like.domain.dto.member.MemberLoginResponse;
-import com.content_i_like.domain.dto.recommend.RecommendDeleteResponse;
-import com.content_i_like.domain.dto.recommend.RecommendListResponse;
 import com.content_i_like.domain.dto.recommend.RecommendModifyRequest;
 import com.content_i_like.domain.dto.recommend.RecommendModifyResponse;
 import com.content_i_like.domain.dto.recommend.RecommendPostRequest;
@@ -31,19 +28,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/recommends")
@@ -68,6 +60,16 @@ public class RecommendController {
     model.addAttribute("userPoint", pointService.calculatePoint(member));
 
     return "pages/recommend/recommend-post";
+  }
+
+  @PostMapping()
+  public String uploadRecommendPost(/*final HttpSession session,*/
+      @ModelAttribute("request") @Valid final RecommendPostRequest request,
+      HttpServletRequest servletRequest) throws IOException {
+    HttpSession session = servletRequest.getSession(false);
+    String memberEmail = getLoginInfo(session);
+    RecommendPostResponse response = recommendService.uploadPost(memberEmail, request);
+    return "redirect:/";
   }
 
   /**
@@ -112,17 +114,6 @@ public class RecommendController {
 
     return "pages/recommend/recommend-read";
   }
-
-  @PostMapping()
-  public String uploadRecommendPost(/*final HttpSession session,*/
-      @ModelAttribute("request") @Valid final RecommendPostRequest request,
-      HttpServletRequest servletRequest) throws IOException {
-    HttpSession session = servletRequest.getSession(false);
-    String memberEmail = getLoginInfo(session);
-    RecommendPostResponse response = recommendService.uploadPost(memberEmail, request);
-    return "redirect:/";
-  }
-
 
   @GetMapping("/{recommendNo}/modifyForm")
   public String recommendModifyForm(

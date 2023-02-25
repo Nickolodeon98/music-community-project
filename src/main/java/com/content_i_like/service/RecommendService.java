@@ -50,7 +50,6 @@ public class RecommendService {
   public RecommendPostResponse uploadPost(final String userEmail,
       final RecommendPostRequest request,
       MultipartFile image, List<String> hashtags) throws IOException {
-
     Member member = validateGetMemberInfoByUserEmail(userEmail);
     Track track = validateGetTrackByTrackNo(request.getTrackNo());
     String url = getUploadImageURL(image);
@@ -165,9 +164,7 @@ public class RecommendService {
     Member member = validateGetMemberInfoByUserEmail(userEmail);
     Recommend post = validateGetRecommendInfoByRecommendNo(recommendNo);
     validateMemberMatchInRecommend(member, post);
-    log.info("image = {}", request.getImage());
     String url = getModifyImageURL(request.getImage(), post);
-    log.info("url = {}",url);
     updatePost(recommendNo, request, url);
     post = validateGetRecommendInfoByRecommendNo(recommendNo);
 
