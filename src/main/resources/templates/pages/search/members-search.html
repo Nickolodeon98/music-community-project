@@ -156,7 +156,7 @@
            class="paging-numbers-themselves" th:unless="${counter > pageable.pageNumber + 5 || counter < pageable.pageNumber - 5 }"
            th:text="${counter}"
            th:name="page"
-           th:value="${counter}">
+           th:value="${counter - 1}">
 <!--           th:href="@{/search/members(keyword=__${keyword}__, page=__${counter}__)}"-->
         </button>
         <!--        <a class="next-page">&raquo;</a>-->

@@ -110,7 +110,7 @@
            class="paging-numbers-themselves" th:unless="${counter > pageable.pageNumber + 5 || counter < pageable.pageNumber - 5 }"
            th:text="${counter}"
            th:name="page"
-           th:value="${counter}"></button>
+           th:value="${counter - 1}"></button>
         <!--        <a class="next-page">&raquo;</a>-->
       </div>
 
