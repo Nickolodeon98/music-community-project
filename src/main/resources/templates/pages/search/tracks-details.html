@@ -17,10 +17,9 @@
   <div th:replace="~{common/fragments/header::header}"></div>
 
   <div class="block-top">
-    <div>
+    <div class="track-header">
       <img th:src="${trackInfo.thumbnailUrl}"
            src="../../../../../../../content_i_like/src/main/resources/static/img/event-horizon.jpg">
-
       <span>
                 <span>
                     <span class="track-date"
@@ -33,14 +32,19 @@
                 <span class="track-content">앨범 명<br>
                   <span class="track-content-small" th:text="${trackInfo.trackAlbum}">앨범</span>
                 </span>
-                <span class="track-content-second" >수록곡<br>
-                  <span class="track-content-small" th:text="${trackInfo.albumTotalTracks}">앨범</span>
+                <span class="track-content-second">수록곡<br>
+                  <span class="track-content-small"
+                        th:text="${trackInfo.albumTotalTracks}">앨범</span>
                 </span>
                 <span class="track-content-third">추천 글<br>
-                  <span class="track-content-small" th:text="${trackInfo.recommendsOfTracks.size()}">앨범</span>
+                  <span class="track-content-small"
+                        th:text="${trackInfo.recommendsOfTracks.size()}">앨범</span>
                 </span>
           </div>
         </span>
+      <div class="create-post-button">
+        <button></button>
+      </div>
     </div>
     </span>
   </div>
@@ -68,12 +72,12 @@
 
     <div class="name-and-likes">
       <div class="recommender-name">
-            <a th:href="@{/member/recommends/feeds/__${bestComment.memberNo}__}"
-                th:unless="${bestComment.memberNickname == null}"
-                  th:text="${bestComment.memberNickname}" class="member-recommender"></a>
         <a th:href="@{/member/recommends/feeds/__${bestComment.memberNo}__}"
-                  th:if="${bestComment.memberNickname == null}"
-              class="member-recommender">익명의 사용자</a>
+           th:unless="${bestComment.memberNickname == null}"
+           th:text="${bestComment.memberNickname}" class="member-recommender"></a>
+        <a th:href="@{/member/recommends/feeds/__${bestComment.memberNo}__}"
+           th:if="${bestComment.memberNickname == null}"
+           class="member-recommender">익명의 사용자</a>
       </div>
       <div class="likes-no">
         <img id="likes-img" th:src="@{/img/like icon_4013753.png}"
