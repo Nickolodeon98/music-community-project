@@ -125,7 +125,18 @@ public class TrackService {
 //            "C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\k-genres.csv");
 
     List<String> queries =
-        List.of("J-pop", "J-rock", "J-poprock", "Instrumental", "Dance", "Game", "Bounce", "Latin", "British pop", "Classical");
+            List.of("Funk", "Soundtrack", "Disney", "Club", "Study", "Romance", "Movies", "Indie");
+
+//        List.of("2004", "2005", "2006", "2007", "2008", "1990", "1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999");
+
+//        List.of("2018", "2019", "2020", "2021", "2022", "2023", "2000", "2001", "2002", "2003");
+
+//        List.of("2009", "2010", "2011", "2012", "2012", "2013", "2014", "2015", "2016", "2017");
+
+//        List.of("Country", "Metal", "Piano", "Acoustic", "Blues", "Disco", "Gospel", "Rap", "Christmas", "Carol");
+
+
+//        List.of("J-pop", "J-rock", "J-poprock", "Instrumental", "Dance", "Game", "Bounce", "Latin", "British pop", "Classical");
 
 //    List.of("Korean Mask Singer", "Trot", "Pop ballads", "Pop", "Rock", "Acoustic Pop", "Anime", "Hip hop", "Edm", "Soul", "R&b");
 
@@ -253,10 +264,6 @@ public class TrackService {
     Set<Album> newAlbums = new HashSet<>();
 
     for (Album album : albums) {
-//      for (NewArtist artist : artists) {
-//        if (album.getArtistName().equals(artist.getArtistName()))
-//          album.setArtist(artist);
-//      }
       List<Artist> artist = artistRepository.findAllByArtistSpotifyId(album.getArtistSpotifyId())
           .orElseThrow(
               () -> new ContentILikeAppException(ErrorCode.NOT_FOUND, "앨범의 아티스트가 존재하지 않습니다."));
@@ -279,17 +286,10 @@ public class TrackService {
       List<Album> album = albumRepository.findAllByAlbumSpotifyId(track.getAlbumSpotifyId())
           .orElseThrow(
               () -> new ContentILikeAppException(ErrorCode.NOT_FOUND, "음원의 앨범이 존재하지 않습니다."));
-//      NewAlbum album = albumRepository.findByAlbumTitle(track.getAlbumTitle())
-//          .orElseThrow(()-> new ContentILikeAppException(ErrorCode.NOT_FOUND, "음원의 앨범이 존재하지 않습니다."));
-
-//      NewArtist artist = artistRepository.findByArtistSpotifyId(track.getArtistSpotifyId())
-//          .orElseThrow(
-//              () -> new ContentILikeAppException(ErrorCode.NOT_FOUND, "음원의 아티스트가 존재하지 않습니다."));
 
       List<Artist> artist = artistRepository.findAllByArtistSpotifyId(track.getArtistSpotifyId())
           .orElseThrow(()-> new ContentILikeAppException(ErrorCode.NOT_FOUND, "음원의 아티스트가 존재하지 않습니다."));
 
-//      genreRepofindGenreByGenreType()
       if (!album.isEmpty()) {
         track.setAlbum(album.get(0));
       }
