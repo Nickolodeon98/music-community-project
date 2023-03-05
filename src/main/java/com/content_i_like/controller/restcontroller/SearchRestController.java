@@ -5,7 +5,7 @@ import com.content_i_like.domain.dto.search.SearchMembersResponse;
 import com.content_i_like.domain.dto.search.SearchPageGetResponse;
 import com.content_i_like.domain.dto.search.SearchRecommendsResponse;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
-import com.content_i_like.service.CacheService;
+//import com.content_i_like.service.CacheService;
 import com.content_i_like.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SearchRestController {
 
   private final SearchService searchService;
-  private final CacheService cacheService;
+//  private final CacheService cacheService;
   @GetMapping("/tracks")
   public Response<SearchPageGetResponse<TrackGetResponse>> searchAllTracks(
       final Authentication authentication,

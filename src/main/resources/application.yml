@@ -5,6 +5,12 @@ server:
     sessio:
       timeout: 60m
 
+logging:
+  level:
+    org:
+      hibernate:
+        type: trace
+
 spring:
   mvc:
     path match:
@@ -17,6 +23,20 @@ spring:
   jpa:
     show-sql: true
     hibernate.ddl-auto: update
+    properties:
+      jakarta:
+        persistence:
+          sharedCache:
+            mode: ENABLE_SELECTIVE
+      hibernate:
+        format_sql: false
+        generate_statistics: true
+        cache:
+          use_second_level_cache: true
+          use_query_cache: true
+          region:
+            factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
+
   mail:
     host: smtp.gmail.com
     port: 587

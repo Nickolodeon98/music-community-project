@@ -14,6 +14,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Getter
 @Setter
@@ -23,6 +24,8 @@ import lombok.Setter;
 @Data
 @Entity
 @Table(name = "new_track")
+@jakarta.persistence.Cacheable
+@org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.READ_WRITE)
 public class Track {
 
   @Id
@@ -43,6 +46,7 @@ public class Track {
   private String artistSpotifyId;
   private String trackReleaseDate;
   private String albumTotalTracks;
+
 
   @ManyToOne
   @JoinColumn(referencedColumnName = "new_album_no", name = "album_no")

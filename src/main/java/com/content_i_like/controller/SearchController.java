@@ -8,7 +8,7 @@ import com.content_i_like.domain.dto.search.SearchRecommendsResponse;
 import com.content_i_like.domain.dto.search.SearchRequest;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.enums.SortEnum;
-import com.content_i_like.service.CacheService;
+//import com.content_i_like.service.CacheService;
 import com.content_i_like.service.SearchService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 public class SearchController {
 
   private final SearchService searchService;
-  private final CacheService cacheService;
+//  private final CacheService cacheService;
 
   @GetMapping()
   public String searchMainPage(Model model) {

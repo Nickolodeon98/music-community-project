@@ -2,6 +2,7 @@ package com.content_i_like.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -13,6 +14,8 @@ import org.hibernate.annotations.Where;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @SQLDelete(sql = "UPDATE likes SET deleted_at = current_timestamp WHERE likes_no = ?")
+@jakarta.persistence.Cacheable
+@org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.READ_WRITE)
 public class Likes extends BaseEntity {
 
   @Id
