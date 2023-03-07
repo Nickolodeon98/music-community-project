@@ -8,7 +8,8 @@ public enum TrackEnum {
   GRANT_TYPE("authorization_code"),
   REDIRECT_URI("http://localhost:8080/api/v1/test"),
   BASE_URL("https://api.spotify.com/v1"),
-  TOKEN_URL("https://accounts.spotify.com/api/token");
+  TOKEN_URL("https://accounts.spotify.com/api/token"),
+  SECOND_REDIRECT_URI("http://localhost:8080/api/v1/test/demand");
 
   private final String value;
 
