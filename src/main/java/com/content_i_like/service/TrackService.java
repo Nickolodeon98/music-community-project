@@ -1,5 +1,7 @@
 package com.content_i_like.service;
 
+import com.content_i_like.domain.dto.search.SearchPageGetResponse;
+import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.entity.Artist;
 import com.content_i_like.domain.entity.Album;
 import com.content_i_like.domain.entity.Track;
@@ -33,6 +35,8 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -234,8 +238,59 @@ public class TrackService {
   }
 
   @Transactional
-  public <T> void createMusicDatabaseAllUnique(Set<T> entities, DBSaveOption<T> saveOption) {
-    saveOption.saveNewRowsAllUnique(entities);
+  public <T> List<T> createMusicDatabaseAllUnique(Set<T> entities, DBSaveOption<T> saveOption) {
+    return saveOption.saveNewRowsAllUnique(entities);
+  }
+
+  @Transactional
+  public SearchPageGetResponse<TrackGetResponse> createDBOnDemand(String accessToken, String keyword)
+      throws JsonProcessingException {
+
+    Set<Artist> artists = searchFromApi(accessToken, keyword, new ArtistFetch());
+    createMusicDatabaseAllUnique(artists, new ArtistSave(artistRepository));
+
+    Set<Album> albums = searchFromApi(accessToken, keyword, new AlbumFetch());
+    Set<Album> artistsAndAlbums = parseForNewAlbum(artists, albums);
+
+    createMusicDatabaseAllUnique(artistsAndAlbums, new AlbumSave(albumRepository));
+
+    Set<Track> tracks = searchFromApi(accessToken, keyword, new TrackFetch());
+    Set<Track> totalTracks = parseForTrack(artists, albums, tracks);
+
+    Page<Track> savedTracks = new PageImpl<>(createMusicDatabaseAllUnique(totalTracks, new TrackSave(trackRepository)));
+
+    Page<TrackGetResponse> requestedTracks = savedTracks.map(TrackGetResponse::of);
+
+    return requestedTracks.isEmpty() ?
+        SearchPageGetResponse.of("검색 결과가 없습니다.", requestedTracks)
+        : SearchPageGetResponse.of(
+            String.format("'%s' 으로 총 %s개의 음원을 찾았습니다.", keyword,
+                requestedTracks.getTotalElements()), requestedTracks);
+  }
+
+  @Transactional
+  public <T> Set<T> searchFromApi(String accessToken, String keyword, Fetch<T> fetchedType)
+      throws JsonProcessingException {
+    RestTemplate restTemplate = new RestTemplate();
+    HttpEntity<MultiValueMap<String, String>> httpEntity
+        = new HttpEntity<>(headerOf(accessToken));
+
+    String onDemandUri = TrackEnum.BASE_URL.getValue() + "/search?q=track:" + keyword
+        + "%20artist:" + keyword + "%20album:" + keyword + "&type=track";
+
+    ResponseEntity<String> response = restTemplate.exchange(onDemandUri, HttpMethod.GET, httpEntity, String.class);
+
+    JsonNode requiredInfo = objectMapper.readTree(response.getBody());
+
+    Set<String> dataSet = new HashSet<>();
+    String extractedData = "";
+    for (int i = 0; i < 50; i++) {
+      extractedData = fetchedType.extractData(requiredInfo, i);
+      if (extractedData.equals("")) continue;
+      dataSet.add(extractedData);
+    }
+
+    return fetchedType.parseIntoEntitiesAllUnique(dataSet);
   }
 
   @Transactional
