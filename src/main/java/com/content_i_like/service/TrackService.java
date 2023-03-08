@@ -276,8 +276,7 @@ public class TrackService {
   }
 
   @Transactional
-  public Page<TrackGetResponse> createDBOnDemand(String accessToken,
-      String keyword, Pageable pageable)
+  public void createDBOnDemand(String accessToken, String keyword)
       throws JsonProcessingException {
 
     Set<Artist> artists = searchFromApi(accessToken, keyword, new EachArtistFetch());
@@ -291,19 +290,7 @@ public class TrackService {
     Set<Track> tracks = searchFromApi(accessToken, keyword, new EachTrackFetch());
     Set<Track> totalTracks = parseForTrack(artists, albums, tracks);
 
-    List<Track> allTracks = createMusicDatabaseAllUnique(totalTracks,
-        new TrackSave(trackRepository));
-    log.info("allTracks:{}", allTracks);
-
-    List<TrackGetResponse> savedTracks = allTracks.stream().map(TrackGetResponse::of)
-        .collect(Collectors.toList());
-
-//    Page<Track> savedTracks = new PageImpl<>(allTracks, pageable, allTracks.size());
-
-    int start = (int) pageable.getOffset();
-    int end = Math.min((start + pageable.getPageSize()), savedTracks.size());
-    return new PageImpl<>(savedTracks.subList(start, end), pageable, end - start);
-//    Page<TrackGetResponse> requestedTracks = new PageImpl<>(savedTracks, pageable, savedTracks.size());
+    createMusicDatabaseAllUnique(totalTracks, new TrackSave(trackRepository));
   }
 
   @Transactional

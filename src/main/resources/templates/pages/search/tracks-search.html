@@ -73,10 +73,10 @@
           th:if="${trackResults != null and trackResultsAsList != null}">
         <div class="search-results">
           <ul class="tracks-list"
-              th:each="counter: ${#numbers.sequence(0, trackResults.pages.getNumberOfElements()-1, 2)}"
-              th:unless="${counter >= trackResults.pages.getNumberOfElements()}">
+              th:each="counter: ${#numbers.sequence(0, elements - 1, 2)}"
+              th:unless="${counter >= elements}">
             <li class="tracks-list-elements-left"
-                th:unless="${counter >= trackResults.pages.getNumberOfElements()}">
+                th:unless="${counter >= elements}">
 
               <img class="tracks-list-image"
                    th:src="${trackResultsAsList.get(counter).thumbnailUrl}"/>
@@ -101,7 +101,7 @@
           </span>
             </li>
             <li class="tracks-list-elements-right"
-                th:unless="${counter+1 >= trackResults.pages.getNumberOfElements()}">
+                th:unless="${counter+1 >= elements}">
 
               <img class="tracks-list-image"
                    th:src="${trackResultsAsList.get(counter+1).thumbnailUrl}"/>
@@ -129,7 +129,7 @@
 
       <div class="paging-numbers">
         <!--        <a class="prev-page">&laquo;</a>-->
-        <button th:each="counter : ${#numbers.sequence(1, trackResults.pages.totalPages, 1)}"
+        <button th:each="counter : ${#numbers.sequence(1, totalPages, 1)}"
            class="paging-numbers-themselves" th:unless="${counter > pageable.pageNumber + 5 || counter < pageable.pageNumber - 5 }"
            th:text="${counter}"
            th:name="page"
