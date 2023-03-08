@@ -1,26 +1,15 @@
 package com.content_i_like.query;
 
-import static com.querydsl.core.group.GroupBy.sum;
+import static com.content_i_like.domain.entity.QComment.comment;
+import static com.content_i_like.domain.entity.QRecommend.recommend;
 
-import com.content_i_like.domain.entity.Album;
-import com.content_i_like.domain.entity.Artist;
-import com.content_i_like.domain.entity.Comment;
-import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.QComment;
-import com.content_i_like.domain.entity.QLikes;
 import com.content_i_like.domain.entity.QRecommend;
 import com.content_i_like.domain.entity.QTrack;
-import com.content_i_like.domain.entity.Recommend;
-import com.content_i_like.domain.entity.Track;
-import com.content_i_like.fixture.Fixture;
 import com.content_i_like.repository.RecommendRepository;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
@@ -41,8 +30,8 @@ class ChartQueryRepositoryTest {
   @Autowired
   EntityManager em;
 
-  QRecommend qRecommend = QRecommend.recommend;
-  QComment qComment = QComment.comment;
+  QRecommend qRecommend = recommend;
+  QComment qComment = comment;
   QTrack qTrack = QTrack.track;
 
   int expirationTimeInWeeks;   // 추천글 유효기간 설정(week)
@@ -153,102 +142,34 @@ class ChartQueryRepositoryTest {
      * 정렬 기준: 1. score 총합 2. 트랙 제목 이름순 3. 아티스트 이름순
      */
 
-    /*
-    SELECT (
-        sum(SELECT (sum(comment.point) + recommendation.point)
-            FROM recommendation
-            LEFT JOIN comment ON recommendation.recommendation_id = comment.recommendation_id
-            GROUP BY recommendation_id WHERE recommendation_id = R.recommendation_id)
-        as score_sum) AS track_score
-    FROM recommendation R LEFT JOIN track ON recommendation.track_id = track.track_id
-    GROUP BY track_id
-
-                (qRecommend.recommendPoint.coalesce(0L).add(qRecommend.likes.size())
-                .add(qRecommend.comments.size()).add(qComment.commentPoint.coalesce(0L).sum())).as(
-                "totalScore"),
-            qRecommend.recommendViews)
-    */
-    QRecommend subRecommend = new QRecommend("subRecommend");
-    QComment subComment = new QComment("subComment");
-    QTrack subTrack = new QTrack("subTrack");
-
     List<Tuple> findChart = queryFactory
         .select(
-            qRecommend.track.trackNo,
-            qRecommend.track.trackTitle,
-            qRecommend.track.album.albumNo,
-            qRecommend.track.album.albumImageUrl,
-            qRecommend.track.artist.artistNo,
-            qRecommend.track.artist.artistName,
-            (qRecommend.recommendPoint.add(qComment.commentPoint.coalesce(0L).sum())
-                .add(qRecommend.comments.size()).add(qRecommend.likes.size())).as("totalScore")
+            recommend.track.trackNo,
+            recommend.track.trackTitle,
+            recommend.track.album.albumNo,
+            recommend.track.album.albumImageUrl,
+            recommend.track.artist.artistNo,
+            recommend.track.artist.artistName,
+            (recommend.recommendPoint
+                .add(comment.commentPoint.coalesce(0L).sum())
+                .add(recommend.comments.size())
+                .add(recommend.likes.size())).as("totalScore")
         )
-        .from(qRecommend)
-        .leftJoin(qRecommend.comments, qComment)
-        .on(qRecommend.recommendNo.eq(qComment.recommend.recommendNo))
-        .where(qRecommend.createdAt.after(validUntilThisTime))
-        .groupBy(qRecommend.track.trackNo)
-        .orderBy(totalScore.desc(), qRecommend.track.trackTitle.asc(),
-            qRecommend.track.artist.artistName.asc())
+        .from(recommend)
+        .leftJoin(recommend.comments, comment)
+        .on(recommend.recommendNo.eq(comment.recommend.recommendNo))
+        .where(recommend.createdAt.after(validUntilThisTime))
+        .groupBy(recommend.track.trackNo)
+        .orderBy(totalScore.desc(), recommend.track.trackTitle.asc(),
+            recommend.track.artist.artistName.asc())
         .limit(limitSize)
         .fetch();
-
-//    List<Tuple> findChart = queryFactory
-//        .select(
-//            qTrack.trackNo,
-//            qTrack.trackTitle,
-//            qTrack.artist.artistNo,
-//            qTrack.artist.artistName,
-//            ExpressionUtils.as(
-//                JPAExpressions
-//                    .select(subRecommend.recommendPoint.coalesce(0L).sum())
-//                    .leftJoin(subRecommend.track, subTrack)
-//                    .on(subRecommend.track.trackNo.eq(subTrack.trackNo))
-//                    .groupBy(subTrack)
-//                    .from(subRecommend)
-//                ,("totalScore")
-//            )
-//
-////            (JPAExpressions
-////                .select((subRecommend.recommendPoint.coalesce(0L).add(subRecommend.likes.size())
-////                    .add(subRecommend.comments.size()).add(subComment.commentPoint.coalesce(0L).sum())).as(
-////                    "totalScore"))
-//
-////                .distinct()
-////                .from(subRecommend)
-////                .leftJoin(subRecommend.comments, subComment)
-////                .on(subRecommend.recommendNo.eq(subComment.recommend.recommendNo))
-////                .where(subRecommend.createdAt.after(validUntilThisTime))
-////                .groupBy(subRecommend.recommendNo)
-////            )
-//        )
-//        .from(qRecommend)
-////        .leftJoin(qRecommend.track, qTrack)
-////        .on(qRecommend.track.trackNo.eq(qTrack.trackNo))
-////        .groupBy(qTrack.trackNo)
-//        .limit(limitSize)
-//        .fetch();
-
-//    List<Tuple> findChart = queryFactory
-//        .select(
-//            qRecommend.recommendNo,
-//            qRecommend.recommendTitle,
-//            qRecommend.member.nickName,
-//            (qRecommend.recommendPoint.coalesce(0L).add(qRecommend.likes.size()).add(qRecommend.comments.size()).add(qComment.commentPoint.coalesce(0L).sum())).as("totalScore"),
-//            qRecommend.recommendViews)
-//        .from(qRecommend)
-//        .leftJoin(qRecommend.comments, qComment).on(qRecommend.recommendNo.eq(qComment.recommend.recommendNo))
-//        .where(qRecommend.createdAt.after(validUntilThisTime))
-//        .groupBy(qRecommend.recommendNo)
-//        .orderBy(totalScore.desc(), qRecommend.recommendViews.desc(), qRecommend.recommendTitle.asc(), qRecommend.recommendNo.asc())
-//        .limit(limitSize)
-//        .fetch();
 
     for (Tuple tuple : findChart) {
       System.out.println(tuple);
     }
 
-    Assertions.assertEquals(findChart.size(), 7);
+    Assertions.assertEquals(findChart.size(), 3);
 
   }
 
