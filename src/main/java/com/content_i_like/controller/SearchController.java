@@ -1,6 +1,5 @@
 package com.content_i_like.controller;
 
-import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.SortStrategy;
 import com.content_i_like.domain.dto.search.SearchMembersResponse;
 import com.content_i_like.domain.dto.search.SearchPageGetResponse;
@@ -11,11 +10,9 @@ import com.content_i_like.domain.enums.SortEnum;
 import com.content_i_like.service.SearchService;
 import com.content_i_like.service.TrackService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -77,11 +74,14 @@ public class SearchController {
 
     /* 만약 trackResults 가 비어있는 경우라면 스포티파이 API 를 호출하는 경로로 리다이렉트 후 다른 메서드를 사용한다
      * accessToken 을 받아야 하기 때문. */
-//    if (trackResults.getPages().isEmpty()) {
-//      return "redirect:http://localhost:8080/api/v1/test/token?option=unplanned&keyword=" + trackTitle.getKeyword();
-//    }
+    if (trackResults.getPages().isEmpty()) {
+      return "redirect:http://localhost:8080/api/v1/test/token?option=unplanned&keyword="
+          + trackTitle.getKeyword();
+    }
 
     model.addAttribute("trackResults", trackResults);
+    model.addAttribute("elements", trackResults.getPages().getNumberOfElements());
+    model.addAttribute("totalPages", trackResults.getPages().getTotalPages());
     model.addAttribute("trackResultsAsList", trackResults.getPages().toList());
     model.addAttribute("pageable", pageable);
     model.addAttribute("keyword", trackTitle.getKeyword());
@@ -99,29 +99,12 @@ public class SearchController {
   public String addTracksOnDemand(@RequestParam String token,
       @RequestParam String keyword,
       @ModelAttribute("keywordDto") final SearchRequest trackTitle,
-      @ModelAttribute("sortStrategy") final SortStrategy sortStrategy,
-      @RequestParam(value = "page", required = false) Integer pageNum,
-      Pageable pageable,
-      Model model) throws JsonProcessingException {
+      @ModelAttribute("sortStrategy") final SortStrategy sortStrategy)
+      throws JsonProcessingException {
 
-    pageable = searchService.generatePageable(pageable, sortStrategy);
+    trackService.createDBOnDemand(token, keyword);
 
-    Page<TrackGetResponse> tracks = trackService.createDBOnDemand(token, keyword, pageable);
-
-    SearchPageGetResponse<TrackGetResponse> requestedTracks = tracks.isEmpty() ?
-        SearchPageGetResponse.of("검색 결과가 없습니다.", tracks)
-        : SearchPageGetResponse.of(
-            String.format("'%s' 으로 총 %s개의 음원을 찾았습니다.", keyword,
-                tracks.getTotalElements()), tracks);
-
-    model.addAttribute("trackResults", requestedTracks);
-    model.addAttribute("trackResultsAsList", requestedTracks.getPages().toList());
-    model.addAttribute("pageable", pageable);
-    model.addAttribute("keyword", trackTitle.getKeyword());
-    SortStrategy sorting = SortStrategy.builder().build();
-    model.addAttribute("sortStrategy", sorting);
-
-    return "pages/search/tracks-search";
+    return "redirect:/search/tracks?keyword=" + keyword + "&page=0";
   }
 
   @PostMapping("/members")
@@ -176,7 +159,8 @@ public class SearchController {
   }
 
   @GetMapping("/recommends")
-  public String searchRecommendsByKeyword(@ModelAttribute("keywordDto") final SearchRequest recommendTitle,
+  public String searchRecommendsByKeyword(
+      @ModelAttribute("keywordDto") final SearchRequest recommendTitle,
       @ModelAttribute("sortStrategy") final SortStrategy sortStrategy,
       @RequestParam(value = "page", required = false) Integer pageNum,
       Pageable pageable,
@@ -244,8 +228,8 @@ public class SearchController {
 
     pageable = PageRequest.of(pageNum != null ? pageNum : 0, 5, Sort.by("trackTitle").ascending());
 
-
-    SearchPageGetResponse<TrackGetResponse> trackResults = searchService.findTracksWithKeyword(pageable, keyword);
+    SearchPageGetResponse<TrackGetResponse> trackResults = searchService.findTracksWithKeyword(
+        pageable, keyword);
 
     return trackResults;
   }
