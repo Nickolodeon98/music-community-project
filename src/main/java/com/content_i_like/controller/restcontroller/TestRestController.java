@@ -3,6 +3,8 @@ package com.content_i_like.controller.restcontroller;
 import com.content_i_like.domain.enums.TrackEnum;
 import com.content_i_like.service.TrackService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,21 +34,9 @@ public class TestRestController {
     return "새로운 DB 저장이 완료되었습니다.";
   }
 
-  @GetMapping("/token")
-  public ResponseEntity<?> requirePermission() {
-    HttpHeaders headers = new HttpHeaders();
-
-    String uri = "https://accounts.spotify.com/authorize?"
-        + String.format("client_id=%s&response_type=%s&redirect_uri=%s", CLIENT_ID,
-        "code", TrackEnum.REDIRECT_URI.getValue());
-
-    headers.setLocation(URI.create(uri));
-
-    return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
-  }
-
   @GetMapping("")
-  public ResponseEntity<?> getAccessToken(@RequestParam String code)
+  public ResponseEntity<?> getAccessToken(@RequestParam String code,
+      @CookieValue(required = false, value = "keyword", defaultValue = "love") String keyword)
       throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
 
@@ -54,10 +44,54 @@ public class TestRestController {
 
     String uri = "http://localhost:8080/api/v1/test/new/tracks?token=" + accessToken;
 
+    if (keyword != null) {
+      uri = "http://localhost:8080/search/tracks/demand?token=" + accessToken + "&keyword=" + keyword;
+    }
+
     headers.setLocation(URI.create(uri));
 
     return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
   }
 
+  @GetMapping("/token")
+  public ResponseEntity<?> requirePermission(@RequestParam(required = false) String option,
+      @RequestParam(required = false) String keyword, HttpServletResponse httpServletResponse) {
+    HttpHeaders headers = new HttpHeaders();
 
+    String uri = "https://accounts.spotify.com/authorize?"
+        + String.format("client_id=%s&response_type=%s", CLIENT_ID, "code");
+
+    if (option != null && option.equals("unplanned")) {
+      Cookie cookie = new Cookie("keyword", keyword);
+      cookie.setMaxAge(3 * 24 * 60 * 60);
+      httpServletResponse.addCookie(cookie);
+
+//      redirectPath
+//          = URI.create(uri + "&redirect_uri=" + TrackEnum.SECOND_REDIRECT_URI.getValue());
+    }
+
+    URI redirectPath = URI.create(uri + "&redirect_uri=" + TrackEnum.REDIRECT_URI.getValue());
+
+    headers.setLocation(redirectPath);
+
+    return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+  }
+
+  /* 이 때 세션에 저장된 쿠키의 값을 읽어들인다. */
+  @GetMapping("/demand/tryout")
+  public ResponseEntity<?> unPlannedCall(@RequestParam String code,
+      @CookieValue(required = false, value = "keyword", defaultValue = "love") String keyword)
+      throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
+
+    String accessToken = trackService.spotifyAccessTokenGenerator(code);
+    log.info("accessToken:{}", accessToken);
+
+    String uri =
+        "http://localhost:8080/api/v1/search/tracks/demand?token=" + accessToken + "&keyword=" + keyword;
+
+    headers.setLocation(URI.create(uri));
+
+    return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+  }
 }

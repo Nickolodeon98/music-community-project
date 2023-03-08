@@ -1,9 +1,12 @@
 package com.content_i_like.repository;
 
+import static org.hibernate.annotations.QueryHints.CACHEABLE;
+
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Recommend;
 import com.content_i_like.domain.entity.Track;
 import com.content_i_like.repository.custom.CustomRecommendRepository;
+import jakarta.persistence.QueryHint;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -11,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 
 public interface RecommendRepository extends JpaRepository<Recommend, Long>,
@@ -29,7 +33,7 @@ public interface RecommendRepository extends JpaRepository<Recommend, Long>,
   Page<Recommend> findAllByMember(Pageable pageable, Member member);
 
   Long countByMember(Member member);
-
+  @QueryHints(@QueryHint(name=CACHEABLE, value="true"))
   Optional<Page<Recommend>> findByRecommendTitleContaining(String keyword, Pageable pageable);
 
   Optional<Page<Recommend>> findAllByMemberNickNameContaining(String keyword, Pageable pageable);
