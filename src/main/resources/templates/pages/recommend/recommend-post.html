@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Content I Like</title>
   <script src="https://code.jquery.com/jquery-3.6.3.js"
           integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
           crossorigin="anonymous"></script>
@@ -77,8 +77,10 @@
         <div class="board-body">
           <span class="board-body-title">포인트</span>
           <span id="board-input-point">
-              <input name="recommendPoint" placeholder="등록된 포인트는 수정할 수 없습니다."
+              <input id="use-point" name="recommendPoint" placeholder="등록된 포인트는 수정할 수 없습니다."
                      th:field="*{recommendPoint}" type="number" min="0"/>
+            <span id="contour">/</span>
+            <span id="user-point" th:text="${userPoint}"></span>
           </span>
         </div>
 
@@ -128,6 +130,9 @@
     let recommendTitle = $('#board-input-title [name = recommendTitle]').val();
     let recommendContent = $('#board-input-content [name = recommendContent]').val();
     let trackNo = $('#board-input-search [name=trackNo]').val();
+    let usePoint = $('#use-point').val();
+    const userPoint = $('#user-point').text();
+
 
     if (recommendTitle === "" || recommendTitle == null) {
       alert("제목을 입력해주세요.");
@@ -141,7 +146,14 @@
 
     if (trackNo === "" || trackNo == null) {
       alert("음악을 선택해주세요.");
-      //return false;
+      return false;
+    }
+
+    if (usePoint > Number(userPoint)) {
+      alert("보유한 포인트 보다 높은 값을 입력하였습니다.")
+      alert(usePoint);
+      alert(userPoint);
+      return false;
     }
 
     return true;

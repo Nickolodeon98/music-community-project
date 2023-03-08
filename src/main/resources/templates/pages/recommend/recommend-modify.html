@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Content I Like</title>
   <script src="https://code.jquery.com/jquery-3.6.3.js"
           integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
           crossorigin="anonymous"></script>
@@ -60,7 +60,7 @@
 
         <div class="board-body">
           <span class="board-body-title">썸네일</span>
-          <span><input id="img-file" type="file" placeholder="이미지를 업로드하세요"/></span>
+          <span><input name="image" id="img-file" type="file" placeholder="이미지를 업로드하세요"/></span>
           <span th:if="${!post.recommendImageUrl.isEmpty()}">
             <span class="board-body-title preview">미리보기</span>
             <img class="preview" id="preview-img" th:src="${post.getRecommendImageUrl()}">
@@ -74,7 +74,7 @@
             <input th:if="${post.getRecommendYoutubeUrl.length() == 17}" name="youtube-url"
                    th:value="' '"
                    type="text"/>
-            <input th:unless="${post.getRecommendYoutubeUrl.length() == 17}" name="youtube-url"
+            <input th:if="${post.getRecommendYoutubeUrl.length() > 17}" name="youtube-url"
                    th:value="${post.getRecommendYoutubeUrl().split('/')[3]}"
                    type="text"/>
           </span>
@@ -82,7 +82,7 @@
 
         <div class="board-body">
           <span class="board-body-title">포인트</span>
-          <span id="board-input-point">
+          <span id="board-input-point-modify">
               <input type="number" th:value="${post.getRecommendPoint()}" readonly/>
           </span>
         </div>
@@ -99,22 +99,6 @@
   </div>
 </div>
 
-<!-- 위치 재설정 모달 -->
-<div id="modal-search-music" role="dialog" tabindex="-1" data-bs-backdrop="static"
-     data-bs-keyboard="false">
-  <div class="" role="document">
-    <div class="modal-content">
-      <div class="modal-header" style="border-bottom-color: rgb(255,255,255);">
-        <input type="text" placeholder="찾으시는 음악을 입력해 주세요">
-        <span></span>
-      </div>
-
-      <div class="modal-body">
-
-      </div>
-    </div>
-  </div>
-</div>
 </body>
 <script>
   $(".button-exit").on("click", function () {

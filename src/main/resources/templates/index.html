@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Content I Like</title>
   <script src="https://code.jquery.com/jquery-3.6.3.js"
           integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
           crossorigin="anonymous"></script>
@@ -118,7 +118,7 @@
     <div class="index">
       <span class="over-img" id="index-title">오늘의 내가 미는<br>콘텐츠는 무엇인가요?</span>
       <span class="over-img" id="index-body">나만 알고 있던 혹은 잊혀졌던 그때의 음악을 같은 취향을 가진<br> 또 다른 누군가에게 공유해주세요.</span>
-      <span class="over-img" id="index-search"><a href="">음악 검색</a></span>
+      <span class="over-img" id="index-search"><a th:href="@{/search}">음악 검색</a></span>
     </div>
   </div>
 
@@ -178,7 +178,6 @@
 
   $(document).ready(function () {
     const sort = getUrlParameter('sort');
-    console.log(sort);
 
     if (sort === 'likes' || sort == null) {
       $('#likes-span').removeClass('not-selected-post-nav').addClass('selected-post-nav');

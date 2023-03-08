@@ -23,7 +23,8 @@ public enum ErrorCode {
   EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
   INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."),
   INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "사용자가 권한이 없습니다."),
-  NOT_EXIST_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 존재하지 않습니다.")
+  NOT_EXIST_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 존재하지 않습니다."),
+  NOT_ENOUGH_POINTS(HttpStatus.BAD_REQUEST, "포인트가 부족합니다."),
 
   ;
   private HttpStatus status;

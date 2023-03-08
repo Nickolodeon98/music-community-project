@@ -416,18 +416,19 @@
 
 .inquire-content-date {
   height: 100%;
+  width: 22%;
   display: flex;
   align-items: flex-end;
 }
 
 .inquire-details-date {
-  width: 35%;
+  width: 20%;
   font-size: 28px;
   color: rgba(255, 255, 255, 0.45);
 }
 
 .inquire-details-date-date {
-  width: 65%;
+  width: 60%;
   font-size: 28px;
   color: white;
 }

@@ -221,6 +221,8 @@
 .notification-type {
     float: left;
     color: rgba(255, 255, 255, 0.65);
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .notification-time {
@@ -257,11 +259,13 @@
 
 .name-preview{
     width: 60px;
-    height: 18px;
+    height: 25px;
     margin: auto;
     font-family: NotoSansKR;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 500;
     text-align: center;
     color: var(--white);
+    display : flex;
+    justify-content : center;
 }

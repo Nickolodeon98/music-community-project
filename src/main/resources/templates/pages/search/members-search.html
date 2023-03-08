@@ -5,7 +5,7 @@
       layout:decorate="~{common/fragments/search}">
 <head>
   <meta charset="UTF-8">
-  <title>Search-Members</title>
+  <title>Content I Like</title>
   <link rel="stylesheet" th:href="@{/css/style.css}">
   <link rel="stylesheet" th:href="@{/css/members-search.css}">
   <link rel="stylesheet" th:href="@{/css/search.css}">
@@ -149,12 +149,25 @@
 
         </ul>
       </th:block>
-      <button class="page-button-prev" type="submit" th:unless="${memberNickName.pages.isFirst()}"
-              th:name="page" th:value="${pageable.previousOrFirst().pageNumber}">이전
-      </button>
-      <button class="page-button-next" type="submit" th:unless="${memberNickName.pages.isLast()}"
-              th:name="page" th:value="${pageable.next().pageNumber}">다음
-      </button>
+
+      <div class="paging-numbers">
+        <!--        <a class="prev-page">&laquo;</a>-->
+        <button th:each="counter : ${#numbers.sequence(1, memberNickName.pages.totalPages, 1)}"
+           class="paging-numbers-themselves" th:unless="${counter > pageable.pageNumber + 5 || counter < pageable.pageNumber - 5 }"
+           th:text="${counter}"
+           th:name="page"
+           th:value="${counter}">
+<!--           th:href="@{/search/members(keyword=__${keyword}__, page=__${counter}__)}"-->
+        </button>
+        <!--        <a class="next-page">&raquo;</a>-->
+      </div>
+
+      <!--      <button class="page-button-prev" type="submit" th:unless="${memberNickName.pages.isFirst()}"-->
+      <!--              th:name="page" th:value="${pageable.previousOrFirst().pageNumber}">이전-->
+      <!--      </button>-->
+      <!--      <button class="page-button-next" type="submit" th:unless="${memberNickName.pages.isLast()}"-->
+      <!--              th:name="page" th:value="${pageable.next().pageNumber}">다음-->
+      <!--      </button>-->
     </form>
   </div>
 </div>

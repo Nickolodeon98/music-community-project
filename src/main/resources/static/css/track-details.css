@@ -49,6 +49,20 @@
 .track-content {
   font-size: 25px;
   color: rgba(255, 255, 255, 0.8);
+  margin: auto 3em auto auto;
+  text-align: left;
+}
+.track-content-second {
+  font-size: 25px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: auto 3em auto auto;
+  text-align: center;
+}
+.track-content-third {
+  font-size: 25px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: auto 3em auto auto;
+  text-align: center;
 }
 
 .line {
@@ -109,7 +123,6 @@
 .member-recommender {
   margin: 3px auto auto auto;
 }
-
 
 .member-comment {
   float: right;
@@ -326,4 +339,15 @@ div.block-end > ul > li > span {
   display: flex;
   justify-content: right;
   padding-bottom: 10px;
+}
+
+.track-content-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.track-content-small {
+  font-size: 0.8em;
+  color: white;
+  text-align: center;
 }

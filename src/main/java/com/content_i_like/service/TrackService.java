@@ -1,9 +1,11 @@
 package com.content_i_like.service;
 
-import com.content_i_like.domain.entity.Album;
 import com.content_i_like.domain.entity.Artist;
+import com.content_i_like.domain.entity.Album;
 import com.content_i_like.domain.entity.Track;
 import com.content_i_like.domain.enums.TrackEnum;
+import com.content_i_like.exception.ContentILikeAppException;
+import com.content_i_like.exception.ErrorCode;
 import com.content_i_like.repository.AlbumRepository;
 import com.content_i_like.repository.ArtistRepository;
 import com.content_i_like.repository.TrackRepository;
@@ -19,25 +21,30 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
-@Service
 @RequiredArgsConstructor
+@Service
 @Slf4j
 public class TrackService {
 
@@ -115,12 +122,18 @@ public class TrackService {
 
 //    List<String> queries =
 //        collectAllGenres(
-//            "C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\extra.csv");
+//            "C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\k-genres.csv");
 
-//    List<String> queries = List.of("K-rock", "Classic K-pop", "Korean Soundtrack", "Korean Pop",
-//            "Korean Mask Singer", "Korean Traditional", "Korean Phantom Singer", "Korean Instrumental");
+    List<String> queries =
+        List.of("J-pop", "J-rock", "J-poprock", "Instrumental", "Dance", "Game", "Bounce", "Latin", "British pop", "Classical");
 
-    List<String> queries = List.of("Heavy Metal");
+//    List.of("Korean Mask Singer", "Trot", "Pop ballads", "Pop", "Rock", "Acoustic Pop", "Anime", "Hip hop", "Edm", "Soul", "R&b");
+
+
+//    List.of("K-pop", "K-indie", "K-rap", "K-rock", "Classic K-pop", "Korean Soundtrack", "Korean OST",
+//        "Korean Pop", "Pop", "Korean Instrumental", "K-jazz", "K-R&B");
+
+
 
     List<List<String>> collectedIds = new ArrayList<>();
     List<String> ids = new ArrayList<>();
@@ -193,10 +206,10 @@ public class TrackService {
     return collectedJsonNodes;
   }
 
-  public <T> List<T> fetchTracks(List<JsonNode> infoRoots, Fetch<T> fetchedType) {
-    List<String> titles = new ArrayList<>();
+  public <T> Set<T> fetchTracksWithoutDuplicates(List<JsonNode> infoRoots,
+      Fetch<T> fetchedType) {
+    Set<String> titles = new HashSet<>();
     String data = "";
-
     for (JsonNode infoRoot : infoRoots) {
       for (int j = 0; j < 50; j++) {
         data = fetchedType.extractData(infoRoot, j);
@@ -206,47 +219,87 @@ public class TrackService {
         titles.add(data);
       }
     }
-    return fetchedType.parseIntoEntities(titles);
+    return fetchedType.parseIntoEntitiesAllUnique(titles);
   }
 
   @Transactional
-  public <T> void createMusicDatabase(List<T> entities, DBSaveOption<T> saveOption) {
-//    for (T entity : entities) {
-//      saveOption.saveNewRow(entity);
-//    }
-    saveOption.saveNewRows(entities);
+  public <T> void createMusicDatabaseAllUnique(Set<T> entities, DBSaveOption<T> saveOption) {
+    saveOption.saveNewRowsAllUnique(entities);
   }
 
   @Transactional
-  public void createAllThreeTypesDB(String token) throws IOException {
+  public void createAllThreeTypesDBAllUnique(String token) throws IOException {
     /* TODO: 세 자원을 모두 저장을 할 때 여기도 템플릿 콜백 패턴 적용 가능 */
     List<JsonNode> jsonData = callTracksApi(token);
 
-    List<Artist> artistEntities = fetchTracks(jsonData, new ArtistFetch());
-    createMusicDatabase(artistEntities, new ArtistSave(artistRepository));
+    Set<Artist> artistEntities = fetchTracksWithoutDuplicates(jsonData, new ArtistFetch());
+    createMusicDatabaseAllUnique(artistEntities, new ArtistSave(artistRepository));
 
-    List<Album> albumEntities = fetchTracks(jsonData, new AlbumFetch());
-    List<Album> albumsAndArtists = parseForAlbum(artistEntities, albumEntities);
-    createMusicDatabase(albumsAndArtists, new AlbumSave(albumRepository));
+    Set<Album> albumEntities = fetchTracksWithoutDuplicates(jsonData, new AlbumFetch());
 
-    List<Track> trackEntities = fetchTracks(jsonData, new TrackFetch());
-    List<Track> tracksAlbumsAndArtists = parseForTrack(artistEntities, albumEntities,
+    // 파싱을 나중에 앨범 다 저장하고 다시 다른 방식으로 하나하나 찾아서 참조관계 설정해야함.
+    Set<Album> albumsAndArtists = parseForNewAlbum(artistEntities, albumEntities);
+
+    createMusicDatabaseAllUnique(albumsAndArtists, new AlbumSave(albumRepository));
+
+    Set<Track> trackEntities = fetchTracksWithoutDuplicates(jsonData, new TrackFetch());
+    Set<Track> tracksAlbumsAndArtists = parseForTrack(artistEntities, albumEntities,
         trackEntities);
-    createMusicDatabase(tracksAlbumsAndArtists, new TrackSave(trackRepository));
+
+    createMusicDatabaseAllUnique(tracksAlbumsAndArtists, new TrackSave(trackRepository));
   }
 
-  private List<Album> parseForAlbum(List<Artist> artists, List<Album> albums) {
-    for (int i = 0; i < albums.size(); i++) {
-      albums.get(i).setArtist(artists.get(i));
+  private Set<Album> parseForNewAlbum(Set<Artist> artists, Set<Album> albums) {
+    Set<Album> newAlbums = new HashSet<>();
+
+    for (Album album : albums) {
+//      for (NewArtist artist : artists) {
+//        if (album.getArtistName().equals(artist.getArtistName()))
+//          album.setArtist(artist);
+//      }
+      List<Artist> artist = artistRepository.findAllByArtistSpotifyId(album.getArtistSpotifyId())
+          .orElseThrow(
+              () -> new ContentILikeAppException(ErrorCode.NOT_FOUND, "앨범의 아티스트가 존재하지 않습니다."));
+
+      if (!artist.isEmpty()) {
+        album.setArtist(artist.get(0));
+      }
+
+      newAlbums.add(album);
     }
-    return albums;
+
+    return newAlbums;
   }
 
-  private List<Track> parseForTrack(List<Artist> artists, List<Album> albums, List<Track> tracks) {
-    for (int i = 0; i < tracks.size(); i++) {
-      tracks.get(i).setArtist(artists.get(i));
-      tracks.get(i).setAlbum(albums.get(i));
+  private Set<Track> parseForTrack(Set<Artist> artists, Set<Album> albums,
+      Set<Track> tracks) {
+    Set<Track> newTracks = new HashSet<>();
+
+    for (Track track : tracks) {
+      List<Album> album = albumRepository.findAllByAlbumSpotifyId(track.getAlbumSpotifyId())
+          .orElseThrow(
+              () -> new ContentILikeAppException(ErrorCode.NOT_FOUND, "음원의 앨범이 존재하지 않습니다."));
+//      NewAlbum album = albumRepository.findByAlbumTitle(track.getAlbumTitle())
+//          .orElseThrow(()-> new ContentILikeAppException(ErrorCode.NOT_FOUND, "음원의 앨범이 존재하지 않습니다."));
+
+//      NewArtist artist = artistRepository.findByArtistSpotifyId(track.getArtistSpotifyId())
+//          .orElseThrow(
+//              () -> new ContentILikeAppException(ErrorCode.NOT_FOUND, "음원의 아티스트가 존재하지 않습니다."));
+
+      List<Artist> artist = artistRepository.findAllByArtistSpotifyId(track.getArtistSpotifyId())
+          .orElseThrow(()-> new ContentILikeAppException(ErrorCode.NOT_FOUND, "음원의 아티스트가 존재하지 않습니다."));
+
+//      genreRepofindGenreByGenreType()
+      if (!album.isEmpty()) {
+        track.setAlbum(album.get(0));
+      }
+      if (!artist.isEmpty()) {
+        track.setArtist(artist.get(0));
+      }
+
+      newTracks.add(track);
     }
-    return tracks;
+
+    return newTracks;
   }
 }

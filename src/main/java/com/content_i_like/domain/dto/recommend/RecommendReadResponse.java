@@ -3,11 +3,9 @@ package com.content_i_like.domain.dto.recommend;
 import com.content_i_like.domain.entity.Album;
 import com.content_i_like.domain.entity.Artist;
 import com.content_i_like.domain.entity.Comment;
-import com.content_i_like.domain.entity.Hashtag;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Recommend;
 import com.content_i_like.domain.entity.Track;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +26,7 @@ public class RecommendReadResponse {
   private String memberProfileImgUrl;
   private String albumImageUrl;
   private String trackTitle;
+  private Long trackNo;
   private String artistName;
   private List<Comment> comments;
   private String recommendContent;
@@ -44,6 +43,7 @@ public class RecommendReadResponse {
     return RecommendReadResponse.builder()
         .recommendNo(post.getRecommendNo())
         .recommendTitle(post.getRecommendTitle())
+        .trackNo(track.getTrackNo())
         .memberNickname(member.getNickName())
         .memberProfileImgUrl(member.getProfileImgUrl())
         .albumImageUrl(album.getAlbumImageUrl())

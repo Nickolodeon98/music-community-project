@@ -57,7 +57,11 @@ public class CommentService {
 
     // 댓글을 작성할 글을 불러옵니다.
     Recommend post = validateGetRecommendInfoByRecommendNo(recommendNo);
+    Long userPoint = pointService.calculatePoint(member);
 
+    if (request.getCommentPoint() > userPoint) {
+      throw new ContentILikeAppException(ErrorCode.NOT_ENOUGH_POINTS, ErrorCode.NOT_ENOUGH_POINTS.getMessage());
+    }
     // 댓글을 저장합니다.
     Comment comment = commentRepository.save(request.toEntity(member, post));
 

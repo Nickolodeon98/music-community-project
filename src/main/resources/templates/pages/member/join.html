@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Content I Like</title>
   <script src="https://code.jquery.com/jquery-3.6.3.js"
           integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
           crossorigin="anonymous"></script>
@@ -94,6 +94,8 @@
   var doubleCheckPw = document.getElementById("doubleCheckPw");
   var nickName = document.getElementById("nickName");
   var name = document.getElementById("name");
+  var birth = document.getElementById("birth");
+  let date = new Date();
 
   if(email.value==""){
      alert("이메일을 입력해주세요");
@@ -119,6 +121,14 @@
      alert("이름을 입력해주세요");
      name.focus();
     return false;
+  }
+
+  if(birth.value!=""){
+    if(date.getFullYear()<birth.value || birth.value<0){
+      alert("연도가 올바르지 않습니다");
+      birth.focus();
+      return false;
+    }
   }
 
   if(!checkPw()){

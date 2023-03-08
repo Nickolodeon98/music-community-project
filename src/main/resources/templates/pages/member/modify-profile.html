@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Content I Like</title>
   <script src="https://code.jquery.com/jquery-3.6.3.js"
           integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
           crossorigin="anonymous"></script>
@@ -18,12 +18,12 @@
 <div class="container">
   <div th:replace="~{common/fragments/header::header}"></div>
 
-  <form th:action="@{/member/my/update}" method="post" th:object="${request}" enctype="multipart/form-data">
+  <form th:action="@{/member/my/update}" method="post" th:object="${request}" enctype="multipart/form-data" onsubmit="return checkBirth();">
     <div class="profile">
 
         <div class="img-box">
           <img id="preview" class="profile-img" th:src="${member.profileImgUrl}">
-          <input type="file" name="profileImg" accept="image/*" onchange="readURL(this)"/>
+          <input type="file" name="profileImg" accept=".jpg, .png" onchange="readURL(this)"/>
         </div>
 
         <div class="profile-box">
@@ -101,6 +101,19 @@
 	  document.getElementById('preview').src = "https://content-i-like.s3.ap-northeast-2.amazonaws.com/80c4f0a7-c4e0-44a5-85d6-315dc793fe28-profile.jpg";
 	}
   }
+
+function checkBirth(){
+    var birth = document.getElementByName("birth");
+    let date = new Date();
+    if(birth.value!=""){
+      if(date.getFullYear()<birth.value || birth.value<0){
+        alert("연도가 올바르지 않습니다");
+        birth.focus();
+        return false;
+      }
+    }
+    return true;
+}
 </script>
 <!--<script async src="./js/member.js"></script>-->
 </body>
