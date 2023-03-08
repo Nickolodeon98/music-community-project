@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -67,23 +68,9 @@ public class SearchController {
       @ModelAttribute("sortStrategy") final SortStrategy sortStrategy,
       Pageable pageable,
       @RequestParam(value = "page", required = false) Integer pageNum,
-      Model model,
-      HttpServletResponse httpServletResponse) {
+      Model model) {
 
-    String property = SortEnum.TRACKS_SORT_DEFAULT.getSortBy();
-    Direction direction = SortEnum.TRACKS_SORT_DEFAULT.getDirection();
-
-    if (sortStrategy != null) {
-      if (sortStrategy.getProperty() != null && !sortStrategy.getProperty().isEmpty()) {
-        property = sortStrategy.getProperty();
-      }
-      if (sortStrategy.getDirection() != null) {
-        direction = sortStrategy.getDirection();
-      }
-    }
-
-    pageable = PageRequest.of(pageable.getPageNumber(), SortEnum.TRACKS_SORT_DEFAULT.getScale(),
-        Sort.by(direction, property));
+    pageable = searchService.generatePageable(pageable, sortStrategy);
 
     SearchPageGetResponse<TrackGetResponse> trackResults =
         searchService.findTracksWithKeyword(pageable, trackTitle.getKeyword());
@@ -111,11 +98,28 @@ public class SearchController {
   @GetMapping("/tracks/demand")
   public String addTracksOnDemand(@RequestParam String token,
       @RequestParam String keyword,
+      @ModelAttribute("keywordDto") final SearchRequest trackTitle,
+      @ModelAttribute("sortStrategy") final SortStrategy sortStrategy,
+      @RequestParam(value = "page", required = false) Integer pageNum,
+      Pageable pageable,
       Model model) throws JsonProcessingException {
 
-    SearchPageGetResponse<TrackGetResponse> requestedTracks = trackService.createDBOnDemand(token, keyword);
+    pageable = searchService.generatePageable(pageable, sortStrategy);
+
+    Page<TrackGetResponse> tracks = trackService.createDBOnDemand(token, keyword, pageable);
+
+    SearchPageGetResponse<TrackGetResponse> requestedTracks = tracks.isEmpty() ?
+        SearchPageGetResponse.of("검색 결과가 없습니다.", tracks)
+        : SearchPageGetResponse.of(
+            String.format("'%s' 으로 총 %s개의 음원을 찾았습니다.", keyword,
+                tracks.getTotalElements()), tracks);
 
     model.addAttribute("trackResults", requestedTracks);
+    model.addAttribute("trackResultsAsList", requestedTracks.getPages().toList());
+    model.addAttribute("pageable", pageable);
+    model.addAttribute("keyword", trackTitle.getKeyword());
+    SortStrategy sorting = SortStrategy.builder().build();
+    model.addAttribute("sortStrategy", sorting);
 
     return "pages/search/tracks-search";
   }
