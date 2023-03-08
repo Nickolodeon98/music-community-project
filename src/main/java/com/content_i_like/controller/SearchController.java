@@ -77,9 +77,9 @@ public class SearchController {
 
     /* 만약 trackResults 가 비어있는 경우라면 스포티파이 API 를 호출하는 경로로 리다이렉트 후 다른 메서드를 사용한다
      * accessToken 을 받아야 하기 때문. */
-    if (trackResults.getPages().isEmpty()) {
-      return "redirect:http://localhost:8080/api/v1/test/token?option=unplanned&keyword=" + trackTitle.getKeyword();
-    }
+//    if (trackResults.getPages().isEmpty()) {
+//      return "redirect:http://localhost:8080/api/v1/test/token?option=unplanned&keyword=" + trackTitle.getKeyword();
+//    }
 
     model.addAttribute("trackResults", trackResults);
     model.addAttribute("trackResultsAsList", trackResults.getPages().toList());
