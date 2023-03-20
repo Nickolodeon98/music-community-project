@@ -72,20 +72,28 @@ public class MemberController {
   @GetMapping("/login")
   public String loginForm(HttpServletRequest request, Model model, HttpServletResponse response) {
     HttpSession session = request.getSession(false);
-    if (session != null) {
-      MemberLoginResponse memberLoginResponse = (MemberLoginResponse) session
-          .getAttribute("loginUser");
-      if (memberLoginResponse != null) {
-        return "redirect:/";
-      }
-      new SecurityContextLogoutHandler()
-          .logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+    if (checkSession(request, response)) {
+      return "redirect:/";
     }
     String referrer = request.getHeader("Referer");
 
     model.addAttribute("request", new MemberLoginRequest());
     model.addAttribute("referrer", referrer);
     return "pages/member/login";
+  }
+
+  private boolean checkSession(HttpServletRequest request, HttpServletResponse response) {
+    HttpSession session = request.getSession(false);
+    if (session != null) {
+      MemberLoginResponse memberLoginResponse = (MemberLoginResponse) session
+          .getAttribute("loginUser");
+      if (memberLoginResponse != null) {
+        return true;
+      }
+      new SecurityContextLogoutHandler()
+          .logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+    }
+    return false;
   }
 
   @PostMapping("/login")
@@ -128,16 +136,8 @@ public class MemberController {
 
   @GetMapping("/join")
   public String joinForm(HttpServletRequest request, Model model, HttpServletResponse response) {
-
-    HttpSession session = request.getSession(false);
-    if (session != null) {
-      MemberLoginResponse memberLoginResponse = (MemberLoginResponse) session
-          .getAttribute("loginUser");
-      if (memberLoginResponse != null) {
-        return "redirect:/";
-      }
-      new SecurityContextLogoutHandler()
-          .logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+    if (checkSession(request, response)) {
+      return "redirect:/";
     }
 
     model.addAttribute("request", new MemberJoinRequest());
@@ -151,16 +151,11 @@ public class MemberController {
   }
 
   @GetMapping("/passwd/find_pw")
-  public String findPwForm(HttpServletRequest httpRequest, Model model, HttpServletResponse response) {
+  public String findPwForm(HttpServletRequest httpRequest, Model model,
+      HttpServletResponse response) {
     HttpSession session = httpRequest.getSession(false);
-    if (session != null) {
-      MemberLoginResponse memberLoginResponse = (MemberLoginResponse) session
-          .getAttribute("loginUser");
-      if (memberLoginResponse != null) {
-        return "redirect:/";
-      }
-      new SecurityContextLogoutHandler()
-          .logout(httpRequest, response, SecurityContextHolder.getContext().getAuthentication());
+    if (checkSession(httpRequest, response)) {
+      return "redirect:/";
     }
     model.addAttribute("request", new MemberFindRequest());
     return "pages/member/find-pw";
@@ -173,16 +168,11 @@ public class MemberController {
   }
 
   @GetMapping("/passwd/change")
-  public String changePw(HttpServletRequest httpRequest, Model model, HttpServletResponse response) {
+  public String changePw(HttpServletRequest httpRequest, Model model,
+      HttpServletResponse response) {
     HttpSession session = httpRequest.getSession(false);
-    if (session != null) {
-      MemberLoginResponse memberLoginResponse = (MemberLoginResponse) session
-          .getAttribute("loginUser");
-      if (memberLoginResponse != null) {
-        return "redirect:/";
-      }
-      new SecurityContextLogoutHandler()
-          .logout(httpRequest, response, SecurityContextHolder.getContext().getAuthentication());
+    if (checkSession(httpRequest, response)) {
+      return "redirect:/";
     }
     model.addAttribute("request", new ChangePwRequest());
     return "pages/member/change-pw";
@@ -194,8 +184,7 @@ public class MemberController {
     HttpSession session = httpRequest.getSession(false);
     MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
     log.info("세션 정보: {} and {}", loginResponse.getMemberNo(), loginResponse.getNickName());
-    String email = memberService.getEmailByNo(loginResponse);
-    memberService.changePw(request, email);
+    memberService.changePwByEmail(loginResponse, request);
     return "redirect:/";
   }
 
@@ -207,8 +196,7 @@ public class MemberController {
     }
     MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
 
-    String email = memberService.getEmailByNo(loginResponse);
-    model.addAttribute("member", memberService.getMyInfo(email));
+    model.addAttribute("member", memberService.getMyInfoByLoginResponse(loginResponse));
     return "pages/member/my-profile";
   }
 
@@ -220,8 +208,7 @@ public class MemberController {
     }
     MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
 
-    String email = memberService.getEmailByNo(loginResponse);
-    model.addAttribute("member", memberService.getMyInfo(email));
+    model.addAttribute("member", memberService.getMyInfoByLoginResponse(loginResponse));
     model.addAttribute("request", new MemberModifyRequest());
     return "pages/member/modify-profile";
   }
@@ -232,10 +219,9 @@ public class MemberController {
       HttpServletRequest servletRequest) throws IOException {
     HttpSession session = servletRequest.getSession(false);
     MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
-    String memberEmail = memberService.getEmailByNo(loginResponse);
 
     MemberResponse memberResponse = memberService
-        .modifyMyInfoWithFile(request, memberEmail);
+        .modifyMyInfoWithFile(request, loginResponse);
 
     MemberLoginResponse updateLoginResponse = new MemberLoginResponse(loginResponse.getJwt(),
         loginResponse.getMemberNo(), loginResponse.getNickName(),
@@ -251,9 +237,9 @@ public class MemberController {
       return "redirect:/member/login";
     }
     MemberLoginResponse loginResponse = (MemberLoginResponse) session.getAttribute("loginUser");
-    String memberEmail = memberService.getEmailByNo(loginResponse);
 
-    MemberPointResponse memberPointResponse = memberService.getMyPoint(memberEmail, pageable);
+    MemberPointResponse memberPointResponse = memberService
+        .getMyPointByLoginResponse(loginResponse, pageable);
     model.addAttribute("response", memberPointResponse);
     return "pages/member/point-history";
   }
