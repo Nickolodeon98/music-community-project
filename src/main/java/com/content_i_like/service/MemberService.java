@@ -15,6 +15,7 @@ import com.content_i_like.repository.CommentRepository;
 import com.content_i_like.repository.FollowRepository;
 import com.content_i_like.repository.MemberRepository;
 import com.content_i_like.repository.RecommendRepository;
+import com.content_i_like.service.validchecks.MemberValidation;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -46,6 +47,7 @@ public class MemberService {
   private final S3FileUploadService s3FileUploadService;
   private final PointService pointService;
   private final MailService mailService;
+  private final MemberValidation memberValidation;
 
   private final String DEFAULT_PROFILE = "https://content-i-like.s3.ap-northeast-2.amazonaws.com/44b9080f-89c6-4a46-8658-5b3ef1e0bf6d-profile.jpg";
 
@@ -53,7 +55,7 @@ public class MemberService {
   public MemberJoinResponse join(MemberJoinRequest memberJoinRequest) {
 
     //가입한 이력이 있는지 확인 -> 가입 아이디 email 중복 여부 & 사용 중인 닉네임이 아닌지 확인
-    validateDuplicatedMember(memberJoinRequest);
+    memberValidation.validateDuplicatedMember(memberJoinRequest);
 
     Member member = memberJoinRequest
         .toEntity(passwordEncoder.encode(memberJoinRequest.getPassword()), DEFAULT_PROFILE);
@@ -63,23 +65,10 @@ public class MemberService {
     return new MemberJoinResponse(savedMember.getMemberNo(), savedMember.getNickName());
   }
 
-  private void validateDuplicatedMember(MemberJoinRequest memberJoinRequest) {
-    memberRepository.findByEmail(memberJoinRequest.getEmail())
-        .ifPresent(member -> {
-          throw new ContentILikeAppException(ErrorCode.DUPLICATED_MEMBER_NAME,
-              ErrorCode.DUPLICATED_MEMBER_NAME.getMessage());
-        });
-
-    memberRepository.findByNickName(memberJoinRequest.getNickName())
-        .ifPresent(member -> {
-          throw new ContentILikeAppException(ErrorCode.DUPLICATED_MEMBER_NAME, "이미 사용 중인 닉네임입니다.");
-        });
-  }
-
   public MemberLoginResponse login(MemberLoginRequest memberLoginRequest) {
 
     //email 확인
-    Member member = validateExistingMember(memberLoginRequest.getEmail());
+    Member member = memberValidation.validateExistingMemberByEmail(memberLoginRequest.getEmail());
 
     //password 일치 여부
     if (!passwordEncoder.matches(memberLoginRequest.getPassword(), member.getPassword())) {
@@ -96,15 +85,8 @@ public class MemberService {
         member.getProfileImgUrl());
   }
 
-  private Member validateExistingMember(String email) {
-    Member member = memberRepository.findByEmail(email)
-        .orElseThrow(() -> new ContentILikeAppException(ErrorCode.MEMBER_NOT_FOUND,
-            ErrorCode.MEMBER_NOT_FOUND.getMessage()));
-    return member;
-  }
-
   public String findPwByEmail(MemberFindRequest memberFindRequest) {
-    Member member = validateExistingMember(memberFindRequest.getEmail());
+    Member member = memberValidation.validateExistingMemberByEmail(memberFindRequest.getEmail());
 
     //name과 일치 여부
     if (!memberFindRequest.getName().equals(member.getName())) {
@@ -119,12 +101,18 @@ public class MemberService {
   }
 
   public String changePw(ChangePwRequest changePwRequest, String memberEmail) {
-    Member member = validateExistingMember(memberEmail);
+    Member member = memberValidation.validateExistingMemberByEmail(memberEmail);
 
     doubleCheckPasswordAndUpdate(member, changePwRequest.getNewPassword(),
         changePwRequest.getVerification());
 
     return "비밀번호 변경 완료";
+  }
+
+  public String changePwByEmail(MemberLoginResponse memberLoginResponse,
+      ChangePwRequest changePwRequest) {
+    String memberEmail = getEmailByNo(memberLoginResponse);
+    return changePw(changePwRequest, memberEmail);
   }
 
   //같은 비밀번호 2번 입력하여 확인하고 변경하기
@@ -140,28 +128,35 @@ public class MemberService {
   }
 
   public MemberResponse getMyInfo(String memberEmail) {
-    Member member = validateExistingMember(memberEmail);
+    Member member = memberValidation.validateExistingMemberByEmail(memberEmail);
     Long point = pointService.calculatePoint(member);
     MemberResponse memberResponse = MemberResponse.responseWithPoint(member, point);
     return memberResponse;
   }
 
+  public MemberResponse getMyInfoByLoginResponse(MemberLoginResponse loginResponse) {
+    String memberEmail = getEmailByNo(loginResponse);
+    return getMyInfo(memberEmail);
+  }
+
   public MemberPointResponse getMyPoint(String memberEmail, Pageable pageable) {
-    Member member = validateExistingMember(memberEmail);
+    Member member = memberValidation.validateExistingMemberByEmail(memberEmail);
     pageable = PageRequest.of(pageable.getPageNumber(), 20, Sort.by("createdAt").descending());
     List<PointResponse> points = pointService.pointList(member, pageable);
     return new MemberPointResponse(pointService.calculatePoint(member), new PageImpl<>(points));
   }
 
+  public MemberPointResponse getMyPointByLoginResponse(MemberLoginResponse loginResponse, Pageable pageable) {
+    String memberEmail = getEmailByNo(loginResponse);
+    return getMyPoint(memberEmail, pageable);
+  }
+
   @Transactional
   public MemberResponse modifyMyInfo(MemberModifyRequest memberModifyRequest, MultipartFile file,
       String memberEmail) throws IOException {
-    Member member = validateExistingMember(memberEmail);
+    Member member = memberValidation.validateExistingMemberByEmail(memberEmail);
 
     uploadProfileImg(file, member);
-
-//    doubleCheckPasswordAndUpdate(member, memberModifyRequest.getNewPassword(),
-//        memberModifyRequest.getVerification());
     member.update(memberModifyRequest);
 
     MemberResponse memberResponse = MemberResponse
@@ -170,9 +165,11 @@ public class MemberService {
   }
 
   @Transactional
-  public MemberResponse modifyMyInfoWithFile(MemberModifyRequest request, String memberEmail)
+  public MemberResponse modifyMyInfoWithFile(MemberModifyRequest request, MemberLoginResponse loginResponse)
       throws IOException {
-    Member member = validateExistingMember(memberEmail);
+    String memberEmail = getEmailByNo(loginResponse);
+    Member member = memberValidation.validateExistingMemberByEmail(memberEmail);
+
     String url = getModifyProfileImgURL(request.getProfileImg(), member);
     member.updateProfile(request, url);
 
@@ -203,7 +200,7 @@ public class MemberService {
 
   @Transactional
   public String uploadProfileImg(String memberEmail, MultipartFile file) throws IOException {
-    Member member = validateExistingMember(memberEmail);
+    Member member = memberValidation.validateExistingMemberByEmail(memberEmail);
 
     String url = uploadProfileImg(file, member);
 
@@ -213,7 +210,7 @@ public class MemberService {
   }
 
   public Page<RecommendListResponse> getMyRecommends(String memberEmail, Pageable pageable) {
-    Member member = validateExistingMember(memberEmail);
+    Member member = memberValidation.validateExistingMemberByEmail(memberEmail);
 
     return recommendRepository.findAllByMember(pageable, member).map(RecommendListResponse::of);
   }
@@ -231,7 +228,7 @@ public class MemberService {
   }
 
   public MemberRecommendResponse getMyRecommendsIntegrated(String memberEmail, Pageable pageable) {
-    Member member = validateExistingMember(memberEmail);
+    Member member = memberValidation.validateExistingMemberByEmail(memberEmail);
 
     Long[] followerCnt = getFollowCnt(member);
 
@@ -244,7 +241,7 @@ public class MemberService {
 
   public MemberCommentResponse getMyComments(String memberEmail,
       Pageable pageable) {
-    Member member = validateExistingMember(memberEmail);
+    Member member = memberValidation.validateExistingMemberByEmail(memberEmail);
 
     Long[] followerCnt = getFollowCnt(member);
 
@@ -255,7 +252,7 @@ public class MemberService {
   }
 
   public MemberRecommendResponse getMyRecommendsByNickName(String nickName, Pageable pageable) {
-    Member member = validateExistingMemberByNickName(nickName);
+    Member member = memberValidation.validateExistingMemberByNickName(nickName);
 
     Long[] followerCnt = getFollowCnt(member);
     log.info("member={}", member.getMemberNo());
@@ -267,15 +264,8 @@ public class MemberService {
     return new MemberRecommendResponse(member, followerCnt, recommendListResponses);
   }
 
-  private Member validateExistingMemberByNickName(String nickName) {
-    Member member = memberRepository.findByNickName(nickName)
-        .orElseThrow(() -> new ContentILikeAppException(ErrorCode.MEMBER_NOT_FOUND,
-            ErrorCode.MEMBER_NOT_FOUND.getMessage()));
-    return member;
-  }
-
   public MemberCommentResponse getMyCommentsByNickName(String nickName, Pageable pageable) {
-    Member member = validateExistingMemberByNickName(nickName);
+    Member member = memberValidation.validateExistingMemberByNickName(nickName);
 
     Long[] followerCnt = getFollowCnt(member);
 
@@ -286,7 +276,7 @@ public class MemberService {
   }
 
   public FollowMyFeedResponse getMyFollowersByNickName(String nickName, Pageable pageable) {
-    Member member = validateExistingMemberByNickName(nickName);
+    Member member = memberValidation.validateExistingMemberByNickName(nickName);
 
     Long[] followerCnt = getFollowCnt(member);
 
@@ -302,7 +292,7 @@ public class MemberService {
   }
 
   public FollowMyFeedResponse getMyFollowingsByNickName(String nickName, Pageable pageable) {
-    Member member = validateExistingMemberByNickName(nickName);
+    Member member = memberValidation.validateExistingMemberByNickName(nickName);
 
     Long[] followerCnt = getFollowCnt(member);
 
