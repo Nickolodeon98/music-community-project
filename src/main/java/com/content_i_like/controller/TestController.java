@@ -1,6 +1,6 @@
 package com.content_i_like.controller;
 
-import com.content_i_like.domain.dto.TrackRequest;
+import com.content_i_like.domain.dto.tracks.TrackRequest;
 import com.content_i_like.domain.entity.Track;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package com.content_i_like.controller;
 
-import com.content_i_like.domain.dto.SortStrategy;
+import com.content_i_like.domain.dto.search.SortStrategy;
 import com.content_i_like.domain.dto.search.SearchMembersResponse;
 import com.content_i_like.domain.dto.search.SearchPageGetResponse;
 import com.content_i_like.domain.dto.search.SearchRecommendsResponse;
