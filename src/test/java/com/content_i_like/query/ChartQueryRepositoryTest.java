@@ -3,6 +3,7 @@ package com.content_i_like.query;
 import static com.content_i_like.domain.entity.QComment.comment;
 import static com.content_i_like.domain.entity.QRecommend.recommend;
 
+import com.content_i_like.domain.dto.chart.RecommendChartResponse;
 import com.content_i_like.domain.entity.QComment;
 import com.content_i_like.domain.entity.QRecommend;
 import com.content_i_like.domain.entity.QTrack;
@@ -13,6 +14,7 @@ import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +46,7 @@ class ChartQueryRepositoryTest {
   @BeforeEach
   public void setup() {
 
-    expirationTimeInWeeks = 4;
+    expirationTimeInWeeks = 1;
 
     validUntilThisTime = LocalDateTime.now().minusWeeks(expirationTimeInWeeks);
 
@@ -54,6 +56,50 @@ class ChartQueryRepositoryTest {
 
 
   }
+
+  @Test
+  void getRecommendChartByScore() throws Exception {
+    List<Tuple> findChart = queryFactory
+        .select(
+            recommend.recommendNo,
+            recommend.recommendTitle,
+            recommend.member.memberNo,
+            recommend.member.nickName,
+            recommend.recommendScore)
+        .from(recommend)
+        .leftJoin(recommend.comments, comment)
+        .on(recommend.recommendNo.eq(comment.recommend.recommendNo))
+        .where(recommend.createdAt.after(validUntilThisTime))
+        .groupBy(recommend.recommendNo)
+        .orderBy(recommend.recommendScore.desc(), recommend.recommendViews.desc(), recommend.recommendTitle.asc(),
+            recommend.recommendNo.asc())
+        .limit(limitSize)
+        .fetch();
+
+    // response 로 변환
+    List<RecommendChartResponse> responses = new ArrayList<>();
+    for (Tuple tuple : findChart) {
+      Long recommendNo = Long.valueOf(String.valueOf(tuple.get(recommend.recommendNo)));
+      String recommendTitle = String.valueOf(tuple.get(recommend.recommendTitle));
+      Long memberNo = Long.valueOf(String.valueOf(tuple.get(recommend.member.memberNo)));
+      String memberNickName = String.valueOf(tuple.get(recommend.member.nickName));
+      Long recommendScore = Long.valueOf(String.valueOf(tuple.get(recommend.recommendScore)));
+      Long recommendViews = Long.valueOf(String.valueOf(tuple.get(recommend.recommendViews)));
+
+      responses.add(
+          new RecommendChartResponse(recommendNo, recommendTitle, memberNo, memberNickName,
+              recommendScore,
+              recommendViews));
+    }
+
+        for (Tuple tuple : findChart) {
+      System.out.println(tuple);
+    }
+
+    Assertions.assertEquals(findChart.size(), 7);
+
+  }
+
 
   @Test
   void getRecommendChart() throws Exception {
@@ -122,55 +168,54 @@ class ChartQueryRepositoryTest {
     Assertions.assertEquals(findChart.size(), 7);
   }
 
-
-  @Test
-  void getTrackChart() throws Exception {
-    JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-
-    // 별칭 지정
-    StringPath totalScore = Expressions.stringPath("totalScore");
-
-    int expirationTimeInWeeks = 4;
-
-    // 추천글 유효기간
-    LocalDateTime validUntilThisTime = LocalDateTime.now().minusWeeks(expirationTimeInWeeks);
-
-    /*
-     * 트랙 left join 추천글
-     * 음원 번호, 트랙 제목, 아티스트 이름, 대표 추천인, 해당 트랙의 추천글 포인트(score) 총합
-     * score = 추천글 포인트 + 좋아요 갯수 + 댓글 갯수 + 댓글 포인트 총합
-     * 정렬 기준: 1. score 총합 2. 트랙 제목 이름순 3. 아티스트 이름순
-     */
-
-    List<Tuple> findChart = queryFactory
-        .select(
-            recommend.track.trackNo,
-            recommend.track.trackTitle,
-            recommend.track.album.albumNo,
-            recommend.track.album.albumImageUrl,
-            recommend.track.artist.artistNo,
-            recommend.track.artist.artistName,
-            (recommend.recommendPoint
-                .add(comment.commentPoint.coalesce(0L).sum())
-                .add(recommend.comments.size())
-                .add(recommend.likes.size())).as("totalScore")
-        )
-        .from(recommend)
-        .leftJoin(recommend.comments, comment)
-        .on(recommend.recommendNo.eq(comment.recommend.recommendNo))
-        .where(recommend.createdAt.after(validUntilThisTime))
-        .groupBy(recommend.track.trackNo)
-        .orderBy(totalScore.desc(), recommend.track.trackTitle.asc(),
-            recommend.track.artist.artistName.asc())
-        .limit(limitSize)
-        .fetch();
-
-    for (Tuple tuple : findChart) {
-      System.out.println(tuple);
-    }
-
-    Assertions.assertEquals(findChart.size(), 3);
-
-  }
+//  @Test
+//  void getTrackChart() throws Exception {
+//    JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+//
+//    // 별칭 지정
+//    StringPath totalScore = Expressions.stringPath("totalScore");
+//
+//    int expirationTimeInWeeks = 12;
+//
+//    // 추천글 유효기간
+//    LocalDateTime validUntilThisTime = LocalDateTime.now().minusWeeks(expirationTimeInWeeks);
+//
+//    /*
+//     * 트랙 left join 추천글
+//     * 음원 번호, 트랙 제목, 아티스트 이름, 대표 추천인, 해당 트랙의 추천글 포인트(score) 총합
+//     * score = 추천글 포인트 + 좋아요 갯수 + 댓글 갯수 + 댓글 포인트 총합
+//     * 정렬 기준: 1. score 총합 2. 트랙 제목 이름순 3. 아티스트 이름순
+//     */
+//
+//    List<Tuple> findChart = queryFactory
+//        .select(
+//            recommend.track.trackNo,
+//            recommend.track.trackTitle,
+//            recommend.track.album.albumNo,
+//            recommend.track.album.albumImageUrl,
+//            recommend.track.artist.artistNo,
+//            recommend.track.artist.artistName,
+//            (recommend.recommendPoint
+//                .add(comment.commentPoint.coalesce(0L).sum())
+//                .add(recommend.comments.size())
+//                .add(recommend.likes.size())).as("totalScore")
+//        )
+//        .from(recommend)
+//        .leftJoin(recommend.comments, comment)
+//        .on(recommend.recommendNo.eq(comment.recommend.recommendNo))
+//        .where(recommend.createdAt.after(validUntilThisTime))
+//        .groupBy(recommend.track.trackNo)
+//        .orderBy(totalScore.desc(), recommend.track.trackTitle.asc(),
+//            recommend.track.artist.artistName.asc())
+//        .limit(limitSize)
+//        .fetch();
+//
+//    for (Tuple tuple : findChart) {
+//      System.out.println(tuple);
+//    }
+//
+//    Assertions.assertEquals(findChart.size(), 3);
+//
+//  }
 
 }

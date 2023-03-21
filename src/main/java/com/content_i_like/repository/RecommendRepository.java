@@ -37,7 +37,7 @@ public interface RecommendRepository extends JpaRepository<Recommend, Long>,
    * @param recommendScoreToAdd 추가할 score
    */
   @Modifying(clearAutomatically = true)
-  @Query("update Recommend r set r.recommendScore = :r.recommendScore + score where r.recommendNo = :recommendNo")
+  @Query("update Recommend r set r.recommendScore = r.recommendScore + :score where r.recommendNo = :recommendNo")
   void updateScore(@Param("recommendNo") Long recommendNo, @Param("score") Long recommendScoreToAdd);
 
   Page<Recommend> findAllByMember(Pageable pageable, Member member);
