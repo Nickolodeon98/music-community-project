@@ -28,6 +28,7 @@ public class LikesService {
   private final NotificationRepository notificationRepository;
   private final ApplicationEventPublisher applicationEventPublisher;
 
+  private final RecommendService recommendService;
   /**
    * 좋아요 상태를 변환합니다.
    *
@@ -67,6 +68,10 @@ public class LikesService {
 
       // 좋아요 알림 이벤트를 발생시킵니다.
       applicationEventPublisher.publishEvent(LikesNotificationEvent.of(post, like));
+
+      // 해당 추천글의 score 을 수정해줍니다(더하기)
+      recommendService.updateScoreByLikes(recommendNo);
+
 
       return "좋아요를 눌렀습니다";
     }

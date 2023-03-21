@@ -33,6 +33,7 @@ public class Recommend extends BaseEntity {
   private String recommendYoutubeUrl;
 
   private Long recommendPoint;
+  private Long recommendScore; // 모든 포인트를 합산한 점수
 
   private Long recommendViews;
 

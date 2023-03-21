@@ -1,5 +1,6 @@
 package com.content_i_like.service;
 
+import com.content_i_like.domain.dto.comment.CommentRequest;
 import com.content_i_like.domain.dto.recommend.*;
 import com.content_i_like.domain.entity.*;
 import com.content_i_like.domain.enums.PointTypeEnum;
@@ -197,6 +198,32 @@ public class RecommendService {
     log.info("updatePost");
     recommendRepository.update(request.getRecommendTitle(), request.getRecommendContent(),
         url, youtubeUrl, recommendNo);
+    log.info("finish");
+  }
+
+  /**
+   * 댓글을 달았을때 추천글의 score 을 수정합니다.
+   *
+   * @param recommendNo 수정할 추천글 고유 번호
+   * @param request     댓글로 부터 온 수정 정보
+   */
+  @Transactional
+  public void updateScoreByComment(Long recommendNo, CommentRequest request) {
+    final Long pointPerComment = 5L;
+    Long commentPoint = request.getCommentPoint() + pointPerComment;
+    recommendRepository.updateScore(recommendNo, request.getCommentPoint());
+    log.info("finish");
+  }
+
+  /**
+   * 좋아요를 달았을때 추천글의 score 을 수정합니다.
+   *
+   * @param recommendNo 수정할 추천글 고유 번호
+   */
+  @Transactional
+  public void updateScoreByLikes(Long recommendNo) {
+    final Long pointPerLikes = 1L;
+    recommendRepository.updateScore(recommendNo, pointPerLikes);
     log.info("finish");
   }
 

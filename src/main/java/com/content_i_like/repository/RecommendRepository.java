@@ -26,6 +26,16 @@ public interface RecommendRepository extends JpaRepository<Recommend, Long>,
       @Param("image") String recommendImageUrl, @Param("youtube") String recommendYoutubeUrl,
       @Param("recommendNo") Long recommendNo);
 
+  /**
+   * 추천글 score 을 수정(더하기) 해줍니다.
+   *
+   * @param recommendNo 추천글 고유 번호
+   * @param recommendScoreToAdd 추가할 score
+   */
+  @Modifying(clearAutomatically = true)
+  @Query("update Recommend r set r.recommendScore = :r.recommendScore + score where r.recommendNo = :recommendNo")
+  void updateScore(@Param("recommendNo") Long recommendNo, @Param("score") Long recommendScoreToAdd);
+
   Page<Recommend> findAllByMember(Pageable pageable, Member member);
 
   Long countByMember(Member member);

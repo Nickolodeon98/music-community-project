@@ -40,6 +40,7 @@ public class CommentService {
 
   private final ApplicationEventPublisher applicationEventPublisher;
   private final PointService pointService;
+  private final RecommendService recommendService;
 
   /**
    * 추천글에 댓글을 작성합니다.
@@ -69,6 +70,10 @@ public class CommentService {
 //    applicationEventPublisher.publishEvent(CommentNotificationEvent.of(post, comment));
     pointService.usePoint(member, request.getCommentPoint(), PointTypeEnum.COMMENTS,
         comment.getCommentNo());
+
+    // 게시물 점수를 업데이트합니다.
+    recommendService.updateScoreByComment(recommendNo, request);
+
     return CommentResponse.of(comment, post, member);
   }
 

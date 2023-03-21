@@ -44,6 +44,7 @@ public class RecommendPostRequest {
         .recommendImageUrl(url)
         .recommendYoutubeUrl(youtubeUrl)
         .recommendPoint(point)
+        .recommendScore(point)
         .recommendViews(0L)
         .member(member)
         .track(track)
