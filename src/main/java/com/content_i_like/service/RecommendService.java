@@ -33,6 +33,7 @@ public class RecommendService {
   private final PostHashtagRepository postHashtagRepository;
   private final LikesRepository likesRepository;
   private final PointService pointService;
+  private final HashTagService hashTagService;
 
   private final String defaultImg = "https://content-i-like.s3.ap-northeast-2.amazonaws.com/default-post.jpg";
 
@@ -54,7 +55,7 @@ public class RecommendService {
     Track track = validateGetTrackByTrackNo(request.getTrackNo());
     String url = getUploadImageURL(image);
     Recommend post = saveRecommend(request, member, track, url);
-    savePostHashtags(hashtags, post);
+    hashTagService.savePostHashtags(hashtags, post);
     return RecommendPostResponse.fromEntity(post);
   }
 
@@ -72,19 +73,11 @@ public class RecommendService {
 
     Recommend post = saveRecommend(request, member, track, url);
     pointService.usePoint(member, request.getRecommendPoint(), PointTypeEnum.RECOMMEND_POSTS, post.getRecommendNo());
-    saveHashTags(request, post);
+    hashTagService.saveHashTags(request, post);
     return RecommendPostResponse.fromEntity(post);
   }
 
-  private void saveHashTags(RecommendPostRequest request, Recommend post) {
-    Optional.ofNullable(request.getHashtag())
-        .filter(str -> str.contains("#"))
-        .map(str -> Stream.of(str.split("#"))
-            .map(h -> h.replaceAll(" ", ""))
-            .filter(h -> !h.isEmpty())
-            .distinct()
-            .toList()).ifPresent(hashtags -> savePostHashtags(hashtags, post));
-  }
+
 
   /**
    * 추천글을 Database에 저장합니다.
@@ -134,19 +127,7 @@ public class RecommendService {
    * @param hashtags 웹에서 받아온 hashtags
    * @param post     해시태그를 저장할 추천글
    */
-  private void savePostHashtags(List<String> hashtags, Recommend post) {
-    for (String hashtag : hashtags) {
-      Hashtag existingHashtag = hashtagRepository.findByName(hashtag)
-          .orElseGet(() -> {
-            Hashtag newHashtag = Hashtag.of(hashtag);
-            hashtagRepository.save(newHashtag);
-            return newHashtag;
-          });
 
-      PostHashtag postHashtag = PostHashtag.of(post, existingHashtag);
-      postHashtagRepository.save(postHashtag);
-    }
-  }
 
   /**
    * 등록된 추천글을 수정합니다.
@@ -254,7 +235,7 @@ public class RecommendService {
         new HashSet<>(hashtags))) {
       // Hash 태그 삭제
       postHashtagRepository.deleteAllByRecommend(post);
-      savePostHashtags(hashtags, post);
+      hashTagService.savePostHashtags(hashtags, post);
     }
   }
 
@@ -327,45 +308,17 @@ public class RecommendService {
   public RecommendReadResponse readPost(final Long recommendNo) {
     Recommend post = validateGetRecommendInfoByRecommendNo(recommendNo);
     Member member = validateGetMemberInfoByUserEmail(post.getMember().getEmail());
-    Track track = validateGetTrackByTrackNo(post.getTrack().getTrackNo());
-    Album album = validateGetAlbumByAlbumNo(track);
-    Artist artist = validateGetArtistByArtistNo(album);
+    Track track = post.getTrack();
+    Album album = track.getAlbum();
+    Artist artist = album.getArtist();
     List<Comment> comments = post.getComments();
-    Long countLikes = likesRepository.countLikesByRecommend(
-        validateGetRecommendInfoByRecommendNo(recommendNo));
+    Long countLikes = likesRepository.countLikesByRecommend(post);
     Long accumulatedPoints = getAccumulatedPoints(comments, post);
     List<PostHashtag> postHashtags = postHashtagRepository.findAllByRecommendRecommendNo(
         recommendNo);
     List<String> hashtags = getExistingHashtags(postHashtags);
     return RecommendReadResponse.of(post, member, album, artist, track, comments, countLikes,
         accumulatedPoints, hashtags);
-  }
-
-
-  /**
-   * artistNo을 사용하여 Artist 정보를 받아옵니다.
-   *
-   * @param album Artist 고유 번호가 담겨 있는 앨범 정보
-   * @return Artist 정보를 반환
-   */
-  private Artist validateGetArtistByArtistNo(Album album) {
-    return artistRepository.findById(album.getArtist().getArtistNo())
-        .orElseThrow(() -> {
-          throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
-        });
-  }
-
-  /**
-   * AlbumNo를 사용하여 Album 정보를 받아옵니다.
-   *
-   * @param track Album 고유 번호가 담겨 있는 트랙 정보
-   * @return Album 정보를 반환
-   */
-  private Album validateGetAlbumByAlbumNo(Track track) {
-    return albumRepository.findById(track.getAlbum().getAlbumNo())
-        .orElseThrow(() -> {
-          throw new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage());
-        });
   }
 
   /**
