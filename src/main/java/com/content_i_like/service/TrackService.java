@@ -1,5 +1,7 @@
 package com.content_i_like.service;
 
+import com.content_i_like.domain.dto.search.SearchPageGetResponse;
+import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.entity.Artist;
 import com.content_i_like.domain.entity.Album;
 import com.content_i_like.domain.entity.Track;
@@ -11,6 +13,9 @@ import com.content_i_like.repository.ArtistRepository;
 import com.content_i_like.repository.TrackRepository;
 import com.content_i_like.service.fetchoptions.AlbumFetch;
 import com.content_i_like.service.fetchoptions.ArtistFetch;
+import com.content_i_like.service.fetchoptions.EachAlbumFetch;
+import com.content_i_like.service.fetchoptions.EachArtistFetch;
+import com.content_i_like.service.fetchoptions.EachTrackFetch;
 import com.content_i_like.service.fetchoptions.Fetch;
 import com.content_i_like.service.fetchoptions.TrackFetch;
 import com.content_i_like.service.saveoptions.AlbumSave;
@@ -30,9 +35,13 @@ import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -125,15 +134,22 @@ public class TrackService {
 //            "C:\\\\LikeLion\\\\final-project\\\\content_i_like\\\\src\\\\main\\\\k-genres.csv");
 
     List<String> queries =
-        List.of("J-pop", "J-rock", "J-poprock", "Instrumental", "Dance", "Game", "Bounce", "Latin", "British pop", "Classical");
+        List.of("Funk", "Soundtrack", "Disney", "Club", "Study", "Romance", "Movies", "Indie");
+
+//        List.of("2004", "2005", "2006", "2007", "2008", "1990", "1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999");
+
+//        List.of("2018", "2019", "2020", "2021", "2022", "2023", "2000", "2001", "2002", "2003");
+
+//        List.of("2009", "2010", "2011", "2012", "2012", "2013", "2014", "2015", "2016", "2017");
+
+//        List.of("Country", "Metal", "Piano", "Acoustic", "Blues", "Disco", "Gospel", "Rap", "Christmas", "Carol");
+
+//        List.of("J-pop", "J-rock", "J-poprock", "Instrumental", "Dance", "Game", "Bounce", "Latin", "British pop", "Classical");
 
 //    List.of("Korean Mask Singer", "Trot", "Pop ballads", "Pop", "Rock", "Acoustic Pop", "Anime", "Hip hop", "Edm", "Soul", "R&b");
 
-
 //    List.of("K-pop", "K-indie", "K-rap", "K-rock", "Classic K-pop", "Korean Soundtrack", "Korean OST",
 //        "Korean Pop", "Pop", "Korean Instrumental", "K-jazz", "K-R&B");
-
-
 
     List<List<String>> collectedIds = new ArrayList<>();
     List<String> ids = new ArrayList<>();
@@ -223,8 +239,58 @@ public class TrackService {
   }
 
   @Transactional
-  public <T> void createMusicDatabaseAllUnique(Set<T> entities, DBSaveOption<T> saveOption) {
-    saveOption.saveNewRowsAllUnique(entities);
+  public <T> List<T> createMusicDatabaseAllUnique(Set<T> entities, DBSaveOption<T> saveOption) {
+    return saveOption.saveNewRowsAllUnique(entities);
+  }
+
+
+  @Transactional
+  public <T> Set<T> searchFromApi(String accessToken, String keyword, Fetch<T> fetchedType)
+      throws JsonProcessingException {
+    RestTemplate restTemplate = new RestTemplate();
+    HttpEntity<MultiValueMap<String, String>> httpEntity
+        = new HttpEntity<>(headerOf(accessToken));
+
+    String onDemandUri =
+        TrackEnum.BASE_URL.getValue() + "/search?q=track:" + keyword + "&type=track";
+//        + "%20artist:" + keyword + "%20album:" + keyword + "&type=track";
+
+    ResponseEntity<String> response = restTemplate.exchange(onDemandUri, HttpMethod.GET, httpEntity,
+        String.class);
+
+//    log.info("JsonNode:{}", response.getBody());
+
+    JsonNode requiredInfo = objectMapper.readTree(response.getBody());
+
+    Set<String> dataSet = new HashSet<>();
+    String extractedData = "";
+    for (int i = 0; i < 50; i++) {
+      extractedData = fetchedType.extractData(requiredInfo, i);
+      if (extractedData.equals("")) {
+        continue;
+      }
+      dataSet.add(extractedData);
+    }
+
+    return fetchedType.parseIntoEntitiesAllUnique(dataSet);
+  }
+
+  @Transactional
+  public void createDBOnDemand(String accessToken, String keyword)
+      throws JsonProcessingException {
+
+    Set<Artist> artists = searchFromApi(accessToken, keyword, new EachArtistFetch());
+    createMusicDatabaseAllUnique(artists, new ArtistSave(artistRepository));
+
+    Set<Album> albums = searchFromApi(accessToken, keyword, new EachAlbumFetch());
+    Set<Album> artistsAndAlbums = parseForNewAlbum(artists, albums);
+
+    createMusicDatabaseAllUnique(artistsAndAlbums, new AlbumSave(albumRepository));
+
+    Set<Track> tracks = searchFromApi(accessToken, keyword, new EachTrackFetch());
+    Set<Track> totalTracks = parseForTrack(artists, albums, tracks);
+
+    createMusicDatabaseAllUnique(totalTracks, new TrackSave(trackRepository));
   }
 
   @Transactional
@@ -253,10 +319,6 @@ public class TrackService {
     Set<Album> newAlbums = new HashSet<>();
 
     for (Album album : albums) {
-//      for (NewArtist artist : artists) {
-//        if (album.getArtistName().equals(artist.getArtistName()))
-//          album.setArtist(artist);
-//      }
       List<Artist> artist = artistRepository.findAllByArtistSpotifyId(album.getArtistSpotifyId())
           .orElseThrow(
               () -> new ContentILikeAppException(ErrorCode.NOT_FOUND, "앨범의 아티스트가 존재하지 않습니다."));
@@ -279,17 +341,11 @@ public class TrackService {
       List<Album> album = albumRepository.findAllByAlbumSpotifyId(track.getAlbumSpotifyId())
           .orElseThrow(
               () -> new ContentILikeAppException(ErrorCode.NOT_FOUND, "음원의 앨범이 존재하지 않습니다."));
-//      NewAlbum album = albumRepository.findByAlbumTitle(track.getAlbumTitle())
-//          .orElseThrow(()-> new ContentILikeAppException(ErrorCode.NOT_FOUND, "음원의 앨범이 존재하지 않습니다."));
-
-//      NewArtist artist = artistRepository.findByArtistSpotifyId(track.getArtistSpotifyId())
-//          .orElseThrow(
-//              () -> new ContentILikeAppException(ErrorCode.NOT_FOUND, "음원의 아티스트가 존재하지 않습니다."));
 
       List<Artist> artist = artistRepository.findAllByArtistSpotifyId(track.getArtistSpotifyId())
-          .orElseThrow(()-> new ContentILikeAppException(ErrorCode.NOT_FOUND, "음원의 아티스트가 존재하지 않습니다."));
+          .orElseThrow(
+              () -> new ContentILikeAppException(ErrorCode.NOT_FOUND, "음원의 아티스트가 존재하지 않습니다."));
 
-//      genreRepofindGenreByGenreType()
       if (!album.isEmpty()) {
         track.setAlbum(album.get(0));
       }

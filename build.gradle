@@ -36,7 +36,14 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: '3.0.2'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'org.hibernate.orm:hibernate-jcache:6.1.6.Final'
+    implementation 'org.ehcache:ehcache:3.10.6'
 
+    // https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core
+    compileOnly 'org.hibernate.orm:hibernate-core:6.1.7.Final'
+    // https://mvnrepository.com/artifact/org.jboss.logging/jboss-logging
+    compileOnly 'org.jboss.logging:jboss-logging:3.5.0.Final'
+    compileOnly 'javax.cache:cache-api:1.1.1'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'

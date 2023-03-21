@@ -8,17 +8,22 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Builder
+@jakarta.persistence.Cacheable
+@org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.READ_WRITE)
 public class Hashtag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hashtagNo;
     private String name;
+
+    @org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.READ_WRITE)
     @OneToMany(mappedBy = "hashtag", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PostHashtag> postHashtags = new ArrayList();
 

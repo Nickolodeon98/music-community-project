@@ -1,6 +1,5 @@
 package com.content_i_like.controller;
 
-import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.SortStrategy;
 import com.content_i_like.domain.dto.search.SearchMembersResponse;
 import com.content_i_like.domain.dto.search.SearchPageGetResponse;
@@ -8,10 +7,9 @@ import com.content_i_like.domain.dto.search.SearchRecommendsResponse;
 import com.content_i_like.domain.dto.search.SearchRequest;
 import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.enums.SortEnum;
-import com.content_i_like.service.CacheService;
 import com.content_i_like.service.SearchService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import com.content_i_like.service.TrackService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,17 +18,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Controller
 @RequestMapping("/search")
@@ -39,7 +34,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 public class SearchController {
 
   private final SearchService searchService;
-  private final CacheService cacheService;
+  private final TrackService trackService;
 
   @GetMapping()
   public String searchMainPage(Model model) {
@@ -72,25 +67,21 @@ public class SearchController {
       @RequestParam(value = "page", required = false) Integer pageNum,
       Model model) {
 
-    String property = SortEnum.TRACKS_SORT_DEFAULT.getSortBy();
-    Direction direction = SortEnum.TRACKS_SORT_DEFAULT.getDirection();
-
-    if (sortStrategy != null) {
-      if (sortStrategy.getProperty() != null && !sortStrategy.getProperty().isEmpty()) {
-        property = sortStrategy.getProperty();
-      }
-      if (sortStrategy.getDirection() != null) {
-        direction = sortStrategy.getDirection();
-      }
-    }
-
-    pageable = PageRequest.of(pageable.getPageNumber(), SortEnum.TRACKS_SORT_DEFAULT.getScale(),
-        Sort.by(direction, property));
+    pageable = searchService.generatePageable(pageable, sortStrategy);
 
     SearchPageGetResponse<TrackGetResponse> trackResults =
         searchService.findTracksWithKeyword(pageable, trackTitle.getKeyword());
 
+    /* 만약 trackResults 가 비어있는 경우라면 스포티파이 API 를 호출하는 경로로 리다이렉트 후 다른 메서드를 사용한다
+     * accessToken 을 받아야 하기 때문. */
+    if (trackResults.getPages().isEmpty()) {
+      return "redirect:http://localhost:8080/api/v1/test/token?option=unplanned&keyword="
+          + trackTitle.getKeyword();
+    }
+
     model.addAttribute("trackResults", trackResults);
+    model.addAttribute("elements", trackResults.getPages().getNumberOfElements());
+    model.addAttribute("totalPages", trackResults.getPages().getTotalPages());
     model.addAttribute("trackResultsAsList", trackResults.getPages().toList());
     model.addAttribute("pageable", pageable);
     model.addAttribute("keyword", trackTitle.getKeyword());
@@ -102,6 +93,18 @@ public class SearchController {
     model.addAttribute("newline", newLineChar);
 
     return "pages/search/tracks-search";
+  }
+
+  @GetMapping("/tracks/demand")
+  public String addTracksOnDemand(@RequestParam String token,
+      @RequestParam String keyword,
+      @ModelAttribute("keywordDto") final SearchRequest trackTitle,
+      @ModelAttribute("sortStrategy") final SortStrategy sortStrategy)
+      throws JsonProcessingException {
+
+    trackService.createDBOnDemand(token, keyword);
+
+    return "redirect:/search/tracks?keyword=" + keyword + "&page=0";
   }
 
   @PostMapping("/members")
@@ -156,7 +159,8 @@ public class SearchController {
   }
 
   @GetMapping("/recommends")
-  public String searchRecommendsByKeyword(@ModelAttribute("keywordDto") final SearchRequest recommendTitle,
+  public String searchRecommendsByKeyword(
+      @ModelAttribute("keywordDto") final SearchRequest recommendTitle,
       @ModelAttribute("sortStrategy") final SortStrategy sortStrategy,
       @RequestParam(value = "page", required = false) Integer pageNum,
       Pageable pageable,
@@ -224,8 +228,8 @@ public class SearchController {
 
     pageable = PageRequest.of(pageNum != null ? pageNum : 0, 5, Sort.by("trackTitle").ascending());
 
-
-    SearchPageGetResponse<TrackGetResponse> trackResults = searchService.findTracksWithKeyword(pageable, keyword);
+    SearchPageGetResponse<TrackGetResponse> trackResults = searchService.findTracksWithKeyword(
+        pageable, keyword);
 
     return trackResults;
   }

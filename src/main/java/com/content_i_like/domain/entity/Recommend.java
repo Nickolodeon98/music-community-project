@@ -3,6 +3,7 @@ package com.content_i_like.domain.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
@@ -17,6 +18,8 @@ import org.hibernate.annotations.*;
 @Entity
 @SQLDelete(sql = "UPDATE recommend SET deleted_at = current_timestamp WHERE recommend_no = ?")
 @Where(clause = "deleted_at is null")
+@jakarta.persistence.Cacheable
+@org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.READ_WRITE)
 public class Recommend extends BaseEntity {
 
   @Id
@@ -47,13 +50,16 @@ public class Recommend extends BaseEntity {
   @JsonIgnore
   private Member member;
 
+  @org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.READ_WRITE)
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "recommend")
   @JsonIgnore
   private List<Comment> comments;
 
+  @org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.READ_WRITE)
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "recommend")
   private List<Likes> likes;
 
+  @org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.READ_WRITE)
   @OneToMany(mappedBy = "recommend", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<PostHashtag> postHashtags = new ArrayList<>();
 }
