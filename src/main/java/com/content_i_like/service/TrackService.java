@@ -1,7 +1,5 @@
 package com.content_i_like.service;
 
-import com.content_i_like.domain.dto.search.SearchPageGetResponse;
-import com.content_i_like.domain.dto.tracks.TrackGetResponse;
 import com.content_i_like.domain.entity.Artist;
 import com.content_i_like.domain.entity.Album;
 import com.content_i_like.domain.entity.Track;
@@ -35,13 +33,9 @@ import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -204,7 +198,6 @@ public class TrackService {
           ids.append(",");
         }
       }
-//      log.info("ids:{}", ids);
       HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(
           headerOf(accessToken));
 
@@ -253,12 +246,9 @@ public class TrackService {
 
     String onDemandUri =
         TrackEnum.BASE_URL.getValue() + "/search?q=track:" + keyword + "&type=track";
-//        + "%20artist:" + keyword + "%20album:" + keyword + "&type=track";
 
     ResponseEntity<String> response = restTemplate.exchange(onDemandUri, HttpMethod.GET, httpEntity,
         String.class);
-
-//    log.info("JsonNode:{}", response.getBody());
 
     JsonNode requiredInfo = objectMapper.readTree(response.getBody());
 
@@ -295,7 +285,6 @@ public class TrackService {
 
   @Transactional
   public void createAllThreeTypesDBAllUnique(String token) throws IOException {
-    /* TODO: 세 자원을 모두 저장을 할 때 여기도 템플릿 콜백 패턴 적용 가능 */
     List<JsonNode> jsonData = callTracksApi(token);
 
     Set<Artist> artistEntities = fetchTracksWithoutDuplicates(jsonData, new ArtistFetch());
