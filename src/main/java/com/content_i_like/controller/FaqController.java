@@ -24,6 +24,11 @@ public class FaqController {
 
   private final FaqService faqService;
 
+  /**
+   * 모든 FAQ를 반환합니다.
+   *
+   * @return 모든 FAQ를 page로 반환
+   */
   @GetMapping()
   public String getAllFaq(Pageable pageable, Model model) {
     Page<FaqResponse> allFaq = faqService.getAllFaq(pageable);
@@ -32,6 +37,12 @@ public class FaqController {
     return "pages/faq/faq";
   }
 
+  /**
+   * 특정 카테고리의 FAQ를 반환합니다
+   *
+   * @param category  반환하고자 하는 카테고리의 종류
+   * @return 해당 param 카테고리의 FAQ를 반환
+   */
   @GetMapping("/{category}")
   public String getFaqByCategory(Pageable pageable,
       @PathVariable String category, Model model) {
@@ -42,6 +53,12 @@ public class FaqController {
     return "pages/faq/faq";
   }
 
+  /**
+   * 특정 키워드를 포함한 FAQ를 반환합니다
+   *
+   * @param keyWord  반환하고자 하는 FAQ가 포함한 키워드
+   * @return 해당 키워드를 포함한 FAQ
+   */
   @GetMapping("/searches/{keyWord}")
   public String getFaqByKeyWord(Pageable pageable,
       @PathVariable String keyWord, Model model) {
@@ -51,6 +68,12 @@ public class FaqController {
     return "pages/faq/faq";
   }
 
+  /**
+   * 특정 FAQ의 내용을 반환합니다
+   *
+   * @param faqNo  반환하고자 FAQ의 번호
+   * @return faqNo의 FAQ를 반환
+   */
   @GetMapping("/details/{faqNo}")
   public String getFaqDetails(@PathVariable Long faqNo, Model model) {
     FaqDetailsResponse faqDetails = faqService.getFaqDetails(faqNo);
@@ -58,9 +81,4 @@ public class FaqController {
     model.addAttribute("faqDetails", faqDetails);
     return "pages/faq/faq-details";
   }
-//
-//  @PostMapping()
-//  public Response<FaqResponse> addFaq(@RequestBody FaqRequest faqRequest) {
-//    return Response.success(faqService.addFaq(faqRequest));
-//  }
 }

@@ -17,6 +17,12 @@ public class FollowController {
 
   private final FollowService followService;
 
+  /**
+   * 팔로우를 취소합니다
+   *
+   * @param nickName  팔로우 취소하고자 하는 대상의 닉네임
+   * @return 팔로윙 목록
+   */
   @PostMapping("/followCancel/{nickName}")
   public String followCanel(@PathVariable String nickName, HttpServletRequest request) {
 
@@ -26,6 +32,12 @@ public class FollowController {
     return "redirect:/member/followings";
   }
 
+  /**
+   * 팔로우에 추가합니다
+   *
+   * @param nickName  팔로우 하고자 하는 대상의 닉네임
+   * @return 팔로워 목록
+   */
   @PostMapping("/follow/{nickName}")
   public String follow(@PathVariable String nickName, HttpServletRequest request) {
 

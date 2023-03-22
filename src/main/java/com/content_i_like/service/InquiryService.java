@@ -32,7 +32,13 @@ public class InquiryService {
 
   private final AnswerRepository answerRepository;
 
-  //1:1 문의 등록하기
+  /**
+   * 1:1문의를 동록합니다
+   *
+   * @param userEmail 1:1문의를 등록한 유저의 email
+   * @param inquiryRequire 1:1문의 제목과 내용
+   * @return 등록한 1:1문의의 상세내용
+   */
   public InquiryResponse postInquiry(final String userEmail, InquiryRequire inquiryRequire) {
 
     Member member = memberRepository.findByEmail(userEmail)
@@ -50,6 +56,12 @@ public class InquiryService {
     return InquiryResponse.of(savedInquiry);
   }
 
+  /**
+   * 1:1문의 목록을 반환합니다
+   *
+   * @param userEmail 반환하고자 하는 1:1문의 목록의 유저
+   * @return 1:1문의 목록
+   */
   public Page<InquiryResponse> getInquiryList(Pageable pageable, final String userEmail) {
 
     Member member = memberRepository.findByEmail(userEmail)
@@ -61,6 +73,12 @@ public class InquiryService {
     return inquiries.map(InquiryResponse::of);
   }
 
+  /**
+   * 1:1 문의를 등록합니다
+   *
+   * @param nickName 1:1문의를 등록한 유저의 닉네임
+   * @return 등록한 1:1 문의의 상세 내용
+   */
   public InquiryResponse postInquiryByNickName(final String nickName,
       InquiryRequire inquiryRequire) {
 
@@ -90,6 +108,12 @@ public class InquiryService {
     return InquiryResponse.of(savedInquiry);
   }
 
+  /**
+   * 해당 닉네임의 1:1문의 목록을 반환합니다
+   *
+   * @param nickName 찾고자 하는 목록의 닉네임
+   * @return 1:1문의 목록
+   */
   public Page<InquiryResponse> getInquiryListByNickName(Pageable pageable, final String nickName) {
 
     Member member = memberRepository.findByNickName(nickName)
@@ -101,7 +125,12 @@ public class InquiryService {
     return inquiries.map(InquiryResponse::of);
   }
 
-
+  /**
+   * 1:1문의의 상세 내용을 반환합니다.
+   *
+   * @param inquiryNo 확인하고자 하는 문의의 번호
+   * @return 1:1문의의 상세 내용
+   */
   public InquiryDetailResponse getInquiryDetails(Long inquiryNo) {
     Inquiry inquiry = inquiryRepository.findById(inquiryNo).orElseThrow(
         () -> new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage()));
@@ -109,6 +138,12 @@ public class InquiryService {
     return InquiryDetailResponse.of(inquiry);
   }
 
+  /**
+   * 1:1문의에 등록된 답변을 반환합니다
+   *
+   * @param inquiryNo 확인하고자 하는 문의의 번호
+   * @return 1:1문의에 등록된 답변
+   */
   public AnswerResponse getInquiryAnswer(Long inquiryNo) {
     Inquiry inquiry = inquiryRepository.findById(inquiryNo).orElseThrow(
         () -> new ContentILikeAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage()));

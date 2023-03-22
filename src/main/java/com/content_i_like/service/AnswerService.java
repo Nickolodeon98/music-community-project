@@ -19,6 +19,12 @@ public class AnswerService {
 
   private final InquiryRepository inquiryRepository;
 
+  /**
+   * 1:1문의 답변을 반환합니다
+   *
+   * @param inquiryNo   1:1문의 번호
+   * @return 답변 번호, 답변 날짜, 답변 내용
+   */
   public AnswerResponse getAnswer(final Long inquiryNo) {
     Inquiry inquiry = inquiryRepository.findById(inquiryNo)
         .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,
@@ -27,6 +33,13 @@ public class AnswerService {
     return AnswerResponse.of(answerRepository.findByInquiry(inquiry));
   }
 
+  /**
+   * 1:1문의 답변을 등록합니다
+   *
+   * @param inquiryNo   1:1문의 번호
+   * @param answerRequire 1:1문의 답변 내용
+   * @return 답변 번호, 답변 날짜, 답변 내용
+   */
   public AnswerResponse postAnswer(final Long inquiryNo, AnswerRequire answerRequire) {
     Inquiry inquiry = inquiryRepository.findById(inquiryNo)
         .orElseThrow(() -> new ContentILikeAppException(ErrorCode.NOT_FOUND,

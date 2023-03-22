@@ -36,6 +36,13 @@ public class InquiryController {
 
   private final InquiryService inquiryService;
 
+  /**
+   * 1:1문의를 동록합니다
+   *
+   * @param inquiryRequire 1:1문의 제목과 내용
+   * @return 로그인 되있지 않다면 로그인 페이지
+   *         로그인 되어 있다면 faq 페이지
+   */
   @PostMapping("/post")
   public String postInquiry(
       @Valid @ModelAttribute("inquiryRequire") InquiryRequire inquiryRequire,
@@ -53,6 +60,11 @@ public class InquiryController {
     return "redirect:/faq";
   }
 
+  /**
+   * 1:1문의 등록 페이지를 반환합니다
+   *
+   * @return 1:1문의 등록 페이지
+   */
   @GetMapping("/writeForm")
   public String registerInquiry(Model model) {
 
@@ -60,6 +72,11 @@ public class InquiryController {
     return "pages/faq/faq-register-inquiry";
   }
 
+  /**
+   * 유저가 6개월내에 등록한 1:1문의 내역을 반환합니다
+   *
+   * @return 유저가 6개월내에 등록한 1:1문의 내역
+   */
   @GetMapping()
   public String getInquiryList(HttpServletRequest request, Model model, Pageable pageable) {
 
@@ -76,6 +93,12 @@ public class InquiryController {
     return "pages/faq/Inquire";
   }
 
+  /**
+   * 1:1문의에 등록된 답변을 반환합니다
+   *
+   * @param inquiryNo 확인하고자 하는 문의의 번호
+   * @return 1:1문의에 등록된 답변
+   */
   @GetMapping("/answer/{inquiryNo}")
   public String getInquiryAnswer(@PathVariable Long inquiryNo, Model model) {
 
@@ -87,6 +110,12 @@ public class InquiryController {
     return "pages/faq/Inquire-answer";
   }
 
+  /**
+   * 1:1문의의 상세 내용을 반환합니다.
+   *
+   * @param inquiryNo 확인하고자 하는 문의의 번호
+   * @return 1:1문의의 상세 내용
+   */
   @GetMapping("/{inquiryNo}")
   public String getInquiryDetails(@PathVariable Long inquiryNo, Model model) {
     InquiryDetailResponse inquiryDetails = inquiryService.getInquiryDetails(inquiryNo);
