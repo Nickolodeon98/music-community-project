@@ -1,13 +1,10 @@
 package com.content_i_like.controller;
 
-import com.content_i_like.domain.Response;
 import com.content_i_like.domain.dto.follow.FollowMyFeedResponse;
-import com.content_i_like.domain.dto.follow.FollowResponse;
 import com.content_i_like.domain.dto.member.ChangePwRequest;
 import com.content_i_like.domain.dto.member.MemberCommentResponse;
 import com.content_i_like.domain.dto.member.MemberFindRequest;
 import com.content_i_like.domain.dto.member.MemberJoinRequest;
-import com.content_i_like.domain.dto.member.MemberJoinResponse;
 import com.content_i_like.domain.dto.member.MemberLoginRequest;
 import com.content_i_like.domain.dto.member.MemberLoginResponse;
 import com.content_i_like.domain.dto.member.MemberModifyRequest;
@@ -15,8 +12,6 @@ import com.content_i_like.domain.dto.member.MemberPointResponse;
 import com.content_i_like.domain.dto.member.MemberRecommendResponse;
 import com.content_i_like.domain.dto.member.MemberResponse;
 import com.content_i_like.domain.dto.notification.NotificationThymeleafResponse;
-import com.content_i_like.domain.dto.recommend.RecommendListResponse;
-import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.enums.GenderEnum;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.service.MemberService;
@@ -27,18 +22,11 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -47,13 +35,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/member")
@@ -298,6 +281,7 @@ public class MemberController {
     return "pages/member/myFeed-followings";
   }
 
+
   //ajax 중복체크
   @PostMapping("/nickNameChk")
   public void memberChk(HttpServletRequest request, HttpServletResponse response, Model model)
@@ -333,7 +317,6 @@ public class MemberController {
     String memberPw = request.getParameter("password");
     MemberLoginRequest memberLoginRequest = new MemberLoginRequest(memberEmail, memberPw);
     boolean result = memberService.checkLogin(memberLoginRequest);
-    System.out.println("result: " + result);
     JSONObject jso = new JSONObject();
     jso.put("result", result);
     response.setContentType("text/html;charset=utf-8");
