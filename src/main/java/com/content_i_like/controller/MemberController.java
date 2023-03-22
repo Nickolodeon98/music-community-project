@@ -100,7 +100,7 @@ public class MemberController {
   public String login(
       @Valid @ModelAttribute("memberLoginRequest") MemberLoginRequest memberLoginRequest,
       BindingResult bindingResult,
-      HttpServletRequest request, Model model, Pageable pageable,
+      HttpServletRequest request, Pageable pageable,
       @RequestParam(required = false) String redirect) {
 
     if (bindingResult.hasErrors()) {
@@ -112,7 +112,7 @@ public class MemberController {
           .getNotificationsThymeleafResponses(
               response.getNickName(), pageable);
 
-      HttpSession session = request.getSession();   //세션이 있으면 있는 세션 반환, 없으면 신규 세션
+      HttpSession session = request.getSession();
       session.setAttribute("loginUser", response);
       session.setAttribute("notification", notificationsResponses);
       log.info("로그인 완료");
@@ -146,7 +146,7 @@ public class MemberController {
 
   @PostMapping("/join")
   public String join(@ModelAttribute("memberJoinRequest") MemberJoinRequest request) {
-    MemberJoinResponse response = memberService.join(request);
+    memberService.join(request);
     return "redirect:/member/login";
   }
 
@@ -163,7 +163,7 @@ public class MemberController {
 
   @PostMapping("/passwd/find_pw")
   public String findPw(@Valid @ModelAttribute("memberFindRequest") MemberFindRequest request) {
-    String message = memberService.findPwByEmail(request);
+    memberService.findPwByEmail(request);
     return "redirect:/member/login";
   }
 
@@ -302,7 +302,6 @@ public class MemberController {
   @PostMapping("/nickNameChk")
   public void memberChk(HttpServletRequest request, HttpServletResponse response, Model model)
       throws IOException {
-    System.out.println("/member/nickNameChk");
     String memberNickName = request.getParameter("nickName");
     boolean result = memberService.checkMemberNickName(memberNickName);
     JSONObject jso = new JSONObject();
@@ -316,7 +315,6 @@ public class MemberController {
   @PostMapping("/emailChk")
   public void emailChk(HttpServletRequest request, HttpServletResponse response, Model model)
       throws IOException {
-    System.out.println("/member/emailChk");
     String memberEmail = request.getParameter("email");
     boolean result = memberService.checkMemberEmail(memberEmail);
     JSONObject jso = new JSONObject();
@@ -331,7 +329,6 @@ public class MemberController {
   @PostMapping("/loginCheck")
   public void loginCheck(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    System.out.println("/member/loginChk");
     String memberEmail = request.getParameter("email");
     String memberPw = request.getParameter("password");
     MemberLoginRequest memberLoginRequest = new MemberLoginRequest(memberEmail, memberPw);
