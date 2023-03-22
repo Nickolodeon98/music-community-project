@@ -2,12 +2,10 @@ package com.content_i_like.service;
 
 import com.content_i_like.config.JwtService;
 import com.content_i_like.domain.dto.comment.CommentMyFeedResponse;
-import com.content_i_like.domain.dto.comment.CommentReadResponse;
 import com.content_i_like.domain.dto.follow.FollowMyFeedResponse;
 import com.content_i_like.domain.dto.follow.FollowResponse;
 import com.content_i_like.domain.dto.member.*;
 import com.content_i_like.domain.dto.recommend.RecommendListResponse;
-import com.content_i_like.domain.entity.Follow;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.exception.ContentILikeAppException;
 import com.content_i_like.exception.ErrorCode;
@@ -146,7 +144,8 @@ public class MemberService {
     return new MemberPointResponse(pointService.calculatePoint(member), new PageImpl<>(points));
   }
 
-  public MemberPointResponse getMyPointByLoginResponse(MemberLoginResponse loginResponse, Pageable pageable) {
+  public MemberPointResponse getMyPointByLoginResponse(MemberLoginResponse loginResponse,
+      Pageable pageable) {
     String memberEmail = getEmailByNo(loginResponse);
     return getMyPoint(memberEmail, pageable);
   }
@@ -165,7 +164,8 @@ public class MemberService {
   }
 
   @Transactional
-  public MemberResponse modifyMyInfoWithFile(MemberModifyRequest request, MemberLoginResponse loginResponse)
+  public MemberResponse modifyMyInfoWithFile(MemberModifyRequest request,
+      MemberLoginResponse loginResponse)
       throws IOException {
     String memberEmail = getEmailByNo(loginResponse);
     Member member = memberValidation.validateExistingMemberByEmail(memberEmail);
@@ -307,6 +307,7 @@ public class MemberService {
     return new FollowMyFeedResponse(member, followerCnt, new PageImpl<>(followResponses));
   }
 
+
   public String getNickNameByNo(Long memberNo) {
     Member member = memberRepository.findById(memberNo)
         .orElseThrow(() -> new ContentILikeAppException(ErrorCode.MEMBER_NOT_FOUND,
@@ -318,6 +319,7 @@ public class MemberService {
     Optional<Member> member = memberRepository.findById(response.getMemberNo());
     return member.get().getEmail();
   }
+
 
   public boolean checkMemberNickName(String nickName) {
     boolean result = false;
