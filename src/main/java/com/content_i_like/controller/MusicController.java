@@ -28,9 +28,7 @@ public class MusicController {
   private final MusicService musicService;
 
   @GetMapping("/track")
-  public String showTrackInfo(@RequestParam(value="pk", required = false) Long trackPK,
-      @RequestParam(value="page", required = false) Integer pageNum,
-      Model model) {
+  public String showTrackInfo(@RequestParam(value="pk", required = false) Long trackPK, Model model) {
 
     TrackGetResponse trackAndRecommends = musicService.getASingleTrackInfo(trackPK, "sjeon0730@gmail.com");
 

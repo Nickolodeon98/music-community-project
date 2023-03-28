@@ -64,7 +64,6 @@ public class SearchController {
   public String searchTracksByKeyword(@ModelAttribute("keywordDto") final SearchRequest trackTitle,
       @ModelAttribute("sortStrategy") final SortStrategy sortStrategy,
       Pageable pageable,
-      @RequestParam(value = "page", required = false) Integer pageNum,
       Model model) {
 
     pageable = searchService.generatePageable(pageable, sortStrategy);
@@ -88,9 +87,6 @@ public class SearchController {
 
     SortStrategy sorting = SortStrategy.builder().build();
     model.addAttribute("sortStrategy", sorting);
-
-    String newLineChar = System.getProperty("line.separator").toString();
-    model.addAttribute("newline", newLineChar);
 
     return "pages/search/tracks-search";
   }
@@ -120,7 +116,6 @@ public class SearchController {
   public String searchMembersByKeyword(@ModelAttribute("keywordDto") final SearchRequest nickName,
       @ModelAttribute("sortStrategy") final SortStrategy sorting,
       Pageable pageable,
-      @RequestParam(value = "page", required = false) Integer pageNum,
       Model model) {
 
     String property = SortEnum.MEMBERS_SORT_DEFAULT.getSortBy();
@@ -162,7 +157,6 @@ public class SearchController {
   public String searchRecommendsByKeyword(
       @ModelAttribute("keywordDto") final SearchRequest recommendTitle,
       @ModelAttribute("sortStrategy") final SortStrategy sortStrategy,
-      @RequestParam(value = "page", required = false) Integer pageNum,
       Pageable pageable,
       Model model) {
 
