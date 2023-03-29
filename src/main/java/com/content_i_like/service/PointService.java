@@ -5,7 +5,6 @@ import com.content_i_like.domain.entity.Comment;
 import com.content_i_like.domain.entity.Member;
 import com.content_i_like.domain.entity.Point;
 import com.content_i_like.domain.enums.PointTypeEnum;
-import com.content_i_like.observer.events.notification.CommentNotificationEvent;
 import com.content_i_like.observer.events.notification.PointWelcomeNotificationEvent;
 import com.content_i_like.repository.CommentRepository;
 import com.content_i_like.repository.PointRepository;
@@ -68,7 +67,7 @@ public class PointService {
     applicationEventPublisher.publishEvent(PointWelcomeNotificationEvent.of(point));
   }
 
-  //출석보상을 하루안에 받은 적이 있는지 확인해야한다
+  //출석보상(하루에 한 번)
   public boolean getAttendancePoint(Member member) {
 
     Optional<Point> getPoint = pointRepository
