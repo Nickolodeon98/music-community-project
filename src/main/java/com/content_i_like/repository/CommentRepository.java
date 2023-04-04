@@ -20,6 +20,11 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
   @Query("update Comment c set c.commentContent = :content, c.lastModifiedAt = current_timestamp where c.commentNo = :commentNo ")
   void update(@Param("content") String commentContent, @Param("commentNo") Long commentNo);
 
+
+  //
+  @Query("SELECT COALESCE(SUM(c.commentPoint), 0) FROM Comment c WHERE c.recommend.recommendNo = :recommendNo")
+  Long getSumOfCommentPointsByRecommendNo(@Param("recommendNo") Long recommendNo);
+
   Optional<Comment> findCommentByRecommend_RecommendNoAndCommentNo(Long recommendNo,
       Long commentNo);
 

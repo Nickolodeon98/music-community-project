@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class RecommendService {
 
+  private final CommentRepository commentRepository;
   private final MemberRepository memberRepository;
   private final RecommendRepository recommendRepository;
 
@@ -225,6 +226,19 @@ public class RecommendService {
     final Long pointPerLikes = 1L;
     recommendRepository.updateScore(recommendNo, pointPerLikes);
     log.info("finish");
+  }
+
+  @Transactional
+  public void updateScoreIfNull() {
+    recommendRepository.findAll().stream().
+        filter(r -> r.getRecommendScore() == null)
+        .forEach(r -> {
+          Long totalScore =
+              r.getRecommendPoint() + r.getRecommendViews() + commentRepository.getSumOfCommentPointsByRecommendNo(
+                  r.getRecommendNo()) + r.getComments().size() * 5 + r.getLikes().size();
+          r.setRecommendScore(totalScore);
+        });
+    recommendRepository.flush();
   }
 
   private String getYoutubeURL(RecommendModifyRequest request) {

@@ -12,6 +12,7 @@ import org.hibernate.annotations.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Builder
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
