@@ -21,7 +21,6 @@ public class ChartQueryRepository {
   private final JPAQueryFactory queryFactory;
 
 
-
   public ChartQueryRepository(JPAQueryFactory jpaQueryFactory) {
     this.queryFactory = jpaQueryFactory;
   }
@@ -59,13 +58,14 @@ public class ChartQueryRepository {
     List<Tuple> findChart = queryFactory
         .select(
             recommend.recommendNo,
+            recommend.recommendViews,
             recommend.recommendTitle,
             recommend.member.memberNo,
             recommend.member.nickName,
             recommend.recommendScore)
         .from(recommend)
-        .leftJoin(recommend.comments, comment)
-        .on(recommend.recommendNo.eq(comment.recommend.recommendNo))
+//        .leftJoin(recommend.comments, comment)
+//        .on(recommend.recommendNo.eq(comment.recommend.recommendNo))
         .where(recommend.createdAt.after(validUntilThisTime))
         .groupBy(recommend.recommendNo)
         .orderBy(recommend.recommendScore.desc(), recommend.recommendViews.desc(), recommend.recommendTitle.asc(),
