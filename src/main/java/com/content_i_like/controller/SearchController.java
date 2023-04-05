@@ -36,6 +36,12 @@ public class SearchController {
   private final SearchService searchService;
   private final TrackService trackService;
 
+  /**
+   * 검색창 메인 화면을 받아옵니다.
+   *
+   * @param model 화면에 필요한 변수들을 등록할 때 활용하는 모델
+   * @return 메인 검색창 화면을 반환합니다.
+   */
   @GetMapping()
   public String searchMainPage(Model model) {
 
@@ -51,6 +57,12 @@ public class SearchController {
     return "pages/search/search-main";
   }
 
+  /**
+   * 검색창 메인 화면을 받아옵니다.
+   *
+   * @param model 화면에 필요한 변수들을 등록할 때 활용하는 모델
+   * @return 메인 검색창 화면을 반환합니다.
+   */
   @PostMapping("/tracks")
   public String searchTracksPage(Model model) {
 
